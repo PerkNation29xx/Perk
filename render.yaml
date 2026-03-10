@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: perknation-backend
+    env: python
+    plan: starter
+    autoDeploy: true
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /v1/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: PROJECT_NAME
+        value: PerkNation Backend
+      - key: API_V1_PREFIX
+        value: /v1
+      - key: DATABASE_HOST
+        sync: false
+      - key: DATABASE_PORT
+        value: "5432"
+      - key: DATABASE_NAME
+        value: postgres
+      - key: DATABASE_USER
+        value: postgres
+      - key: DATABASE_PASSWORD
+        sync: false
+      - key: DATABASE_SSLMODE
+        value: require
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: JWT_EXPIRE_MINUTES
+        value: "1440"
+      - key: SEED_DEFAULT_DATA
+        value: "false"
+      - key: DEV_EXPOSE_EMAIL_VERIFICATION_CODE
+        value: "false"
+      - key: FORMS_BACKUP_ENABLED
+        value: "false"
+      - key: AI_ENABLED
+        value: "false"

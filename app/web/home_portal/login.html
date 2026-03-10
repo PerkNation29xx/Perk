@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - Perk Nation</title>
+  <meta name="description" content="Sign in to your Perk Nation user or merchant account." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+<header class="header">
+  <div class="container">
+    <div class="nav">
+      <a class="brand" href="index.html" aria-label="Perk Nation home">
+        <span class="brandMark" aria-hidden="true">
+          <img src="assets/mark.svg" alt="" width="24" height="24" />
+        </span>
+        <span>Perk Nation</span>
+      </a>
+
+      <nav class="navlinks" aria-label="Primary navigation">
+        <a href="guests.html">Members</a>
+        <a href="merchants.html">Merchants</a>
+        <a href="how-it-works.html">How it Works</a>
+        <a href="contact-us.html">Contact Us</a>
+        <a href="faq.html">FAQ</a>
+      </nav>
+
+      <div class="navcta">
+        <button class="btn menuBtn" data-menu-btn aria-label="Open menu">☰</button>
+        <a class="btn ghost" href="login.html" aria-current="page">Login</a>
+      </div>
+    </div>
+
+    <div class="mobileMenu" data-mobile-menu>
+      <a href="guests.html">Members</a>
+      <a href="merchants.html">Merchants</a>
+      <a href="how-it-works.html">How it Works</a>
+      <a href="contact-us.html">Contact Us</a>
+      <a href="faq.html">FAQ</a>
+      <a href="login.html">Login</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container split authSplit">
+      <div class="card pad">
+        <div class="badge">Secure Access</div>
+        <h1 class="h1" style="font-size:42px">Login</h1>
+        <p class="p" style="margin-bottom:10px">Use one login page for user or merchant accounts.</p>
+
+        <form id="loginForm" class="authForm" novalidate>
+          <div class="roleToggle" role="tablist" aria-label="Login role">
+            <button type="button" class="roleToggleBtn is-active" data-login-role="consumer" aria-selected="true">User</button>
+            <button type="button" class="roleToggleBtn" data-login-role="merchant" aria-selected="false">Merchant</button>
+          </div>
+          <input id="loginRoleInput" type="hidden" value="consumer" />
+
+          <label for="loginEmailInput">Email</label>
+          <input id="loginEmailInput" class="input" type="email" autocomplete="email" required />
+
+          <label for="loginPasswordInput">Password</label>
+          <input id="loginPasswordInput" class="input" type="password" autocomplete="current-password" required />
+
+          <div class="authActions">
+            <button id="loginSubmitBtn" class="btn" type="submit">Sign in</button>
+            <a class="btn" href="create-account.html">Create new account</a>
+          </div>
+          <div id="loginMessage" class="notice" hidden></div>
+        </form>
+      </div>
+
+      <div class="card pad">
+        <h2 class="h2">Need help signing in?</h2>
+        <p class="small">Use your email and password for either account type. We will take you to the right dashboard after login.</p>
+        <div class="kpis">
+          <div class="kpi">
+            <div class="t">Member account</div>
+            <div class="v">Use User tab, then continue to your account</div>
+          </div>
+          <div class="kpi">
+            <div class="t">Merchant account</div>
+            <div class="v">Use Merchant tab, then continue to your account</div>
+          </div>
+          <div class="kpi">
+            <div class="t">Need a new account?</div>
+            <div class="v"><a href="create-account.html">Create one here</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div>
+      <div>© <span id="year"></span> Perk Nation</div>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+<script src="assets/auth.js"></script>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>

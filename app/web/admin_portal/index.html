@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>PerkNation Admin Portal</title>
+    <link rel="stylesheet" href="/admin/static/admin.css" />
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="topbar__brand">
+        <div class="logo">PK</div>
+        <div>
+          <div class="topbar__title">PerkNation Admin</div>
+          <div class="topbar__subtitle" id="topbarSubtitle">Local portal</div>
+        </div>
+      </div>
+
+      <div class="topbar__actions">
+        <span class="pill pill--muted" id="sessionPill">Signed out</span>
+        <button class="btn btn--ghost" id="logoutBtn" type="button" disabled>Logout</button>
+      </div>
+    </div>
+
+    <div class="layout">
+      <aside class="sidebar" aria-label="Navigation">
+        <button class="navitem is-active" data-view="overview">Overview</button>
+        <button class="navitem" data-view="users">Users</button>
+        <button class="navitem" data-view="merchants">Merchants</button>
+        <button class="navitem" data-view="offers">Offers</button>
+        <button class="navitem" data-view="approvals">Approvals</button>
+        <button class="navitem" data-view="transactions">Transactions</button>
+        <button class="navitem" data-view="rewards">Rewards</button>
+        <button class="navitem" data-view="support">Support</button>
+        <button class="navitem" data-view="disputes">Disputes</button>
+        <button class="navitem" data-view="stock">Stock Vault</button>
+        <button class="navitem" data-view="audit">Audit</button>
+        <button class="navitem" data-view="ai">AI Assistant</button>
+      </aside>
+
+      <main class="main">
+        <section class="card card--tight" id="statusCard" hidden>
+          <div class="row row--space">
+            <div>
+              <div class="h2">Status</div>
+              <div class="muted" id="statusText"></div>
+            </div>
+            <div>
+              <button class="btn btn--ghost" id="dismissStatusBtn" type="button">Dismiss</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" id="loginCard">
+          <div class="row row--space">
+            <div>
+              <div class="h1">Sign in</div>
+              <div class="muted">
+                Use your Supabase Auth email + password. Your account must be promoted to the <code>admin</code> role in
+                the backend database.
+              </div>
+            </div>
+            <div class="pill pill--muted">Auth: Supabase</div>
+          </div>
+
+          <form id="loginForm" class="form">
+            <label class="field">
+              <span>Email</span>
+              <input id="emailInput" type="email" autocomplete="email" required />
+            </label>
+
+            <label class="field">
+              <span>Password</span>
+              <input id="passwordInput" type="password" autocomplete="current-password" required />
+            </label>
+
+            <div class="row row--space">
+              <button class="btn btn--primary" id="loginBtn" type="submit">Sign in</button>
+              <button class="btn btn--ghost" id="testConnectionBtn" type="button">Test backend</button>
+            </div>
+
+            <div class="muted small" id="loginHint"></div>
+          </form>
+        </section>
+
+        <section id="portal" hidden>
+          <div class="row row--space">
+            <div>
+              <div class="h1" id="viewTitle">Overview</div>
+              <div class="muted" id="viewSubtitle">KPIs and recent activity</div>
+            </div>
+            <div class="row">
+              <select id="daysSelect" class="select">
+                <option value="7">7 days</option>
+                <option value="30" selected>30 days</option>
+                <option value="90">90 days</option>
+              </select>
+              <button class="btn btn--ghost" id="refreshBtn" type="button">Refresh</button>
+            </div>
+          </div>
+
+          <div id="viewContainer" class="view"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="/admin/static/admin.js"></script>
+  </body>
+</html>

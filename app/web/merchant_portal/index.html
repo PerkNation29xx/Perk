@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>PerkNation Merchant Portal</title>
+    <link rel="stylesheet" href="/merchant/static/merchant.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brandBlock">
+        <a class="brandHome" href="/" aria-label="PerkNation home">
+          <img src="/assets/mark.svg" alt="" width="26" height="26" class="brandMark" />
+          <div>
+            <div class="title">PerkNation</div>
+            <div class="subtitle">Merchant portal</div>
+          </div>
+        </a>
+        <div class="topLinks">
+          <a href="/login">Login</a>
+          <a href="/create-account">Create account</a>
+        </div>
+      </div>
+      <div class="row">
+        <span id="sessionPill" class="pill">Signed out</span>
+        <button id="logoutBtn" class="btn" type="button" disabled>Logout</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <section id="statusCard" class="card" hidden>
+        <div class="row row-space">
+          <strong>Status</strong>
+          <button id="statusDismissBtn" class="btn btn-ghost" type="button">Dismiss</button>
+        </div>
+        <div id="statusText" class="muted"></div>
+      </section>
+
+      <section id="loginCard" class="card">
+        <h1>Sign in</h1>
+        <p class="muted">
+          Use your merchant account. This page requires <code>merchant</code> role. You can also sign in from the unified <a href="/login">Login page</a>.
+        </p>
+        <form id="loginForm" class="form">
+          <label>
+            <span>Email</span>
+            <input id="emailInput" type="email" autocomplete="email" required />
+          </label>
+          <label>
+            <span>Password</span>
+            <input id="passwordInput" type="password" autocomplete="current-password" required />
+          </label>
+          <div class="row">
+            <button id="loginBtn" class="btn btn-primary" type="submit">Sign in</button>
+            <button id="refreshAllBtn" class="btn btn-ghost" type="button">Refresh</button>
+          </div>
+          <div id="loginHint" class="muted small"></div>
+        </form>
+      </section>
+
+      <section id="portalSection" hidden>
+        <section class="card">
+          <div class="row row-space">
+            <h2>Performance</h2>
+            <button id="reloadMetricsBtn" class="btn btn-ghost" type="button">Reload metrics</button>
+          </div>
+          <div class="kpi-grid">
+            <div class="kpi">
+              <div class="kpi-label">Impressions (est.)</div>
+              <div id="kpiImpressions" class="kpi-value">0</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Activations</div>
+              <div id="kpiActivations" class="kpi-value">0</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Attributed Txns</div>
+              <div id="kpiTransactions" class="kpi-value">0</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Attributed Volume</div>
+              <div id="kpiVolume" class="kpi-value">$0.00</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="row row-space">
+            <h2>AI Assistant</h2>
+            <div id="aiModelPill" class="pill">Model: -</div>
+          </div>
+          <div id="aiConversationWrap" class="ai-thread"></div>
+          <form id="aiAssistantForm" class="form">
+            <label>
+              <span>Ask PerkNation AI</span>
+              <textarea id="aiPromptInput" rows="3" maxlength="2000" placeholder="Ask about offer strategy, activations, and merchant operations."></textarea>
+            </label>
+            <div class="row">
+              <button id="aiSendBtn" class="btn btn-primary" type="submit">Send</button>
+              <button id="aiClearBtn" class="btn" type="button">Clear</button>
+              <span id="aiHint" class="muted small"></span>
+            </div>
+          </form>
+        </section>
+
+        <section class="card">
+          <h2>Business profile</h2>
+          <form id="profileForm" class="form form-inline">
+            <label>
+              <span>Legal name</span>
+              <input id="legalNameInput" type="text" required />
+            </label>
+            <label>
+              <span>DBA name</span>
+              <input id="dbaNameInput" type="text" required />
+            </label>
+            <label>
+              <span>Category</span>
+              <input id="categoryInput" type="text" placeholder="restaurant, gas, retail..." required />
+            </label>
+            <button id="saveProfileBtn" class="btn btn-primary" type="submit">Save profile</button>
+          </form>
+        </section>
+
+        <section class="card">
+          <h2>Locations</h2>
+          <form id="locationForm" class="form form-inline">
+            <label>
+              <span>Name</span>
+              <input id="locationNameInput" type="text" required />
+            </label>
+            <label>
+              <span>Address</span>
+              <input id="locationAddressInput" type="text" required />
+            </label>
+            <label>
+              <span>Latitude</span>
+              <input id="locationLatitudeInput" type="number" step="0.0000001" required />
+            </label>
+            <label>
+              <span>Longitude</span>
+              <input id="locationLongitudeInput" type="number" step="0.0000001" required />
+            </label>
+            <label>
+              <span>Hours</span>
+              <input id="locationHoursInput" type="text" placeholder="Mon-Fri 9:00-18:00" />
+            </label>
+            <button id="addLocationBtn" class="btn btn-primary" type="submit">Add location</button>
+          </form>
+          <div id="locationsWrap" style="margin-top:12px"></div>
+        </section>
+
+        <section class="card">
+          <h2>Create offer</h2>
+          <form id="offerForm" class="form form-inline">
+            <label>
+              <span>Title</span>
+              <input id="offerTitleInput" type="text" required />
+            </label>
+            <label>
+              <span>Offer type</span>
+              <input id="offerTypeInput" type="text" value="boost" />
+            </label>
+            <label>
+              <span>Terms</span>
+              <input id="offerTermsInput" type="text" required />
+            </label>
+            <label>
+              <span>Cash rate (0-1)</span>
+              <input id="offerCashRateInput" type="number" step="0.0001" min="0" max="1" value="0.03" required />
+            </label>
+            <label>
+              <span>Start (ISO)</span>
+              <input id="offerStartInput" type="text" placeholder="2026-02-12T00:00:00Z" required />
+            </label>
+            <label>
+              <span>End (ISO)</span>
+              <input id="offerEndInput" type="text" placeholder="2026-03-12T00:00:00Z" required />
+            </label>
+            <label>
+              <span>Location (optional)</span>
+              <select id="offerLocationSelect">
+                <option value="">No location</option>
+              </select>
+            </label>
+            <label>
+              <span>Schedule (optional)</span>
+              <input id="offerScheduleInput" type="text" placeholder="Mon-Fri 8:00-20:00" />
+            </label>
+            <label>
+              <span>Daily cap (optional)</span>
+              <input id="offerDailyCapInput" type="number" step="0.01" />
+            </label>
+            <label>
+              <span>Total cap (optional)</span>
+              <input id="offerTotalCapInput" type="number" step="0.01" />
+            </label>
+            <label>
+              <span>Per user limit (optional)</span>
+              <input id="offerPerUserLimitInput" type="number" step="1" />
+            </label>
+            <button id="createOfferBtn" class="btn btn-primary" type="submit">Create offer</button>
+          </form>
+        </section>
+
+        <section class="card">
+          <h2>Your offers</h2>
+          <div id="offersWrap"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="/merchant/static/merchant.js"></script>
+  </body>
+</html>

@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Create Account - Perk Nation</title>
+  <meta name="description" content="Create a new Perk Nation user or merchant account." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+<header class="header">
+  <div class="container">
+    <div class="nav">
+      <a class="brand" href="index.html" aria-label="Perk Nation home">
+        <span class="brandMark" aria-hidden="true">
+          <img src="assets/mark.svg" alt="" width="24" height="24" />
+        </span>
+        <span>Perk Nation</span>
+      </a>
+
+      <nav class="navlinks" aria-label="Primary navigation">
+        <a href="guests.html">Members</a>
+        <a href="merchants.html">Merchants</a>
+        <a href="how-it-works.html">How it Works</a>
+        <a href="contact-us.html">Contact Us</a>
+        <a href="faq.html">FAQ</a>
+      </nav>
+
+      <div class="navcta">
+        <button class="btn menuBtn" data-menu-btn aria-label="Open menu">☰</button>
+        <a class="btn ghost" href="login.html">Login</a>
+      </div>
+    </div>
+
+    <div class="mobileMenu" data-mobile-menu>
+      <a href="guests.html">Members</a>
+      <a href="merchants.html">Merchants</a>
+      <a href="how-it-works.html">How it Works</a>
+      <a href="contact-us.html">Contact Us</a>
+      <a href="faq.html">FAQ</a>
+      <a href="login.html">Login</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container split authSplit">
+      <div class="card pad">
+        <div class="badge">New Account</div>
+        <h1 class="h1" style="font-size:42px">Create account</h1>
+        <p class="p" style="margin-bottom:10px">Choose account type, register, verify your email, then log in.</p>
+
+        <div class="roleToggle" role="tablist" aria-label="Registration role">
+          <button type="button" class="roleToggleBtn is-active" data-register-role="consumer" aria-selected="true">User account</button>
+          <button type="button" class="roleToggleBtn" data-register-role="merchant" aria-selected="false">Merchant account</button>
+        </div>
+
+        <form id="consumerRegisterForm" class="authForm" novalidate>
+          <label for="consumerFullNameInput">Full name</label>
+          <input id="consumerFullNameInput" class="input" type="text" autocomplete="name" required />
+
+          <label for="consumerEmailInput">Email</label>
+          <input id="consumerEmailInput" class="input" type="email" autocomplete="email" required />
+
+          <label for="consumerPhoneInput">Phone (optional)</label>
+          <input id="consumerPhoneInput" class="input" type="tel" autocomplete="tel" />
+
+          <label for="consumerPasswordInput">Password</label>
+          <input id="consumerPasswordInput" class="input" type="password" autocomplete="new-password" minlength="8" required />
+
+          <label for="consumerPasswordConfirmInput">Confirm password</label>
+          <input id="consumerPasswordConfirmInput" class="input" type="password" autocomplete="new-password" minlength="8" required />
+
+          <div class="authActions">
+            <button id="consumerCreateBtn" class="btn" type="submit">Create user account</button>
+            <a class="btn" href="login.html">Back to login</a>
+          </div>
+          <div id="consumerRegisterMessage" class="notice" hidden></div>
+        </form>
+
+        <form id="merchantRegisterForm" class="authForm" novalidate hidden>
+          <label for="merchantBusinessNameInput">Business name</label>
+          <input id="merchantBusinessNameInput" class="input" type="text" required />
+
+          <label for="merchantContactNameInput">Contact full name</label>
+          <input id="merchantContactNameInput" class="input" type="text" autocomplete="name" required />
+
+          <label for="merchantEmailInput">Email</label>
+          <input id="merchantEmailInput" class="input" type="email" autocomplete="email" required />
+
+          <label for="merchantPhoneInput">Phone (optional)</label>
+          <input id="merchantPhoneInput" class="input" type="tel" autocomplete="tel" />
+
+          <label for="merchantPasswordInput">Password</label>
+          <input id="merchantPasswordInput" class="input" type="password" autocomplete="new-password" minlength="8" required />
+
+          <label for="merchantPasswordConfirmInput">Confirm password</label>
+          <input id="merchantPasswordConfirmInput" class="input" type="password" autocomplete="new-password" minlength="8" required />
+
+          <div class="authActions">
+            <button id="merchantCreateBtn" class="btn" type="submit">Create merchant account</button>
+            <a class="btn" href="login.html">Back to login</a>
+          </div>
+          <div id="merchantRegisterMessage" class="notice" hidden></div>
+        </form>
+      </div>
+
+      <div class="card pad">
+        <h2 class="h2">What happens next</h2>
+        <ol class="small" style="padding-left: 18px; margin-top: 0;">
+          <li>Create your account.</li>
+          <li>Check your email for verification.</li>
+          <li>Log in from the consolidated login page.</li>
+        </ol>
+        <div class="notice">
+          All accounts are created with live account authentication. Merchant onboarding tools are available after merchant login.
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div>
+      <div>© <span id="year"></span> Perk Nation</div>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+<script src="assets/auth.js"></script>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>

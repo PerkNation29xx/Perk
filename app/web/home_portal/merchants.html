@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Grow your business with Perk Nation merchant tools." />
+  <meta name="theme-color" content="#0d0d0d" />
+  <title>Merchants — Perk Nation</title>
+  
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body >
+  
+<header class="header">
+  <div class="container">
+    <div class="nav">
+      <a class="brand" href="index.html" aria-label="Perk Nation home">
+        <span class="brandMark" aria-hidden="true">
+          <img src="assets/mark.svg" alt="" width="24" height="24" />
+        </span>
+        <span>Perk Nation</span>
+      </a>
+
+      <nav class="navlinks" aria-label="Primary navigation">
+        <a href="guests.html" >Members</a>
+        <a href="merchants.html" aria-current='page'>Merchants</a>
+        <a href="how-it-works.html" >How it Works</a>
+        <a href="contact-us.html" >Contact Us</a>
+        <a href="faq.html" >FAQ</a>
+      </nav>
+
+      <div class="navcta">
+        <button class="btn menuBtn" data-menu-btn aria-label="Open menu">☰</button>
+        <a class="btn ghost" href="login.html">Login</a>
+      </div>
+    </div>
+
+    <div class="mobileMenu" data-mobile-menu>
+      <a href="guests.html">Members</a>
+      <a href="merchants.html">Merchants</a>
+      <a href="how-it-works.html">How it Works</a>
+      <a href="contact-us.html">Contact Us</a>
+      <a href="faq.html">FAQ</a>
+    </div>
+  </div>
+</header>
+
+  <main>
+    
+<section class="hero">
+  <div class="container grid2">
+    <div>
+      <div class="badge">Merchants</div>
+      <h1 class="h1">Grow Your Business with Perk Nation.</h1>
+      <p class="p">
+        Merchant discovery via map and feed, sponsored placements, self-serve offer creation, geolocation targeting with push notifications,
+        and analytics that connect impressions → visits → purchases.
+      </p>
+
+      <div class="kpis">
+        <div class="kpi"><div class="t">Reach</div><div class="v">Geo targeting</div></div>
+        <div class="kpi"><div class="t">Conversion</div><div class="v">Push offers</div></div>
+        <div class="kpi"><div class="t">Insights</div><div class="v">Cohort retention</div></div>
+      </div>
+
+      <div class="notice" style="margin-top:18px">
+        <strong>No POS integration required</strong> (pilot design). Set offers, target nearby customers, and measure performance.
+      </div>
+    </div>
+
+    <div class="card pad">
+      <img src="assets/dashboard.svg" alt="Merchant dashboard preview" style="border-radius:22px; border:1px solid rgba(250,247,247,.10)" />
+      <div class="hr"></div>
+      <div class="h3">Analytics dashboard</div>
+      <div class="muted">Impressions → visits → purchases, plus cohort retention and category spend insights.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="partner">
+  <div class="container split">
+    <div class="card pad">
+      <h2 class="h2">Become a Partner Merchant</h2>
+      <div class="notice" data-toast style="display:none"></div>
+      <form data-form="merchant" data-form-mode="merchant-account">
+        <label>Name of Company</label>
+        <input class="input" name="company" required placeholder="Company name" />
+        <label>Address</label>
+        <input class="input" name="address" required placeholder="Street, City, State" />
+        <label>Email Address</label>
+        <input class="input" name="email" type="email" required placeholder="you@company.com" />
+        <label>Phone Number</label>
+        <input class="input" name="phone" required placeholder="(555) 555-5555" />
+        <label>Password</label>
+        <input class="input" name="password" type="password" required minlength="6" placeholder="Create a password" />
+        <label>Confirm password</label>
+        <input class="input" name="confirm_password" type="password" required minlength="6" placeholder="Re-enter password" />
+        <label>Website URL</label>
+        <input class="input" name="website" placeholder="https://..." />
+        <label>Contact Person's Name</label>
+        <input class="input" name="contact_name" required placeholder="Name" />
+        <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap">
+          <button class="btn primary" type="submit">Create Merchant Account</button>
+          <a class="btn" href="contact-us.html">Contact Us</a>
+        </div>
+        <div class="small" style="margin-top:10px">
+          Creates your live merchant login and stores your inquiry details in the backend CRM.
+        </div>
+      </form>
+    </div>
+
+    <div class="card pad">
+      <h2 class="h2">AI Roadmap Modules (Teaser)</h2>
+      <div class="three" style="margin-top:12px; grid-template-columns:1fr">
+        <div class="pill">Offer timing optimization</div>
+        <div class="pill">Fraud scoring</div>
+        <div class="pill">Traffic insights</div>
+        <div class="pill">Inventory prediction</div>
+      </div>
+
+      <div class="hr"></div>
+
+      <h2 class="h2">Pricing Models</h2>
+      <p class="muted">Illustrative tiers (as provided). Adjust for your go-to-market.</p>
+
+      <div class="split" style="margin-top:12px">
+        <div>
+          <div class="h3">In-Network Merchants</div>
+          <div class="notice" style="margin-top:10px">
+            <strong>Basic (Free)</strong><br/>
+            • Able to send daily specials by text<br/>
+            • Consumers receive higher rewards
+          </div>
+          <div class="notice" style="margin-top:10px">
+            <strong>Gold ($399/month)</strong><br/>
+            • Geolocation push notice for loyal customers within 2 miles<br/>
+            • Analytics (traffic, buying habits, demographics)<br/>
+            • Predictive AI access
+          </div>
+          <div class="notice" style="margin-top:10px">
+            <strong>Enterprise (Ask for Quote)</strong><br/>
+            • Everything in Gold + Generative AI + Agentic AI
+          </div>
+        </div>
+
+        <div>
+          <div class="h3">Out-of-Network</div>
+          <div class="notice" style="margin-top:10px">
+            <strong>Basic ($99/month)</strong><br/>
+            • Listing + basic promotions
+          </div>
+          <div class="notice" style="margin-top:10px">
+            <strong>Gold ($999/month)</strong><br/>
+            • Premium placement + advanced offers
+          </div>
+          <div class="notice" style="margin-top:10px">
+            <strong>Enterprise (Ask for Quote)</strong><br/>
+            • Custom integrations + enterprise analytics
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  </main>
+  
+<footer class="footer">
+  <div class="container">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap">
+      <div style="display:flex; align-items:center; gap:12px">
+        <img src="assets/mark.svg" alt="Perk Nation" width="34" height="34" />
+        <div>
+          <div style="font-weight:900">Perk Nation</div>
+          <div class="small">Universal, AI-driven commerce & rewards ecosystem</div>
+        </div>
+      </div>
+      <div class="small">© 2026 Perk Nation</div>
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="footerGrid">
+      <div>
+        <div class="h3">Product</div>
+        <div class="small" style="display:grid; gap:8px">
+          <a href="#" aria-disabled="true">iOS Download</a>
+          <a href="#" aria-disabled="true">Android Download</a>
+          <a href="#" aria-disabled="true">Integrations</a>
+        </div>
+      </div>
+      <div>
+        <div class="h3">Company</div>
+        <div class="small" style="display:grid; gap:8px">
+          <a href="#" aria-disabled="true">Careers</a>
+          <a href="#" aria-disabled="true">Press Inquiries</a>
+          <a href="merchants.html">Merchants</a>
+        </div>
+      </div>
+      <div>
+        <div class="h3">Support</div>
+        <div class="small" style="display:grid; gap:8px">
+          <a href="privacy-policy.html">Privacy Notice</a>
+          <a href="terms-of-use.html">Terms of Use</a>
+          <a href="#" aria-disabled="true">Merchant Terms</a>
+          <a href="contact-us.html">Contact Support</a>
+        </div>
+      </div>
+      <div>
+        <div class="h3">Get started</div>
+        <div class="small" style="display:grid; gap:10px">
+          <a class="btn primary" href="guests.html#join" style="width:max-content">Join Perk Nation</a>
+          <a class="btn" href="merchants.html#partner" style="width:max-content">Merchant inquiry</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="hr"></div>
+    <div class="small">
+      Disclaimer: This website is for informational purposes only. Rewards terms may change. Stock rewards (if/when enabled) would be offered through regulated partners; nothing on this site is investment advice.
+    </div>
+  </div>
+</footer>
+
+<div class="cookie" data-cookie>
+  <div class="cookieInner">
+    <div class="cookieText">
+      We value your privacy. We use cookies to enhance your browsing experience.
+      <a href="disclaimer.html" style="text-decoration:underline">Disclaimer</a>
+    </div>
+    <div class="cookieActions">
+      <button class="btn" data-cookie-reject>Reject All</button>
+      <button class="btn primary" data-cookie-accept>Accept All</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/app.js?v=20260302b"></script>
+
+</body>
+</html>

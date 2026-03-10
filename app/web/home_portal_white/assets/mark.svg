@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Perk Nation mark">
+  <defs>
+    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e6b84a"/>
+      <stop offset="1" stop-color="#f5d27d"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#g2)"/>
+  <path d="M46 16l-4 8 9-2-5 7 8 1-8 3 4 7-7-4-3 8-1-8-7 6 2-9-8 4 4-7-8-3 8-1-5-7 9 2z"
+        fill="#0d0d0d" opacity=".18"/>
+  <text x="32" y="40" text-anchor="middle" font-family="Rethink Sans, ui-sans-serif, system-ui" font-size="24" font-weight="900" fill="#0d0d0d">PN</text>
+</svg>

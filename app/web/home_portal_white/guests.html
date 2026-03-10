@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Join Perk Nation as a member and earn rewards everywhere." />
+  <meta name="theme-color" content="#f8fafc" />
+  <title>Members — Perk Nation</title>
+  
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body data-popup='on'>
+  
+<header class="header">
+  <div class="container">
+    <div class="nav">
+      <a class="brand" href="index.html" aria-label="Perk Nation home">
+        <span class="brandMark" aria-hidden="true">
+          <img src="assets/mark.svg" alt="" width="24" height="24" />
+        </span>
+        <span>Perk Nation</span>
+      </a>
+
+      <nav class="navlinks" aria-label="Primary navigation">
+        <a href="guests.html" aria-current='page'>Members</a>
+        <a href="merchants.html" >Merchants</a>
+        <a href="how-it-works.html" >How it Works</a>
+        <a href="contact-us.html" >Contact Us</a>
+        <a href="faq.html" >FAQ</a>
+      </nav>
+
+      <div class="navcta">
+        <button class="btn menuBtn" data-menu-btn aria-label="Open menu">☰</button>
+        <a class="btn ghost" href="login.html">Login</a>
+      </div>
+    </div>
+
+    <div class="mobileMenu" data-mobile-menu>
+      <a href="guests.html">Members</a>
+      <a href="merchants.html">Merchants</a>
+      <a href="how-it-works.html">How it Works</a>
+      <a href="contact-us.html">Contact Us</a>
+      <a href="faq.html">FAQ</a>
+    </div>
+  </div>
+</header>
+
+  <main>
+    
+<section class="hero">
+  <div class="container grid2">
+    <div>
+      <div class="badge">Members</div>
+      <h1 class="h1">Free Membership. Earn Rewards Everywhere.</h1>
+      <p class="p">
+        Preload your wallet with an instant bonus. Pay through Perk Nation and earn rewards automatically.
+        Earn baseline rewards everywhere and higher rewards at in-network merchants. Choose cash rewards.
+      </p>
+
+      <div class="kpis">
+        <div class="kpi"><div class="t">In-network</div><div class="v">Scan QR code</div></div>
+        <div class="kpi"><div class="t">Out-of-network</div><div class="v">Upload receipt</div></div>
+        <div class="kpi"><div class="t">Redemption</div><div class="v">Simple cash out</div></div>
+      </div>
+
+      <div class="notice" style="margin-top:18px">
+        <strong>In-network vs. out-of-network:</strong> In-network purchases use a QR code scan to receive credits.
+        Out-of-network purchases require uploading a receipt to earn the applicable cash rewards.
+      </div>
+    </div>
+
+    <div class="card pad">
+      <img src="assets/map-feed.svg" alt="Map feed preview" style="border-radius:22px; border:1px solid rgba(250,247,247,.10)" />
+      <div class="hr"></div>
+      <div class="h3">Discover nearby rewards</div>
+      <div class="muted">Browse a map + feed of offers around you (preview).</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="join">
+  <div class="container split">
+    <div class="card pad">
+      <h2 class="h2">Join Perk Nation Now</h2>
+      <div class="notice" data-toast style="display:none"></div>
+      <form data-form="guest" data-form-mode="consumer-account">
+        <label>Full Name</label>
+        <input class="input" name="full_name" required placeholder="Your name" />
+        <label>Address</label>
+        <input class="input" name="address" required placeholder="Street, City, State" />
+        <label>Cell Phone Number</label>
+        <input class="input" name="phone" required placeholder="(555) 555-5555" />
+        <label>Email Address</label>
+        <input class="input" name="email" type="email" required placeholder="you@email.com" />
+        <label>Password</label>
+        <input class="input" name="password" type="password" required minlength="6" placeholder="Create a password" />
+        <label>Confirm password</label>
+        <input class="input" name="confirm_password" type="password" required minlength="6" placeholder="Re-enter password" />
+        <label>Date of Birth (DOB)</label>
+        <input class="input" name="dob" type="date" required />
+        <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap">
+          <button class="btn primary" type="submit">Create Consumer Account</button>
+          <a class="btn" href="faq.html">Questions?</a>
+        </div>
+        <div class="small" style="margin-top:10px">
+          Creates your live account. If this email already exists, you will see an error instead of a success message.
+        </div>
+      </form>
+    </div>
+
+    <div class="card pad">
+      <h2 class="h2">Rewards Rate Table</h2>
+      <p class="muted">Starting rates (cash). In-network vs out-of-network.</p>
+      <table class="table" aria-label="Rewards rates">
+        <thead><tr><th>Category</th><th>In-Network Cash</th><th>Out-of-Network Cash</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Restaurants, coffee, tea</strong></td><td>20%</td><td>7.5%</td></tr>
+          <tr><td><strong>Retail</strong></td><td>15%</td><td>5%</td></tr>
+          <tr><td><strong>Supermarkets & convenience</strong></td><td>5%</td><td>2%</td></tr>
+          <tr><td><strong>Hotels, travel, Airbnb, gas</strong></td><td>5%</td><td>2%</td></tr>
+        </tbody>
+      </table>
+
+      <div class="hr"></div>
+
+      <h2 class="h2">Video</h2>
+      <div class="notice">Embed your promo / explainer video here (placeholder).</div>
+      <div style="margin-top:12px; border-radius:22px; overflow:hidden; border:1px solid rgba(250,247,247,.12)">
+        <div style="aspect-ratio: 16/9; background: rgba(250,247,247,.04); display:grid; place-items:center">
+          <div class="pill">Video Embed Placeholder</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container split">
+    <div class="card pad">
+      <h2 class="h2">Referral Link</h2>
+      <p class="muted">Share with friends. (Demo UI only)</p>
+      <label>Referral Code</label>
+      <input class="input" value="PERK-1234" readonly />
+      <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap">
+        <button class="btn primary" type="button" data-copy="PERK-1234">Copy Code</button>
+        <a class="btn" href="contact-us.html">Need help?</a>
+      </div>
+    </div>
+    <div class="card pad">
+      <h2 class="h2">Map/Feed Preview</h2>
+      <p class="muted">A simple placeholder showing the concept.</p>
+      <img src="assets/map-feed.svg" alt="Map preview" style="border-radius:22px; border:1px solid rgba(250,247,247,.10)" />
+    </div>
+  </div>
+</section>
+
+<!-- Timed promo popup -->
+<div class="modalOverlay" data-modal-overlay>
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Special offer popup">
+    <div class="modalHeader">
+      <div class="modalTitle">Get a welcome bonus</div>
+      <button class="modalClose" data-modal-close aria-label="Close">✕</button>
+    </div>
+    <p class="muted" style="margin:10px 0 0">
+      Join today to unlock a limited-time welcome bonus for new members.
+      (Configure this offer for your launch market.)
+    </p>
+    <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap">
+      <a class="btn primary" href="#join" onclick="document.querySelector('[data-modal-overlay]').classList.remove('modalShow')">Join now</a>
+      <button class="btn" type="button" onclick="document.querySelector('[data-modal-overlay]').classList.remove('modalShow')">Maybe later</button>
+    </div>
+  </div>
+</div>
+
+  </main>
+  
+<footer class="footer">
+  <div class="container">
+    <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap">
+      <div style="display:flex; align-items:center; gap:12px">
+        <img src="assets/mark.svg" alt="Perk Nation" width="34" height="34" />
+        <div>
+          <div style="font-weight:900">Perk Nation</div>
+          <div class="small">Universal, AI-driven commerce & rewards ecosystem</div>
+        </div>
+      </div>
+      <div class="small">© 2026 Perk Nation</div>
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="footerGrid">
+      <div>
+        <div class="h3">Product</div>
+        <div class="small" style="display:grid; gap:8px">
+          <a href="#" aria-disabled="true">iOS Download</a>
+          <a href="#" aria-disabled="true">Android Download</a>
+          <a href="#" aria-disabled="true">Integrations</a>
+        </div>
+      </div>
+      <div>
+        <div class="h3">Company</div>
+        <div class="small" style="display:grid; gap:8px">
+          <a href="#" aria-disabled="true">Careers</a>
+          <a href="#" aria-disabled="true">Press Inquiries</a>
+          <a href="merchants.html">Merchants</a>
+        </div>
+      </div>
+      <div>
+        <div class="h3">Support</div>
+        <div class="small" style="display:grid; gap:8px">
+          <a href="privacy-policy.html">Privacy Notice</a>
+          <a href="terms-of-use.html">Terms of Use</a>
+          <a href="#" aria-disabled="true">Merchant Terms</a>
+          <a href="contact-us.html">Contact Support</a>
+        </div>
+      </div>
+      <div>
+        <div class="h3">Get started</div>
+        <div class="small" style="display:grid; gap:10px">
+          <a class="btn primary" href="guests.html#join" style="width:max-content">Join Perk Nation</a>
+          <a class="btn" href="merchants.html#partner" style="width:max-content">Merchant inquiry</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="hr"></div>
+    <div class="small">
+      Disclaimer: This website is for informational purposes only. Rewards terms may change. Stock rewards (if/when enabled) would be offered through regulated partners; nothing on this site is investment advice.
+    </div>
+  </div>
+</footer>
+
+<div class="cookie" data-cookie>
+  <div class="cookieInner">
+    <div class="cookieText">
+      We value your privacy. We use cookies to enhance your browsing experience.
+      <a href="disclaimer.html" style="text-decoration:underline">Disclaimer</a>
+    </div>
+    <div class="cookieActions">
+      <button class="btn" data-cookie-reject>Reject All</button>
+      <button class="btn primary" data-cookie-accept>Accept All</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/app.js?v=20260302b"></script>
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 540" role="img" aria-label="Map feed preview illustration">
+  <rect width="940" height="540" rx="42" fill="#111"/>
+  <g opacity=".9">
+    <rect x="36" y="36" width="868" height="468" rx="34" fill="#0d0d0d" opacity=".55" stroke="#faf7f7" stroke-opacity=".12"/>
+    <rect x="70" y="76" width="390" height="392" rx="26" fill="#111" stroke="#faf7f7" stroke-opacity=".10"/>
+    <rect x="492" y="76" width="378" height="70" rx="26" fill="#e6b84a" opacity=".92"/>
+    <rect x="492" y="160" width="378" height="86" rx="26" fill="#faf7f7" opacity=".06"/>
+    <rect x="492" y="260" width="378" height="86" rx="26" fill="#faf7f7" opacity=".06"/>
+    <rect x="492" y="360" width="378" height="86" rx="26" fill="#faf7f7" opacity=".06"/>
+
+    <!-- map pins -->
+    <g fill="#e6b84a" opacity=".9">
+      <path d="M235 170c-28 0-50 22-50 50 0 34 50 96 50 96s50-62 50-96c0-28-22-50-50-50zm0 68a18 18 0 1 1 0-36 18 18 0 0 1 0 36z"/>
+      <path d="M320 320c-22 0-40 18-40 40 0 28 40 78 40 78s40-50 40-78c0-22-18-40-40-40zm0 56a14 14 0 1 1 0-28 14 14 0 0 1 0 28z" opacity=".75"/>
+      <path d="M150 300c-18 0-34 16-34 34 0 24 34 66 34 66s34-42 34-66c0-18-16-34-34-34zm0 46a12 12 0 1 1 0-24 12 12 0 0 1 0 24z" opacity=".65"/>
+    </g>
+
+    <text x="92" y="110" font-family="Rethink Sans, system-ui" font-size="22" fill="#faf7f7" opacity=".88" font-weight="900">Map</text>
+    <text x="516" y="120" font-family="Rethink Sans, system-ui" font-size="22" fill="#0d0d0d" font-weight="900">Offers near you</text>
+    <text x="516" y="214" font-family="Rethink Sans, system-ui" font-size="18" fill="#faf7f7" opacity=".82" font-weight="900">Coffee & Tea • 20% back</text>
+    <text x="516" y="314" font-family="Rethink Sans, system-ui" font-size="18" fill="#faf7f7" opacity=".82" font-weight="900">Retail • 15% back</text>
+    <text x="516" y="414" font-family="Rethink Sans, system-ui" font-size="18" fill="#faf7f7" opacity=".82" font-weight="900">Hotels & Travel • 5% back</text>
+  </g>
+</svg>

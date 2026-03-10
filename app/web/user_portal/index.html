@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>PerkNation User Website</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="/user/static/user.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brandBlock">
+        <a class="brandHome" href="/" aria-label="PerkNation home">
+          <img src="/assets/mark.svg" alt="" width="26" height="26" class="brandMark" />
+          <div>
+            <div class="title">PerkNation</div>
+            <div class="subtitle">User portal</div>
+          </div>
+        </a>
+        <div class="topLinks">
+          <a href="/login">Login</a>
+          <a href="/create-account">Create account</a>
+        </div>
+      </div>
+      <div class="row">
+        <span id="sessionPill" class="pill">Signed out</span>
+        <button id="refreshAllBtn" class="btn btn-ghost" type="button" disabled>Refresh</button>
+        <button id="logoutBtn" class="btn" type="button" disabled>Logout</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <section id="nearbyBanner" class="banner" hidden></section>
+
+      <section class="card" id="statusCard" hidden>
+        <div class="row row-space">
+          <strong>Status</strong>
+          <button id="statusDismissBtn" class="btn btn-ghost" type="button">Dismiss</button>
+        </div>
+        <div id="statusText" class="muted"></div>
+      </section>
+
+      <section class="card" id="authCard">
+        <div class="row row-space">
+          <h1>Account</h1>
+          <button id="testBackendBtn" class="btn btn-ghost" type="button">Test backend</button>
+        </div>
+        <p class="muted">
+          Create or log into your <code>consumer</code> account using Supabase Auth. This matches iOS/Android auth behavior.
+        </p>
+
+        <div class="auth-tabs" role="tablist" aria-label="Auth mode">
+          <button id="signUpTabBtn" class="auth-tab is-active" type="button" role="tab" aria-selected="true">Sign up</button>
+          <button id="logInTabBtn" class="auth-tab" type="button" role="tab" aria-selected="false">Log in</button>
+        </div>
+
+        <form id="signUpForm" class="form">
+          <label>
+            <span>Full name</span>
+            <input id="signUpNameInput" type="text" autocomplete="name" required />
+          </label>
+          <label>
+            <span>Email</span>
+            <input id="signUpEmailInput" type="email" autocomplete="email" required />
+          </label>
+          <label>
+            <span>Phone (optional)</span>
+            <input id="signUpPhoneInput" type="tel" autocomplete="tel" />
+          </label>
+          <label>
+            <span>Password</span>
+            <input id="signUpPasswordInput" type="password" autocomplete="new-password" minlength="6" required />
+          </label>
+          <label>
+            <span>Confirm password</span>
+            <input id="signUpPasswordConfirmInput" type="password" autocomplete="new-password" minlength="6" required />
+          </label>
+          <div class="row">
+            <button id="signUpSubmitBtn" class="btn btn-primary" type="submit">Create account</button>
+          </div>
+          <div id="signUpHint" class="muted small"></div>
+        </form>
+
+        <form id="loginForm" class="form" hidden>
+          <label>
+            <span>Email</span>
+            <input id="emailInput" type="email" autocomplete="email" required />
+          </label>
+          <label>
+            <span>Password</span>
+            <input id="passwordInput" type="password" autocomplete="current-password" required />
+          </label>
+          <div class="row">
+            <button id="loginBtn" class="btn btn-primary" type="submit">Sign in</button>
+          </div>
+          <div id="loginHint" class="muted small"></div>
+        </form>
+
+        <div id="verificationActions" class="row" hidden>
+          <button id="resendVerificationBtn" class="btn" type="button">Resend verification email</button>
+          <button id="verifyThenLoginBtn" class="btn btn-primary" type="button">I verified, log in</button>
+          <span id="verificationHint" class="muted small"></span>
+        </div>
+      </section>
+
+      <section id="appSection" hidden>
+        <div class="tabbar" role="tablist" aria-label="App sections">
+          <button class="tab-btn is-active" type="button" data-view="discover">Discover</button>
+          <button class="tab-btn" type="button" data-view="wallet">Wallet</button>
+          <button class="tab-btn" type="button" data-view="activity">Activity</button>
+          <button class="tab-btn" type="button" data-view="redeem">Redeem</button>
+          <button class="tab-btn" type="button" data-view="more">More</button>
+        </div>
+
+        <section class="view" data-panel="discover">
+          <section class="card">
+            <h2>Nearby offers</h2>
+            <div id="mapShell" class="map-shell">
+              <div id="offersMap" class="map" aria-label="Offer map"></div>
+              <div id="mapFallback" class="map-fallback" hidden>
+                Map unavailable. Offer locations are still listed below.
+              </div>
+            </div>
+            <div class="muted small">Use location + reward-rate filters to discover boosted offers.</div>
+          </section>
+
+          <section class="card">
+            <div class="row row-space">
+              <h2>Active and nearby</h2>
+              <div class="row">
+                <label class="small" for="purchaseAmountInput">Purchase amount</label>
+                <input id="purchaseAmountInput" type="number" min="0.01" step="0.01" value="12.00" class="small-input" />
+              </div>
+            </div>
+            <div id="offersWrap" class="offer-grid"></div>
+          </section>
+        </section>
+
+        <section class="view" data-panel="wallet" hidden>
+          <section class="card">
+            <h2>Wallet and rewards</h2>
+            <div class="kpi-grid">
+              <div class="kpi">
+                <div class="kpi-label">Available cash</div>
+                <div id="kpiAvailable" class="kpi-value">$0.00</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-label">Pending rewards</div>
+                <div id="kpiPending" class="kpi-value">$0.00</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-label">Stock vault</div>
+                <div id="kpiStock" class="kpi-value">$0.00</div>
+              </div>
+              <div class="kpi">
+                <div class="kpi-label">Convertible now</div>
+                <div id="kpiConvertible" class="kpi-value">$0.00</div>
+              </div>
+            </div>
+            <div id="kpiUnlock" class="muted small">Until next unlock: $25.00</div>
+
+            <div class="row wallet-convert-row">
+              <button id="convertMinusBtn" class="btn" type="button">- $25</button>
+              <div id="convertAmountChip" class="pill">$25.00</div>
+              <button id="convertPlusBtn" class="btn" type="button">+ $25</button>
+              <button id="convertBtn" class="btn btn-primary" type="button">Convert cash to stocks</button>
+            </div>
+          </section>
+        </section>
+
+        <section class="view" data-panel="activity" hidden>
+          <section class="card">
+            <h2>Transactions</h2>
+            <div id="transactionsWrap"></div>
+          </section>
+
+          <section class="card">
+            <h2>Rewards ledger</h2>
+            <div id="rewardsWrap"></div>
+          </section>
+        </section>
+
+        <section class="view" data-panel="redeem" hidden>
+          <section class="card">
+            <h2>Redeem actions</h2>
+            <p class="muted">Settle pending rewards, then cash out available rewards.</p>
+            <div class="row">
+              <button id="settleBtn" class="btn" type="button">Settle pending</button>
+              <button id="redeemBtn" class="btn btn-primary" type="button">Cash out available</button>
+            </div>
+          </section>
+        </section>
+
+        <section class="view" data-panel="more" hidden>
+          <section class="card">
+            <div class="row row-space">
+              <h2>AI Assistant</h2>
+              <div id="aiModelPill" class="pill">Model: -</div>
+            </div>
+            <div id="aiConversationWrap" class="ai-thread"></div>
+            <form id="aiAssistantForm" class="form">
+              <label>
+                <span>Ask PerkNation AI</span>
+                <textarea id="aiPromptInput" rows="3" maxlength="2000" placeholder="Ask about offers, wallet, referrals, or profile settings."></textarea>
+              </label>
+              <div class="row">
+                <button id="aiSendBtn" class="btn btn-primary" type="submit">Send</button>
+                <button id="aiClearBtn" class="btn" type="button">Clear</button>
+                <span id="aiHint" class="muted small"></span>
+              </div>
+            </form>
+          </section>
+
+          <section class="card">
+            <h2>Referrals</h2>
+            <div class="row">
+              <div>
+                <div class="small muted">Referral code</div>
+                <div id="referralCodeValue" class="mono code-text">-</div>
+              </div>
+              <div>
+                <div class="small muted">Invites sent</div>
+                <div id="referralInvitesValue" class="value-text">0</div>
+              </div>
+              <div>
+                <div class="small muted">Pending / Successful</div>
+                <div id="referralCountsValue" class="value-text">0 / 0</div>
+              </div>
+            </div>
+            <div class="row row-space">
+              <div id="referralInviteUrl" class="muted small break">-</div>
+              <button id="copyReferralBtn" class="btn" type="button">Copy invite URL</button>
+            </div>
+            <div class="row referral-row">
+              <img id="referralQrImage" class="qr" alt="Referral QR code" />
+              <div class="row">
+                <button id="shareReferralBtn" class="btn btn-primary" type="button">Share referral link</button>
+              </div>
+            </div>
+            <div>
+              <h3>Recent referral activity</h3>
+              <div id="referralEventsWrap" class="list-stack"></div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="row row-space">
+              <h2>Support</h2>
+              <button id="refreshTicketsBtn" class="btn btn-ghost" type="button">Refresh</button>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+              <button id="missingRewardCaseBtn" class="btn" type="button">Create missing reward case</button>
+            </div>
+            <div id="supportTicketsWrap" class="list-stack"></div>
+            <div class="hr"></div>
+            <h3>Create ticket</h3>
+            <form id="supportTicketForm" class="form">
+              <label>
+                <span>Category</span>
+                <input id="ticketCategoryInput" type="text" value="general" required />
+              </label>
+              <label>
+                <span>Subject</span>
+                <input id="ticketSubjectInput" type="text" required />
+              </label>
+              <label>
+                <span>Transaction ID (optional)</span>
+                <input id="ticketTxnIdInput" type="number" min="1" step="1" />
+              </label>
+              <label>
+                <span>Message</span>
+                <textarea id="ticketMessageInput" rows="4" required></textarea>
+              </label>
+              <div class="row">
+                <button id="ticketSubmitBtn" class="btn btn-primary" type="submit">Submit</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="card">
+            <h2>Profile preferences</h2>
+            <div class="row row-space pref-row">
+              <span>Allow location for nearby offers</span>
+              <label class="switch">
+                <input id="locationConsentToggle" type="checkbox" />
+                <span></span>
+              </label>
+            </div>
+            <div class="row row-space pref-row">
+              <span>Enable notifications for rewards</span>
+              <label class="switch">
+                <input id="notificationsToggle" type="checkbox" />
+                <span></span>
+              </label>
+            </div>
+
+            <div class="small muted">Geo alert radius</div>
+            <div class="chip-row" id="radiusChips">
+              <button class="chip" type="button" data-radius="2">2 mi</button>
+              <button class="chip" type="button" data-radius="5">5 mi</button>
+              <button class="chip" type="button" data-radius="10">10 mi</button>
+            </div>
+
+            <div class="small muted">Notification categories</div>
+            <div class="chip-row" id="categoryChips">
+              <button class="chip" type="button" data-category="restaurant">Restaurant</button>
+              <button class="chip" type="button" data-category="gas">Gas</button>
+              <button class="chip" type="button" data-category="retail">Retail</button>
+              <button class="chip" type="button" data-category="grocery">Grocery</button>
+              <button class="chip" type="button" data-category="travel">Travel</button>
+              <button class="chip" type="button" data-category="coffee">Coffee</button>
+            </div>
+            <div class="muted small">Saved to your consumer profile.</div>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <div id="offerCodeModal" class="modal" hidden>
+      <div class="modal-backdrop" data-modal-close></div>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="offerCodeTitle">
+        <div class="row row-space">
+          <h2 id="offerCodeTitle">Offer Code</h2>
+          <button id="offerCodeCloseBtn" class="btn btn-ghost" type="button">Close</button>
+        </div>
+        <div id="offerCodeDetails" class="list-stack"></div>
+        <div class="row referral-row">
+          <img id="offerQrImage" class="qr" alt="Offer QR code" />
+          <div>
+            <div class="small muted">Offer code</div>
+            <div id="offerCodeValue" class="mono code-text">-</div>
+            <div id="offerCodeHint" class="small muted"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="reviewModal" class="modal" hidden>
+      <div class="modal-backdrop" data-review-close></div>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="reviewTitle">
+        <div class="row row-space">
+          <h2 id="reviewTitle">Restaurant Rating</h2>
+          <button id="reviewCloseBtn" class="btn btn-ghost" type="button">Close</button>
+        </div>
+        <div id="reviewMerchantName" class="muted"></div>
+        <div class="review-modal-section">
+          <div class="small muted">Overall hearts</div>
+          <div id="reviewOverallHearts" class="heart-row"></div>
+        </div>
+        <div class="review-modal-grid">
+          <label>
+            <span>Plates</span>
+            <select id="reviewPlatesInput">
+              <option value="1">1 heart</option>
+              <option value="2">2 hearts</option>
+              <option value="3">3 hearts</option>
+              <option value="4">4 hearts</option>
+              <option value="5">5 hearts</option>
+            </select>
+          </label>
+          <label>
+            <span>Sides</span>
+            <select id="reviewSidesInput">
+              <option value="1">1 heart</option>
+              <option value="2">2 hearts</option>
+              <option value="3">3 hearts</option>
+              <option value="4">4 hearts</option>
+              <option value="5">5 hearts</option>
+            </select>
+          </label>
+          <label>
+            <span>Umami</span>
+            <select id="reviewUmamiInput">
+              <option value="1">1 heart</option>
+              <option value="2">2 hearts</option>
+              <option value="3">3 hearts</option>
+              <option value="4">4 hearts</option>
+              <option value="5">5 hearts</option>
+            </select>
+          </label>
+        </div>
+        <label>
+          <span>Write a review</span>
+          <textarea id="reviewTextInput" rows="4" maxlength="2000" placeholder="Share what stood out about your meal."></textarea>
+        </label>
+        <div class="row">
+          <button id="reviewSaveBtn" class="btn btn-primary" type="button">Save review</button>
+          <button id="reviewCancelBtn" class="btn" type="button">Cancel</button>
+          <span id="reviewHint" class="muted small"></span>
+        </div>
+      </div>
+    </div>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="/user/static/user.js"></script>
+  </body>
+</html>
