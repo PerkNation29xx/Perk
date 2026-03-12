@@ -26,6 +26,8 @@ services:
         sync: false
       - key: DATABASE_SSLMODE
         value: require
+      - key: DATABASE_FORCE_IPV4
+        value: "true"
       - key: SUPABASE_URL
         sync: false
       - key: SUPABASE_ANON_KEY

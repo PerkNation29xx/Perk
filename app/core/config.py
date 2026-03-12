@@ -1,3 +1,4 @@
+import socket
 from typing import Optional
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -22,6 +23,9 @@ class Settings(BaseSettings):
     database_user: Optional[str] = None
     database_password: Optional[str] = None
     database_sslmode: Optional[str] = None
+    # Workaround for environments that cannot reach database over IPv6.
+    # When enabled, resolves DATABASE_HOST to IPv4 and passes hostaddr to libpq.
+    database_force_ipv4: bool = False
 
     jwt_secret_key: str = "change-this-in-production"
     jwt_algorithm: str = "HS256"
@@ -82,6 +86,19 @@ class Settings(BaseSettings):
         query = {}
         if sslmode:
             query["sslmode"] = sslmode
+        if self.database_force_ipv4 and self.database_host:
+            try:
+                ipv4_infos = socket.getaddrinfo(
+                    self.database_host,
+                    self.database_port,
+                    family=socket.AF_INET,
+                    type=socket.SOCK_STREAM,
+                )
+                if ipv4_infos:
+                    query["hostaddr"] = ipv4_infos[0][4][0]
+            except OSError:
+                # If IPv4 resolution fails, continue with default DNS behavior.
+                pass
 
         url = URL.create(
             drivername="postgresql+psycopg",
