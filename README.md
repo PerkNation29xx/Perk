@@ -43,15 +43,18 @@ Optional (macOS trust install):
 ## Connect To Supabase Postgres (Live DB)
 If you want the backend to use Supabase as the database (so your iOS app uses a live DB), set these in `/Users/nation/Documents/New project/PerkNationBackend/.env`:
 
-- `DATABASE_HOST=db.<your-project-ref>.supabase.co`
-- `DATABASE_PORT=5432`
-- `DATABASE_NAME=postgres`
-- `DATABASE_USER=postgres`
-- `DATABASE_PASSWORD=<your-db-password>`
-- `DATABASE_SSLMODE=require`
+- Preferred for cloud hosts (Render): set `DATABASE_URL` to Supabase **pooler** URL (port `6543`, ssl required).
+- Or use direct host vars:
+  - `DATABASE_HOST=db.<your-project-ref>.supabase.co`
+  - `DATABASE_PORT=5432`
+  - `DATABASE_NAME=postgres`
+  - `DATABASE_USER=postgres`
+  - `DATABASE_PASSWORD=<your-db-password>`
+  - `DATABASE_SSLMODE=require`
 
 Notes:
 - Using the discrete vars above avoids URL-encoding problems if your password contains characters like `#` or `@`.
+- If `DATABASE_URL` is set (non-default), it takes precedence over discrete `DATABASE_*` vars.
 - First run will `create_all()` tables in your Supabase database. For a real production setup, use Alembic migrations instead.
 - If you don't want demo data in Supabase, set `SEED_DEFAULT_DATA=false`.
 

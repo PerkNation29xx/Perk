@@ -67,6 +67,15 @@ class Settings(BaseSettings):
         If DATABASE_HOST/NAME/USER/PASSWORD are provided, we build a Postgres URL
         using SQLAlchemy's URL builder (handles quoting/escaping).
         """
+        normalized_url = (self.database_url or "").strip()
+        if normalized_url and normalized_url != "sqlite:///./perknation.db":
+            # If an explicit DATABASE_URL is provided (e.g., Supabase pooler),
+            # prefer it over discrete DATABASE_* vars.
+            if normalized_url.startswith("postgres://"):
+                return normalized_url.replace("postgres://", "postgresql+psycopg://", 1)
+            if normalized_url.startswith("postgresql://"):
+                return normalized_url.replace("postgresql://", "postgresql+psycopg://", 1)
+            return normalized_url
 
         has_discrete = all(
             [
@@ -83,10 +92,16 @@ class Settings(BaseSettings):
         if sslmode is None and self.database_host and self.database_host.endswith(".supabase.co"):
             sslmode = "require"
 
+        host_value = self.database_host
         query = {}
         if sslmode:
             query["sslmode"] = sslmode
-        if self.database_force_ipv4 and self.database_host:
+        # Some cloud runtimes (including specific Render regions) can fail
+        # routing to Supabase over IPv6. Resolve and use an IPv4 address.
+        should_force_ipv4 = bool(self.database_host) and (
+            self.database_force_ipv4 or (self.database_host or "").endswith(".supabase.co")
+        )
+        if should_force_ipv4 and self.database_host:
             try:
                 ipv4_infos = socket.getaddrinfo(
                     self.database_host,
@@ -95,7 +110,7 @@ class Settings(BaseSettings):
                     type=socket.SOCK_STREAM,
                 )
                 if ipv4_infos:
-                    query["hostaddr"] = ipv4_infos[0][4][0]
+                    host_value = ipv4_infos[0][4][0]
             except OSError:
                 # If IPv4 resolution fails, continue with default DNS behavior.
                 pass
@@ -104,7 +119,7 @@ class Settings(BaseSettings):
             drivername="postgresql+psycopg",
             username=self.database_user,
             password=self.database_password,
-            host=self.database_host,
+            host=host_value,
             port=self.database_port,
             database=self.database_name,
             query=query or None,
