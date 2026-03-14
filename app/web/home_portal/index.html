@@ -6,6 +6,7 @@
   <meta name="description" content="Perk Nation is a rewards platform for diners and merchants in Pasadena." />
   <meta name="theme-color" content="#0d0d0d" />
   <title>Perk Nation - Pasadena Dining Rewards</title>
+  <link rel="canonical" href="/" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,7 +19,7 @@
 <header class="header">
   <div class="container">
     <div class="nav">
-      <a class="brand" href="index.html" aria-label="Perk Nation home">
+      <a class="brand" href="/" aria-label="Perk Nation home">
         <span class="brandMark" aria-hidden="true">
           <img src="assets/mark.svg" alt="" width="24" height="24" />
         </span>
@@ -26,26 +27,26 @@
       </a>
 
       <nav class="navlinks" aria-label="Primary navigation">
-        <a href="guests.html">Members</a>
-        <a href="merchants.html">Merchants</a>
-        <a href="how-it-works.html">How it Works</a>
-        <a href="contact-us.html">Contact Us</a>
-        <a href="faq.html">FAQ</a>
+        <a href="/members">Members</a>
+        <a href="/merchants">Merchants</a>
+        <a href="/how-it-works">How it Works</a>
+        <a href="/contact-us">Contact Us</a>
+        <a href="/faq">FAQ</a>
       </nav>
 
       <div class="navcta">
         <button class="btn menuBtn" data-menu-btn aria-label="Open menu">☰</button>
-                <a class="btn ghost" href="login.html">Login</a>
+                <a class="btn ghost" href="/login">Login</a>
       </div>
     </div>
 
     <div class="mobileMenu" data-mobile-menu>
-      <a href="guests.html">Members</a>
-      <a href="merchants.html">Merchants</a>
-      <a href="how-it-works.html">How it Works</a>
-      <a href="contact-us.html">Contact Us</a>
-      <a href="faq.html">FAQ</a>
-      <a href="login.html">Login</a>
+      <a href="/members">Members</a>
+      <a href="/merchants">Merchants</a>
+      <a href="/how-it-works">How it Works</a>
+      <a href="/contact-us">Contact Us</a>
+      <a href="/faq">FAQ</a>
+      <a href="/login">Login</a>
     </div>
   </div>
 </header>
@@ -62,7 +63,7 @@
         </p>
         <div class="heroActions">
           <a class="btn primary" href="#pasadena-reviews">Explore Pasadena reviews</a>
-          <a class="btn" href="guests.html#join">Join as a member</a>
+          <a class="btn" href="/members#join">Join as a member</a>
         </div>
 
         <div class="kpis">
@@ -73,7 +74,7 @@
       </div>
 
       <div class="heroShell">
-        <img class="heroImage" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&amp;fit=crop&amp;w=1600&amp;q=80" alt="Elegant restaurant dining room" loading="lazy" />
+        <img class="heroImage" src="assets/photos/hero-dining-room.jpg" alt="Elegant restaurant dining room" loading="lazy" />
         <div class="heroOverlay">
           <div class="pill">Old Pasadena nightlife</div>
           <div class="small">Candlelit dining, chef-driven menus, and date-night friendly neighborhoods.</div>
@@ -88,29 +89,42 @@
       <p class="muted">A visual moodboard for the Perk Nation dining experience: polished, social, and built for repeat visits.</p>
       <div class="photoRail">
         <figure class="photoTile">
-          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&amp;fit=crop&amp;w=1400&amp;q=80" alt="Fine dining table setting" loading="lazy" />
+          <img src="assets/photos/frame-fine-dining.jpg" alt="Fine dining table setting" loading="lazy" />
           <figcaption>Golden-hour service and polished tablescapes.</figcaption>
         </figure>
         <figure class="photoTile">
-          <img src="https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&amp;fit=crop&amp;w=1400&amp;q=80" alt="Cocktails at an upscale bar" loading="lazy" />
+          <img src="assets/photos/frame-cocktails.jpg" alt="Cocktails at an upscale bar" loading="lazy" />
           <figcaption>Signature cocktails and social-first bar energy.</figcaption>
         </figure>
         <figure class="photoTile">
-          <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&amp;fit=crop&amp;w=1400&amp;q=80" alt="Chef plating a dish in a contemporary kitchen" loading="lazy" />
+          <img src="assets/photos/frame-chef-plating.jpg" alt="Chef plating a dish in a contemporary kitchen" loading="lazy" />
           <figcaption>Chef-driven plates with neighborhood personality.</figcaption>
         </figure>
       </div>
     </div>
   </section>
 
+  <section class="section sectionVideo" id="demo-video">
+    <div class="container">
+      <h2 class="h2">Perk Nation platform demo</h2>
+      <p class="muted">See member discovery, offer activation, wallet tracking, and merchant redemption flow in one quick walkthrough.</p>
+      <div class="videoCard">
+        <video class="demoVideo" controls preload="metadata" playsinline poster="assets/photos/hero-dining-room.jpg">
+          <source src="assets/video/perknation-demo.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+  </section>
+
   <section class="section" id="pasadena-reviews">
     <div class="container">
-      <h2 class="h2">Sample Pasadena restaurant reviews</h2>
-      <p class="muted">Launch review samples based on restaurants frequently recommended across Pasadena dining guides.</p>
+      <h2 class="h2">Pasadena restaurant reviews</h2>
+      <p class="muted">Local recommendations based on notable Pasadena restaurants.</p>
 
       <div class="reviewGrid">
         <article class="reviewCard">
-          <img src="https://images.unsplash.com/photo-1481833761820-0509d3217039?auto=format&amp;fit=crop&amp;w=1400&amp;q=80" alt="Italian pasta in a refined dining room" loading="lazy" />
+          <img src="assets/photos/review-union.jpg" alt="Italian pasta in a refined dining room" loading="lazy" />
           <div class="reviewContent">
             <div class="reviewMeta">
               <span class="pill">Italian</span>
@@ -132,7 +146,7 @@
         </article>
 
         <article class="reviewCard">
-          <img src="https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?auto=format&amp;fit=crop&amp;w=1400&amp;q=80" alt="Cheese and wine at a restaurant" loading="lazy" />
+          <img src="assets/photos/review-agnes.jpg" alt="Cheese and wine at a restaurant" loading="lazy" />
           <div class="reviewContent">
             <div class="reviewMeta">
               <span class="pill">New American</span>
@@ -154,7 +168,7 @@
         </article>
 
         <article class="reviewCard">
-          <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&amp;fit=crop&amp;w=1400&amp;q=80" alt="Seafood dishes on an upscale table" loading="lazy" />
+          <img src="assets/photos/review-fishwives.jpg" alt="Seafood dishes on an upscale table" loading="lazy" />
           <div class="reviewContent">
             <div class="reviewMeta">
               <span class="pill">Seafood</span>
@@ -176,7 +190,7 @@
         </article>
 
         <article class="reviewCard">
-          <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&amp;fit=crop&amp;w=1400&amp;q=80" alt="French bistro style dining" loading="lazy" />
+          <img src="assets/photos/review-perle.jpg" alt="French bistro style dining" loading="lazy" />
           <div class="reviewContent">
             <div class="reviewMeta">
               <span class="pill">French</span>
@@ -198,7 +212,7 @@
         </article>
 
         <article class="reviewCard">
-          <img src="https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&amp;fit=crop&amp;w=1400&amp;q=80" alt="Asian noodle and broth dishes" loading="lazy" />
+          <img src="assets/photos/review-bonekettle.jpg" alt="Asian noodle and broth dishes" loading="lazy" />
           <div class="reviewContent">
             <div class="reviewMeta">
               <span class="pill">Southeast Asian</span>
@@ -220,7 +234,7 @@
         </article>
 
         <article class="reviewCard">
-          <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&amp;fit=crop&amp;w=1400&amp;q=80" alt="Sushi bar in an upscale restaurant" loading="lazy" />
+          <img src="assets/photos/review-osawa.jpg" alt="Sushi bar in an upscale restaurant" loading="lazy" />
           <div class="reviewContent">
             <div class="reviewMeta">
               <span class="pill">Japanese</span>
@@ -235,14 +249,14 @@
               <li><strong>Price:</strong> $$$$</li>
             </ul>
             <div class="reviewLinks">
-              <a class="btn small" href="https://www.osawapasadena.com/" target="_blank" rel="noopener">Visit site</a>
+              <a class="btn small" href="https://www.theosawa.com/" target="_blank" rel="noopener">Visit site</a>
               <a class="btn small ghost" href="https://www.google.com/maps/search/?api=1&amp;query=Osawa+77+N+Raymond+Ave+Pasadena" target="_blank" rel="noopener">Map</a>
             </div>
           </div>
         </article>
 
         <article class="reviewCard">
-          <img src="https://images.unsplash.com/photo-1517244683847-7456b63c5969?auto=format&amp;fit=crop&amp;w=1400&amp;q=80" alt="Chinese fine dining table spread" loading="lazy" />
+          <img src="assets/photos/review-pandainn.jpg" alt="Chinese fine dining table spread" loading="lazy" />
           <div class="reviewContent">
             <div class="reviewMeta">
               <span class="pill">Chinese</span>
@@ -264,7 +278,7 @@
         </article>
 
         <article class="reviewCard">
-          <img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&amp;fit=crop&amp;w=1400&amp;q=80" alt="Coastal seafood and cocktails" loading="lazy" />
+          <img src="assets/photos/review-pez.jpg" alt="Coastal seafood and cocktails" loading="lazy" />
           <div class="reviewContent">
             <div class="reviewMeta">
               <span class="pill">Coastal Californian</span>
@@ -279,7 +293,7 @@
               <li><strong>Price:</strong> $$$</li>
             </ul>
             <div class="reviewLinks">
-              <a class="btn small" href="https://www.pezcoastalkitchen.com/" target="_blank" rel="noopener">Visit site</a>
+              <a class="btn small" href="https://www.pezpasadena.com/" target="_blank" rel="noopener">Visit site</a>
               <a class="btn small ghost" href="https://www.google.com/maps/search/?api=1&amp;query=Pez+Coastal+Kitchen+61+N+Raymond+Ave+Pasadena" target="_blank" rel="noopener">Map</a>
             </div>
           </div>
@@ -287,7 +301,7 @@
       </div>
 
       <div class="sourcesNote">
-        Editorial note: These are sample Perk Nation reviews written for launch planning. Restaurant selection is informed by Eater LA, Michelin Guide,
+        Restaurant selection is based on locally recognized Pasadena dining destinations,
         Time Out LA, and Discover Los Angeles coverage of Pasadena dining.
       </div>
     </div>
@@ -299,7 +313,7 @@
         <h2 class="h2">For members</h2>
         <p class="muted">Use this page as your discovery layer, then activate rewards in the app before you dine.</p>
         <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap">
-          <a class="btn primary" href="guests.html">Explore member benefits</a>
+          <a class="btn primary" href="/members">Explore member benefits</a>
           <a class="btn" href="/user">Go to user portal</a>
         </div>
       </div>
@@ -307,7 +321,7 @@
         <h2 class="h2">For merchants</h2>
         <p class="muted">Premium storytelling plus high-intent audience traffic. Launch local campaigns and measure visits, redemptions, and repeat lift.</p>
         <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap">
-          <a class="btn primary" href="merchants.html">See merchant plans</a>
+          <a class="btn primary" href="/merchants">See merchant plans</a>
           <a class="btn" href="/merchant">Open merchant portal</a>
         </div>
       </div>
@@ -334,40 +348,37 @@
       <div>
         <div class="h3">Product</div>
         <div class="small" style="display:grid; gap:8px">
-          <a href="#" aria-disabled="true">iOS Download</a>
-          <a href="#" aria-disabled="true">Android Download</a>
-          <a href="#" aria-disabled="true">Integrations</a>
+          <a href="/user">Member Portal</a>
+          <a href="/merchant">Merchant Portal</a>
         </div>
       </div>
       <div>
         <div class="h3">Company</div>
         <div class="small" style="display:grid; gap:8px">
-          <a href="#" aria-disabled="true">Careers</a>
-          <a href="#" aria-disabled="true">Press Inquiries</a>
-          <a href="merchants.html">Merchants</a>
+          <a href="/merchants">Merchants</a>
         </div>
       </div>
       <div>
         <div class="h3">Support</div>
         <div class="small" style="display:grid; gap:8px">
-          <a href="privacy-policy.html">Privacy Notice</a>
-          <a href="terms-of-use.html">Terms of Use</a>
-          <a href="#" aria-disabled="true">Merchant Terms</a>
-          <a href="contact-us.html">Contact Support</a>
+          <a href="/privacy-policy">Privacy Notice</a>
+          <a href="/terms-of-use">Terms of Use</a>
+          <a href="/merchant-terms">Merchant Terms</a>
+          <a href="/contact-us">Contact Support</a>
         </div>
       </div>
       <div>
         <div class="h3">Get started</div>
         <div class="small" style="display:grid; gap:10px">
-          <a class="btn primary" href="guests.html#join" style="width:max-content">Join Perk Nation</a>
-          <a class="btn" href="merchants.html#partner" style="width:max-content">Merchant inquiry</a>
+          <a class="btn primary" href="/members#join" style="width:max-content">Join Perk Nation</a>
+          <a class="btn" href="/merchants#partner" style="width:max-content">Merchant inquiry</a>
         </div>
       </div>
     </div>
 
     <div class="hr"></div>
     <div class="small">
-      Disclaimer: This website is for informational purposes only. Rewards terms may change. Stock rewards (if/when enabled) would be offered through regulated partners; nothing on this site is investment advice.
+      Disclaimer: This website is for informational purposes only. Rewards terms may change. Cash rewards may be eligible for stock conversion in supported accounts. Nothing on this site is investment advice.
     </div>
   </div>
 </footer>
@@ -376,7 +387,7 @@
   <div class="cookieInner">
     <div class="cookieText">
       We value your privacy. We use cookies to enhance your browsing experience.
-      <a href="disclaimer.html" style="text-decoration:underline">Disclaimer</a>
+      <a href="/disclaimer" style="text-decoration:underline">Disclaimer</a>
     </div>
     <div class="cookieActions">
       <button class="btn" data-cookie-reject>Reject All</button>

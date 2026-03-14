@@ -239,6 +239,24 @@ img{max-width:100%; display:block}
   line-height: 1;
 }
 
+.sectionVideo{
+  padding-top: 8px;
+}
+.videoCard{
+  margin-top: 16px;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: rgba(0,0,0,.22);
+  box-shadow: var(--shadow-soft);
+}
+.demoVideo{
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  display: block;
+  object-fit: cover;
+}
+
 @media (max-width: 980px){
   .navlinks{display:none}
   .menuBtn{display:inline-flex}
