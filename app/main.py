@@ -48,14 +48,15 @@ _HOME_HTML_FILES = {
     "index.html",
     "login.html",
     "create-account.html",
+    "members.html",
     "how-it-works.html",
     "merchants.html",
-    "guests.html",
     "faq.html",
     "contact-us.html",
     "privacy-policy.html",
     "terms-of-use.html",
     "disclaimer.html",
+    "merchant-terms.html",
     # Legacy pages kept for backward compatibility.
     "investors.html",
     "security.html",
@@ -63,6 +64,27 @@ _HOME_HTML_FILES = {
     "privacy.html",
     "terms.html",
 }
+
+_LEGACY_HTML_TO_CANONICAL = {
+    "index": "/",
+    "login": "/login",
+    "create-account": "/create-account",
+    "members": "/members",
+    "guests": "/members",
+    "merchants": "/merchants",
+    "how-it-works": "/how-it-works",
+    "contact-us": "/contact-us",
+    "faq": "/faq",
+    "privacy-policy": "/privacy-policy",
+    "terms-of-use": "/terms-of-use",
+    "disclaimer": "/disclaimer",
+    "merchant-terms": "/merchant-terms",
+}
+_WHITE_LEGACY_HTML_TO_CANONICAL = {
+    key: (f"/white{route}" if route != "/" else "/white/")
+    for key, route in _LEGACY_HTML_TO_CANONICAL.items()
+}
+_LEGACY_STATIC_HTML_FILES = {"investors.html", "security.html", "contact.html", "privacy.html", "terms.html"}
 
 # Admin web portal (served from the same process for local testing).
 if _ADMIN_STATIC_DIR.exists():
@@ -83,7 +105,7 @@ if _HOME_WHITE_ASSETS_DIR.exists():
 
 def _read_html_or_missing(path: Path, name: str) -> str:
     if not path.exists():
-        return f"<h1>{name} not found</h1>"
+        raise HTTPException(status_code=404, detail=f"{name} not found")
     return path.read_text(encoding="utf-8")
 
 
@@ -114,8 +136,8 @@ def home_portal() -> str:
 
 
 @app.get("/home", response_class=HTMLResponse)
-def home_portal_alias() -> str:
-    return home_portal()
+def home_portal_alias() -> RedirectResponse:
+    return RedirectResponse(url="/", status_code=308)
 
 
 @app.get("/login", response_class=HTMLResponse)
@@ -128,9 +150,59 @@ def home_portal_create_account() -> str:
     return _read_html_or_missing(_HOME_PORTAL_DIR / "create-account.html", "Create-account page")
 
 
+@app.get("/members", response_class=HTMLResponse)
+def home_portal_members() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "members.html", "Members page")
+
+
+@app.get("/guests", include_in_schema=False)
+def home_portal_guests_redirect() -> RedirectResponse:
+    return RedirectResponse(url="/members", status_code=308)
+
+
+@app.get("/merchants", response_class=HTMLResponse)
+def home_portal_merchants() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "merchants.html", "Merchants page")
+
+
+@app.get("/how-it-works", response_class=HTMLResponse)
+def home_portal_how_it_works() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "how-it-works.html", "How-it-works page")
+
+
+@app.get("/contact-us", response_class=HTMLResponse)
+def home_portal_contact_us() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "contact-us.html", "Contact-us page")
+
+
+@app.get("/faq", response_class=HTMLResponse)
+def home_portal_faq() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "faq.html", "FAQ page")
+
+
+@app.get("/privacy-policy", response_class=HTMLResponse)
+def home_portal_privacy_policy() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "privacy-policy.html", "Privacy-policy page")
+
+
+@app.get("/terms-of-use", response_class=HTMLResponse)
+def home_portal_terms_of_use() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "terms-of-use.html", "Terms-of-use page")
+
+
+@app.get("/disclaimer", response_class=HTMLResponse)
+def home_portal_disclaimer() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "disclaimer.html", "Disclaimer page")
+
+
+@app.get("/merchant-terms", response_class=HTMLResponse)
+def home_portal_merchant_terms() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "merchant-terms.html", "Merchant terms page")
+
+
 @app.get("/white", include_in_schema=False)
 def home_portal_white_redirect() -> RedirectResponse:
-    return RedirectResponse(url="/white/", status_code=307)
+    return RedirectResponse(url="/white/", status_code=308)
 
 
 @app.get("/white/", response_class=HTMLResponse)
@@ -148,19 +220,81 @@ def home_portal_white_create_account() -> str:
     return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "create-account.html", "Create-account page (white)")
 
 
+@app.get("/white/members", response_class=HTMLResponse)
+def home_portal_white_members() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "members.html", "Members page (white)")
+
+
+@app.get("/white/guests", include_in_schema=False)
+def home_portal_white_guests_redirect() -> RedirectResponse:
+    return RedirectResponse(url="/white/members", status_code=308)
+
+
+@app.get("/white/merchants", response_class=HTMLResponse)
+def home_portal_white_merchants() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "merchants.html", "Merchants page (white)")
+
+
+@app.get("/white/how-it-works", response_class=HTMLResponse)
+def home_portal_white_how_it_works() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "how-it-works.html", "How-it-works page (white)")
+
+
+@app.get("/white/contact-us", response_class=HTMLResponse)
+def home_portal_white_contact_us() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "contact-us.html", "Contact-us page (white)")
+
+
+@app.get("/white/faq", response_class=HTMLResponse)
+def home_portal_white_faq() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "faq.html", "FAQ page (white)")
+
+
+@app.get("/white/privacy-policy", response_class=HTMLResponse)
+def home_portal_white_privacy_policy() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "privacy-policy.html", "Privacy-policy page (white)")
+
+
+@app.get("/white/terms-of-use", response_class=HTMLResponse)
+def home_portal_white_terms_of_use() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "terms-of-use.html", "Terms-of-use page (white)")
+
+
+@app.get("/white/disclaimer", response_class=HTMLResponse)
+def home_portal_white_disclaimer() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "disclaimer.html", "Disclaimer page (white)")
+
+
+@app.get("/white/merchant-terms", response_class=HTMLResponse)
+def home_portal_white_merchant_terms() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "merchant-terms.html", "Merchant terms page (white)")
+
+
 @app.get("/white/{page_name}.html", response_class=HTMLResponse)
-def home_portal_white_page(page_name: str) -> str:
+def home_portal_white_page(page_name: str) -> Response:
+    canonical = _WHITE_LEGACY_HTML_TO_CANONICAL.get(page_name.strip().lower())
+    if canonical:
+        return RedirectResponse(url=canonical, status_code=308)
+
     filename = f"{page_name}.html"
     if filename not in _HOME_HTML_FILES:
         raise HTTPException(status_code=404, detail="Page not found")
+    if filename not in _LEGACY_STATIC_HTML_FILES:
+        raise HTTPException(status_code=404, detail="Legacy HTML route not available")
     return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / filename, "Home portal page (white)")
 
 
 @app.get("/{page_name}.html", response_class=HTMLResponse)
-def home_portal_page(page_name: str) -> str:
+def home_portal_page(page_name: str) -> Response:
+    canonical = _LEGACY_HTML_TO_CANONICAL.get(page_name.strip().lower())
+    if canonical:
+        return RedirectResponse(url=canonical, status_code=308)
+
     filename = f"{page_name}.html"
     if filename not in _HOME_HTML_FILES:
         raise HTTPException(status_code=404, detail="Page not found")
+    if filename not in _LEGACY_STATIC_HTML_FILES:
+        raise HTTPException(status_code=404, detail="Legacy HTML route not available")
     return _read_html_or_missing(_HOME_PORTAL_DIR / filename, "Home portal page")
 
 
