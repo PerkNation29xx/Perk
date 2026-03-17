@@ -23,11 +23,13 @@ from app.db.models import (
     TicketStatus,
     Transaction,
     User,
+    WebLeadSubmission,
     UserRole,
     UserStatus,
 )
 from app.schemas import (
     APIMessage,
+    AdminContactInboxRow,
     AdminAuditLogRow,
     AdminMerchantRow,
     AdminOverviewOut,
@@ -592,6 +594,53 @@ def admin_list_support_tickets(
             created_at=t.created_at,
         )
         for t in tickets
+    ]
+
+
+@router.get("/contact-inbox", response_model=list[AdminContactInboxRow])
+def admin_contact_inbox(
+    q: Optional[str] = None,
+    limit: int = Query(default=200, ge=1, le=500),
+    offset: int = Query(default=0, ge=0),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles(UserRole.admin)),
+) -> list[AdminContactInboxRow]:
+    del current_user
+
+    query = select(WebLeadSubmission).where(WebLeadSubmission.form_type == "contact")
+    if q:
+        like = f"%{q.strip()}%"
+        query = query.where(
+            or_(
+                WebLeadSubmission.email.ilike(like),
+                WebLeadSubmission.name.ilike(like),
+                WebLeadSubmission.contact_name.ilike(like),
+                WebLeadSubmission.company.ilike(like),
+                WebLeadSubmission.phone.ilike(like),
+                WebLeadSubmission.inquiry.ilike(like),
+            )
+        )
+
+    rows = db.scalars(
+        query.order_by(WebLeadSubmission.created_at.desc(), WebLeadSubmission.id.desc())
+        .limit(limit)
+        .offset(offset)
+    ).all()
+
+    return [
+        AdminContactInboxRow(
+            id=r.id,
+            form_type=r.form_type,
+            source_page=r.source_page,
+            name=r.name,
+            contact_name=r.contact_name,
+            company=r.company,
+            email=r.email,
+            phone=r.phone,
+            inquiry=r.inquiry,
+            created_at=r.created_at,
+        )
+        for r in rows
     ]
 
 

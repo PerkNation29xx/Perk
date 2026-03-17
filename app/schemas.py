@@ -392,6 +392,7 @@ class WebFormSubmitResponse(BaseModel):
     message: str
     submission_id: int
     mirrored_to_backup: bool = False
+    emailed_to_support: bool = False
 
 
 # Admin portal schemas
@@ -505,6 +506,19 @@ class AdminSupportTicketRow(BaseModel):
     category: str
     subject: str
     status: TicketStatus
+    created_at: datetime
+
+
+class AdminContactInboxRow(BaseModel):
+    id: int
+    form_type: str
+    source_page: Optional[str] = None
+    name: Optional[str] = None
+    contact_name: Optional[str] = None
+    company: Optional[str] = None
+    email: Optional[EmailStr] = None
+    phone: Optional[str] = None
+    inquiry: Optional[str] = None
     created_at: datetime
 
 

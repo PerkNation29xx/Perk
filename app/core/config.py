@@ -52,12 +52,38 @@ class Settings(BaseSettings):
     forms_backup_enabled: bool = True
     forms_backup_database_url: str = "sqlite:///./perknation_forms_backup.db"
 
-    # Local/open-source AI assistant (Ollama).
+    # Contact form notifications.
+    # If SMTP is configured, new contact submissions can be emailed to support.
+    contact_email_forwarding_enabled: bool = True
+    contact_form_notify_email: str = "perknation29@icloud.com"
+    smtp_host: Optional[str] = None
+    smtp_port: int = 587
+    smtp_username: Optional[str] = None
+    smtp_password: Optional[str] = None
+    smtp_from_email: Optional[str] = None
+    smtp_use_tls: bool = True
+    smtp_use_ssl: bool = False
+    smtp_timeout_seconds: int = 20
+
+    # AI assistant provider.
     ai_enabled: bool = True
+    # "ollama" (local) or "openai" (public hosted API).
+    # If set to a non-recognized value, we auto-select openai when an API key
+    # exists, otherwise ollama.
+    ai_provider: str = "ollama"
+
+    # Local/open-source AI assistant (Ollama).
     ollama_base_url: str = "http://127.0.0.1:11434"
     ollama_model: str = "qwen3:30b"
     ollama_timeout_seconds: int = 90
     ollama_temperature: float = 0.2
+
+    # Hosted AI (OpenAI-compatible REST API).
+    openai_base_url: str = "https://api.openai.com/v1"
+    openai_api_key: Optional[str] = None
+    openai_model: str = "gpt-4.1-mini"
+    openai_timeout_seconds: int = 60
+    openai_temperature: float = 0.2
 
     @property
     def sqlalchemy_database_url(self) -> str:

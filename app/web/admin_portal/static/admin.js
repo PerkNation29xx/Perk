@@ -369,6 +369,13 @@ async function loadSupportTickets() {
   return await res.json();
 }
 
+async function loadContactInbox() {
+  const res = await apiFetch(`${config.api_v1_prefix}/admin/contact-inbox?limit=300`);
+  if (res.status === 403) throw new Error("Forbidden (admin only).");
+  if (!res.ok) throw new Error(`Contact inbox failed (${res.status})`);
+  return await res.json();
+}
+
 async function loadDisputes() {
   const res = await apiFetch(`${config.api_v1_prefix}/admin/disputes`);
   if (res.status === 403) throw new Error("Forbidden (admin only).");
@@ -652,6 +659,21 @@ async function renderSupportView(container) {
   container.appendChild(renderTable(columns, tickets, { emptyText: "No tickets found." }));
 }
 
+async function renderContactInboxView(container) {
+  setViewTitle("Contact Inbox", "Website Contact Us submissions");
+  const submissions = await loadContactInbox();
+  const columns = [
+    { label: "ID", key: "id", mono: true },
+    { label: "Created", key: "created_at", mono: true },
+    { label: "Name", key: "name" },
+    { label: "Email", key: "email" },
+    { label: "Phone", key: "phone" },
+    { label: "Source", key: "source_page", mono: true },
+    { label: "Inquiry", key: "inquiry" },
+  ];
+  container.appendChild(renderTable(columns, submissions, { emptyText: "No contact submissions found." }));
+}
+
 async function renderDisputesView(container) {
   setViewTitle("Disputes", "Dispute cases");
   const disputes = await loadDisputes();
@@ -714,7 +736,7 @@ async function renderAuditView(container) {
 
 function renderAiThread(threadEl, modelEl) {
   if (!threadEl || !modelEl) return;
-  modelEl.textContent = aiModel ? `Model: ${aiModel}` : "Model: -";
+  modelEl.textContent = aiModel ? `AI model: ${aiModel}` : "AI assistant";
   threadEl.innerHTML = "";
 
   const rows = Array.isArray(aiConversation) ? aiConversation : [];
@@ -774,7 +796,7 @@ async function renderAiView(container) {
   top.className = "row row--space";
   top.innerHTML = `
     <div class="h2">PerkNation AI Assistant</div>
-    <div class="pill pill--muted" id="aiModelLabel">Model: -</div>
+    <div class="pill pill--muted" id="aiModelLabel">AI assistant</div>
   `;
   card.appendChild(top);
 
@@ -863,6 +885,9 @@ async function renderCurrentView() {
         break;
       case "support":
         await renderSupportView(container);
+        break;
+      case "contactInbox":
+        await renderContactInboxView(container);
         break;
       case "disputes":
         await renderDisputesView(container);
