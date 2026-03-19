@@ -47,4 +47,6 @@ services:
       - key: FORMS_BACKUP_ENABLED
         value: "false"
       - key: AI_ENABLED
-        value: "false"
+        value: "true"
+      - key: AI_PROVIDER
+        value: openai

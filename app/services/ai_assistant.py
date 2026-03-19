@@ -40,6 +40,7 @@ class AIChatResult:
 
 
 _ALLOWED_CONTEXTS = {"consumer", "merchant", "admin", "public"}
+_DETERMINISTIC_MODEL_NAME = "perk-deterministic"
 
 
 def resolve_context(user_role: Optional[UserRole], requested_context: Optional[str]) -> str:
@@ -87,9 +88,6 @@ def chat_with_assistant(
     user_role: Optional[UserRole] = None,
     requested_context: Optional[str] = None,
 ) -> AIChatResult:
-    if not settings.ai_enabled:
-        raise AIServiceError("AI assistant is disabled on this backend.")
-
     provider = _select_ai_provider()
     resolved_role = current_user.role if current_user else user_role
     role_context = resolve_context(resolved_role, requested_context)
@@ -126,6 +124,18 @@ def chat_with_assistant(
             role_context=role_context,
         )
 
+    if not settings.ai_enabled:
+        return AIChatResult(
+            answer=_fallback_assistant_response(
+                db=db,
+                current_user=current_user,
+                role_context=role_context,
+                unavailable_reason="Hosted AI is not enabled on this backend yet.",
+            ),
+            model=_DETERMINISTIC_MODEL_NAME,
+            role_context=role_context,
+        )
+
     system_prompt = _system_prompt_for_context(role_context)
     normalized_history = _normalize_history(history or [])
 
@@ -147,10 +157,22 @@ def chat_with_assistant(
     messages.extend(normalized_history)
     messages.append({"role": "user", "content": message.strip()})
 
-    if provider == "openai":
-        model, answer = _request_openai_chat(messages)
-    else:
-        model, answer = _request_ollama_chat(messages)
+    try:
+        if provider == "openai":
+            model, answer = _request_openai_chat(messages)
+        else:
+            model, answer = _request_ollama_chat(messages)
+    except AIServiceError as exc:
+        return AIChatResult(
+            answer=_fallback_assistant_response(
+                db=db,
+                current_user=current_user,
+                role_context=role_context,
+                unavailable_reason=str(exc).strip(),
+            ),
+            model=_DETERMINISTIC_MODEL_NAME,
+            role_context=role_context,
+        )
 
     if not answer:
         raise AIServiceError("AI assistant returned an empty response.")
@@ -727,6 +749,55 @@ def _capabilities_for_role(role_context: str) -> str:
     if role_context == "admin":
         return "I can read live admin operations metrics: users, pending approvals, open tickets, and open disputes."
     return "I can answer public product and onboarding questions."
+
+
+def _fallback_assistant_response(
+    *,
+    db: Optional[Session],
+    current_user: Optional[User],
+    role_context: str,
+    unavailable_reason: str,
+) -> str:
+    lines: list[str] = [
+        "Live AI chat is temporarily unavailable, but I can still help with live PerkNation data and supported actions."
+    ]
+
+    detail = unavailable_reason.strip()
+    if detail:
+        lines.append(f"Status: {detail}")
+
+    summary = _deterministic_summary_for_role(
+        db=db,
+        current_user=current_user,
+        role_context=role_context,
+    )
+    if summary:
+        lines.extend(["", summary])
+    else:
+        lines.extend(["", _capabilities_for_role(role_context)])
+
+    return "\n".join(lines)
+
+
+def _deterministic_summary_for_role(
+    *,
+    db: Optional[Session],
+    current_user: Optional[User],
+    role_context: str,
+) -> Optional[str]:
+    if db is None or current_user is None:
+        return None
+
+    if role_context == "consumer":
+        return _consumer_live_query_response(db, current_user, "all info")
+
+    if role_context == "merchant":
+        return _merchant_live_query_response(db, current_user, "all info")
+
+    if role_context == "admin":
+        return _admin_live_query_response(db, current_user, "all info")
+
+    return _capabilities_for_role(role_context)
 
 
 def _redeem_available_cash_rewards(*, db: Session, current_user: User) -> str:
