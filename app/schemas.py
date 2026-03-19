@@ -388,6 +388,26 @@ class AIChatResponse(BaseModel):
     role_context: str
 
 
+class PrivateAssistantMessageCreate(BaseModel):
+    message: str = Field(min_length=1, max_length=2000)
+
+
+class PrivateAssistantMessageOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    author: Literal["user", "assistant"]
+    message: str
+    model: Optional[str] = None
+    created_at: datetime
+
+
+class PrivateAssistantMessageSendResponse(BaseModel):
+    user_message: PrivateAssistantMessageOut
+    assistant_message: PrivateAssistantMessageOut
+    model: str
+
+
 class WebFormSubmitResponse(BaseModel):
     message: str
     submission_id: int

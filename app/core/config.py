@@ -36,6 +36,12 @@ class Settings(BaseSettings):
     supabase_url: Optional[str] = None
     supabase_anon_key: Optional[str] = None
     supabase_jwt_secret: Optional[str] = None
+    # Public website base URL used for auth email redirects.
+    # Example: https://perknation.net
+    public_web_base_url: str = "https://perknation.net"
+    # Paths (or full URLs) for Supabase confirmation and password reset links.
+    supabase_email_redirect_path: str = "/login"
+    supabase_password_reset_redirect_path: str = "/reset-password"
 
     # Public invite link base used for referral QR/link payloads.
     # Supports either a query-param URL (e.g. https://perknation.app/invite)
@@ -84,6 +90,10 @@ class Settings(BaseSettings):
     openai_model: str = "gpt-4.1-mini"
     openai_timeout_seconds: int = 60
     openai_temperature: float = 0.2
+
+    # Private message-box allowlist (owner/operator channels).
+    owner_admin_message_email: str = "billy@neonflux.net"
+    owner_ios_message_email: str = "billynavidad@icloud.com"
 
     @property
     def sqlalchemy_database_url(self) -> str:
@@ -151,6 +161,28 @@ class Settings(BaseSettings):
             query=query or None,
         )
         return url.render_as_string(hide_password=False)
+
+    @staticmethod
+    def _join_public_url(base_url: str, path_or_url: str) -> str:
+        raw = (path_or_url or "").strip()
+        if raw.startswith("http://") or raw.startswith("https://"):
+            return raw
+
+        base = (base_url or "").strip() or "https://perknation.net"
+        if raw.startswith("/"):
+            return f"{base.rstrip('/')}{raw}"
+        return f"{base.rstrip('/')}/{raw}"
+
+    @property
+    def supabase_email_redirect_url(self) -> str:
+        return self._join_public_url(self.public_web_base_url, self.supabase_email_redirect_path)
+
+    @property
+    def supabase_password_reset_redirect_url(self) -> str:
+        return self._join_public_url(
+            self.public_web_base_url,
+            self.supabase_password_reset_redirect_path,
+        )
 
 
 settings = Settings()

@@ -83,6 +83,8 @@ let config = null;
 let currentView = "overview";
 let aiConversation = [];
 let aiModel = null;
+let messageBoxConversation = [];
+let messageBoxModel = null;
 
 function resetAiConversation() {
   aiConversation = [
@@ -92,6 +94,11 @@ function resetAiConversation() {
     },
   ];
   aiModel = null;
+}
+
+function resetMessageBoxConversation() {
+  messageBoxConversation = [];
+  messageBoxModel = null;
 }
 
 async function loadConfig() {
@@ -403,6 +410,30 @@ async function loadAuditLogs() {
   if (res.status === 403) throw new Error("Forbidden (admin only).");
   if (!res.ok) throw new Error(`Audit failed (${res.status})`);
   return await res.json();
+}
+
+async function loadMessageBoxMessages() {
+  const res = await apiFetch(`${config.api_v1_prefix}/ai/messages`);
+  if (res.status === 403) {
+    throw new Error("Message Box access is limited to the owner admin account.");
+  }
+  if (!res.ok) throw new Error(`Message box failed (${res.status})`);
+  return await res.json();
+}
+
+async function sendMessageBoxMessage(message) {
+  const res = await apiFetch(`${config.api_v1_prefix}/ai/messages`, {
+    method: "POST",
+    body: JSON.stringify({ message }),
+  });
+  const body = await res.json().catch(() => ({}));
+  if (res.status === 403) {
+    throw new Error("Message Box access is limited to the owner admin account.");
+  }
+  if (!res.ok) {
+    throw new Error(body.detail || body.message || `Message send failed (${res.status})`);
+  }
+  return body;
 }
 
 function updateUiAuthState() {
@@ -859,6 +890,164 @@ async function renderAiView(container) {
   });
 }
 
+function renderMessageBoxThread(threadEl, modelEl) {
+  if (!threadEl || !modelEl) return;
+  modelEl.textContent = messageBoxModel ? `Assistant model: ${messageBoxModel}` : "Private thread";
+  threadEl.innerHTML = "";
+
+  const rows = Array.isArray(messageBoxConversation) ? messageBoxConversation : [];
+  if (!rows.length) {
+    const empty = document.createElement("div");
+    empty.className = "muted small";
+    empty.textContent = "No messages yet.";
+    threadEl.appendChild(empty);
+    return;
+  }
+
+  rows.slice(-80).forEach((entry) => {
+    const role = String(entry.role || "").toLowerCase() === "user" ? "user" : "assistant";
+    const row = document.createElement("div");
+    row.className = `ai-row ${role}`;
+
+    const bubble = document.createElement("div");
+    bubble.className = "ai-bubble";
+    bubble.textContent = String(entry.text || "");
+
+    row.appendChild(bubble);
+    threadEl.appendChild(row);
+  });
+}
+
+async function refreshMessageBoxConversation() {
+  const rows = await loadMessageBoxMessages();
+  messageBoxConversation = (Array.isArray(rows) ? rows : []).map((row) => ({
+    role: String(row.author || "").toLowerCase() === "user" ? "user" : "assistant",
+    text: String(row.message || ""),
+    createdAt: row.created_at || row.createdAt || null,
+    model: row.model || null,
+  }));
+
+  const lastWithModel = [...messageBoxConversation]
+    .reverse()
+    .find((entry) => entry.role === "assistant" && entry.model);
+  messageBoxModel = lastWithModel ? String(lastWithModel.model) : null;
+}
+
+async function askMessageBoxAssistant(message) {
+  const prompt = String(message || "").trim();
+  if (!prompt) return;
+
+  const response = await sendMessageBoxMessage(prompt);
+  const userMessage = response && response.user_message ? response.user_message : null;
+  const assistantMessage = response && response.assistant_message ? response.assistant_message : null;
+  const model = response && response.model ? String(response.model) : null;
+
+  if (userMessage) {
+    messageBoxConversation.push({
+      role: "user",
+      text: String(userMessage.message || ""),
+      createdAt: userMessage.created_at || userMessage.createdAt || null,
+      model: null,
+    });
+  }
+
+  if (assistantMessage) {
+    messageBoxConversation.push({
+      role: "assistant",
+      text: String(assistantMessage.message || ""),
+      createdAt: assistantMessage.created_at || assistantMessage.createdAt || null,
+      model: assistantMessage.model || model || null,
+    });
+  }
+
+  messageBoxModel = model || (assistantMessage ? assistantMessage.model || null : null);
+}
+
+async function renderMessageBoxView(container) {
+  setViewTitle("Message Box", "Private owner channel");
+
+  const card = document.createElement("section");
+  card.className = "card";
+
+  const top = document.createElement("div");
+  top.className = "row row--space";
+  top.innerHTML = `
+    <div class="h2">Private assistant thread</div>
+    <div class="pill pill--muted" id="messageBoxModelLabel">Private thread</div>
+  `;
+  card.appendChild(top);
+
+  const meta = document.createElement("div");
+  meta.className = "muted small";
+  meta.style.marginTop = "6px";
+  meta.textContent = "Only the owner admin account can view and send messages in this box.";
+  card.appendChild(meta);
+
+  const thread = document.createElement("div");
+  thread.className = "ai-thread";
+  card.appendChild(thread);
+
+  const form = document.createElement("form");
+  form.className = "form";
+  form.innerHTML = `
+    <label class="field">
+      <span>Message</span>
+      <textarea id="messageBoxPromptInput" rows="4" maxlength="2000" placeholder="Type your message here."></textarea>
+    </label>
+    <div class="row">
+      <button class="btn btn--primary" id="messageBoxSendBtn" type="submit">Send</button>
+      <button class="btn btn--ghost" id="messageBoxRefreshBtn" type="button">Refresh</button>
+      <span class="muted small" id="messageBoxHint"></span>
+    </div>
+  `;
+  card.appendChild(form);
+  container.appendChild(card);
+
+  const modelEl = form.parentElement.querySelector("#messageBoxModelLabel");
+  const hint = form.querySelector("#messageBoxHint");
+  const sendBtn = form.querySelector("#messageBoxSendBtn");
+  const refreshBtn = form.querySelector("#messageBoxRefreshBtn");
+  const promptInput = form.querySelector("#messageBoxPromptInput");
+
+  await refreshMessageBoxConversation();
+  renderMessageBoxThread(thread, modelEl);
+
+  refreshBtn.addEventListener("click", async () => {
+    refreshBtn.disabled = true;
+    hint.textContent = "Refreshing...";
+    try {
+      await refreshMessageBoxConversation();
+      renderMessageBoxThread(thread, modelEl);
+      hint.textContent = "";
+    } catch (e) {
+      hint.textContent = "";
+      setStatus(e.message || String(e));
+    } finally {
+      refreshBtn.disabled = false;
+    }
+  });
+
+  form.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const message = promptInput.value.trim();
+    if (!message) return;
+    promptInput.value = "";
+    sendBtn.disabled = true;
+    hint.textContent = "Sending...";
+
+    try {
+      await askMessageBoxAssistant(message);
+      renderMessageBoxThread(thread, modelEl);
+      hint.textContent = "";
+    } catch (e) {
+      hint.textContent = "";
+      setStatus(e.message || String(e));
+    } finally {
+      sendBtn.disabled = false;
+    }
+  });
+}
+
 async function renderCurrentView() {
   const container = qs("#viewContainer");
   container.innerHTML = "";
@@ -901,6 +1090,9 @@ async function renderCurrentView() {
       case "ai":
         await renderAiView(container);
         break;
+      case "messageBox":
+        await renderMessageBoxView(container);
+        break;
       case "overview":
       default:
         await renderOverviewView(container);
@@ -927,12 +1119,14 @@ function wireNav() {
 
 async function init() {
   resetAiConversation();
+  resetMessageBoxConversation();
   qs("#dismissStatusBtn").addEventListener("click", clearStatus);
 
   qs("#logoutBtn").addEventListener("click", () => {
     clearSession();
     updateUiAuthState();
     resetAiConversation();
+    resetMessageBoxConversation();
     setStatus("Signed out.");
   });
 

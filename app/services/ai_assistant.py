@@ -63,6 +63,21 @@ def resolve_context(user_role: Optional[UserRole], requested_context: Optional[s
     return "consumer"
 
 
+def _select_ai_provider() -> str:
+    provider = (settings.ai_provider or "").strip().lower()
+    if provider in {"ollama", "openai"}:
+        return provider
+    if settings.openai_api_key:
+        return "openai"
+    return "ollama"
+
+
+def _configured_model_for_provider(provider: str) -> str:
+    if provider == "openai":
+        return settings.openai_model
+    return settings.ollama_model
+
+
 def chat_with_assistant(
     *,
     message: str,
@@ -75,6 +90,7 @@ def chat_with_assistant(
     if not settings.ai_enabled:
         raise AIServiceError("AI assistant is disabled on this backend.")
 
+    provider = _select_ai_provider()
     resolved_role = current_user.role if current_user else user_role
     role_context = resolve_context(resolved_role, requested_context)
 
@@ -90,7 +106,11 @@ def chat_with_assistant(
         answer = action_result
         if snapshot:
             answer += "\n\nUpdated live account snapshot:\n" + snapshot
-        return AIChatResult(answer=answer, model=settings.ollama_model, role_context=role_context)
+        return AIChatResult(
+            answer=answer,
+            model=_configured_model_for_provider(provider),
+            role_context=role_context,
+        )
 
     # Deterministic read/query hooks for live account data.
     query_result = _execute_live_query_if_requested(
@@ -100,7 +120,11 @@ def chat_with_assistant(
         message=message,
     )
     if query_result:
-        return AIChatResult(answer=query_result, model=settings.ollama_model, role_context=role_context)
+        return AIChatResult(
+            answer=query_result,
+            model=_configured_model_for_provider(provider),
+            role_context=role_context,
+        )
 
     system_prompt = _system_prompt_for_context(role_context)
     normalized_history = _normalize_history(history or [])
@@ -123,6 +147,21 @@ def chat_with_assistant(
     messages.extend(normalized_history)
     messages.append({"role": "user", "content": message.strip()})
 
+    if provider == "openai":
+        model, answer = _request_openai_chat(messages)
+    else:
+        model, answer = _request_ollama_chat(messages)
+
+    if not answer:
+        raise AIServiceError("AI assistant returned an empty response.")
+
+    if len(answer) > 6000:
+        answer = answer[:6000].rstrip() + "\n\n[truncated]"
+
+    return AIChatResult(answer=answer, model=model, role_context=role_context)
+
+
+def _request_ollama_chat(messages: list[dict[str, str]]) -> tuple[str, str]:
     body = {
         "model": settings.ollama_model,
         "stream": False,
@@ -169,14 +208,77 @@ def chat_with_assistant(
         answer = str(message_obj.get("content") or "").strip()
     if not answer:
         answer = str(envelope.get("response") or "").strip()
+    return model, answer
 
-    if not answer:
-        raise AIServiceError("AI assistant returned an empty response.")
 
-    if len(answer) > 6000:
-        answer = answer[:6000].rstrip() + "\n\n[truncated]"
+def _request_openai_chat(messages: list[dict[str, str]]) -> tuple[str, str]:
+    api_key = (settings.openai_api_key or "").strip()
+    if not api_key:
+        raise AIServiceError(
+            "Hosted AI is configured, but OPENAI_API_KEY is missing on the backend."
+        )
 
-    return AIChatResult(answer=answer, model=model, role_context=role_context)
+    body = {
+        "model": settings.openai_model,
+        "messages": messages,
+        "temperature": max(0.0, min(settings.openai_temperature, 1.0)),
+    }
+    payload = json.dumps(body).encode("utf-8")
+    endpoint = settings.openai_base_url.rstrip("/") + "/chat/completions"
+    req = request.Request(
+        endpoint,
+        data=payload,
+        method="POST",
+        headers={
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": f"Bearer {api_key}",
+        },
+    )
+
+    try:
+        with request.urlopen(req, timeout=settings.openai_timeout_seconds) as resp:
+            raw = resp.read().decode("utf-8")
+    except error.HTTPError as exc:
+        detail = exc.read().decode("utf-8", errors="ignore")
+        if exc.code == 401:
+            raise AIServiceError("Hosted AI rejected the API key. Check OPENAI_API_KEY.") from exc
+        raise AIServiceError(f"Hosted AI request failed ({exc.code}). {detail}".strip()) from exc
+    except error.URLError as exc:
+        raise AIServiceError("Hosted AI is unreachable. Check internet connectivity from the backend.") from exc
+    except TimeoutError as exc:
+        raise AIServiceError("Hosted AI request timed out. Try again in a few seconds.") from exc
+
+    try:
+        envelope = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise AIServiceError("Hosted AI returned invalid JSON.") from exc
+
+    model = str(envelope.get("model") or settings.openai_model)
+    answer = _extract_openai_answer(envelope)
+    return model, answer
+
+
+def _extract_openai_answer(envelope: dict) -> str:
+    choices = envelope.get("choices")
+    if isinstance(choices, list) and choices:
+        message_obj = choices[0].get("message")
+        if isinstance(message_obj, dict):
+            content = message_obj.get("content")
+            if isinstance(content, str):
+                return content.strip()
+            if isinstance(content, list):
+                parts: list[str] = []
+                for item in content:
+                    if not isinstance(item, dict):
+                        continue
+                    if item.get("type") == "text":
+                        text = str(item.get("text") or "").strip()
+                        if text:
+                            parts.append(text)
+                if parts:
+                    return "\n".join(parts)
+    return ""
 
 
 def _normalize_history(history: list[dict[str, str]]) -> list[dict[str, str]]:

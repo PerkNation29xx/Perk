@@ -74,6 +74,11 @@ class ReferralEventType(str, enum.Enum):
     qualify = "qualify"
 
 
+class PrivateAssistantAuthor(str, enum.Enum):
+    user = "user"
+    assistant = "assistant"
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -123,6 +128,10 @@ class User(Base):
         foreign_keys="ReferralAttribution.referred_user_id",
     )
     reviews: Mapped[list["RestaurantReview"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    private_assistant_messages: Mapped[list["PrivateAssistantMessage"]] = relationship(
         back_populates="user",
         cascade="all, delete-orphan",
     )
@@ -526,3 +535,17 @@ class AuditLog(Base):
     after_snapshot: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class PrivateAssistantMessage(Base):
+    __tablename__ = "private_assistant_messages"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True, nullable=False)
+    user_email: Mapped[str] = mapped_column(String(255), index=True, nullable=False)
+    author: Mapped[PrivateAssistantAuthor] = mapped_column(Enum(PrivateAssistantAuthor), nullable=False)
+    message: Mapped[str] = mapped_column(Text, nullable=False)
+    model: Mapped[Optional[str]] = mapped_column(String(120), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+    user: Mapped[User] = relationship(back_populates="private_assistant_messages")
