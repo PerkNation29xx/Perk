@@ -48,6 +48,17 @@ class Settings(BaseSettings):
     # or a templated URL containing `{code}`.
     referral_invite_base_url: str = "https://perknation.app/invite"
 
+    # Apple Wallet pass support.
+    # If configured, /v1/wallet/pass redirects the app to a signed pass service
+    # that returns a valid .pkpass binary.
+    wallet_pass_service_url: Optional[str] = None
+    wallet_pass_type_identifier: Optional[str] = None
+    wallet_team_identifier: Optional[str] = None
+    wallet_organization_name: str = "PerkNation"
+    wallet_signer_certificate_path: Optional[str] = None
+    wallet_signer_key_path: Optional[str] = None
+    wallet_wwdr_certificate_path: Optional[str] = None
+
     seed_default_data: bool = True
     email_verification_code_ttl_minutes: int = 30
     dev_expose_email_verification_code: bool = False
