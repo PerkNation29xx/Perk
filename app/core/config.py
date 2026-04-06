@@ -1,12 +1,17 @@
+import os
 import socket
 from typing import Optional
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from sqlalchemy.engine import URL
+from sqlalchemy.engine import URL, make_url
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=os.environ.get("PERKNATION_ENV_FILE", ".env"),
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
 
     project_name: str = "PerkNation Backend"
     api_v1_prefix: str = "/v1"
@@ -117,12 +122,9 @@ class Settings(BaseSettings):
         normalized_url = (self.database_url or "").strip()
         if normalized_url and normalized_url != "sqlite:///./perknation.db":
             # If an explicit DATABASE_URL is provided (e.g., Supabase pooler),
-            # prefer it over discrete DATABASE_* vars.
-            if normalized_url.startswith("postgres://"):
-                return normalized_url.replace("postgres://", "postgresql+psycopg://", 1)
-            if normalized_url.startswith("postgresql://"):
-                return normalized_url.replace("postgresql://", "postgresql+psycopg://", 1)
-            return normalized_url
+            # prefer it over discrete DATABASE_* vars. Still normalize it so
+            # Supabase direct hosts can be forced onto IPv4 in cloud runtimes.
+            return self._normalize_explicit_database_url(normalized_url)
 
         has_discrete = all(
             [
@@ -172,6 +174,62 @@ class Settings(BaseSettings):
             query=query or None,
         )
         return url.render_as_string(hide_password=False)
+
+    @staticmethod
+    def _resolve_ipv4_host(host: str, port: int) -> Optional[str]:
+        try:
+            ipv4_infos = socket.getaddrinfo(
+                host,
+                port,
+                family=socket.AF_INET,
+                type=socket.SOCK_STREAM,
+            )
+            if ipv4_infos:
+                return ipv4_infos[0][4][0]
+        except OSError:
+            return None
+        return None
+
+    def _normalize_explicit_database_url(self, raw_url: str) -> str:
+        normalized_url = raw_url
+        if normalized_url.startswith("postgres://"):
+            normalized_url = normalized_url.replace("postgres://", "postgresql+psycopg://", 1)
+        elif normalized_url.startswith("postgresql://"):
+            normalized_url = normalized_url.replace("postgresql://", "postgresql+psycopg://", 1)
+
+        if not normalized_url.startswith("postgresql+psycopg://"):
+            return normalized_url
+
+        try:
+            url = make_url(normalized_url)
+        except Exception:
+            return normalized_url
+
+        host = url.host or ""
+        should_force_ipv4 = bool(host) and (
+            self.database_force_ipv4 or host.endswith(".supabase.co")
+        )
+        if not should_force_ipv4:
+            return normalized_url
+
+        resolved_host = self._resolve_ipv4_host(host, url.port or self.database_port)
+        if not resolved_host:
+            return normalized_url
+
+        query = dict(url.query) if url.query else {}
+        if "sslmode" not in query and host.endswith(".supabase.co"):
+            query["sslmode"] = "require"
+
+        ipv4_url = URL.create(
+            drivername=url.drivername,
+            username=url.username,
+            password=url.password,
+            host=resolved_host,
+            port=url.port,
+            database=url.database,
+            query=query or None,
+        )
+        return ipv4_url.render_as_string(hide_password=False)
 
     @staticmethod
     def _join_public_url(base_url: str, path_or_url: str) -> str:
