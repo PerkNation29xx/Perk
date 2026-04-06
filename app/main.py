@@ -47,6 +47,9 @@ _MERCHANT_STATIC_DIR = _MERCHANT_PORTAL_DIR / "static"
 _HOME_HTML_FILES = {
     "index.html",
     "login.html",
+    "redeem.html",
+    "invite.html",
+    "reset-password.html",
     "create-account.html",
     "members.html",
     "hollywood-sports.html",
@@ -69,6 +72,9 @@ _HOME_HTML_FILES = {
 _LEGACY_HTML_TO_CANONICAL = {
     "index": "/",
     "login": "/login",
+    "redeem": "/redeem",
+    "invite": "/invite",
+    "reset-password": "/reset-password",
     "create-account": "/create-account",
     "members": "/members",
     "hollywood-sports": "/hollywood-sports",
@@ -147,6 +153,21 @@ def home_portal_login() -> str:
     return _read_html_or_missing(_HOME_PORTAL_DIR / "login.html", "Login page")
 
 
+@app.get("/redeem", response_class=HTMLResponse)
+def home_portal_redeem() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "redeem.html", "Redeem page")
+
+
+@app.get("/invite", response_class=HTMLResponse)
+def home_portal_invite() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "invite.html", "Invite page")
+
+
+@app.get("/reset-password", response_class=HTMLResponse)
+def home_portal_reset_password() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "reset-password.html", "Reset-password page")
+
+
 @app.get("/create-account", response_class=HTMLResponse)
 def home_portal_create_account() -> str:
     return _read_html_or_missing(_HOME_PORTAL_DIR / "create-account.html", "Create-account page")
@@ -220,6 +241,21 @@ def home_portal_white() -> str:
 @app.get("/white/login", response_class=HTMLResponse)
 def home_portal_white_login() -> str:
     return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "login.html", "Login page (white)")
+
+
+@app.get("/white/redeem", response_class=HTMLResponse)
+def home_portal_white_redeem() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "redeem.html", "Redeem page (white)")
+
+
+@app.get("/white/invite", response_class=HTMLResponse)
+def home_portal_white_invite() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "invite.html", "Invite page (white)")
+
+
+@app.get("/white/reset-password", response_class=HTMLResponse)
+def home_portal_white_reset_password() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "reset-password.html", "Reset-password page (white)")
 
 
 @app.get("/white/create-account", response_class=HTMLResponse)
@@ -354,6 +390,8 @@ def web_portal_config() -> dict[str, str]:
         "api_v1_prefix": settings.api_v1_prefix,
         "supabase_url": settings.supabase_url,
         "supabase_anon_key": settings.supabase_anon_key,
+        "auth_email_redirect_url": settings.supabase_email_redirect_url,
+        "auth_password_reset_redirect_url": settings.supabase_password_reset_redirect_url,
     }
 
 

@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Referral Invite - Perk Nation</title>
+  <link rel="canonical" href="/invite" />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="description" content="Open a Perk Nation invite and continue into account creation or login." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/styles.css" />
+  <style>
+    .codeTile{display:grid;gap:10px;text-align:center;padding:24px}
+    .codeValue{font-size:32px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;word-break:break-word}
+    .ctaGroup{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .ctaGroup .btn{flex:1 1 180px}
+    .detailList{display:grid;gap:12px}
+    .detailRow{padding:14px 16px;border-radius:18px;border:1px solid rgba(250,247,247,.12);background:rgba(0,0,0,.18)}
+    .detailRow strong{display:block;margin-bottom:4px}
+  </style>
+</head>
+<body>
+<header class="header">
+  <div class="container">
+    <div class="nav">
+      <a class="brand" href="/" aria-label="Perk Nation home">
+        <span class="brandMark" aria-hidden="true">
+          <img src="assets/mark.svg" alt="" width="24" height="24" />
+        </span>
+        <span>Perk Nation</span>
+      </a>
+      <nav class="navlinks" aria-label="Primary navigation">
+        <a href="/members">Members</a>
+        <a href="/merchants">Merchants</a>
+        <a href="/how-it-works">How it Works</a>
+        <a href="/contact-us">Contact Us</a>
+        <a href="/faq">FAQ</a>
+      </nav>
+      <div class="navcta">
+        <button class="btn menuBtn" data-menu-btn aria-label="Open menu">☰</button>
+        <a class="btn ghost" href="/login">Login</a>
+      </div>
+    </div>
+    <div class="mobileMenu" data-mobile-menu>
+      <a href="/members">Members</a>
+      <a href="/merchants">Merchants</a>
+      <a href="/how-it-works">How it Works</a>
+      <a href="/contact-us">Contact Us</a>
+      <a href="/faq">FAQ</a>
+      <a href="/login">Login</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container split authSplit">
+      <div class="card pad">
+        <div class="badge">Referral Invite</div>
+        <h1 class="h1" style="font-size:42px">A Perk Nation member invited you in.</h1>
+        <p class="p">Create your account or sign in to continue with the invite code below.</p>
+
+        <div class="card codeTile" aria-live="polite">
+          <div class="small" style="letter-spacing:.12em;text-transform:uppercase">Invite code</div>
+          <div id="inviteCodeValue" class="codeValue">Loading...</div>
+          <button id="copyInviteCodeButton" class="btn" type="button">Copy code</button>
+        </div>
+
+        <div class="ctaGroup">
+          <a id="inviteCreateLink" class="btn primary" href="/create-account">Create account</a>
+          <a id="inviteLoginLink" class="btn" href="/login">Login</a>
+          <a id="inviteMembersLink" class="btn" href="/members">Learn how it works</a>
+        </div>
+      </div>
+
+      <div class="card pad">
+        <h2 class="h2">How invites work</h2>
+        <div class="detailList">
+          <div class="detailRow">
+            <strong>Use the invite code during signup.</strong>
+            If you are new, create your account first and keep the code handy.
+          </div>
+          <div class="detailRow">
+            <strong>Already have a Perk Nation account?</strong>
+            Sign in and continue from your member profile.
+          </div>
+          <div class="detailRow">
+            <strong>Need to share it later?</strong>
+            Copy the code and keep it in your messages until you are ready to finish setup.
+          </div>
+        </div>
+        <div id="inviteStatus" class="notice" style="margin-top:14px">We’ll hold the invite code here so it’s easy to copy and use.</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div>
+      <div>© <span id="year"></span> Perk Nation</div>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+  (function(){
+    const params = new URLSearchParams(window.location.search);
+    const code = (params.get("code") || "").trim();
+    const codeValue = document.getElementById("inviteCodeValue");
+    const status = document.getElementById("inviteStatus");
+    const createLink = document.getElementById("inviteCreateLink");
+    const loginLink = document.getElementById("inviteLoginLink");
+    const copyButton = document.getElementById("copyInviteCodeButton");
+
+    function withCode(path){
+      const url = new URL(path, window.location.origin);
+      if(code) url.searchParams.set("referral_code", code);
+      return `${url.pathname}${url.search}`;
+    }
+
+    createLink.href = withCode("/create-account");
+    loginLink.href = withCode("/login");
+
+    if(code){
+      codeValue.textContent = code;
+      status.textContent = "Invite code loaded. You can copy it now or continue into account creation.";
+    } else {
+      codeValue.textContent = "Code missing";
+      status.textContent = "This invite link is missing a referral code. Please request a fresh invite.";
+      copyButton.disabled = true;
+    }
+
+    copyButton.addEventListener("click", async function(){
+      if(!code) return;
+      try {
+        await navigator.clipboard.writeText(code);
+        status.textContent = "Invite code copied.";
+      } catch (_err){
+        status.textContent = "Copy failed. You can still use the code shown above.";
+      }
+    });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Redeem Offer - Perk Nation</title>
+  <link rel="canonical" href="/white/redeem" />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="description" content="Open a Perk Nation offer code and continue into your account." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/styles.css" />
+  <style>
+    .codeTile{display:grid;gap:10px;text-align:center;padding:24px}
+    .codeValue{font-size:32px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;word-break:break-word}
+    .ctaGroup{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .ctaGroup .btn{flex:1 1 180px}
+    .detailList{display:grid;gap:12px}
+    .detailRow{padding:14px 16px;border-radius:18px}
+  </style>
+</head>
+<body>
+<header class="header">
+  <div class="container">
+    <div class="nav">
+      <a class="brand" href="/white/" aria-label="Perk Nation home">
+        <span class="brandMark" aria-hidden="true">
+          <img src="assets/mark.svg" alt="" width="24" height="24" />
+        </span>
+        <span>Perk Nation</span>
+      </a>
+      <nav class="navlinks" aria-label="Primary navigation">
+        <a href="/white/members">Members</a>
+        <a href="/white/merchants">Merchants</a>
+        <a href="/white/how-it-works">How it Works</a>
+        <a href="/white/contact-us">Contact Us</a>
+        <a href="/white/faq">FAQ</a>
+      </nav>
+      <div class="navcta">
+        <button class="btn menuBtn" data-menu-btn aria-label="Open menu">☰</button>
+        <a class="btn ghost" href="/white/login">Login</a>
+      </div>
+    </div>
+    <div class="mobileMenu" data-mobile-menu>
+      <a href="/white/members">Members</a>
+      <a href="/white/merchants">Merchants</a>
+      <a href="/white/how-it-works">How it Works</a>
+      <a href="/white/contact-us">Contact Us</a>
+      <a href="/white/faq">FAQ</a>
+      <a href="/white/login">Login</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container split authSplit">
+      <div class="card pad">
+        <div class="badge">Offer Access</div>
+        <h1 class="h1" style="font-size:42px">You’re holding a Perk Nation offer.</h1>
+        <p class="p">Use the code below in Perk Nation to activate or review the offer details.</p>
+
+        <div class="card codeTile" aria-live="polite">
+          <div class="small" style="letter-spacing:.12em;text-transform:uppercase">Offer code</div>
+          <div id="redeemCodeValue" class="codeValue">Loading...</div>
+          <button id="copyRedeemCodeButton" class="btn" type="button">Copy code</button>
+        </div>
+
+        <div class="ctaGroup">
+          <a id="redeemLoginLink" class="btn primary" href="/white/login">Login to continue</a>
+          <a id="redeemCreateLink" class="btn" href="/white/create-account">Create account</a>
+          <a id="redeemUserLink" class="btn" href="/user">Open member area</a>
+        </div>
+      </div>
+
+      <div class="card pad">
+        <h2 class="h2">What to do next</h2>
+        <div class="detailList">
+          <div class="detailRow">
+            <strong>Already a member?</strong>
+            Sign in, then activate the offer or present the code at checkout if the merchant asks for it.
+          </div>
+          <div class="detailRow">
+            <strong>New to Perk Nation?</strong>
+            Create your account first. Once you are in, you can save the offer and complete redemption steps from your profile.
+          </div>
+          <div class="detailRow">
+            <strong>Scanning from Apple Wallet?</strong>
+            Keep this page open or copy the code before switching back to the app or checkout flow.
+          </div>
+        </div>
+        <div id="redeemStatus" class="notice" style="margin-top:14px">We’ll show the scanned code here and keep your next step simple.</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div>
+      <div>© <span id="year"></span> Perk Nation</div>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+  (function(){
+    const params = new URLSearchParams(window.location.search);
+    const code = (params.get("code") || "").trim();
+    const codeValue = document.getElementById("redeemCodeValue");
+    const status = document.getElementById("redeemStatus");
+    const loginLink = document.getElementById("redeemLoginLink");
+    const createLink = document.getElementById("redeemCreateLink");
+    const userLink = document.getElementById("redeemUserLink");
+    const copyButton = document.getElementById("copyRedeemCodeButton");
+
+    function withCode(path){
+      const url = new URL(path, window.location.origin);
+      if(code) url.searchParams.set("offer_code", code);
+      return `${url.pathname}${url.search}`;
+    }
+
+    loginLink.href = withCode("/white/login");
+    createLink.href = withCode("/white/create-account");
+    userLink.href = withCode("/user");
+
+    if(code){
+      codeValue.textContent = code;
+      status.textContent = "Offer code loaded. You can copy it now or continue into your Perk Nation account.";
+    } else {
+      codeValue.textContent = "Code missing";
+      status.textContent = "This link is missing an offer code. Please reopen the QR code or request a fresh link.";
+      copyButton.disabled = true;
+    }
+
+    copyButton.addEventListener("click", async function(){
+      if(!code) return;
+      try {
+        await navigator.clipboard.writeText(code);
+        status.textContent = "Offer code copied.";
+      } catch (_err){
+        status.textContent = "Copy failed. You can still use the code shown above.";
+      }
+    });
+  })();
+</script>
+</body>
+</html>
