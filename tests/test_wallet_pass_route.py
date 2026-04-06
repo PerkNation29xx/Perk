@@ -1,5 +1,8 @@
 import subprocess
+from io import BytesIO
 from pathlib import Path
+from zipfile import ZipFile
+import json
 
 from fastapi.testclient import TestClient
 
@@ -151,6 +154,25 @@ def test_wallet_pass_route_generates_pkpass_when_local_signing_is_configured(tmp
         assert response.status_code == 200
         assert response.headers["content-type"].startswith("application/vnd.apple.pkpass")
         assert response.content[:2] == b"PK"
+        with ZipFile(BytesIO(response.content)) as archive:
+            names = set(archive.namelist())
+            assert names == {
+                "pass.json",
+                "manifest.json",
+                "signature",
+                "icon.png",
+                "icon@2x.png",
+                "logo.png",
+                "logo@2x.png",
+            }
+            manifest = json.loads(archive.read("manifest.json").decode("utf-8"))
+            assert set(manifest) == {
+                "pass.json",
+                "icon.png",
+                "icon@2x.png",
+                "logo.png",
+                "logo@2x.png",
+            }
     finally:
         for key, value in originals.items():
             setattr(settings, key, value)

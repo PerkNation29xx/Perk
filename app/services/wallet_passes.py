@@ -22,6 +22,16 @@ class WalletPassSigningError(RuntimeError):
 
 
 class WalletPassService:
+    ARCHIVE_FILENAMES = (
+        "pass.json",
+        "manifest.json",
+        "signature",
+        "icon.png",
+        "icon@2x.png",
+        "logo.png",
+        "logo@2x.png",
+    )
+
     def __init__(self) -> None:
         self.asset_dir = Path(__file__).resolve().parent.parent / "assets" / "wallet"
 
@@ -243,9 +253,12 @@ class WalletPassService:
 
     def _build_manifest(self, temp_dir: Path) -> dict[str, str]:
         manifest: dict[str, str] = {}
-        for file_path in sorted(temp_dir.iterdir()):
-            if file_path.name == "signature" or not file_path.is_file():
+        for name in self.ARCHIVE_FILENAMES:
+            if name in {"manifest.json", "signature"}:
                 continue
+            file_path = temp_dir / name
+            if not file_path.is_file():
+                raise WalletPassConfigurationError(f"Missing Apple Wallet archive file: {name}")
             manifest[file_path.name] = hashlib.sha1(file_path.read_bytes()).hexdigest()
         return manifest
 
@@ -296,7 +309,7 @@ class WalletPassService:
     def _zip_pass(self, temp_dir: Path) -> bytes:
         output_path = temp_dir / "wallet.pkpass"
         with ZipFile(output_path, "w", compression=ZIP_DEFLATED) as archive:
-            for name in ["pass.json", "manifest.json", "signature", "icon.png", "icon@2x.png", "logo.png", "logo@2x.png"]:
+            for name in self.ARCHIVE_FILENAMES:
                 archive.write(temp_dir / name, arcname=name)
         return output_path.read_bytes()
 
