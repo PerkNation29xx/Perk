@@ -111,6 +111,13 @@ class Settings(BaseSettings):
     owner_admin_message_email: str = "billy@neonflux.net"
     owner_ios_message_email: str = "billynavidad@icloud.com"
 
+    @staticmethod
+    def _is_supabase_host(host: Optional[str]) -> bool:
+        if not host:
+            return False
+        normalized = host.lower()
+        return normalized.endswith(".supabase.co") or normalized.endswith(".pooler.supabase.com")
+
     @property
     def sqlalchemy_database_url(self) -> str:
         """
@@ -138,7 +145,7 @@ class Settings(BaseSettings):
             return self.database_url
 
         sslmode = self.database_sslmode
-        if sslmode is None and self.database_host and self.database_host.endswith(".supabase.co"):
+        if sslmode is None and self._is_supabase_host(self.database_host):
             sslmode = "require"
 
         host_value = self.database_host
@@ -148,7 +155,7 @@ class Settings(BaseSettings):
         # Some cloud runtimes (including specific Render regions) can fail
         # routing to Supabase over IPv6. Resolve and use an IPv4 address.
         should_force_ipv4 = bool(self.database_host) and (
-            self.database_force_ipv4 or (self.database_host or "").endswith(".supabase.co")
+            self.database_force_ipv4 or self._is_supabase_host(self.database_host)
         )
         if should_force_ipv4 and self.database_host:
             try:
@@ -207,7 +214,7 @@ class Settings(BaseSettings):
 
         host = url.host or ""
         should_force_ipv4 = bool(host) and (
-            self.database_force_ipv4 or host.endswith(".supabase.co")
+            self.database_force_ipv4 or self._is_supabase_host(host)
         )
         if not should_force_ipv4:
             return normalized_url
@@ -217,7 +224,7 @@ class Settings(BaseSettings):
             return normalized_url
 
         query = dict(url.query) if url.query else {}
-        if "sslmode" not in query and host.endswith(".supabase.co"):
+        if "sslmode" not in query and self._is_supabase_host(host):
             query["sslmode"] = "require"
 
         ipv4_url = URL.create(
