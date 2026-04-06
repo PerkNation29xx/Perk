@@ -49,6 +49,7 @@ _HOME_HTML_FILES = {
     "login.html",
     "create-account.html",
     "members.html",
+    "hollywood-sports.html",
     "how-it-works.html",
     "merchants.html",
     "faq.html",
@@ -70,6 +71,7 @@ _LEGACY_HTML_TO_CANONICAL = {
     "login": "/login",
     "create-account": "/create-account",
     "members": "/members",
+    "hollywood-sports": "/hollywood-sports",
     "guests": "/members",
     "merchants": "/merchants",
     "how-it-works": "/how-it-works",
@@ -155,6 +157,11 @@ def home_portal_members() -> str:
     return _read_html_or_missing(_HOME_PORTAL_DIR / "members.html", "Members page")
 
 
+@app.get("/hollywood-sports", response_class=HTMLResponse)
+def home_portal_hollywood_sports() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "hollywood-sports.html", "Hollywood Sports landing page")
+
+
 @app.get("/guests", include_in_schema=False)
 def home_portal_guests_redirect() -> RedirectResponse:
     return RedirectResponse(url="/members", status_code=308)
@@ -223,6 +230,14 @@ def home_portal_white_create_account() -> str:
 @app.get("/white/members", response_class=HTMLResponse)
 def home_portal_white_members() -> str:
     return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "members.html", "Members page (white)")
+
+
+@app.get("/white/hollywood-sports", response_class=HTMLResponse)
+def home_portal_white_hollywood_sports() -> str:
+    return _read_html_or_missing(
+        _HOME_PORTAL_WHITE_DIR / "hollywood-sports.html",
+        "Hollywood Sports landing page (white)",
+    )
 
 
 @app.get("/white/guests", include_in_schema=False)
