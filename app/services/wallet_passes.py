@@ -30,16 +30,22 @@ class WalletPassService:
             [
                 (settings.wallet_pass_type_identifier or "").strip(),
                 (settings.wallet_team_identifier or "").strip(),
-                (settings.wallet_signer_certificate_path or "").strip(),
-                (settings.wallet_signer_key_path or "").strip(),
-                (settings.wallet_wwdr_certificate_path or "").strip(),
+                self._has_material(
+                    path_value=settings.wallet_signer_certificate_path,
+                    pem_value=settings.wallet_signer_certificate_pem,
+                ),
+                self._has_material(
+                    path_value=settings.wallet_signer_key_path,
+                    pem_value=settings.wallet_signer_key_pem,
+                ),
+                self._has_material(
+                    path_value=settings.wallet_wwdr_certificate_path,
+                    pem_value=settings.wallet_wwdr_certificate_pem,
+                ),
             ]
         )
 
     def build_pass(self, *, title: str, code: str, payload: str) -> bytes:
-        cert_path = self._required_path(settings.wallet_signer_certificate_path, "WALLET_SIGNER_CERTIFICATE_PATH")
-        key_path = self._required_path(settings.wallet_signer_key_path, "WALLET_SIGNER_KEY_PATH")
-        wwdr_path = self._required_path(settings.wallet_wwdr_certificate_path, "WALLET_WWDR_CERTIFICATE_PATH")
         pass_type_identifier = self._required_value(
             settings.wallet_pass_type_identifier,
             "WALLET_PASS_TYPE_IDENTIFIER",
@@ -61,6 +67,30 @@ class WalletPassService:
 
         with tempfile.TemporaryDirectory(prefix="perknation-pkpass-") as temp_dir_raw:
             temp_dir = Path(temp_dir_raw)
+            cert_path = self._materialize_material(
+                temp_dir=temp_dir,
+                filename="signer.pem",
+                path_value=settings.wallet_signer_certificate_path,
+                pem_value=settings.wallet_signer_certificate_pem,
+                path_env_name="WALLET_SIGNER_CERTIFICATE_PATH",
+                pem_env_name="WALLET_SIGNER_CERTIFICATE_PEM",
+            )
+            key_path = self._materialize_material(
+                temp_dir=temp_dir,
+                filename="signer.key.pem",
+                path_value=settings.wallet_signer_key_path,
+                pem_value=settings.wallet_signer_key_pem,
+                path_env_name="WALLET_SIGNER_KEY_PATH",
+                pem_env_name="WALLET_SIGNER_KEY_PEM",
+            )
+            wwdr_path = self._materialize_material(
+                temp_dir=temp_dir,
+                filename="wwdr.pem",
+                path_value=settings.wallet_wwdr_certificate_path,
+                pem_value=settings.wallet_wwdr_certificate_pem,
+                path_env_name="WALLET_WWDR_CERTIFICATE_PATH",
+                pem_env_name="WALLET_WWDR_CERTIFICATE_PEM",
+            )
             pass_json = self._build_pass_json(
                 title=title,
                 code=code,
@@ -104,6 +134,36 @@ class WalletPassService:
         if not path.exists():
             raise WalletPassConfigurationError(f"{env_name} does not exist at {path}.")
         return path
+
+    @staticmethod
+    def _has_material(*, path_value: str | None, pem_value: str | None) -> bool:
+        return bool((path_value or "").strip() or (pem_value or "").strip())
+
+    def _materialize_material(
+        self,
+        *,
+        temp_dir: Path,
+        filename: str,
+        path_value: str | None,
+        pem_value: str | None,
+        path_env_name: str,
+        pem_env_name: str,
+    ) -> Path:
+        if (path_value or "").strip():
+            return self._required_path(path_value, path_env_name)
+
+        pem_text = (pem_value or "").strip()
+        if not pem_text:
+            raise WalletPassConfigurationError(
+                f"Configure either {path_env_name} or {pem_env_name}."
+            )
+
+        material_path = temp_dir / filename
+        normalized_pem = pem_text.replace("\\n", "\n").strip()
+        if not normalized_pem.endswith("\n"):
+            normalized_pem += "\n"
+        material_path.write_text(normalized_pem, encoding="utf-8")
+        return material_path
 
     def _build_pass_json(
         self,

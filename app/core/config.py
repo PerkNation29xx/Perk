@@ -63,6 +63,9 @@ class Settings(BaseSettings):
     wallet_signer_certificate_path: Optional[str] = None
     wallet_signer_key_path: Optional[str] = None
     wallet_wwdr_certificate_path: Optional[str] = None
+    wallet_signer_certificate_pem: Optional[str] = None
+    wallet_signer_key_pem: Optional[str] = None
+    wallet_wwdr_certificate_pem: Optional[str] = None
 
     seed_default_data: bool = True
     email_verification_code_ttl_minutes: int = 30
