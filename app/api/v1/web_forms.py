@@ -23,6 +23,7 @@ _FORM_REQUIREMENTS: dict[str, tuple[str, ...]] = {
     "member": ("full_name", "email"),
     "merchant": ("company", "contact_name", "email"),
     "contact": ("name", "email", "inquiry"),
+    "checkout": ("full_name", "email", "selected_offer"),
 }
 _FORM_ALIASES: dict[str, str] = {
     "guest": "member",
@@ -90,6 +91,32 @@ def _check_rate_limit(db: Session, form_type: str, ip_address: str | None) -> No
         )
 
 
+def _summarize_checkout(data: dict[str, str]) -> str:
+    parts: list[str] = []
+
+    offer = (data.get("selected_offer") or "").strip()
+    park = (data.get("selected_park") or "").strip()
+    quantity = (data.get("package_quantity") or "").strip()
+    visit_date = (data.get("visit_date") or "").strip()
+    party_size = (data.get("party_size") or "").strip()
+    notes = (data.get("inquiry") or data.get("notes") or "").strip()
+
+    if offer:
+        parts.append(f"Offer: {offer}")
+    if park:
+        parts.append(f"Park: {park}")
+    if quantity:
+        parts.append(f"Quantity: {quantity}")
+    if party_size:
+        parts.append(f"Party size: {party_size}")
+    if visit_date:
+        parts.append(f"Visit date: {visit_date}")
+    if notes:
+        parts.append(f"Notes: {notes}")
+
+    return " | ".join(parts)
+
+
 @router.post("/{form_type}", response_model=WebFormSubmitResponse, status_code=status.HTTP_201_CREATED)
 def submit_public_web_form(
     form_type: str,
@@ -135,13 +162,13 @@ def submit_public_web_form(
         form_type=normalized_form_type,
         source_page=source_page,
         name=(data.get("name") or data.get("full_name") or data.get("contact_name") or None),
-        company=data.get("company"),
+        company=data.get("company") or ("Hollywood Sports x Perk Nation" if normalized_form_type == "checkout" else None),
         email=email or None,
         phone=data.get("phone"),
         website=data.get("website"),
         address=data.get("address"),
         dob=data.get("dob"),
-        inquiry=data.get("inquiry"),
+        inquiry=data.get("inquiry") if normalized_form_type != "checkout" else _summarize_checkout(data),
         contact_name=data.get("contact_name"),
         payload_json=payload_json,
         ip_address=client_ip,
@@ -173,6 +200,8 @@ def submit_public_web_form(
 
     emailed_to_support = False
     if normalized_form_type == "contact":
+        emailed_to_support = send_contact_submission_email(row)
+    elif normalized_form_type == "checkout":
         emailed_to_support = send_contact_submission_email(row)
 
     return WebFormSubmitResponse(

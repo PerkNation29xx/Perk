@@ -607,7 +607,7 @@ def admin_contact_inbox(
 ) -> list[AdminContactInboxRow]:
     del current_user
 
-    query = select(WebLeadSubmission).where(WebLeadSubmission.form_type == "contact")
+    query = select(WebLeadSubmission).where(WebLeadSubmission.form_type.in_(("contact", "checkout")))
     if q:
         like = f"%{q.strip()}%"
         query = query.where(

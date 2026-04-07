@@ -691,18 +691,19 @@ async function renderSupportView(container) {
 }
 
 async function renderContactInboxView(container) {
-  setViewTitle("Contact Inbox", "Website Contact Us submissions");
+  setViewTitle("Lead Inbox", "Website contact and checkout submissions");
   const submissions = await loadContactInbox();
   const columns = [
     { label: "ID", key: "id", mono: true },
     { label: "Created", key: "created_at", mono: true },
+    { label: "Type", key: "form_type", render: (s) => tag(s.form_type, s.form_type === "checkout" ? "ok" : "") },
     { label: "Name", key: "name" },
     { label: "Email", key: "email" },
     { label: "Phone", key: "phone" },
     { label: "Source", key: "source_page", mono: true },
     { label: "Inquiry", key: "inquiry" },
   ];
-  container.appendChild(renderTable(columns, submissions, { emptyText: "No contact submissions found." }));
+  container.appendChild(renderTable(columns, submissions, { emptyText: "No website submissions found." }));
 }
 
 async function renderDisputesView(container) {

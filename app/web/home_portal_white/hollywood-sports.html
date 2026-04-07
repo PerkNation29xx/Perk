@@ -61,8 +61,29 @@
     .hspChatComposer textarea{min-height:98px;resize:vertical;border-radius:18px;border:1px solid rgba(250,247,247,.16);background:rgba(250,247,247,.03);padding:14px;color:var(--ink);font:inherit}
     .hspChatComposer textarea::placeholder{color:var(--muted2)}
     .hspChatStatus{min-height:20px;color:var(--muted2);font-size:13px}
+    .hspCheckoutGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .hspCheckoutGrid .span2{grid-column:span 2}
+    .hspCheckoutLabel{display:grid;gap:7px}
+    .hspCheckoutLabel span{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted2);font-weight:800}
+    .hspCheckoutLabel input,.hspCheckoutLabel select,.hspCheckoutLabel textarea{
+      width:100%;
+      border-radius:16px;
+      border:1px solid rgba(250,247,247,.16);
+      background:rgba(250,247,247,.03);
+      color:var(--ink);
+      padding:12px 14px;
+      font:inherit;
+    }
+    .hspCheckoutLabel textarea{min-height:96px;resize:vertical}
+    .hspCheckoutSummary{border-radius:18px;border:1px solid rgba(230,184,74,.24);background:rgba(230,184,74,.08);padding:14px;margin:14px 0}
+    .hspCheckoutToast{display:none;margin-top:12px;padding:12px 14px;border-radius:16px;border:1px solid rgba(250,247,247,.16);background:rgba(250,247,247,.03)}
+    .hspCheckoutToast.show{display:block}
+    .hspCheckoutToast.error{border-color:rgba(195,63,22,.45);background:rgba(195,63,22,.08)}
+    .hspCheckoutToast.success{border-color:rgba(41,166,91,.45);background:rgba(41,166,91,.10)}
     @media (max-width: 980px){
       .hspMetrics,.hspOfferGrid,.hspLocationGrid,.hspSheetGrid,.hspParkMediaGrid{grid-template-columns:1fr}
+      .hspCheckoutGrid{grid-template-columns:1fr}
+      .hspCheckoutGrid .span2{grid-column:auto}
     }
   </style>
 </head>
@@ -115,7 +136,7 @@
           discovery to purchase without leaving the Perk Nation flow.
         </p>
         <div class="hspHeroActions">
-          <a class="btn primary" href="/white/create-account?campaign=hsp">Buy now</a>
+          <button class="btn primary" type="button" data-hsp-checkout-trigger data-offer-label="Hollywood Sports offer campaign" data-offer-code="hsp-campaign">Buy now</button>
           <a class="btn" href="#digital-offers">View digital offers</a>
         </div>
 
@@ -176,7 +197,7 @@
               <li><strong>Use case:</strong> walk-on park play and open-session redemption.</li>
             </ul>
             <div class="hspOfferActions" style="margin-top:14px">
-              <a class="btn primary" href="/white/create-account?offer=hsp-park-pass">Buy now</a>
+              <button class="btn primary" type="button" data-hsp-checkout-trigger data-offer-label="Paintball / Airsoft Park Pass" data-offer-code="hsp-park-pass">Buy now</button>
             </div>
           </div>
         </article>
@@ -195,7 +216,7 @@
               <li><strong>Ideal for:</strong> featured drops, VIP redemptions, and top-value bundles.</li>
             </ul>
             <div class="hspOfferActions" style="margin-top:14px">
-              <a class="btn primary" href="/white/create-account?offer=hsp-golden-ticket">Buy now</a>
+              <button class="btn primary" type="button" data-hsp-checkout-trigger data-offer-label="Golden Ticket All-Inclusive Pass" data-offer-code="hsp-golden-ticket">Buy now</button>
             </div>
           </div>
         </article>
@@ -214,7 +235,7 @@
               <li><strong>Planning note:</strong> start through Perk Nation so the offer stays attached to the booking.</li>
             </ul>
             <div class="hspOfferActions" style="margin-top:14px">
-              <a class="btn primary" href="/white/create-account?offer=hsp-private-group">Buy now</a>
+              <button class="btn primary" type="button" data-hsp-checkout-trigger data-offer-label="Private Group Reservation" data-offer-code="hsp-private-group">Buy now</button>
             </div>
           </div>
         </article>
@@ -234,7 +255,7 @@
               <li><strong>Coverage:</strong> Bellflower, Chino, Lakeside, Castaic, and Allen.</li>
             </ul>
             <div class="hspOfferActions" style="margin-top:14px">
-              <a class="btn primary" href="/white/create-account?offer=hsp-five-dollar">Buy now</a>
+              <button class="btn primary" type="button" data-hsp-checkout-trigger data-offer-label="$5 Admission &amp; Rental (Save $60)" data-offer-code="hsp-five-dollar">Buy now</button>
             </div>
           </div>
         </article>
@@ -367,7 +388,7 @@
             <li><strong>Checkout path:</strong> start through Perk Nation so the purchase stays tied to this offer.</li>
           </ul>
           <div class="hspSupportActions" style="margin-top:14px">
-            <a class="btn primary" href="/white/create-account?campaign=hsp">Buy now</a>
+            <button class="btn primary" type="button" data-hsp-checkout-trigger data-offer-label="Hollywood Sports offer campaign" data-offer-code="hsp-campaign">Buy now</button>
             <a class="btn" href="#ask-perk-nation">Ask about this offer</a>
           </div>
         </div>
@@ -393,7 +414,7 @@
               <textarea name="message" placeholder="Ask about the $5 offer, blackout dates, or which park fits your group best."></textarea>
               <div class="hspSupportActions">
                 <button class="btn primary" type="submit">Send message</button>
-                <a class="btn" href="/white/create-account?campaign=hsp">Buy now</a>
+                <button class="btn" type="button" data-hsp-checkout-trigger data-offer-label="Hollywood Sports offer campaign" data-offer-code="hsp-campaign">Buy now</button>
               </div>
               <div class="hspChatStatus" data-hsp-chat-status>Instant answers from the Perk Nation offer assistant.</div>
             </form>
@@ -475,6 +496,92 @@
     </div>
   </section>
 </main>
+
+<div class="modalOverlay" data-hsp-checkout-overlay>
+  <div class="modal">
+    <div class="modalHeader">
+      <div>
+        <div class="modalTitle">Complete your Perk Nation purchase request</div>
+        <div class="small hspMuted">Reserve the offer inside Perk Nation and keep this campaign attached to the checkout path.</div>
+      </div>
+      <button class="modalClose" type="button" aria-label="Close checkout" data-hsp-checkout-close>✕</button>
+    </div>
+
+    <div class="hspCheckoutSummary">
+      <div class="pill">Selected offer</div>
+      <div class="h3" style="margin:10px 0 4px" data-hsp-selected-offer>Hollywood Sports offer campaign</div>
+      <div class="small hspMuted">Choose your park and leave a preferred visit window. Perk Nation will keep the offer attached to your request.</div>
+    </div>
+
+    <form data-hsp-checkout-form novalidate>
+      <input type="hidden" name="selected_offer" value="Hollywood Sports offer campaign" />
+      <input type="hidden" name="selected_offer_code" value="hsp-campaign" />
+      <div class="hspCheckoutGrid">
+        <label class="hspCheckoutLabel span2">
+          <span>Participating park</span>
+          <select name="selected_park" required>
+            <option value="">Select a park</option>
+            <option value="Hollywood Sports - Bellflower">Hollywood Sports - Bellflower</option>
+            <option value="SC Village - Chino">SC Village - Chino</option>
+            <option value="Giant Paintball - Lakeside">Giant Paintball - Lakeside</option>
+            <option value="Combat Paintball - Castaic">Combat Paintball - Castaic</option>
+            <option value="Giant Party Sports - Allen">Giant Party Sports - Allen</option>
+            <option value="Help me choose">Help me choose</option>
+          </select>
+        </label>
+        <label class="hspCheckoutLabel">
+          <span>Full name</span>
+          <input type="text" name="full_name" autocomplete="name" required />
+        </label>
+        <label class="hspCheckoutLabel">
+          <span>Email</span>
+          <input type="email" name="email" autocomplete="email" required />
+        </label>
+        <label class="hspCheckoutLabel">
+          <span>Phone</span>
+          <input type="tel" name="phone" autocomplete="tel" />
+        </label>
+        <label class="hspCheckoutLabel">
+          <span>Package quantity</span>
+          <select name="package_quantity">
+            <option value="1">1 package</option>
+            <option value="2">2 packages</option>
+            <option value="3">3 packages</option>
+            <option value="4">4 packages</option>
+            <option value="5+">5+ packages</option>
+          </select>
+        </label>
+        <label class="hspCheckoutLabel">
+          <span>Preferred visit date</span>
+          <input type="date" name="visit_date" />
+        </label>
+        <label class="hspCheckoutLabel">
+          <span>Party size</span>
+          <select name="party_size">
+            <option value="">Select party size</option>
+            <option value="1-4">1-4</option>
+            <option value="5-9">5-9</option>
+            <option value="10-19">10-19</option>
+            <option value="20+">20+</option>
+          </select>
+        </label>
+        <label class="hspCheckoutLabel span2">
+          <span>Notes</span>
+          <textarea name="inquiry" placeholder="Tell Perk Nation if you want the $70 sheet, the $5 promo, a private group booking, or help choosing the best park."></textarea>
+        </label>
+        <label class="hspCheckoutLabel" style="display:none">
+          <span>Website</span>
+          <input type="text" name="website_url" tabindex="-1" autocomplete="off" />
+        </label>
+      </div>
+      <div class="hspSupportActions" style="margin-top:16px">
+        <button class="btn primary" type="submit">Submit purchase request</button>
+        <button class="btn" type="button" data-hsp-checkout-close>Cancel</button>
+      </div>
+      <div class="hspCheckoutToast" data-hsp-checkout-toast></div>
+    </form>
+  </div>
+</div>
 
 <footer class="footer">
   <div class="container">
@@ -614,6 +721,117 @@
         const prompt = button.getAttribute("data-hsp-prompt") || "";
         await sendMessage(prompt);
       });
+    });
+  })();
+
+  (() => {
+    const overlay = document.querySelector("[data-hsp-checkout-overlay]");
+    const form = document.querySelector("[data-hsp-checkout-form]");
+    if (!overlay || !form) return;
+
+    const offerDisplay = overlay.querySelector("[data-hsp-selected-offer]");
+    const offerField = form.querySelector('input[name="selected_offer"]');
+    const offerCodeField = form.querySelector('input[name="selected_offer_code"]');
+    const toast = overlay.querySelector("[data-hsp-checkout-toast]");
+    const submit = form.querySelector('button[type="submit"]');
+    const storageKey = "perknation_hsp_checkout_backup";
+    const triggers = document.querySelectorAll("[data-hsp-checkout-trigger]");
+    const closers = overlay.querySelectorAll("[data-hsp-checkout-close]");
+
+    const setToast = (message, kind) => {
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.add("show");
+      toast.classList.remove("error", "success");
+      if (kind) toast.classList.add(kind);
+    };
+
+    const clearToast = () => {
+      if (!toast) return;
+      toast.textContent = "";
+      toast.classList.remove("show", "error", "success");
+    };
+
+    const openCheckout = (offerLabel, offerCode) => {
+      offerDisplay.textContent = offerLabel || "Hollywood Sports offer campaign";
+      offerField.value = offerLabel || "Hollywood Sports offer campaign";
+      offerCodeField.value = offerCode || "hsp-campaign";
+      clearToast();
+      overlay.classList.add("modalShow");
+    };
+
+    const closeCheckout = () => {
+      overlay.classList.remove("modalShow");
+    };
+
+    triggers.forEach((button) => {
+      button.addEventListener("click", () => {
+        openCheckout(
+          button.getAttribute("data-offer-label") || "Hollywood Sports offer campaign",
+          button.getAttribute("data-offer-code") || "hsp-campaign"
+        );
+      });
+    });
+
+    closers.forEach((button) => {
+      button.addEventListener("click", closeCheckout);
+    });
+
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay) closeCheckout();
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      clearToast();
+
+      const data = Object.fromEntries(new FormData(form).entries());
+      if (!String(data.full_name || "").trim() || !String(data.email || "").trim() || !String(data.selected_offer || "").trim()) {
+        setToast("Full name, email, and selected offer are required.", "error");
+        return;
+      }
+      if (!String(data.selected_park || "").trim()) {
+        setToast("Choose a participating park or select Help me choose.", "error");
+        return;
+      }
+
+      submit.disabled = true;
+      submit.dataset.originalText = submit.dataset.originalText || submit.textContent || "Submit purchase request";
+      submit.textContent = "Submitting...";
+
+      try {
+        const response = await fetch("/v1/web/forms/checkout", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({
+            source_page: window.location.pathname,
+            data
+          })
+        });
+
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(payload.detail || payload.message || `Checkout request failed (${response.status})`);
+        }
+
+        localStorage.removeItem(storageKey);
+        setToast(`Purchase request received. Reference #${payload.submission_id}. Perk Nation now has the selected offer and park attached to your request.`, "success");
+        form.reset();
+        offerDisplay.textContent = "Hollywood Sports offer campaign";
+        offerField.value = "Hollywood Sports offer campaign";
+        offerCodeField.value = "hsp-campaign";
+      } catch (error) {
+        const existing = JSON.parse(localStorage.getItem(storageKey) || "[]");
+        existing.push({ ...data, ts: new Date().toISOString() });
+        localStorage.setItem(storageKey, JSON.stringify(existing));
+        setToast(`${String(error && error.message ? error.message : "Checkout request failed.")} Saved locally as fallback.`, "error");
+      } finally {
+        submit.disabled = false;
+        submit.textContent = submit.dataset.originalText || "Submit purchase request";
+      }
     });
   })();
 </script>

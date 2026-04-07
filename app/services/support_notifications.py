@@ -39,20 +39,33 @@ def send_contact_submission_email(row: WebLeadSubmission) -> bool:
     )
 
     msg = EmailMessage()
-    msg["Subject"] = f"PerkNation Contact Submission #{row.id}"
     msg["From"] = sender
     msg["To"] = recipient
 
-    plain = (
-        "New Contact Us submission\n\n"
-        f"Submission ID: {row.id}\n"
-        f"Created At: {row.created_at}\n"
-        f"Source Page: {row.source_page or ''}\n"
-        f"Name: {row.name or ''}\n"
-        f"Email: {row.email or ''}\n"
-        f"Phone: {row.phone or ''}\n"
-        f"Inquiry:\n{row.inquiry or ''}\n"
-    )
+    if row.form_type == "checkout":
+        msg["Subject"] = f"PerkNation Checkout Request #{row.id}"
+        plain = (
+            "New PerkNation checkout request\n\n"
+            f"Submission ID: {row.id}\n"
+            f"Created At: {row.created_at}\n"
+            f"Source Page: {row.source_page or ''}\n"
+            f"Name: {row.name or ''}\n"
+            f"Email: {row.email or ''}\n"
+            f"Phone: {row.phone or ''}\n"
+            f"Summary:\n{row.inquiry or ''}\n"
+        )
+    else:
+        msg["Subject"] = f"PerkNation Contact Submission #{row.id}"
+        plain = (
+            "New Contact Us submission\n\n"
+            f"Submission ID: {row.id}\n"
+            f"Created At: {row.created_at}\n"
+            f"Source Page: {row.source_page or ''}\n"
+            f"Name: {row.name or ''}\n"
+            f"Email: {row.email or ''}\n"
+            f"Phone: {row.phone or ''}\n"
+            f"Inquiry:\n{row.inquiry or ''}\n"
+        )
     msg.set_content(plain)
 
     try:
