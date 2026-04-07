@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Hollywood Sports x Perk Nation live paintball offers including the active campaign lineup and $5 admission promos." />
+  <meta name="description" content="Perk Nation's five-location paintball offer campaign featuring the $70 park-pass bundle and $5 admission promo across participating parks." />
   <meta name="theme-color" content="#0d0d0d" />
-  <title>Hollywood Sports x Perk Nation | Live Paintball Offers</title>
+  <title>Hollywood Sports x Perk Nation | 5 Paintball Location Offer Campaign</title>
   <link rel="canonical" href="/white/hollywood-sports" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,34 +15,54 @@
   <link rel="stylesheet" href="assets/styles.css" />
   <style>
     .hspHeroWrap{padding-top:28px}
-    .hspMediaStack{display:grid; gap:16px}
-    .hspSheetCard,.hspOfferCard,.hspLocationCard,.hspStripCard,.hspStoryCard{
+    .hspVideoCard,.hspOfferCard,.hspLocationCard,.hspSheetCard,.hspMediaCard,.hspSupportCard,.hspChatCard{
       border-radius:24px;
       overflow:hidden;
       border:1px solid rgba(250,247,247,.14);
       background:rgba(250,247,247,.03);
       box-shadow:var(--shadow-soft);
     }
-    .hspSheetCard img,.hspStripCard img{width:100%;display:block}
-    .hspSheetBody,.hspOfferBody,.hspLocationBody,.hspStoryBody{padding:16px}
+    .hspVideoCard video,.hspSheetCard img{width:100%;display:block}
+    .hspVideoBody,.hspOfferBody,.hspLocationBody,.hspSheetBody,.hspMediaBody,.hspSupportBody,.hspChatBody{padding:16px}
     .hspMetrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}
     .hspMetric{padding:14px 16px;border-radius:20px;border:1px solid rgba(250,247,247,.14);background:rgba(250,247,247,.03)}
     .hspMetric .label{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted2);font-weight:800}
     .hspMetric .value{font-size:20px;font-weight:900;margin-top:4px}
-    .hspHeroActions,.hspCtas,.hspTermRail{display:flex;gap:10px;flex-wrap:wrap}
-    .hspOfferGrid,.hspLocationGrid,.hspStoryGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:18px}
+    .hspHeroActions,.hspTermRail,.hspOfferActions,.hspSupportActions{display:flex;gap:10px;flex-wrap:wrap}
+    .hspOfferGrid,.hspLocationGrid,.hspSheetGrid,.hspParkMediaGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:18px}
+    .hspOfferGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
     .hspOfferEyebrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
     .hspOfferEyebrow .pill{background:rgba(230,184,74,.16);border:1px solid rgba(230,184,74,.28)}
-    .hspOfferList,.hspLocationList{margin:12px 0 0;padding-left:18px;color:var(--muted);display:grid;gap:7px}
-    .hspOfferList strong,.hspLocationList strong{color:var(--ink)}
+    .hspOfferList,.hspLocationList,.hspTermsList{margin:12px 0 0;padding-left:18px;color:var(--muted);display:grid;gap:7px}
+    .hspOfferList strong,.hspLocationList strong,.hspTermsList strong{color:var(--ink)}
     .hspTermRail{margin-top:16px}
     .hspTermChip{padding:9px 12px;border-radius:999px;border:1px solid rgba(250,247,247,.16);background:rgba(250,247,247,.04);font-size:13px;font-weight:800;color:var(--muted)}
     .hspLead{max-width:760px}
-    .hspSupport{margin-top:18px;padding:14px 16px;border-radius:18px;background:rgba(230,184,74,.1);border:1px solid rgba(230,184,74,.24);color:var(--muted)}
-    .hspSupport strong{color:var(--ink)}
-    .hspStoryCard img{width:100%;height:240px;object-fit:cover}
+    .hspSupportCard{margin-top:18px}
+    .hspSupportBody p{margin:0 0 10px;color:var(--muted)}
+    .hspSheetMeta{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .hspSheetCard img{background:#101010}
+    .hspMediaCard .hspMediaBody{display:grid;gap:12px}
+    .hspMediaPoster{aspect-ratio:16/10;border-radius:18px;background:linear-gradient(145deg, rgba(230,184,74,.18), rgba(255,255,255,.04));display:grid;place-items:center;padding:18px;text-align:center}
+    .hspMediaPoster strong{font-size:20px;line-height:1.1}
+    .hspMediaPoster span{display:block;margin-top:8px;color:var(--muted)}
+    .hspMediaLabel{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted2);font-weight:800}
+    .hspSupportHeading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .hspMuted{color:var(--muted)}
+    .hspQuickPrompts{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .hspPromptBtn{border:1px solid rgba(250,247,247,.16);background:rgba(250,247,247,.04);color:var(--ink);padding:10px 14px;border-radius:999px;font:inherit;font-weight:700;cursor:pointer}
+    .hspPromptBtn:hover{border-color:rgba(230,184,74,.34);background:rgba(230,184,74,.1)}
+    .hspChatShell{margin-top:16px;border-radius:20px;border:1px solid rgba(250,247,247,.12);background:rgba(5,5,5,.34);padding:14px}
+    .hspChatMessages{display:grid;gap:10px}
+    .hspChatMessage{padding:12px 14px;border-radius:18px;max-width:100%;white-space:pre-wrap;line-height:1.45}
+    .hspChatMessage.assistant{background:rgba(250,247,247,.06);color:var(--ink)}
+    .hspChatMessage.user{background:rgba(230,184,74,.18);color:var(--ink)}
+    .hspChatComposer{display:grid;gap:10px;margin-top:14px}
+    .hspChatComposer textarea{min-height:98px;resize:vertical;border-radius:18px;border:1px solid rgba(250,247,247,.16);background:rgba(250,247,247,.03);padding:14px;color:var(--ink);font:inherit}
+    .hspChatComposer textarea::placeholder{color:var(--muted2)}
+    .hspChatStatus{min-height:20px;color:var(--muted2);font-size:13px}
     @media (max-width: 980px){
-      .hspMetrics,.hspOfferGrid,.hspLocationGrid,.hspStoryGrid{grid-template-columns:1fr}
+      .hspMetrics,.hspOfferGrid,.hspLocationGrid,.hspSheetGrid,.hspParkMediaGrid{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -87,47 +107,49 @@
   <section class="section hspHeroWrap">
     <div class="container grid2" style="align-items:center;gap:24px">
       <div>
-        <div class="badge">Hollywood Sports live dual-offer campaign</div>
-        <h1 class="h1 luxTitle">Paintball park passes, Golden Ticket access, private-group savings, and $5 admission promos.</h1>
+        <div class="badge">5 Paintball location offer campaign</div>
+        <h1 class="h1 luxTitle">$70 park-pass value, $5 admission savings, and five participating paintball parks.</h1>
         <p class="p hspLead">
-          Perk Nation now carries the full Hollywood Sports campaign lineup, including park passes, Golden Ticket access,
-          private-group savings, and $5 admission and rental promos. Together, the live offer set spans Bellflower, Chino,
-          Lakeside, Castaic, and Allen.
+          This campaign pairs a twelve-ticket bundle valued at over $500 with a $5 admission promo that saves over $60.
+          The Perk Nation offer page covers Bellflower, Chino, Lakeside, Castaic, and Allen so shoppers can move from
+          discovery to purchase without leaving the Perk Nation flow.
         </p>
         <div class="hspHeroActions">
-          <a class="btn primary" href="/white/create-account">Create an account</a>
-          <a class="btn" href="/white/members">See member access</a>
+          <a class="btn primary" href="/white/create-account?campaign=hsp">Buy now</a>
+          <a class="btn" href="#digital-offers">View digital offers</a>
         </div>
 
         <div class="hspMetrics">
           <div class="hspMetric">
-            <div class="label">Live parks</div>
-            <div class="value">5 locations live</div>
+            <div class="label">Participating Park</div>
+            <div class="value">5 parks</div>
           </div>
           <div class="hspMetric">
-            <div class="label">Promo types</div>
-            <div class="value">4 active offers</div>
+            <div class="label">$5 offer</div>
+            <div class="value">Save over $60</div>
           </div>
           <div class="hspMetric">
-            <div class="label">Campaign sources</div>
-            <div class="value">Core + $5 promo</div>
+            <div class="label">$70 bundle</div>
+            <div class="value">12 passes, $500+ value</div>
           </div>
         </div>
 
         <div class="hspTermRail">
-          <div class="hspTermChip">Minimum 400 paintballs required</div>
-          <div class="hspTermChip">All-day air purchase required</div>
-          <div class="hspTermChip">Holiday blackout dates apply</div>
-          <div class="hspTermChip">$5 admission promos live</div>
+          <div class="hspTermChip">500 paintballs + all-day air required</div>
+          <div class="hspTermChip">Subject to blackout dates</div>
+          <div class="hspTermChip">Major holidays excluded</div>
+          <div class="hspTermChip">$5 promo not valid for private groups</div>
         </div>
       </div>
 
-      <div class="hspMediaStack">
-        <article class="hspSheetCard">
-          <img src="/assets/campaigns/hsp-ticket-sheet-front-rotated.jpg" alt="Hollywood Sports park passes ticket art" loading="lazy" />
-          <div class="hspSheetBody">
-            <div class="pill">Current campaign creative</div>
-            <p class="small" style="margin:10px 0 0">The landing page visuals are pulled from the live HSP ticket sheet so the offer presentation matches the source material your team provided.</p>
+      <div>
+        <article class="hspVideoCard">
+          <video autoplay muted loop playsinline poster="https://lirp.cdn-website.com/7bb205c0/dms3rep/multi/opt/H9UN1bhzT0qKHWXG4ijw_Giant+Sports+2.v2.0000000-1920w.jpg">
+            <source src="https://vid.cdn-website.com/7bb205c0/videos/H9UN1bhzT0qKHWXG4ijw_Giant+Sports+2-v.mp4" type="video/mp4" />
+          </video>
+          <div class="hspVideoBody">
+            <div class="pill">Official park footage</div>
+            <p class="small" style="margin:10px 0 0">A short park video does more selling than a static flyer. This footage comes from the Giant Party Sports site, one of the five participating parks.</p>
           </div>
         </article>
       </div>
@@ -137,13 +159,13 @@
   <section class="section">
     <div class="container">
       <h2 class="h2">Offer lineup</h2>
-      <p class="muted">The active HSP page now combines the core HSP campaign offers with the additional $5 admission promos your team confirmed are also valid.</p>
+      <p class="hspMuted">The $70 bundle carries more than $500 in listed value, while the $5 offer delivers more than $60 in savings. The four offer blocks stay intact, with direct buy-now actions added beside each offer.</p>
 
       <div class="hspOfferGrid">
         <article class="hspOfferCard">
           <div class="hspOfferBody">
             <div class="hspOfferEyebrow">
-              <span class="pill">Core offer</span>
+              <span class="pill">Bundle pass</span>
               <span class="rating">Park pass</span>
             </div>
             <h3 class="h3">Paintball / Airsoft Park Pass</h3>
@@ -153,22 +175,28 @@
               <li><strong>Bonus:</strong> 100 extra rounds when playing .50 caliber.</li>
               <li><strong>Use case:</strong> walk-on park play and open-session redemption.</li>
             </ul>
+            <div class="hspOfferActions" style="margin-top:14px">
+              <a class="btn primary" href="/white/create-account?offer=hsp-park-pass">Buy now</a>
+            </div>
           </div>
         </article>
 
         <article class="hspOfferCard">
           <div class="hspOfferBody">
             <div class="hspOfferEyebrow">
-              <span class="pill">Premium drop</span>
+              <span class="pill">VIP access</span>
               <span class="rating">Golden Ticket</span>
             </div>
             <h3 class="h3">Golden Ticket All-Inclusive Pass</h3>
-            <p class="reviewLead">The premium park-access item is treated as its own live offer family inside Perk Nation.</p>
+            <p class="reviewLead">The hero upgrade for guests who want the easiest, most complete park day.</p>
             <ul class="hspOfferList">
               <li><strong>Positioning:</strong> all-inclusive access with no additional charge listed in the campaign.</li>
               <li><strong>Coverage:</strong> available across the current SoCal HSP campaign parks.</li>
-              <li><strong>Ideal for:</strong> featured drops, VIP redemptions, and standout creator campaigns.</li>
+              <li><strong>Ideal for:</strong> featured drops, VIP redemptions, and top-value bundles.</li>
             </ul>
+            <div class="hspOfferActions" style="margin-top:14px">
+              <a class="btn primary" href="/white/create-account?offer=hsp-golden-ticket">Buy now</a>
+            </div>
           </div>
         </article>
 
@@ -182,9 +210,12 @@
             <p class="reviewLead">Built for church groups, birthdays, team outings, and larger private sessions.</p>
             <ul class="hspOfferList">
               <li><strong>Discount:</strong> 10% off private group reservations.</li>
-              <li><strong>Restriction:</strong> not valid for walk-on groups.</li>
-              <li><strong>Planning note:</strong> reservations required for groups of 10 or more.</li>
+              <li><strong>Restriction:</strong> private reservations only available for groups of 10 or more.</li>
+              <li><strong>Planning note:</strong> start through Perk Nation so the offer stays attached to the booking.</li>
             </ul>
+            <div class="hspOfferActions" style="margin-top:14px">
+              <a class="btn primary" href="/white/create-account?offer=hsp-private-group">Buy now</a>
+            </div>
           </div>
         </article>
 
@@ -194,14 +225,62 @@
               <span class="pill">$5 promo</span>
               <span class="rating">$5 offer</span>
             </div>
-            <h3 class="h3">$5 Admission & Rental (Save $60)</h3>
-            <p class="reviewLead">This $5 admission promo is available as a live backend offer family.</p>
+            <h3 class="h3">$5 Admission &amp; Rental (Save $60)</h3>
+            <p class="reviewLead">This $5 admission promo is active across all five participating parks.</p>
             <ul class="hspOfferList">
-              <li><strong>Validity:</strong> weekend only with a one-year window from the original launch seed.</li>
               <li><strong>Requires:</strong> purchase of 500 paintballs and all-day air.</li>
               <li><strong>Restrictions:</strong> not valid for private groups.</li>
+              <li><strong>Use window:</strong> weekend redemption with a one-year expiration.</li>
               <li><strong>Coverage:</strong> Bellflower, Chino, Lakeside, Castaic, and Allen.</li>
             </ul>
+            <div class="hspOfferActions" style="margin-top:14px">
+              <a class="btn primary" href="/white/create-account?offer=hsp-five-dollar">Buy now</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="digital-offers">
+    <div class="container">
+      <h2 class="h2">Digital offer sheets</h2>
+      <p class="hspMuted">The full $70 sheet now appears front and back on the page, with a matching digital version of the $5 ticket added for campaign use.</p>
+
+      <div class="hspSheetGrid">
+        <article class="hspSheetCard">
+          <img src="/assets/campaigns/hsp-70-sheet-front-full.png" alt="Full digital $70 park pass sheet front" loading="lazy" />
+          <div class="hspSheetBody">
+            <div class="hspSheetMeta">
+              <div>
+                <div class="pill">$70 sheet front</div>
+              </div>
+              <a class="btn small" href="/assets/campaigns/hsp-70-sheet-front-full.png" target="_blank" rel="noopener">Open full sheet</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="hspSheetCard">
+          <img src="/assets/campaigns/hsp-70-sheet-back-full.png" alt="Full digital $70 park pass sheet back" loading="lazy" />
+          <div class="hspSheetBody">
+            <div class="hspSheetMeta">
+              <div>
+                <div class="pill">$70 sheet back</div>
+              </div>
+              <a class="btn small" href="/assets/campaigns/hsp-70-sheet-back-full.png" target="_blank" rel="noopener">Open full sheet</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="hspSheetCard">
+          <img src="/assets/campaigns/hsp-5-dollar-ticket.svg" alt="Digital $5 admission promo ticket" loading="lazy" />
+          <div class="hspSheetBody">
+            <div class="hspSheetMeta">
+              <div>
+                <div class="pill">$5 digital ticket</div>
+              </div>
+              <a class="btn small" href="/assets/campaigns/hsp-5-dollar-ticket.svg" target="_blank" rel="noopener">Open ticket</a>
+            </div>
           </div>
         </article>
       </div>
@@ -209,37 +288,9 @@
   </section>
 
   <section class="section">
-    <div class="container hspStoryGrid">
-      <article class="hspStoryCard">
-        <img src="/assets/campaigns/hsp-ticket-sheet-back.jpg" alt="Hollywood Sports ticket sheet showing offer blocks and brand imagery" loading="lazy" />
-        <div class="hspStoryBody">
-          <h3 class="h3">Campaign art</h3>
-          <p class="muted">The current campaign pull includes the park-pass creative, promo framing, and brand visuals used for Hollywood Sports distribution.</p>
-        </div>
-      </article>
-
-      <article class="hspStoryCard">
-        <img src="/assets/campaigns/hsp-location-strip.jpg" alt="Hollywood Sports, SC Village, and Lakeside location strip" loading="lazy" />
-        <div class="hspStoryBody">
-          <h3 class="h3">Park location strip</h3>
-          <p class="muted">The campaign creative anchors the page visually, while the $5 admission promos extend the active backend coverage beyond this strip.</p>
-        </div>
-      </article>
-
-      <article class="hspStoryCard">
-        <img src="/assets/campaigns/hsp-ticket-sheet-front-rotated.jpg" alt="Hollywood Sports park passes cover art" loading="lazy" />
-        <div class="hspStoryBody">
-          <h3 class="h3">Launch-ready creative</h3>
-          <p class="muted">These graphics can be used immediately in campaign previews, social exports, and merchant-facing review flows.</p>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <section class="section">
     <div class="container">
       <h2 class="h2">Participating parks</h2>
-      <p class="muted">The core HSP campaign runs at Bellflower, Chino, and Lakeside. The $5 admission promos also extend to Castaic and Allen.</p>
+      <p class="hspMuted">The $5 admission promo with a savings of $60 is valid for all 5 parks and requires 500 paintballs plus all-day air and is not valid for private groups. The $70 twelve-bundle park pass offer carries a value of over $500 and is subject to blackout dates and major holidays.</p>
 
       <div class="hspLocationGrid">
         <article class="hspLocationCard">
@@ -248,8 +299,8 @@
             <h3 class="h3">Hollywood Sports</h3>
             <ul class="hspLocationList">
               <li><strong>Address:</strong> 9030 Somerset Blvd, Bellflower, CA 90706</li>
-              <li><strong>Program:</strong> park pass, Golden Ticket, private groups</li>
-              <li><strong>Brand site:</strong> hollywoodsports.com</li>
+              <li><strong>Program:</strong> $70 bundle and featured park-pass campaign</li>
+              <li><strong>Brand site:</strong> <a href="https://hollywoodsports.com/pages/bellflower" target="_blank" rel="noopener">hollywoodsports.com/pages/bellflower</a></li>
             </ul>
           </div>
         </article>
@@ -260,8 +311,8 @@
             <h3 class="h3">SC Village</h3>
             <ul class="hspLocationList">
               <li><strong>Address:</strong> 8900 McCarty Rd, Chino, CA 91710</li>
-              <li><strong>Program:</strong> park pass, Golden Ticket, private groups</li>
-              <li><strong>Brand site:</strong> scvillage.com</li>
+              <li><strong>Program:</strong> $70 bundle and featured park-pass campaign</li>
+              <li><strong>Brand site:</strong> <a href="https://www.scvillage.com/" target="_blank" rel="noopener">scvillage.com</a></li>
             </ul>
           </div>
         </article>
@@ -272,8 +323,8 @@
             <h3 class="h3">Giant Paintball</h3>
             <ul class="hspLocationList">
               <li><strong>Address:</strong> 1800 Wildcat Canyon Rd, Lakeside, CA 92040</li>
-              <li><strong>Program:</strong> park pass, Golden Ticket, private groups</li>
-              <li><strong>Brand callout:</strong> current campaign location panel</li>
+              <li><strong>Program:</strong> $70 bundle and $5 admission promo</li>
+              <li><strong>Brand site:</strong> <a href="https://hollywoodsports.com/pages/san-diego" target="_blank" rel="noopener">hollywoodsports.com/pages/san-diego</a></li>
             </ul>
           </div>
         </article>
@@ -284,8 +335,8 @@
             <h3 class="h3">Combat Paintball</h3>
             <ul class="hspLocationList">
               <li><strong>Address:</strong> 31050 Charlie Canyon Rd, Castaic, CA 91384</li>
-              <li><strong>Program:</strong> $5 admission & rental promo</li>
-              <li><strong>Status:</strong> active in the $5 admission promo set</li>
+              <li><strong>Program:</strong> $5 admission &amp; rental promo</li>
+              <li><strong>Brand site:</strong> <a href="https://playcpp.com/" target="_blank" rel="noopener">playcpp.com</a></li>
             </ul>
           </div>
         </article>
@@ -296,33 +347,129 @@
             <h3 class="h3">Giant Party Sports</h3>
             <ul class="hspLocationList">
               <li><strong>Address:</strong> 4404 Dillehay Dr, Allen, TX 75002</li>
-              <li><strong>Program:</strong> $5 admission & rental promo</li>
-              <li><strong>Status:</strong> live in backend as an additional participating location</li>
+              <li><strong>Program:</strong> $5 admission &amp; rental promo</li>
+              <li><strong>Brand site:</strong> <a href="https://www.giantpartysports.com/" target="_blank" rel="noopener">giantpartysports.com</a></li>
             </ul>
           </div>
         </article>
       </div>
 
-      <div class="hspSupport">
-        <strong>Offer terms:</strong> Core HSP campaign offers follow the published blackout and expiration language on the offer art. The $5 admission promos carry their own terms: weekend only, must buy 500 paintballs plus all-day air, and not valid for private groups. Questions on the sheet route to <strong>(562) 867-9600</strong>.
-      </div>
+      <article class="hspSupportCard">
+        <div class="hspSupportBody">
+          <div class="hspSupportHeading">
+            <h3 class="h3" style="margin:0">Offer terms</h3>
+            <div class="pill">Use the back of ticket restrictions</div>
+          </div>
+          <ul class="hspTermsList">
+            <li><strong>$5 admission promo:</strong> valid across all five participating parks, weekend use only, requires 500 paintballs plus all-day air, and not valid for private groups.</li>
+            <li><strong>$70 twelve-bundle sheet:</strong> over $500 in listed value, includes park passes and Golden Ticket access, and is subject to blackout dates and major holidays.</li>
+            <li><strong>Group restriction:</strong> present the sheet at check-in; private reservation pricing is available only for groups of 10 or more.</li>
+            <li><strong>Checkout path:</strong> start through Perk Nation so the purchase stays tied to this offer.</li>
+          </ul>
+          <div class="hspSupportActions" style="margin-top:14px">
+            <a class="btn primary" href="/white/create-account?campaign=hsp">Buy now</a>
+            <a class="btn" href="#ask-perk-nation">Ask about this offer</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="hspChatCard" id="ask-perk-nation">
+        <div class="hspChatBody">
+          <div class="hspSupportHeading">
+            <h3 class="h3" style="margin:0">Ask Perk Nation</h3>
+            <div class="pill">Keep the purchase path in Perk Nation</div>
+          </div>
+          <p class="hspMuted">Use the chat to ask about blackout dates, park coverage, bundle differences, or which promo fits your group before you buy.</p>
+          <div class="hspQuickPrompts">
+            <button class="hspPromptBtn" type="button" data-hsp-prompt="Which parks accept the $5 admission promo?">Which parks take the $5 offer?</button>
+            <button class="hspPromptBtn" type="button" data-hsp-prompt="What does the $70 bundle include?">What is inside the $70 bundle?</button>
+            <button class="hspPromptBtn" type="button" data-hsp-prompt="Are there blackout dates or holiday restrictions?">Are there blackout dates?</button>
+          </div>
+          <div class="hspChatShell">
+            <div class="hspChatMessages" data-hsp-chat-messages>
+              <div class="hspChatMessage assistant">Hi, I’m the Perk Nation offer assistant. Ask about the parks, the $70 ticket sheet, the $5 admission promo, or which offer is best for your group.</div>
+            </div>
+            <form class="hspChatComposer" data-hsp-chat-form>
+              <textarea name="message" placeholder="Ask about the $5 offer, blackout dates, or which park fits your group best."></textarea>
+              <div class="hspSupportActions">
+                <button class="btn primary" type="submit">Send message</button>
+                <a class="btn" href="/white/create-account?campaign=hsp">Buy now</a>
+              </div>
+              <div class="hspChatStatus" data-hsp-chat-status>Instant answers from the Perk Nation offer assistant.</div>
+            </form>
+          </div>
+        </div>
+      </article>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
-      <div class="card pad" style="display:grid;grid-template-columns:1.15fr .85fr;gap:18px;align-items:center">
-        <div>
-          <div class="badge">Ready in the backend</div>
-          <h2 class="h2">Both HSP promo sources are now structured as active live offers.</h2>
-          <p class="muted">The HSP offer collection stays live, and the $5 admission promos are available across the expanded park set.</p>
-          <div class="hspCtas" style="margin-top:14px">
-            <a class="btn primary" href="/white/create-account">Join to unlock offers</a>
-            <a class="btn" href="/white/login">Log in</a>
+      <h2 class="h2">Official park media</h2>
+      <p class="hspMuted">Where partner sites publish video directly, the page uses it here. The remaining parks link to their official brand sites so shoppers can preview each location without losing the Perk Nation purchase path.</p>
+
+      <div class="hspParkMediaGrid">
+        <article class="hspMediaCard">
+          <video autoplay muted loop playsinline poster="https://cdn.shopify.com/s/files/1/0506/7830/0859/files/large_d6e29d05-e26f-48e5-b4fb-99ca8851dfe2.png?v=1706641504" style="width:100%;display:block;aspect-ratio:16/10;object-fit:cover;">
+            <source src="https://cdn.shopify.com/videos/c/o/v/c0f8539d918a4b57be7a0c65beeec510.mov" type="video/mp4" />
+          </video>
+          <div class="hspMediaBody">
+            <div class="hspMediaLabel">Official site video</div>
+            <strong>SC Village / Chino</strong>
+            <span class="hspMuted">Park footage pulled from the SC Village site.</span>
+            <a class="btn small" href="https://www.scvillage.com/" target="_blank" rel="noopener">Visit site</a>
           </div>
-        </div>
-        <article class="hspStripCard">
-          <img src="/assets/campaigns/hsp-location-strip.jpg" alt="Hollywood Sports location strip" loading="lazy" />
+        </article>
+
+        <article class="hspMediaCard">
+          <video autoplay muted loop playsinline poster="https://lirp.cdn-website.com/7bb205c0/dms3rep/multi/opt/M30eslwTS0W1y5B3HgtM_Giant+Sports+1.v2.0000000-1920w.jpg" style="width:100%;display:block;aspect-ratio:16/10;object-fit:cover;">
+            <source src="https://vid.cdn-website.com/7bb205c0/videos/M30eslwTS0W1y5B3HgtM_Giant+Sports+1-v.mp4" type="video/mp4" />
+          </video>
+          <div class="hspMediaBody">
+            <div class="hspMediaLabel">Official site video</div>
+            <strong>Giant Party Sports / Allen</strong>
+            <span class="hspMuted">Park footage pulled from the Giant Party Sports site.</span>
+            <a class="btn small" href="https://www.giantpartysports.com/" target="_blank" rel="noopener">Visit site</a>
+          </div>
+        </article>
+
+        <article class="hspMediaCard">
+          <div class="hspMediaBody">
+            <div class="hspMediaPoster">
+              <div>
+                <strong>Hollywood Sports</strong>
+                <span>Bellflower flagship park</span>
+              </div>
+            </div>
+            <div class="hspMediaLabel">Official destination</div>
+            <a class="btn small" href="https://hollywoodsports.com/pages/bellflower" target="_blank" rel="noopener">Visit park site</a>
+          </div>
+        </article>
+
+        <article class="hspMediaCard">
+          <div class="hspMediaBody">
+            <div class="hspMediaPoster">
+              <div>
+                <strong>Giant Paintball</strong>
+                <span>Lakeside participating park</span>
+              </div>
+            </div>
+            <div class="hspMediaLabel">Official destination</div>
+            <a class="btn small" href="https://hollywoodsports.com/pages/san-diego" target="_blank" rel="noopener">Visit park site</a>
+          </div>
+        </article>
+
+        <article class="hspMediaCard">
+          <div class="hspMediaBody">
+            <div class="hspMediaPoster">
+              <div>
+                <strong>Combat Paintball</strong>
+                <span>Castaic participating park</span>
+              </div>
+            </div>
+            <div class="hspMediaLabel">Official destination</div>
+            <a class="btn small" href="https://playcpp.com/" target="_blank" rel="noopener">Visit park site</a>
+          </div>
         </article>
       </div>
     </div>
@@ -336,7 +483,7 @@
         <img src="assets/mark.svg" alt="Perk Nation" width="34" height="34" />
         <div>
           <div style="font-weight:900">Perk Nation</div>
-          <div class="small">Universal, AI-driven commerce & rewards ecosystem</div>
+          <div class="small">Universal, AI-driven commerce &amp; rewards ecosystem</div>
         </div>
       </div>
       <div class="small">© 2026 Perk Nation</div>
@@ -397,7 +544,79 @@
   </div>
 </div>
 
-<script src="assets/app.js?v=20260405a"></script>
+<script src="assets/app.js?v=20260406a"></script>
+<script>
+  (() => {
+    const form = document.querySelector("[data-hsp-chat-form]");
+    const messages = document.querySelector("[data-hsp-chat-messages]");
+    const status = document.querySelector("[data-hsp-chat-status]");
+    if (!form || !messages || !status) return;
+
+    const input = form.querySelector("textarea");
+    const submit = form.querySelector('button[type="submit"]');
+    const promptButtons = document.querySelectorAll("[data-hsp-prompt]");
+
+    const appendMessage = (role, text) => {
+      const bubble = document.createElement("div");
+      bubble.className = `hspChatMessage ${role}`;
+      bubble.textContent = text;
+      messages.appendChild(bubble);
+      messages.scrollTop = messages.scrollHeight;
+    };
+
+    const buildReply = (message) => {
+      const text = message.toLowerCase();
+      if (/(which|what|where).*(park|location)|park.*(list|take|accept)|all five/.test(text)) {
+        return "The $5 admission promo is valid at all five participating parks: Hollywood Sports in Bellflower, SC Village in Chino, Giant Paintball in Lakeside, Combat Paintball in Castaic, and Giant Party Sports in Allen.";
+      }
+      if (/(five|\\$5|5).*(offer|promo|admission)|admission.*save|500 paintballs|all-day air/.test(text)) {
+        return "The $5 admission promo saves over $60. It requires the purchase of 500 paintballs plus all-day air, it is weekend use only, and it is not valid for private groups.";
+      }
+      if (/(70|bundle|sheet|golden ticket|park pass)/.test(text)) {
+        return "The $70 bundle has a listed value of more than $500. It includes park-pass value across the bundle sheet, plus Golden Ticket access, and it is subject to blackout dates and major holidays.";
+      }
+      if (/(blackout|holiday|major holiday|date)/.test(text)) {
+        return "Yes. The $70 twelve-bundle sheet is subject to blackout dates and major holidays. The $5 admission promo is a separate offer with weekend-only use and a one-year redemption window.";
+      }
+      if (/(group|private|birthday|team|church|reservation)/.test(text)) {
+        return "Private group reservations receive 10% off. They are available only for groups of 10 or more, and the $5 admission promo is not valid for private groups.";
+      }
+      if (/(buy|purchase|checkout|credit|track)/.test(text)) {
+        return "Start through the Buy now button on this page so the purchase stays tied to Perk Nation. That keeps the checkout path inside Perk Nation and makes sure the offer is tracked correctly.";
+      }
+      return "I can help with the five participating parks, the $5 admission promo, the $70 bundle, blackout dates, private-group rules, or the best next step before checkout.";
+    };
+
+    const sendMessage = async (message) => {
+      const trimmed = message.trim();
+      if (!trimmed) return;
+
+      appendMessage("user", trimmed);
+      input.value = "";
+      input.focus();
+      submit.disabled = true;
+      status.textContent = "Looking up the offer details...";
+
+      window.setTimeout(() => {
+        appendMessage("assistant", buildReply(trimmed));
+        status.textContent = "Answered by the Perk Nation offer assistant.";
+        submit.disabled = false;
+      }, 280);
+    };
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      await sendMessage(input.value);
+    });
+
+    promptButtons.forEach((button) => {
+      button.addEventListener("click", async () => {
+        const prompt = button.getAttribute("data-hsp-prompt") || "";
+        await sendMessage(prompt);
+      });
+    });
+  })();
+</script>
 
 </body>
 </html>

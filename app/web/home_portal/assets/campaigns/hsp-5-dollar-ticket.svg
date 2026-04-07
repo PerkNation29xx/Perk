@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="648" viewBox="0 0 1080 648" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1080" y2="648" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#141414"/>
+      <stop offset="1" stop-color="#272727"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1080" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E8C15E"/>
+      <stop offset="1" stop-color="#F3D77A"/>
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="648" rx="36" fill="url(#bg)"/>
+  <rect x="24" y="24" width="1032" height="600" rx="28" stroke="url(#gold)" stroke-width="4" stroke-dasharray="16 12"/>
+  <rect x="44" y="44" width="250" height="560" rx="26" fill="#0F0F0F" stroke="#3A3A3A"/>
+  <text x="82" y="130" fill="#F5F0E6" font-family="Arial, Helvetica, sans-serif" font-size="122" font-weight="900">$5</text>
+  <text x="82" y="178" fill="#E8C15E" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" letter-spacing="4">PERKNATION</text>
+  <text x="82" y="252" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="52" font-weight="900">ADMISSION</text>
+  <text x="82" y="304" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="52" font-weight="900">&amp; RENTAL</text>
+  <text x="82" y="366" fill="#D7D7D7" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">SAVE OVER $60</text>
+  <text x="82" y="462" fill="#F3D77A" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">VALID AT 5 PARKS</text>
+  <text x="82" y="502" fill="#B7B7B7" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">WEEKENDS ONLY</text>
+  <text x="82" y="542" fill="#B7B7B7" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">ONE YEAR EXPIRATION</text>
+  <text x="334" y="112" fill="#E8C15E" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="800" letter-spacing="4">5 PAINTBALL LOCATION OFFER CAMPAIGN</text>
+  <text x="334" y="180" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="60" font-weight="900">$5 admission promo</text>
+  <text x="334" y="230" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="60" font-weight="900">for all five parks</text>
+  <text x="334" y="294" fill="#D3D3D3" font-family="Arial, Helvetica, sans-serif" font-size="30">Must purchase 500 paintballs plus all-day air.</text>
+  <text x="334" y="336" fill="#D3D3D3" font-family="Arial, Helvetica, sans-serif" font-size="30">Not valid for private groups.</text>
+  <text x="334" y="378" fill="#D3D3D3" font-family="Arial, Helvetica, sans-serif" font-size="30">Bellflower · Chino · Lakeside · Castaic · Allen</text>
+  <rect x="334" y="424" width="678" height="132" rx="22" fill="#101826" stroke="#27344B"/>
+  <text x="366" y="470" fill="#E8C15E" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="800">OFFER TERMS</text>
+  <text x="366" y="510" fill="#F5F5F5" font-family="Arial, Helvetica, sans-serif" font-size="24">Present at check-in. Weekend use only. Management reserves all blackout dates</text>
+  <text x="366" y="542" fill="#F5F5F5" font-family="Arial, Helvetica, sans-serif" font-size="24">including major holidays. Perk Nation tracked purchase required for campaign credit.</text>
+  <circle cx="968" cy="148" r="48" fill="#E8C15E" fill-opacity="0.18" stroke="#E8C15E"/>
+  <path d="M944 148h48M968 124v48" stroke="#E8C15E" stroke-width="6" stroke-linecap="round"/>
+</svg>
