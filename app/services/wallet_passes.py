@@ -194,6 +194,8 @@ class WalletPassService:
             "passTypeIdentifier": pass_type_identifier,
             "serialNumber": serial_number,
             "teamIdentifier": team_identifier,
+            # Prevent Wallet pass forwarding between users.
+            "sharingProhibited": True,
             "organizationName": settings.wallet_organization_name,
             "description": safe_title,
             "logoText": "PerkNation",

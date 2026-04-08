@@ -165,6 +165,8 @@ def test_wallet_pass_route_generates_pkpass_when_local_signing_is_configured(tmp
                 "logo.png",
                 "logo@2x.png",
             }
+            pass_json = json.loads(archive.read("pass.json").decode("utf-8"))
+            assert pass_json.get("sharingProhibited") is True
             manifest = json.loads(archive.read("manifest.json").decode("utf-8"))
             assert set(manifest) == {
                 "pass.json",
@@ -241,6 +243,9 @@ def test_wallet_pass_route_generates_pkpass_when_pem_values_are_configured(tmp_p
         assert response.status_code == 200
         assert response.headers["content-type"].startswith("application/vnd.apple.pkpass")
         assert response.content[:2] == b"PK"
+        with ZipFile(BytesIO(response.content)) as archive:
+            pass_json = json.loads(archive.read("pass.json").decode("utf-8"))
+            assert pass_json.get("sharingProhibited") is True
     finally:
         for key, value in originals.items():
             setattr(settings, key, value)
