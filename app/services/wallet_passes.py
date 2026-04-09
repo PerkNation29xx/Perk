@@ -180,54 +180,24 @@ class WalletPassService:
             return {
                 "key": "hq",
                 "asset_dir": self.hq_asset_dir,
-                "pass_type_identifier": settings.wallet_hq_pass_type_identifier
-                or settings.wallet_pass_type_identifier,
-                "pass_type_env_names": (
-                    "WALLET_HQ_PASS_TYPE_IDENTIFIER",
-                    "WALLET_PASS_TYPE_IDENTIFIER",
-                ),
-                "team_identifier": settings.wallet_hq_team_identifier
-                or settings.wallet_team_identifier,
-                "team_env_names": (
-                    "WALLET_HQ_TEAM_IDENTIFIER",
-                    "WALLET_TEAM_IDENTIFIER",
-                ),
+                "pass_type_identifier": settings.wallet_hq_pass_type_identifier,
+                "pass_type_env_names": ("WALLET_HQ_PASS_TYPE_IDENTIFIER",),
+                "team_identifier": settings.wallet_hq_team_identifier,
+                "team_env_names": ("WALLET_HQ_TEAM_IDENTIFIER",),
                 "organization_name": settings.wallet_hq_organization_name,
                 "description": settings.wallet_hq_description,
-                "cert_path": settings.wallet_hq_signer_certificate_path
-                or settings.wallet_signer_certificate_path,
-                "cert_pem": settings.wallet_hq_signer_certificate_pem
-                or settings.wallet_signer_certificate_pem,
-                "cert_path_env_names": (
-                    "WALLET_HQ_SIGNER_CERTIFICATE_PATH",
-                    "WALLET_SIGNER_CERTIFICATE_PATH",
-                ),
-                "cert_pem_env_names": (
-                    "WALLET_HQ_SIGNER_CERTIFICATE_PEM",
-                    "WALLET_SIGNER_CERTIFICATE_PEM",
-                ),
-                "key_path": settings.wallet_hq_signer_key_path or settings.wallet_signer_key_path,
-                "key_pem": settings.wallet_hq_signer_key_pem or settings.wallet_signer_key_pem,
-                "key_path_env_names": (
-                    "WALLET_HQ_SIGNER_KEY_PATH",
-                    "WALLET_SIGNER_KEY_PATH",
-                ),
-                "key_pem_env_names": (
-                    "WALLET_HQ_SIGNER_KEY_PEM",
-                    "WALLET_SIGNER_KEY_PEM",
-                ),
-                "wwdr_path": settings.wallet_hq_wwdr_certificate_path
-                or settings.wallet_wwdr_certificate_path,
-                "wwdr_pem": settings.wallet_hq_wwdr_certificate_pem
-                or settings.wallet_wwdr_certificate_pem,
-                "wwdr_path_env_names": (
-                    "WALLET_HQ_WWDR_CERTIFICATE_PATH",
-                    "WALLET_WWDR_CERTIFICATE_PATH",
-                ),
-                "wwdr_pem_env_names": (
-                    "WALLET_HQ_WWDR_CERTIFICATE_PEM",
-                    "WALLET_WWDR_CERTIFICATE_PEM",
-                ),
+                "cert_path": settings.wallet_hq_signer_certificate_path,
+                "cert_pem": settings.wallet_hq_signer_certificate_pem,
+                "cert_path_env_names": ("WALLET_HQ_SIGNER_CERTIFICATE_PATH",),
+                "cert_pem_env_names": ("WALLET_HQ_SIGNER_CERTIFICATE_PEM",),
+                "key_path": settings.wallet_hq_signer_key_path,
+                "key_pem": settings.wallet_hq_signer_key_pem,
+                "key_path_env_names": ("WALLET_HQ_SIGNER_KEY_PATH",),
+                "key_pem_env_names": ("WALLET_HQ_SIGNER_KEY_PEM",),
+                "wwdr_path": settings.wallet_hq_wwdr_certificate_path,
+                "wwdr_pem": settings.wallet_hq_wwdr_certificate_pem,
+                "wwdr_path_env_names": ("WALLET_HQ_WWDR_CERTIFICATE_PATH",),
+                "wwdr_pem_env_names": ("WALLET_HQ_WWDR_CERTIFICATE_PEM",),
             }
 
         return {
@@ -341,7 +311,7 @@ class WalletPassService:
         organization_name: str,
         description: str,
     ) -> dict[str, object]:
-        serial_number = hashlib.sha1(f"{title}|{code}|{payload}".encode("utf-8")).hexdigest()
+        serial_number = hashlib.sha1(f"{template}|{title}|{code}|{payload}".encode("utf-8")).hexdigest()
         support_host = urlparse(payload).netloc or "perknation.app"
         safe_title = title.strip()[:80]
         safe_code = code.strip()[:80]

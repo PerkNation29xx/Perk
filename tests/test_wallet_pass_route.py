@@ -309,11 +309,11 @@ def test_wallet_pass_route_generates_hq_template_when_requested(tmp_path: Path) 
     settings.wallet_signer_certificate_pem = None
     settings.wallet_signer_key_pem = None
     settings.wallet_wwdr_certificate_pem = None
-    settings.wallet_hq_pass_type_identifier = None
-    settings.wallet_hq_team_identifier = None
-    settings.wallet_hq_signer_certificate_path = None
-    settings.wallet_hq_signer_key_path = None
-    settings.wallet_hq_wwdr_certificate_path = None
+    settings.wallet_hq_pass_type_identifier = "pass.com.neonflux.thq"
+    settings.wallet_hq_team_identifier = "PL9PGQKXUW"
+    settings.wallet_hq_signer_certificate_path = str(signer_cert)
+    settings.wallet_hq_signer_key_path = str(signer_key)
+    settings.wallet_hq_wwdr_certificate_path = str(wwdr_cert)
     settings.wallet_hq_signer_certificate_pem = None
     settings.wallet_hq_signer_key_pem = None
     settings.wallet_hq_wwdr_certificate_pem = None
@@ -323,12 +323,11 @@ def test_wallet_pass_route_generates_hq_template_when_requested(tmp_path: Path) 
     try:
         with TestClient(app) as client:
             response = client.get(
-                "/v1/wallet/pass",
+                "/v1/wallet/pass/hq",
                 params={
                     "title": "Billy Navidad",
                     "code": "BDG-123456",
                     "payload": "bodegarewards://member/pn-123",
-                    "template": "hq",
                 },
             )
 
@@ -344,6 +343,63 @@ def test_wallet_pass_route_generates_hq_template_when_requested(tmp_path: Path) 
             assert "generic" not in pass_json
             assert pass_json["storeCard"]["primaryFields"][0]["value"] == "Billy Navidad"
             assert pass_json["storeCard"]["primaryFields"][1]["value"] == "BDG-123456"
+            assert pass_json["passTypeIdentifier"] == "pass.com.neonflux.thq"
+    finally:
+        for key, value in originals.items():
+            setattr(settings, key, value)
+
+
+def test_wallet_hq_template_requires_dedicated_signing_configuration() -> None:
+    originals = {
+        "wallet_pass_service_url": settings.wallet_pass_service_url,
+        "wallet_pass_type_identifier": settings.wallet_pass_type_identifier,
+        "wallet_team_identifier": settings.wallet_team_identifier,
+        "wallet_signer_certificate_path": settings.wallet_signer_certificate_path,
+        "wallet_signer_key_path": settings.wallet_signer_key_path,
+        "wallet_wwdr_certificate_path": settings.wallet_wwdr_certificate_path,
+        "wallet_signer_certificate_pem": settings.wallet_signer_certificate_pem,
+        "wallet_signer_key_pem": settings.wallet_signer_key_pem,
+        "wallet_wwdr_certificate_pem": settings.wallet_wwdr_certificate_pem,
+        "wallet_hq_pass_type_identifier": settings.wallet_hq_pass_type_identifier,
+        "wallet_hq_team_identifier": settings.wallet_hq_team_identifier,
+        "wallet_hq_signer_certificate_path": settings.wallet_hq_signer_certificate_path,
+        "wallet_hq_signer_key_path": settings.wallet_hq_signer_key_path,
+        "wallet_hq_wwdr_certificate_path": settings.wallet_hq_wwdr_certificate_path,
+        "wallet_hq_signer_certificate_pem": settings.wallet_hq_signer_certificate_pem,
+        "wallet_hq_signer_key_pem": settings.wallet_hq_signer_key_pem,
+        "wallet_hq_wwdr_certificate_pem": settings.wallet_hq_wwdr_certificate_pem,
+    }
+    settings.wallet_pass_service_url = None
+    settings.wallet_pass_type_identifier = "pass.com.neonflux.perknation"
+    settings.wallet_team_identifier = "PL9PGQKXUW"
+    settings.wallet_signer_certificate_path = "/tmp/perk-cert.pem"
+    settings.wallet_signer_key_path = "/tmp/perk-key.pem"
+    settings.wallet_wwdr_certificate_path = "/tmp/perk-wwdr.pem"
+    settings.wallet_signer_certificate_pem = None
+    settings.wallet_signer_key_pem = None
+    settings.wallet_wwdr_certificate_pem = None
+    settings.wallet_hq_pass_type_identifier = None
+    settings.wallet_hq_team_identifier = None
+    settings.wallet_hq_signer_certificate_path = None
+    settings.wallet_hq_signer_key_path = None
+    settings.wallet_hq_wwdr_certificate_path = None
+    settings.wallet_hq_signer_certificate_pem = None
+    settings.wallet_hq_signer_key_pem = None
+    settings.wallet_hq_wwdr_certificate_pem = None
+
+    try:
+        with TestClient(app) as client:
+            response = client.get(
+                "/v1/wallet/pass/hq",
+                params={
+                    "title": "Billy Navidad",
+                    "code": "BDG-123456",
+                    "payload": "bodegarewards://member/pn-123",
+                },
+            )
+
+        assert response.status_code == 503
+        assert "dedicated signing" in response.json()["detail"]
     finally:
         for key, value in originals.items():
             setattr(settings, key, value)

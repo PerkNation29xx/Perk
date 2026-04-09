@@ -14,12 +14,12 @@ from app.services.wallet_passes import (
 router = APIRouter(prefix="/wallet", tags=["wallet"])
 
 
-@router.get("/pass", include_in_schema=False)
-def get_apple_wallet_pass(
-    title: str = Query(..., min_length=1, max_length=120),
-    code: str = Query(..., min_length=1, max_length=120),
-    payload: str = Query(..., min_length=1, max_length=2048),
-    template: str = Query("perknation", pattern="^(perknation|hq)$"),
+def _issue_wallet_pass(
+    *,
+    title: str,
+    code: str,
+    payload: str,
+    template: str,
 ) -> Response:
     if wallet_pass_service.configured_for_local_signing(template=template):
         try:
@@ -43,6 +43,15 @@ def get_apple_wallet_pass(
             content=pkpass,
             media_type="application/vnd.apple.pkpass",
             headers=headers,
+        )
+
+    if template == "hq":
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "The HQ Apple Wallet pass is not configured for dedicated signing yet. "
+                "Configure WALLET_HQ_* signing values first."
+            ),
         )
 
     service_url = (settings.wallet_pass_service_url or "").strip()
@@ -75,3 +84,32 @@ def get_apple_wallet_pass(
         )
     )
     return RedirectResponse(url=destination, status_code=307)
+
+
+@router.get("/pass", include_in_schema=False)
+def get_apple_wallet_pass(
+    title: str = Query(..., min_length=1, max_length=120),
+    code: str = Query(..., min_length=1, max_length=120),
+    payload: str = Query(..., min_length=1, max_length=2048),
+    template: str = Query("perknation", pattern="^(perknation|hq)$"),
+) -> Response:
+    return _issue_wallet_pass(
+        title=title,
+        code=code,
+        payload=payload,
+        template=template,
+    )
+
+
+@router.get("/pass/hq", include_in_schema=False)
+def get_hq_wallet_pass(
+    title: str = Query(..., min_length=1, max_length=120),
+    code: str = Query(..., min_length=1, max_length=120),
+    payload: str = Query(..., min_length=1, max_length=2048),
+) -> Response:
+    return _issue_wallet_pass(
+        title=title,
+        code=code,
+        payload=payload,
+        template="hq",
+    )

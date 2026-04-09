@@ -50,3 +50,43 @@ services:
         value: "true"
       - key: AI_PROVIDER
         value: openai
+      - key: WALLET_PASS_SERVICE_URL
+        sync: false
+      - key: WALLET_PASS_TYPE_IDENTIFIER
+        sync: false
+      - key: WALLET_TEAM_IDENTIFIER
+        sync: false
+      - key: WALLET_ORGANIZATION_NAME
+        value: PerkNation
+      - key: WALLET_SIGNER_CERTIFICATE_PATH
+        sync: false
+      - key: WALLET_SIGNER_KEY_PATH
+        sync: false
+      - key: WALLET_WWDR_CERTIFICATE_PATH
+        sync: false
+      - key: WALLET_SIGNER_CERTIFICATE_PEM
+        sync: false
+      - key: WALLET_SIGNER_KEY_PEM
+        sync: false
+      - key: WALLET_WWDR_CERTIFICATE_PEM
+        sync: false
+      - key: WALLET_HQ_PASS_TYPE_IDENTIFIER
+        value: pass.com.neonflux.thq
+      - key: WALLET_HQ_TEAM_IDENTIFIER
+        value: PL9PGQKXUW
+      - key: WALLET_HQ_ORGANIZATION_NAME
+        value: NEONFLUX LLC
+      - key: WALLET_HQ_DESCRIPTION
+        value: The HQ
+      - key: WALLET_HQ_SIGNER_CERTIFICATE_PATH
+        sync: false
+      - key: WALLET_HQ_SIGNER_KEY_PATH
+        sync: false
+      - key: WALLET_HQ_WWDR_CERTIFICATE_PATH
+        sync: false
+      - key: WALLET_HQ_SIGNER_CERTIFICATE_PEM
+        sync: false
+      - key: WALLET_HQ_SIGNER_KEY_PEM
+        sync: false
+      - key: WALLET_HQ_WWDR_CERTIFICATE_PEM
+        sync: false
