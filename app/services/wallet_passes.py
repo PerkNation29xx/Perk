@@ -140,6 +140,12 @@ class WalletPassService:
                 path_env_name=" or ".join(resolved["wwdr_path_env_names"]),
                 pem_env_name=" or ".join(resolved["wwdr_pem_env_names"]),
             )
+            self._validate_signing_identity(
+                signer_certificate_path=cert_path,
+                expected_pass_type_identifier=pass_type_identifier,
+                expected_team_identifier=team_identifier,
+                template=resolved["key"],
+            )
             pass_json = self._build_pass_json(
                 title=title,
                 code=code,
@@ -298,6 +304,74 @@ class WalletPassService:
             normalized_pem += "\n"
         material_path.write_text(normalized_pem, encoding="utf-8")
         return material_path
+
+    def _validate_signing_identity(
+        self,
+        *,
+        signer_certificate_path: Path,
+        expected_pass_type_identifier: str,
+        expected_team_identifier: str,
+        template: str,
+    ) -> None:
+        command = [
+            "openssl",
+            "x509",
+            "-in",
+            str(signer_certificate_path),
+            "-noout",
+            "-subject",
+            "-nameopt",
+            "RFC2253",
+        ]
+        try:
+            completed = subprocess.run(
+                command,
+                check=False,
+                capture_output=True,
+                text=True,
+            )
+        except OSError as exc:
+            raise WalletPassConfigurationError(
+                f"OpenSSL is unavailable while validating {template} signer certificate: {exc}"
+            ) from exc
+
+        if completed.returncode != 0:
+            stderr = (completed.stderr or "").strip()
+            raise WalletPassConfigurationError(
+                stderr or f"Failed to read {template} signer certificate subject."
+            )
+
+        subject = (completed.stdout or "").strip()
+        normalized_subject = subject.removeprefix("subject=").strip()
+        uid = self._extract_subject_component(normalized_subject, "UID")
+        team = self._extract_subject_component(normalized_subject, "OU")
+
+        if not uid:
+            raise WalletPassConfigurationError(
+                f"The {template} signer certificate is missing UID. Use a Pass Type ID certificate "
+                f"for {expected_pass_type_identifier}."
+            )
+        if uid.lower() != expected_pass_type_identifier.lower():
+            raise WalletPassConfigurationError(
+                f"The {template} signer certificate UID ({uid}) does not match the configured "
+                f"pass type identifier ({expected_pass_type_identifier})."
+            )
+        if not team:
+            raise WalletPassConfigurationError(
+                f"The {template} signer certificate is missing OU/team identifier."
+            )
+        if team != expected_team_identifier:
+            raise WalletPassConfigurationError(
+                f"The {template} signer certificate OU ({team}) does not match the configured "
+                f"team identifier ({expected_team_identifier})."
+            )
+
+    @staticmethod
+    def _extract_subject_component(subject: str, key: str) -> str:
+        match = re.search(rf"(?:^|,){re.escape(key)}=([^,]+)", subject)
+        if not match:
+            return ""
+        return match.group(1).strip().strip('"')
 
     def _build_pass_json(
         self,

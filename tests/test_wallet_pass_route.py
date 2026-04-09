@@ -111,7 +111,7 @@ def test_wallet_pass_route_generates_pkpass_when_local_signing_is_configured(tmp
             "2",
             "-nodes",
             "-subj",
-            "/CN=PerkNation Test Pass",
+            "/CN=PerkNation Test Pass/UID=pass.com.neonflux.perknation/OU=PL9PGQKXUW",
         ],
         check=True,
         capture_output=True,
@@ -200,7 +200,7 @@ def test_wallet_pass_route_generates_pkpass_when_pem_values_are_configured(tmp_p
             "2",
             "-nodes",
             "-subj",
-            "/CN=PerkNation Test Pass",
+            "/CN=PerkNation Test Pass/UID=pass.com.neonflux.perknation/OU=PL9PGQKXUW",
         ],
         check=True,
         capture_output=True,
@@ -271,7 +271,7 @@ def test_wallet_pass_route_generates_hq_template_when_requested(tmp_path: Path) 
             "2",
             "-nodes",
             "-subj",
-            "/CN=The HQ Test Pass",
+            "/CN=The HQ Test Pass/UID=pass.com.neonflux.thq/OU=PL9PGQKXUW",
         ],
         check=True,
         capture_output=True,
@@ -400,6 +400,77 @@ def test_wallet_hq_template_requires_dedicated_signing_configuration() -> None:
 
         assert response.status_code == 503
         assert "dedicated signing" in response.json()["detail"]
+    finally:
+        for key, value in originals.items():
+            setattr(settings, key, value)
+
+
+def test_wallet_hq_template_rejects_perknation_signer_certificate(tmp_path: Path) -> None:
+    signer_key = tmp_path / "signer.key.pem"
+    signer_cert = tmp_path / "signer.pem"
+    wwdr_cert = tmp_path / "wwdr.pem"
+
+    subprocess.run(
+        [
+            "openssl",
+            "req",
+            "-x509",
+            "-newkey",
+            "rsa:2048",
+            "-keyout",
+            str(signer_key),
+            "-out",
+            str(signer_cert),
+            "-days",
+            "2",
+            "-nodes",
+            "-subj",
+            "/CN=PerkNation Test Pass/UID=pass.com.neonflux.perknation/OU=PL9PGQKXUW",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    wwdr_cert.write_bytes(signer_cert.read_bytes())
+
+    originals = {
+        "wallet_pass_service_url": settings.wallet_pass_service_url,
+        "wallet_hq_pass_type_identifier": settings.wallet_hq_pass_type_identifier,
+        "wallet_hq_team_identifier": settings.wallet_hq_team_identifier,
+        "wallet_hq_organization_name": settings.wallet_hq_organization_name,
+        "wallet_hq_description": settings.wallet_hq_description,
+        "wallet_hq_signer_certificate_path": settings.wallet_hq_signer_certificate_path,
+        "wallet_hq_signer_key_path": settings.wallet_hq_signer_key_path,
+        "wallet_hq_wwdr_certificate_path": settings.wallet_hq_wwdr_certificate_path,
+        "wallet_hq_signer_certificate_pem": settings.wallet_hq_signer_certificate_pem,
+        "wallet_hq_signer_key_pem": settings.wallet_hq_signer_key_pem,
+        "wallet_hq_wwdr_certificate_pem": settings.wallet_hq_wwdr_certificate_pem,
+    }
+    settings.wallet_pass_service_url = None
+    settings.wallet_hq_pass_type_identifier = "pass.com.neonflux.thq"
+    settings.wallet_hq_team_identifier = "PL9PGQKXUW"
+    settings.wallet_hq_organization_name = "NEONFLUX LLC"
+    settings.wallet_hq_description = "The HQ"
+    settings.wallet_hq_signer_certificate_path = str(signer_cert)
+    settings.wallet_hq_signer_key_path = str(signer_key)
+    settings.wallet_hq_wwdr_certificate_path = str(wwdr_cert)
+    settings.wallet_hq_signer_certificate_pem = None
+    settings.wallet_hq_signer_key_pem = None
+    settings.wallet_hq_wwdr_certificate_pem = None
+
+    try:
+        with TestClient(app) as client:
+            response = client.get(
+                "/v1/wallet/pass/hq",
+                params={
+                    "title": "Billy Navidad",
+                    "code": "BDG-123456",
+                    "payload": "bodegarewards://member/pn-123",
+                },
+            )
+
+        assert response.status_code == 503
+        assert "does not match the configured pass type identifier" in response.json()["detail"]
     finally:
         for key, value in originals.items():
             setattr(settings, key, value)
