@@ -19,16 +19,22 @@ def get_apple_wallet_pass(
     title: str = Query(..., min_length=1, max_length=120),
     code: str = Query(..., min_length=1, max_length=120),
     payload: str = Query(..., min_length=1, max_length=2048),
+    template: str = Query("perknation", pattern="^(perknation|hq)$"),
 ) -> Response:
-    if wallet_pass_service.configured_for_local_signing():
+    if wallet_pass_service.configured_for_local_signing(template=template):
         try:
-            pkpass = wallet_pass_service.build_pass(title=title, code=code, payload=payload)
+            pkpass = wallet_pass_service.build_pass(
+                title=title,
+                code=code,
+                payload=payload,
+                template=template,
+            )
         except WalletPassConfigurationError as exc:
             raise HTTPException(status_code=503, detail=str(exc)) from exc
         except WalletPassSigningError as exc:
             raise HTTPException(status_code=500, detail=str(exc)) from exc
 
-        filename = wallet_pass_service.filename_for_code(code)
+        filename = wallet_pass_service.filename_for_code(code, template=template)
         headers = {
             "Content-Disposition": f'attachment; filename="{filename}"',
             "Cache-Control": "no-store",
@@ -56,6 +62,7 @@ def get_apple_wallet_pass(
             ("title", title),
             ("code", code),
             ("payload", payload),
+            ("template", template),
         ]
     )
     destination = urlunsplit(

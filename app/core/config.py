@@ -66,6 +66,16 @@ class Settings(BaseSettings):
     wallet_signer_certificate_pem: Optional[str] = None
     wallet_signer_key_pem: Optional[str] = None
     wallet_wwdr_certificate_pem: Optional[str] = None
+    wallet_hq_pass_type_identifier: Optional[str] = None
+    wallet_hq_team_identifier: Optional[str] = None
+    wallet_hq_organization_name: str = "NEONFLUX LLC"
+    wallet_hq_description: str = "The HQ"
+    wallet_hq_signer_certificate_path: Optional[str] = None
+    wallet_hq_signer_key_path: Optional[str] = None
+    wallet_hq_wwdr_certificate_path: Optional[str] = None
+    wallet_hq_signer_certificate_pem: Optional[str] = None
+    wallet_hq_signer_key_pem: Optional[str] = None
+    wallet_hq_wwdr_certificate_pem: Optional[str] = None
 
     seed_default_data: bool = True
     email_verification_code_ttl_minutes: int = 30

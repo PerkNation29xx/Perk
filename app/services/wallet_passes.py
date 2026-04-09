@@ -33,43 +33,82 @@ class WalletPassService:
     )
 
     def __init__(self) -> None:
-        self.asset_dir = Path(__file__).resolve().parent.parent / "assets" / "wallet"
+        assets_root = Path(__file__).resolve().parent.parent / "assets"
+        self.asset_dir = assets_root / "wallet"
+        self.hq_asset_dir = assets_root / "wallet_hq"
 
-    def configured_for_local_signing(self) -> bool:
+    def configured_for_local_signing(self, *, template: str = "perknation") -> bool:
+        resolved = self._resolve_template(template)
+        pass_type_identifier, _ = self._resolve_template_value(
+            resolved["pass_type_identifier"],
+            resolved["pass_type_env_names"],
+        )
+        team_identifier, _ = self._resolve_template_value(
+            resolved["team_identifier"],
+            resolved["team_env_names"],
+        )
+        cert_path_value, cert_pem_value = self._resolve_template_material(
+            path_value=resolved["cert_path"],
+            pem_value=resolved["cert_pem"],
+            path_env_names=resolved["cert_path_env_names"],
+            pem_env_names=resolved["cert_pem_env_names"],
+        )
+        key_path_value, key_pem_value = self._resolve_template_material(
+            path_value=resolved["key_path"],
+            pem_value=resolved["key_pem"],
+            path_env_names=resolved["key_path_env_names"],
+            pem_env_names=resolved["key_pem_env_names"],
+        )
+        wwdr_path_value, wwdr_pem_value = self._resolve_template_material(
+            path_value=resolved["wwdr_path"],
+            pem_value=resolved["wwdr_pem"],
+            path_env_names=resolved["wwdr_path_env_names"],
+            pem_env_names=resolved["wwdr_pem_env_names"],
+        )
         return all(
             [
-                (settings.wallet_pass_type_identifier or "").strip(),
-                (settings.wallet_team_identifier or "").strip(),
-                self._has_material(
-                    path_value=settings.wallet_signer_certificate_path,
-                    pem_value=settings.wallet_signer_certificate_pem,
-                ),
-                self._has_material(
-                    path_value=settings.wallet_signer_key_path,
-                    pem_value=settings.wallet_signer_key_pem,
-                ),
-                self._has_material(
-                    path_value=settings.wallet_wwdr_certificate_path,
-                    pem_value=settings.wallet_wwdr_certificate_pem,
-                ),
+                pass_type_identifier,
+                team_identifier,
+                self._has_material(path_value=cert_path_value, pem_value=cert_pem_value),
+                self._has_material(path_value=key_path_value, pem_value=key_pem_value),
+                self._has_material(path_value=wwdr_path_value, pem_value=wwdr_pem_value),
             ]
         )
 
-    def build_pass(self, *, title: str, code: str, payload: str) -> bytes:
-        pass_type_identifier = self._required_value(
-            settings.wallet_pass_type_identifier,
-            "WALLET_PASS_TYPE_IDENTIFIER",
+    def build_pass(self, *, title: str, code: str, payload: str, template: str = "perknation") -> bytes:
+        resolved = self._resolve_template(template)
+        pass_type_identifier = self._required_template_value(
+            resolved["pass_type_identifier"],
+            resolved["pass_type_env_names"],
         )
-        team_identifier = self._required_value(
-            settings.wallet_team_identifier,
-            "WALLET_TEAM_IDENTIFIER",
+        team_identifier = self._required_template_value(
+            resolved["team_identifier"],
+            resolved["team_env_names"],
+        )
+        cert_path_value, cert_pem_value = self._resolve_template_material(
+            path_value=resolved["cert_path"],
+            pem_value=resolved["cert_pem"],
+            path_env_names=resolved["cert_path_env_names"],
+            pem_env_names=resolved["cert_pem_env_names"],
+        )
+        key_path_value, key_pem_value = self._resolve_template_material(
+            path_value=resolved["key_path"],
+            pem_value=resolved["key_pem"],
+            path_env_names=resolved["key_path_env_names"],
+            pem_env_names=resolved["key_pem_env_names"],
+        )
+        wwdr_path_value, wwdr_pem_value = self._resolve_template_material(
+            path_value=resolved["wwdr_path"],
+            pem_value=resolved["wwdr_pem"],
+            path_env_names=resolved["wwdr_path_env_names"],
+            pem_env_names=resolved["wwdr_pem_env_names"],
         )
 
         required_assets = {
-            "icon.png": self.asset_dir / "icon.png",
-            "icon@2x.png": self.asset_dir / "icon@2x.png",
-            "logo.png": self.asset_dir / "logo.png",
-            "logo@2x.png": self.asset_dir / "logo@2x.png",
+            "icon.png": resolved["asset_dir"] / "icon.png",
+            "icon@2x.png": resolved["asset_dir"] / "icon@2x.png",
+            "logo.png": resolved["asset_dir"] / "logo.png",
+            "logo@2x.png": resolved["asset_dir"] / "logo@2x.png",
         }
         for name, path in required_assets.items():
             if not path.exists():
@@ -80,26 +119,26 @@ class WalletPassService:
             cert_path = self._materialize_material(
                 temp_dir=temp_dir,
                 filename="signer.pem",
-                path_value=settings.wallet_signer_certificate_path,
-                pem_value=settings.wallet_signer_certificate_pem,
-                path_env_name="WALLET_SIGNER_CERTIFICATE_PATH",
-                pem_env_name="WALLET_SIGNER_CERTIFICATE_PEM",
+                path_value=cert_path_value,
+                pem_value=cert_pem_value,
+                path_env_name=" or ".join(resolved["cert_path_env_names"]),
+                pem_env_name=" or ".join(resolved["cert_pem_env_names"]),
             )
             key_path = self._materialize_material(
                 temp_dir=temp_dir,
                 filename="signer.key.pem",
-                path_value=settings.wallet_signer_key_path,
-                pem_value=settings.wallet_signer_key_pem,
-                path_env_name="WALLET_SIGNER_KEY_PATH",
-                pem_env_name="WALLET_SIGNER_KEY_PEM",
+                path_value=key_path_value,
+                pem_value=key_pem_value,
+                path_env_name=" or ".join(resolved["key_path_env_names"]),
+                pem_env_name=" or ".join(resolved["key_pem_env_names"]),
             )
             wwdr_path = self._materialize_material(
                 temp_dir=temp_dir,
                 filename="wwdr.pem",
-                path_value=settings.wallet_wwdr_certificate_path,
-                pem_value=settings.wallet_wwdr_certificate_pem,
-                path_env_name="WALLET_WWDR_CERTIFICATE_PATH",
-                pem_env_name="WALLET_WWDR_CERTIFICATE_PEM",
+                path_value=wwdr_path_value,
+                pem_value=wwdr_pem_value,
+                path_env_name=" or ".join(resolved["wwdr_path_env_names"]),
+                pem_env_name=" or ".join(resolved["wwdr_pem_env_names"]),
             )
             pass_json = self._build_pass_json(
                 title=title,
@@ -107,6 +146,9 @@ class WalletPassService:
                 payload=payload,
                 pass_type_identifier=pass_type_identifier,
                 team_identifier=team_identifier,
+                template=resolved["key"],
+                organization_name=resolved["organization_name"],
+                description=resolved["description"],
             )
             (temp_dir / "pass.json").write_text(
                 json.dumps(pass_json, separators=(",", ":"), ensure_ascii=False),
@@ -131,6 +173,118 @@ class WalletPassService:
             )
 
             return self._zip_pass(temp_dir)
+
+    def _resolve_template(self, template: str) -> dict[str, object]:
+        normalized = (template or "").strip().lower()
+        if normalized == "hq":
+            return {
+                "key": "hq",
+                "asset_dir": self.hq_asset_dir,
+                "pass_type_identifier": settings.wallet_hq_pass_type_identifier
+                or settings.wallet_pass_type_identifier,
+                "pass_type_env_names": (
+                    "WALLET_HQ_PASS_TYPE_IDENTIFIER",
+                    "WALLET_PASS_TYPE_IDENTIFIER",
+                ),
+                "team_identifier": settings.wallet_hq_team_identifier
+                or settings.wallet_team_identifier,
+                "team_env_names": (
+                    "WALLET_HQ_TEAM_IDENTIFIER",
+                    "WALLET_TEAM_IDENTIFIER",
+                ),
+                "organization_name": settings.wallet_hq_organization_name,
+                "description": settings.wallet_hq_description,
+                "cert_path": settings.wallet_hq_signer_certificate_path
+                or settings.wallet_signer_certificate_path,
+                "cert_pem": settings.wallet_hq_signer_certificate_pem
+                or settings.wallet_signer_certificate_pem,
+                "cert_path_env_names": (
+                    "WALLET_HQ_SIGNER_CERTIFICATE_PATH",
+                    "WALLET_SIGNER_CERTIFICATE_PATH",
+                ),
+                "cert_pem_env_names": (
+                    "WALLET_HQ_SIGNER_CERTIFICATE_PEM",
+                    "WALLET_SIGNER_CERTIFICATE_PEM",
+                ),
+                "key_path": settings.wallet_hq_signer_key_path or settings.wallet_signer_key_path,
+                "key_pem": settings.wallet_hq_signer_key_pem or settings.wallet_signer_key_pem,
+                "key_path_env_names": (
+                    "WALLET_HQ_SIGNER_KEY_PATH",
+                    "WALLET_SIGNER_KEY_PATH",
+                ),
+                "key_pem_env_names": (
+                    "WALLET_HQ_SIGNER_KEY_PEM",
+                    "WALLET_SIGNER_KEY_PEM",
+                ),
+                "wwdr_path": settings.wallet_hq_wwdr_certificate_path
+                or settings.wallet_wwdr_certificate_path,
+                "wwdr_pem": settings.wallet_hq_wwdr_certificate_pem
+                or settings.wallet_wwdr_certificate_pem,
+                "wwdr_path_env_names": (
+                    "WALLET_HQ_WWDR_CERTIFICATE_PATH",
+                    "WALLET_WWDR_CERTIFICATE_PATH",
+                ),
+                "wwdr_pem_env_names": (
+                    "WALLET_HQ_WWDR_CERTIFICATE_PEM",
+                    "WALLET_WWDR_CERTIFICATE_PEM",
+                ),
+            }
+
+        return {
+            "key": "perknation",
+            "asset_dir": self.asset_dir,
+            "pass_type_identifier": settings.wallet_pass_type_identifier,
+            "pass_type_env_names": ("WALLET_PASS_TYPE_IDENTIFIER",),
+            "team_identifier": settings.wallet_team_identifier,
+            "team_env_names": ("WALLET_TEAM_IDENTIFIER",),
+            "organization_name": settings.wallet_organization_name,
+            "description": "",
+            "cert_path": settings.wallet_signer_certificate_path,
+            "cert_pem": settings.wallet_signer_certificate_pem,
+            "cert_path_env_names": ("WALLET_SIGNER_CERTIFICATE_PATH",),
+            "cert_pem_env_names": ("WALLET_SIGNER_CERTIFICATE_PEM",),
+            "key_path": settings.wallet_signer_key_path,
+            "key_pem": settings.wallet_signer_key_pem,
+            "key_path_env_names": ("WALLET_SIGNER_KEY_PATH",),
+            "key_pem_env_names": ("WALLET_SIGNER_KEY_PEM",),
+            "wwdr_path": settings.wallet_wwdr_certificate_path,
+            "wwdr_pem": settings.wallet_wwdr_certificate_pem,
+            "wwdr_path_env_names": ("WALLET_WWDR_CERTIFICATE_PATH",),
+            "wwdr_pem_env_names": ("WALLET_WWDR_CERTIFICATE_PEM",),
+        }
+
+    @staticmethod
+    def _resolve_template_value(
+        primary_value: str | None,
+        env_names: tuple[str, ...],
+    ) -> tuple[str, tuple[str, ...]]:
+        normalized = (primary_value or "").strip()
+        if normalized:
+            return normalized, env_names
+        return "", env_names
+
+    @staticmethod
+    def _resolve_template_material(
+        *,
+        path_value: str | None,
+        pem_value: str | None,
+        path_env_names: tuple[str, ...],
+        pem_env_names: tuple[str, ...],
+    ) -> tuple[str | None, str | None]:
+        normalized_path = (path_value or "").strip()
+        if normalized_path:
+            return normalized_path, None
+        normalized_pem = (pem_value or "").strip()
+        if normalized_pem:
+            return None, normalized_pem
+        return None, None
+
+    def _required_template_value(self, value: str | None, env_names: tuple[str, ...]) -> str:
+        normalized = (value or "").strip()
+        if normalized:
+            return normalized
+        labels = " or ".join(env_names)
+        raise WalletPassConfigurationError(f"{labels} is not configured.")
 
     def _required_value(self, value: str | None, env_name: str) -> str:
         normalized = (value or "").strip()
@@ -183,11 +337,67 @@ class WalletPassService:
         payload: str,
         pass_type_identifier: str,
         team_identifier: str,
+        template: str,
+        organization_name: str,
+        description: str,
     ) -> dict[str, object]:
         serial_number = hashlib.sha1(f"{title}|{code}|{payload}".encode("utf-8")).hexdigest()
         support_host = urlparse(payload).netloc or "perknation.app"
         safe_title = title.strip()[:80]
         safe_code = code.strip()[:80]
+
+        if template == "hq":
+            display_name = safe_title or "The HQ Member"
+            member_id = safe_code or "HQ-MEMBER"
+            barcode_common = {
+                "format": "PKBarcodeFormatQR",
+                "message": payload,
+                "messageEncoding": "iso-8859-1",
+                "altText": member_id,
+            }
+            return {
+                "formatVersion": 1,
+                "passTypeIdentifier": pass_type_identifier,
+                "serialNumber": serial_number,
+                "teamIdentifier": team_identifier,
+                "sharingProhibited": True,
+                "organizationName": organization_name,
+                "description": description or "The HQ",
+                "logoText": "The HQ",
+                "foregroundColor": "rgb(255,255,255)",
+                "backgroundColor": "rgb(20,20,20)",
+                "labelColor": "rgb(255,255,255)",
+                "barcodes": [barcode_common],
+                "barcode": barcode_common,
+                "storeCard": {
+                    "primaryFields": [
+                        {
+                            "key": "member",
+                            "label": "Member",
+                            "value": display_name,
+                        },
+                        {
+                            "key": "member_id",
+                            "label": "Member ID",
+                            "value": member_id,
+                        },
+                    ],
+                    "auxiliaryFields": [
+                        {
+                            "key": "status",
+                            "label": "Status",
+                            "value": "Active",
+                        }
+                    ],
+                    "backFields": [
+                        {
+                            "key": "link",
+                            "label": "The HQ link",
+                            "value": payload,
+                        }
+                    ],
+                },
+            }
 
         return {
             "formatVersion": 1,
@@ -196,7 +406,7 @@ class WalletPassService:
             "teamIdentifier": team_identifier,
             # Prevent Wallet pass forwarding between users.
             "sharingProhibited": True,
-            "organizationName": settings.wallet_organization_name,
+            "organizationName": organization_name,
             "description": safe_title,
             "logoText": "PerkNation",
             "foregroundColor": "rgb(255,255,255)",
@@ -316,8 +526,10 @@ class WalletPassService:
         return output_path.read_bytes()
 
     @staticmethod
-    def filename_for_code(code: str) -> str:
-        slug = re.sub(r"[^a-zA-Z0-9_-]+", "-", code).strip("-").lower() or "perk-pass"
+    def filename_for_code(code: str, template: str = "perknation") -> str:
+        normalized_template = (template or "").strip().lower()
+        fallback_slug = "hq-pass" if normalized_template == "hq" else "perk-pass"
+        slug = re.sub(r"[^a-zA-Z0-9_-]+", "-", code).strip("-").lower() or fallback_slug
         return f"{slug}.pkpass"
 
 
