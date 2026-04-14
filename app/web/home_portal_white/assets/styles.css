@@ -540,15 +540,21 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   display:none;
   z-index: 120;
   padding: 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 .modal{
   max-width: 540px;
-  margin: 6vh auto 0;
+  margin: max(24px, 6vh) auto;
   background: rgba(255,255,255,.99);
   border: 1px solid rgba(15,23,42,.16);
   border-radius: 26px;
   box-shadow: var(--shadow);
   padding: 18px;
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .modalHeader{display:flex; align-items:center; justify-content:space-between; gap:12px}
 .modalTitle{font-weight: 950; font-size: 22px; letter-spacing:-.4px}
