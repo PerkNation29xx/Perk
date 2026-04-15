@@ -623,7 +623,7 @@
           <span>Payment option</span>
           <select name="payment_option" data-hsp-payment-option>
             <option value="request-only">Reserve now, pay later</option>
-            <option value="zelle">Pay with Zelle (213-493-5000)</option>
+            <option value="zelle">Pay with Zelle (mc2019llc@gmail.com)</option>
           </select>
         </label>
         <div class="hspZellePanel span2" data-hsp-zelle-panel hidden>
@@ -632,19 +632,19 @@
               <div class="pill">Zelle payment</div>
               <p class="small hspMuted" style="margin:8px 0 0">Use this number to send payment, then submit your request so Perk Nation can match your order.</p>
             </div>
-            <div class="hspZelleNumber" data-hsp-zelle-number>213-493-5000</div>
+            <div class="hspZelleNumber" data-hsp-zelle-number>mc2019llc@gmail.com</div>
           </div>
           <div class="hspZelleBody">
             <img
               class="hspZelleQr"
-              alt="Zelle QR for 213-493-5000"
-              src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=Zelle%20Payment%20to%20213-493-5000%20for%20PerkNation%20Hollywood%20Sports%20Offer"
+              alt="Zelle QR for mc2019llc@gmail.com"
+              src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=Zelle%20Payment%20to%20mc2019llc%40gmail.com%20for%20PerkNation%20Hollywood%20Sports%20Offer"
               loading="lazy"
             />
             <div>
               <p class="hspZelleHint">Memo format: <strong>HSP + your full name + selected offer</strong>.</p>
               <p class="hspZelleHint">This helps us match your payment quickly to your reservation.</p>
-              <button class="hspCopyBtn" type="button" data-hsp-copy-zelle>Copy Zelle number</button>
+              <button class="hspCopyBtn" type="button" data-hsp-copy-zelle>Copy Zelle email</button>
             </div>
           </div>
         </div>
@@ -819,7 +819,7 @@
     const paymentOptionField = form.querySelector('[name="payment_option"]');
     const zellePanel = form.querySelector("[data-hsp-zelle-panel]");
     const zelleNumberNode = form.querySelector("[data-hsp-zelle-number]");
-    const zelleNumber = (zelleNumberNode?.textContent || "213-493-5000").trim();
+    const zelleNumber = (zelleNumberNode?.textContent || "mc2019llc@gmail.com").trim();
     const copyZelleButton = form.querySelector("[data-hsp-copy-zelle]");
     const toast = overlay.querySelector("[data-hsp-checkout-toast]");
     const submit = form.querySelector('button[type="submit"]');
@@ -910,9 +910,9 @@
       copyZelleButton.addEventListener("click", async () => {
         try {
           await navigator.clipboard.writeText(zelleNumber);
-          setToast("Zelle number copied: 213-493-5000", "success");
+          setToast("Zelle email copied: mc2019llc@gmail.com", "success");
         } catch (error) {
-          setToast("Copy failed. Please use 213-493-5000.", "error");
+          setToast("Copy failed. Please use mc2019llc@gmail.com.", "error");
         }
       });
     }
@@ -959,7 +959,7 @@
 
         localStorage.removeItem(storageKey);
         const paymentStatus = data.payment_option === "zelle"
-          ? "Zelle payment selected to 213-493-5000."
+          ? "Zelle payment selected to mc2019llc@gmail.com."
           : "Payment marked as reserve now, pay later.";
         setToast(`Purchase request received. Reference #${payload.submission_id}. ${paymentStatus}`, "success");
         form.reset();
