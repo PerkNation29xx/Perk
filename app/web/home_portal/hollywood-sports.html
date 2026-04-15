@@ -44,6 +44,7 @@
     .hspSheetCard img{background:#101010}
     .hspMediaCard .hspMediaBody{display:grid;gap:12px}
     .hspMediaPoster{aspect-ratio:16/10;border-radius:18px;background:linear-gradient(145deg, rgba(230,184,74,.18), rgba(255,255,255,.04));display:grid;place-items:center;padding:18px;text-align:center}
+    .hspMediaPhoto{width:100%;display:block;aspect-ratio:16/10;object-fit:cover;border-radius:18px}
     .hspMediaPoster strong{font-size:20px;line-height:1.1}
     .hspMediaPoster span{display:block;margin-top:8px;color:var(--muted)}
     .hspMediaLabel{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted2);font-weight:800}
@@ -469,7 +470,7 @@
   <section class="section">
     <div class="container">
       <h2 class="h2">Official park media</h2>
-      <p class="hspMuted">Where partner sites publish video directly, the page uses it here. The remaining parks link to their official brand sites so shoppers can preview each location without losing the Perk Nation purchase path.</p>
+      <p class="hspMuted">Each participating park card includes official media plus a direct destination link so shoppers can review the location before purchase.</p>
 
       <div class="hspParkMediaGrid">
         <article class="hspMediaCard">
@@ -498,39 +499,30 @@
 
         <article class="hspMediaCard">
           <div class="hspMediaBody">
-            <div class="hspMediaPoster">
-              <div>
-                <strong>Hollywood Sports</strong>
-                <span>Bellflower flagship park</span>
-              </div>
-            </div>
-            <div class="hspMediaLabel">Official destination</div>
+            <img class="hspMediaPhoto" src="https://cdn.shopify.com/s/files/1/0577/7974/8925/t/2/assets/overhead-shot-1662677145276.webp" alt="Hollywood Sports Bellflower flagship park" loading="lazy" />
+            <div class="hspMediaLabel">Official park image</div>
+            <strong>Hollywood Sports</strong>
+            <span class="hspMuted">Bellflower flagship park.</span>
             <a class="btn small" href="https://hollywoodsports.com/pages/bellflower" target="_blank" rel="noopener">Visit park site</a>
           </div>
         </article>
 
         <article class="hspMediaCard">
           <div class="hspMediaBody">
-            <div class="hspMediaPoster">
-              <div>
-                <strong>Giant Paintball</strong>
-                <span>Lakeside participating park</span>
-              </div>
-            </div>
-            <div class="hspMediaLabel">Official destination</div>
-            <a class="btn small" href="https://hollywoodsports.com/pages/san-diego" target="_blank" rel="noopener">Visit park site</a>
+            <img class="hspMediaPhoto" src="https://cdn.uploads.webconnex.com/148083/screen_shot_2022-09-09_at_1.44.23_pm.webp" alt="Giant Paintball Lakeside participating park" loading="lazy" />
+            <div class="hspMediaLabel">Official park image</div>
+            <strong>Giant Paintball</strong>
+            <span class="hspMuted">Lakeside participating park.</span>
+            <a class="btn small" href="https://sjsenterprises.ticketspice.com/giant" target="_blank" rel="noopener">Visit park site</a>
           </div>
         </article>
 
         <article class="hspMediaCard">
           <div class="hspMediaBody">
-            <div class="hspMediaPoster">
-              <div>
-                <strong>Combat Paintball</strong>
-                <span>Castaic participating park</span>
-              </div>
-            </div>
-            <div class="hspMediaLabel">Official destination</div>
+            <img class="hspMediaPhoto" src="https://images.squarespace-cdn.com/content/v1/5b4637d6c258b47bd884e594/1541459082892-X2VC0K4F1X16XD0GAH0A/DJI_0263.jpg" alt="Combat Paintball Castaic participating park" loading="lazy" />
+            <div class="hspMediaLabel">Official park image</div>
+            <strong>Combat Paintball</strong>
+            <span class="hspMuted">Castaic participating park.</span>
             <a class="btn small" href="https://playcpp.com/" target="_blank" rel="noopener">Visit park site</a>
           </div>
         </article>
@@ -544,7 +536,7 @@
     <div class="modalHeader">
       <div>
         <div class="modalTitle">Complete your Perk Nation purchase request</div>
-        <div class="small hspMuted">Reserve the offer inside Perk Nation and keep this campaign attached to the checkout path.</div>
+        <div class="small hspMuted">Pay now with Zelle and keep this campaign attached to the checkout path.</div>
       </div>
       <button class="modalClose" type="button" aria-label="Close checkout" data-hsp-checkout-close>✕</button>
     </div>
@@ -552,7 +544,7 @@
     <div class="hspCheckoutSummary">
       <div class="pill">Selected offer</div>
       <div class="h3" style="margin:10px 0 4px" data-hsp-selected-offer>Hollywood Sports offer campaign</div>
-      <div class="small hspMuted">Choose your park and leave a preferred visit window. Perk Nation will keep the offer attached to your request.</div>
+      <div class="small hspMuted">Choose your park, package, and preferred visit window. Perk Nation will keep the offer attached to your request.</div>
     </div>
 
     <form data-hsp-checkout-form novalidate>
@@ -565,10 +557,6 @@
             <option value="">Select offer package</option>
             <option value="$70 Bundle (12 park passes, $500+ value)">$70 Bundle (12 park passes, $500+ value)</option>
             <option value="$5 Admission Promo (Save $60+)">$5 Admission Promo (Save $60+)</option>
-            <option value="Paintball / Airsoft Park Pass">Paintball / Airsoft Park Pass</option>
-            <option value="Golden Ticket All-Inclusive Pass">Golden Ticket All-Inclusive Pass</option>
-            <option value="Private Group Reservation (10% off)">Private Group Reservation (10% off)</option>
-            <option value="Help me choose">Help me choose</option>
           </select>
         </label>
         <label class="hspCheckoutLabel span2">
@@ -619,18 +607,16 @@
             <option value="20+">20+</option>
           </select>
         </label>
+        <input type="hidden" name="payment_option" value="zelle" />
         <label class="hspCheckoutLabel span2">
-          <span>Payment option</span>
-          <select name="payment_option" data-hsp-payment-option>
-            <option value="request-only">Reserve now, pay later</option>
-            <option value="zelle">Pay with Zelle (mc2019llc@gmail.com)</option>
-          </select>
+          <span>Payment method</span>
+          <input type="text" value="Pay now with Zelle (mc2019llc@gmail.com)" readonly />
         </label>
-        <div class="hspZellePanel span2" data-hsp-zelle-panel hidden>
+        <div class="hspZellePanel span2" data-hsp-zelle-panel>
           <div class="hspZelleHeader">
             <div>
               <div class="pill">Zelle payment</div>
-              <p class="small hspMuted" style="margin:8px 0 0">Use this number to send payment, then submit your request so Perk Nation can match your order.</p>
+              <p class="small hspMuted" style="margin:8px 0 0">Use this email to send payment, then submit your request so Perk Nation can match your order.</p>
             </div>
             <div class="hspZelleNumber" data-hsp-zelle-number>mc2019llc@gmail.com</div>
           </div>
@@ -650,7 +636,7 @@
         </div>
         <label class="hspCheckoutLabel span2">
           <span>Notes</span>
-          <textarea name="inquiry" placeholder="Tell Perk Nation if you want the $70 sheet, the $5 promo, a private group booking, or help choosing the best park."></textarea>
+          <textarea name="inquiry" placeholder="Tell Perk Nation if you want the $5 promo or the $70 bundle, plus any scheduling details."></textarea>
         </label>
         <label class="hspCheckoutLabel" style="display:none">
           <span>Website</span>
@@ -816,7 +802,6 @@
     const offerField = form.querySelector('input[name="selected_offer"]');
     const offerCodeField = form.querySelector('input[name="selected_offer_code"]');
     const offerChoiceField = form.querySelector('[name="offer_choice"]');
-    const paymentOptionField = form.querySelector('[name="payment_option"]');
     const zellePanel = form.querySelector("[data-hsp-zelle-panel]");
     const zelleNumberNode = form.querySelector("[data-hsp-zelle-number]");
     const zelleNumber = (zelleNumberNode?.textContent || "mc2019llc@gmail.com").trim();
@@ -828,9 +813,10 @@
     const closers = overlay.querySelectorAll("[data-hsp-checkout-close]");
     const offerChoiceByCode = {
       "hsp-five-dollar": "$5 Admission Promo (Save $60+)",
-      "hsp-park-pass": "Paintball / Airsoft Park Pass",
-      "hsp-golden-ticket": "Golden Ticket All-Inclusive Pass",
-      "hsp-private-group": "Private Group Reservation (10% off)",
+      "hsp-seventy-bundle": "$70 Bundle (12 park passes, $500+ value)",
+      "hsp-park-pass": "$70 Bundle (12 park passes, $500+ value)",
+      "hsp-golden-ticket": "$70 Bundle (12 park passes, $500+ value)",
+      "hsp-private-group": "$70 Bundle (12 park passes, $500+ value)",
       "hsp-campaign": ""
     };
 
@@ -854,15 +840,10 @@
       const label = String(offerLabel || "").toLowerCase();
       if (label.includes("$5")) return "$5 Admission Promo (Save $60+)";
       if (label.includes("$70")) return "$70 Bundle (12 park passes, $500+ value)";
-      if (label.includes("golden")) return "Golden Ticket All-Inclusive Pass";
-      if (label.includes("private")) return "Private Group Reservation (10% off)";
-      if (label.includes("park pass") || label.includes("airsoft")) return "Paintball / Airsoft Park Pass";
+      if (label.includes("golden")) return "$70 Bundle (12 park passes, $500+ value)";
+      if (label.includes("private")) return "$70 Bundle (12 park passes, $500+ value)";
+      if (label.includes("park pass") || label.includes("airsoft")) return "$70 Bundle (12 park passes, $500+ value)";
       return "";
-    };
-
-    const syncPaymentPanel = () => {
-      if (!paymentOptionField || !zellePanel) return;
-      zellePanel.hidden = paymentOptionField.value !== "zelle";
     };
 
     const openCheckout = (offerLabel, offerCode) => {
@@ -872,10 +853,7 @@
       if (offerChoiceField) {
         offerChoiceField.value = inferOfferChoice(offerLabel, offerCode);
       }
-      if (paymentOptionField) {
-        paymentOptionField.value = "request-only";
-      }
-      syncPaymentPanel();
+      if (zellePanel) zellePanel.hidden = false;
       clearToast();
       overlay.classList.add("modalShow");
     };
@@ -901,11 +879,6 @@
       if (event.target === overlay) closeCheckout();
     });
 
-    if (paymentOptionField) {
-      paymentOptionField.addEventListener("change", syncPaymentPanel);
-      syncPaymentPanel();
-    }
-
     if (copyZelleButton) {
       copyZelleButton.addEventListener("click", async () => {
         try {
@@ -927,11 +900,11 @@
         return;
       }
       if (!String(data.offer_choice || "").trim()) {
-        setToast("Choose the exact offer package ($5, $70, or another listed option).", "error");
+        setToast("Choose either the $5 promo or the $70 bundle.", "error");
         return;
       }
       if (!String(data.selected_park || "").trim()) {
-        setToast("Choose a participating park or select Help me choose.", "error");
+        setToast("Choose a participating park.", "error");
         return;
       }
 
@@ -958,17 +931,14 @@
         }
 
         localStorage.removeItem(storageKey);
-        const paymentStatus = data.payment_option === "zelle"
-          ? "Zelle payment selected to mc2019llc@gmail.com."
-          : "Payment marked as reserve now, pay later.";
+        const paymentStatus = "Zelle payment selected to mc2019llc@gmail.com.";
         setToast(`Purchase request received. Reference #${payload.submission_id}. ${paymentStatus}`, "success");
         form.reset();
         offerDisplay.textContent = "Hollywood Sports offer campaign";
         offerField.value = "Hollywood Sports offer campaign";
         offerCodeField.value = "hsp-campaign";
         if (offerChoiceField) offerChoiceField.value = "";
-        if (paymentOptionField) paymentOptionField.value = "request-only";
-        syncPaymentPanel();
+        if (zellePanel) zellePanel.hidden = false;
       } catch (error) {
         const existing = JSON.parse(localStorage.getItem(storageKey) || "[]");
         existing.push({ ...data, ts: new Date().toISOString() });
