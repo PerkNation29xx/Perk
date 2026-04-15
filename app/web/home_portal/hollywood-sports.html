@@ -80,10 +80,52 @@
     .hspCheckoutToast.show{display:block}
     .hspCheckoutToast.error{border-color:rgba(195,63,22,.45);background:rgba(195,63,22,.08)}
     .hspCheckoutToast.success{border-color:rgba(41,166,91,.45);background:rgba(41,166,91,.10)}
+    .hspZellePanel{
+      border-radius:18px;
+      border:1px solid rgba(230,184,74,.28);
+      background:rgba(230,184,74,.08);
+      padding:14px;
+      display:grid;
+      gap:12px;
+    }
+    .hspZelleHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .hspZelleNumber{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border-radius:999px;
+      border:1px solid rgba(250,247,247,.2);
+      background:rgba(250,247,247,.08);
+      padding:8px 12px;
+      font-weight:800;
+      letter-spacing:.02em;
+    }
+    .hspCopyBtn{
+      border:1px solid rgba(250,247,247,.2);
+      background:rgba(250,247,247,.06);
+      color:var(--ink);
+      border-radius:999px;
+      padding:8px 12px;
+      font:inherit;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .hspZelleBody{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center}
+    .hspZelleQr{
+      width:110px;
+      height:110px;
+      border-radius:14px;
+      border:1px solid rgba(250,247,247,.22);
+      background:#fff;
+      padding:6px;
+      object-fit:contain;
+    }
+    .hspZelleHint{margin:0;color:var(--muted)}
     @media (max-width: 980px){
       .hspMetrics,.hspOfferGrid,.hspLocationGrid,.hspSheetGrid,.hspParkMediaGrid{grid-template-columns:1fr}
       .hspCheckoutGrid{grid-template-columns:1fr}
       .hspCheckoutGrid .span2{grid-column:auto}
+      .hspZelleBody{grid-template-columns:1fr;justify-items:start}
     }
   </style>
 </head>
@@ -518,6 +560,18 @@
       <input type="hidden" name="selected_offer_code" value="hsp-campaign" />
       <div class="hspCheckoutGrid">
         <label class="hspCheckoutLabel span2">
+          <span>Offer package</span>
+          <select name="offer_choice" data-hsp-offer-choice required>
+            <option value="">Select offer package</option>
+            <option value="$70 Bundle (12 park passes, $500+ value)">$70 Bundle (12 park passes, $500+ value)</option>
+            <option value="$5 Admission Promo (Save $60+)">$5 Admission Promo (Save $60+)</option>
+            <option value="Paintball / Airsoft Park Pass">Paintball / Airsoft Park Pass</option>
+            <option value="Golden Ticket All-Inclusive Pass">Golden Ticket All-Inclusive Pass</option>
+            <option value="Private Group Reservation (10% off)">Private Group Reservation (10% off)</option>
+            <option value="Help me choose">Help me choose</option>
+          </select>
+        </label>
+        <label class="hspCheckoutLabel span2">
           <span>Participating park</span>
           <select name="selected_park" required>
             <option value="">Select a park</option>
@@ -565,6 +619,35 @@
             <option value="20+">20+</option>
           </select>
         </label>
+        <label class="hspCheckoutLabel span2">
+          <span>Payment option</span>
+          <select name="payment_option" data-hsp-payment-option>
+            <option value="request-only">Reserve now, pay later</option>
+            <option value="zelle">Pay with Zelle (213-493-5000)</option>
+          </select>
+        </label>
+        <div class="hspZellePanel span2" data-hsp-zelle-panel hidden>
+          <div class="hspZelleHeader">
+            <div>
+              <div class="pill">Zelle payment</div>
+              <p class="small hspMuted" style="margin:8px 0 0">Use this number to send payment, then submit your request so Perk Nation can match your order.</p>
+            </div>
+            <div class="hspZelleNumber" data-hsp-zelle-number>213-493-5000</div>
+          </div>
+          <div class="hspZelleBody">
+            <img
+              class="hspZelleQr"
+              alt="Zelle QR for 213-493-5000"
+              src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=Zelle%20Payment%20to%20213-493-5000%20for%20PerkNation%20Hollywood%20Sports%20Offer"
+              loading="lazy"
+            />
+            <div>
+              <p class="hspZelleHint">Memo format: <strong>HSP + your full name + selected offer</strong>.</p>
+              <p class="hspZelleHint">This helps us match your payment quickly to your reservation.</p>
+              <button class="hspCopyBtn" type="button" data-hsp-copy-zelle>Copy Zelle number</button>
+            </div>
+          </div>
+        </div>
         <label class="hspCheckoutLabel span2">
           <span>Notes</span>
           <textarea name="inquiry" placeholder="Tell Perk Nation if you want the $70 sheet, the $5 promo, a private group booking, or help choosing the best park."></textarea>
@@ -732,11 +815,24 @@
     const offerDisplay = overlay.querySelector("[data-hsp-selected-offer]");
     const offerField = form.querySelector('input[name="selected_offer"]');
     const offerCodeField = form.querySelector('input[name="selected_offer_code"]');
+    const offerChoiceField = form.querySelector('[name="offer_choice"]');
+    const paymentOptionField = form.querySelector('[name="payment_option"]');
+    const zellePanel = form.querySelector("[data-hsp-zelle-panel]");
+    const zelleNumberNode = form.querySelector("[data-hsp-zelle-number]");
+    const zelleNumber = (zelleNumberNode?.textContent || "213-493-5000").trim();
+    const copyZelleButton = form.querySelector("[data-hsp-copy-zelle]");
     const toast = overlay.querySelector("[data-hsp-checkout-toast]");
     const submit = form.querySelector('button[type="submit"]');
     const storageKey = "perknation_hsp_checkout_backup";
     const triggers = document.querySelectorAll("[data-hsp-checkout-trigger]");
     const closers = overlay.querySelectorAll("[data-hsp-checkout-close]");
+    const offerChoiceByCode = {
+      "hsp-five-dollar": "$5 Admission Promo (Save $60+)",
+      "hsp-park-pass": "Paintball / Airsoft Park Pass",
+      "hsp-golden-ticket": "Golden Ticket All-Inclusive Pass",
+      "hsp-private-group": "Private Group Reservation (10% off)",
+      "hsp-campaign": ""
+    };
 
     const setToast = (message, kind) => {
       if (!toast) return;
@@ -752,10 +848,34 @@
       toast.classList.remove("show", "error", "success");
     };
 
+    const inferOfferChoice = (offerLabel, offerCode) => {
+      const byCode = offerChoiceByCode[(offerCode || "").trim().toLowerCase()];
+      if (typeof byCode === "string") return byCode;
+      const label = String(offerLabel || "").toLowerCase();
+      if (label.includes("$5")) return "$5 Admission Promo (Save $60+)";
+      if (label.includes("$70")) return "$70 Bundle (12 park passes, $500+ value)";
+      if (label.includes("golden")) return "Golden Ticket All-Inclusive Pass";
+      if (label.includes("private")) return "Private Group Reservation (10% off)";
+      if (label.includes("park pass") || label.includes("airsoft")) return "Paintball / Airsoft Park Pass";
+      return "";
+    };
+
+    const syncPaymentPanel = () => {
+      if (!paymentOptionField || !zellePanel) return;
+      zellePanel.hidden = paymentOptionField.value !== "zelle";
+    };
+
     const openCheckout = (offerLabel, offerCode) => {
       offerDisplay.textContent = offerLabel || "Hollywood Sports offer campaign";
       offerField.value = offerLabel || "Hollywood Sports offer campaign";
       offerCodeField.value = offerCode || "hsp-campaign";
+      if (offerChoiceField) {
+        offerChoiceField.value = inferOfferChoice(offerLabel, offerCode);
+      }
+      if (paymentOptionField) {
+        paymentOptionField.value = "request-only";
+      }
+      syncPaymentPanel();
       clearToast();
       overlay.classList.add("modalShow");
     };
@@ -781,6 +901,22 @@
       if (event.target === overlay) closeCheckout();
     });
 
+    if (paymentOptionField) {
+      paymentOptionField.addEventListener("change", syncPaymentPanel);
+      syncPaymentPanel();
+    }
+
+    if (copyZelleButton) {
+      copyZelleButton.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(zelleNumber);
+          setToast("Zelle number copied: 213-493-5000", "success");
+        } catch (error) {
+          setToast("Copy failed. Please use 213-493-5000.", "error");
+        }
+      });
+    }
+
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       clearToast();
@@ -788,6 +924,10 @@
       const data = Object.fromEntries(new FormData(form).entries());
       if (!String(data.full_name || "").trim() || !String(data.email || "").trim() || !String(data.selected_offer || "").trim()) {
         setToast("Full name, email, and selected offer are required.", "error");
+        return;
+      }
+      if (!String(data.offer_choice || "").trim()) {
+        setToast("Choose the exact offer package ($5, $70, or another listed option).", "error");
         return;
       }
       if (!String(data.selected_park || "").trim()) {
@@ -818,11 +958,17 @@
         }
 
         localStorage.removeItem(storageKey);
-        setToast(`Purchase request received. Reference #${payload.submission_id}. Perk Nation now has the selected offer and park attached to your request.`, "success");
+        const paymentStatus = data.payment_option === "zelle"
+          ? "Zelle payment selected to 213-493-5000."
+          : "Payment marked as reserve now, pay later.";
+        setToast(`Purchase request received. Reference #${payload.submission_id}. ${paymentStatus}`, "success");
         form.reset();
         offerDisplay.textContent = "Hollywood Sports offer campaign";
         offerField.value = "Hollywood Sports offer campaign";
         offerCodeField.value = "hsp-campaign";
+        if (offerChoiceField) offerChoiceField.value = "";
+        if (paymentOptionField) paymentOptionField.value = "request-only";
+        syncPaymentPanel();
       } catch (error) {
         const existing = JSON.parse(localStorage.getItem(storageKey) || "[]");
         existing.push({ ...data, ts: new Date().toISOString() });
