@@ -89,7 +89,16 @@
       display:grid;
       gap:12px;
     }
+    .hspApplePayPanel{
+      border-radius:18px;
+      border:1px solid rgba(157,215,255,.32);
+      background:rgba(65,132,222,.10);
+      padding:14px;
+      display:grid;
+      gap:12px;
+    }
     .hspZelleHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .hspApplePayHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
     .hspZelleNumber{
       display:inline-flex;
       align-items:center;
@@ -112,6 +121,17 @@
       cursor:pointer;
     }
     .hspZelleBody{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center}
+    .hspApplePayBtn{
+      border:1px solid rgba(250,247,247,.28);
+      background:#000;
+      color:#fff;
+      border-radius:999px;
+      padding:10px 16px;
+      font:inherit;
+      font-weight:800;
+      cursor:pointer;
+    }
+    .hspApplePayBtn[disabled]{opacity:.65;cursor:not-allowed}
     .hspZelleQr{
       width:110px;
       height:110px;
@@ -536,7 +556,7 @@
     <div class="modalHeader">
       <div>
         <div class="modalTitle">Complete your Perk Nation purchase request</div>
-        <div class="small hspMuted">Pay now with Zelle and keep this campaign attached to the checkout path.</div>
+        <div class="small hspMuted">Choose Zelle or Apple Pay and keep this campaign attached to the checkout path.</div>
       </div>
       <button class="modalClose" type="button" aria-label="Close checkout" data-hsp-checkout-close>✕</button>
     </div>
@@ -607,10 +627,12 @@
             <option value="20+">20+</option>
           </select>
         </label>
-        <input type="hidden" name="payment_option" value="zelle" />
         <label class="hspCheckoutLabel span2">
           <span>Payment method</span>
-          <input type="text" value="Pay now with Zelle (mc2019llc@gmail.com)" readonly />
+          <select name="payment_option" data-hsp-payment-option>
+            <option value="zelle">Pay now with Zelle</option>
+            <option value="apple_pay">Pay now with Apple Pay</option>
+          </select>
         </label>
         <div class="hspZellePanel span2" data-hsp-zelle-panel>
           <div class="hspZelleHeader">
@@ -633,6 +655,16 @@
               <button class="hspCopyBtn" type="button" data-hsp-copy-zelle>Copy Zelle email</button>
             </div>
           </div>
+        </div>
+        <div class="hspApplePayPanel span2" data-hsp-apple-pay-panel hidden>
+          <div class="hspApplePayHeader">
+            <div>
+              <div class="pill">Apple Pay checkout</div>
+              <p class="small hspMuted" style="margin:8px 0 0">Submit your request, then continue to secure checkout to complete payment with Apple Pay.</p>
+            </div>
+            <button class="hspApplePayBtn" type="button" data-hsp-apple-pay-checkout>Continue to Apple Pay</button>
+          </div>
+          <p class="small hspMuted" style="margin:0">Apple Pay is presented by Stripe Checkout on supported Apple devices and browsers.</p>
         </div>
         <label class="hspCheckoutLabel span2">
           <span>Notes</span>
@@ -802,7 +834,10 @@
     const offerField = form.querySelector('input[name="selected_offer"]');
     const offerCodeField = form.querySelector('input[name="selected_offer_code"]');
     const offerChoiceField = form.querySelector('[name="offer_choice"]');
+    const paymentOptionField = form.querySelector('[name="payment_option"]');
     const zellePanel = form.querySelector("[data-hsp-zelle-panel]");
+    const applePayPanel = form.querySelector("[data-hsp-apple-pay-panel]");
+    const applePayContinueButton = form.querySelector("[data-hsp-apple-pay-checkout]");
     const zelleNumberNode = form.querySelector("[data-hsp-zelle-number]");
     const zelleNumber = (zelleNumberNode?.textContent || "mc2019llc@gmail.com").trim();
     const copyZelleButton = form.querySelector("[data-hsp-copy-zelle]");
@@ -834,6 +869,48 @@
       toast.classList.remove("show", "error", "success");
     };
 
+    const selectedPaymentOption = () => String(paymentOptionField?.value || "zelle").trim().toLowerCase();
+
+    const syncPaymentPanels = () => {
+      const payment = selectedPaymentOption();
+      if (zellePanel) zellePanel.hidden = payment !== "zelle";
+      if (applePayPanel) applePayPanel.hidden = payment !== "apple_pay";
+    };
+
+    const buildApplePayPayload = (data, submissionId) => {
+      return {
+        source_page: window.location.pathname,
+        offer_choice: String(data.offer_choice || ""),
+        package_quantity: String(data.package_quantity || "1"),
+        selected_offer: String(data.selected_offer || ""),
+        selected_park: String(data.selected_park || ""),
+        full_name: String(data.full_name || ""),
+        email: String(data.email || ""),
+        phone: String(data.phone || ""),
+        submission_id: typeof submissionId === "number" ? submissionId : undefined
+      };
+    };
+
+    const startApplePayCheckout = async (data, submissionId) => {
+      const response = await fetch("/v1/web/payments/apple-pay/checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(buildApplePayPayload(data, submissionId))
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(payload.detail || payload.message || `Apple Pay checkout failed (${response.status})`);
+      }
+      const checkoutUrl = String(payload.checkout_url || "").trim();
+      if (!checkoutUrl) {
+        throw new Error("Apple Pay checkout URL was not returned.");
+      }
+      window.location.assign(checkoutUrl);
+    };
+
     const inferOfferChoice = (offerLabel, offerCode) => {
       const byCode = offerChoiceByCode[(offerCode || "").trim().toLowerCase()];
       if (typeof byCode === "string") return byCode;
@@ -853,7 +930,8 @@
       if (offerChoiceField) {
         offerChoiceField.value = inferOfferChoice(offerLabel, offerCode);
       }
-      if (zellePanel) zellePanel.hidden = false;
+      if (paymentOptionField) paymentOptionField.value = "zelle";
+      syncPaymentPanels();
       clearToast();
       overlay.classList.add("modalShow");
     };
@@ -879,6 +957,13 @@
       if (event.target === overlay) closeCheckout();
     });
 
+    if (paymentOptionField) {
+      paymentOptionField.addEventListener("change", () => {
+        syncPaymentPanels();
+        clearToast();
+      });
+    }
+
     if (copyZelleButton) {
       copyZelleButton.addEventListener("click", async () => {
         try {
@@ -890,11 +975,25 @@
       });
     }
 
+    if (applePayContinueButton) {
+      applePayContinueButton.addEventListener("click", async () => {
+        if (selectedPaymentOption() !== "apple_pay") {
+          if (paymentOptionField) paymentOptionField.value = "apple_pay";
+          syncPaymentPanels();
+        }
+        setToast("Submit the request form to continue to Apple Pay.", "success");
+      });
+    }
+
+    syncPaymentPanels();
+
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       clearToast();
 
       const data = Object.fromEntries(new FormData(form).entries());
+      const paymentOption = selectedPaymentOption();
+      data.payment_option = paymentOption;
       if (!String(data.full_name || "").trim() || !String(data.email || "").trim() || !String(data.selected_offer || "").trim()) {
         setToast("Full name, email, and selected offer are required.", "error");
         return;
@@ -931,6 +1030,12 @@
         }
 
         localStorage.removeItem(storageKey);
+        if (paymentOption === "apple_pay") {
+          setToast(`Purchase request received. Reference #${payload.submission_id}. Redirecting to Apple Pay checkout...`, "success");
+          await startApplePayCheckout(data, payload.submission_id);
+          return;
+        }
+
         const paymentStatus = "Zelle payment selected to mc2019llc@gmail.com.";
         setToast(`Purchase request received. Reference #${payload.submission_id}. ${paymentStatus}`, "success");
         form.reset();
@@ -938,7 +1043,8 @@
         offerField.value = "Hollywood Sports offer campaign";
         offerCodeField.value = "hsp-campaign";
         if (offerChoiceField) offerChoiceField.value = "";
-        if (zellePanel) zellePanel.hidden = false;
+        if (paymentOptionField) paymentOptionField.value = "zelle";
+        syncPaymentPanels();
       } catch (error) {
         const existing = JSON.parse(localStorage.getItem(storageKey) || "[]");
         existing.push({ ...data, ts: new Date().toISOString() });
