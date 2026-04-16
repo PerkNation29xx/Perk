@@ -542,6 +542,24 @@ class AdminContactInboxRow(BaseModel):
     created_at: datetime
 
 
+class AdminOrderRow(BaseModel):
+    id: int
+    created_at: datetime
+    source_page: Optional[str] = None
+    customer_name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    phone: Optional[str] = None
+    offer_choice: Optional[str] = None
+    selected_park: Optional[str] = None
+    package_quantity: Optional[str] = None
+    payment_option: Optional[str] = None
+    payment_status: Optional[str] = None
+    payment_provider: Optional[str] = None
+    payment_amount_usd: Optional[Decimal] = None
+    stripe_checkout_session_id: Optional[str] = None
+    summary: Optional[str] = None
+
+
 class AdminAuditLogRow(BaseModel):
     id: int
     actor_user_id: Optional[int] = None
