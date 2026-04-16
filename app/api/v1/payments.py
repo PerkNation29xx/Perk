@@ -1,15 +1,19 @@
 from __future__ import annotations
 
+import json
 import logging
 import os
 from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel, EmailStr, Field
+from sqlalchemy.orm import Session
 
+from app.api.deps import get_db
 from app.core.config import settings
+from app.db.models import WebLeadSubmission
 
 router = APIRouter(prefix="/web/payments", tags=["web-payments"])
 logger = logging.getLogger(__name__)
@@ -32,6 +36,10 @@ class ApplePayCheckoutResponse(BaseModel):
     session_id: str
     provider: str = "stripe"
     amount_total_cents: int
+
+
+class StripeWebhookResponse(BaseModel):
+    received: bool = True
 
 
 @dataclass(frozen=True)
@@ -124,8 +132,66 @@ def _load_stripe():
     return stripe
 
 
+def _load_stripe_webhook_secret() -> str:
+    secret = (os.environ.get("STRIPE_WEBHOOK_SECRET") or getattr(settings, "stripe_webhook_secret", None) or "").strip()
+    if not secret:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Stripe webhook secret is not configured.",
+        )
+    return secret
+
+
+def _parse_payload_json(raw: str | None) -> dict:
+    if not raw:
+        return {}
+    try:
+        parsed = json.loads(raw)
+        if isinstance(parsed, dict):
+            return parsed
+    except Exception:
+        return {}
+    return {}
+
+
+def _merge_submission_payment_data(
+    db: Session,
+    submission_id: Optional[int],
+    *,
+    payment_option: str,
+    payment_status: str,
+    provider: Optional[str] = None,
+    session_id: Optional[str] = None,
+    checkout_url: Optional[str] = None,
+    amount_total_cents: Optional[int] = None,
+) -> None:
+    if not submission_id:
+        return
+    row = db.get(WebLeadSubmission, int(submission_id))
+    if not row or row.form_type != "checkout":
+        return
+
+    payload = _parse_payload_json(row.payload_json)
+    payload["payment_option"] = payment_option
+    payload["payment_status"] = payment_status
+    if provider:
+        payload["payment_provider"] = provider
+    if session_id:
+        payload["stripe_checkout_session_id"] = session_id
+    if checkout_url:
+        payload["stripe_checkout_url"] = checkout_url
+    if amount_total_cents is not None:
+        payload["payment_amount_cents"] = int(amount_total_cents)
+
+    row.payload_json = json.dumps(payload, separators=(",", ":"), ensure_ascii=False)
+    db.commit()
+
+
 @router.post("/apple-pay/checkout-session", response_model=ApplePayCheckoutResponse)
-def create_apple_pay_checkout_session(payload: ApplePayCheckoutRequest) -> ApplePayCheckoutResponse:
+def create_apple_pay_checkout_session(
+    payload: ApplePayCheckoutRequest,
+    db: Session = Depends(get_db),
+) -> ApplePayCheckoutResponse:
     stripe = _load_stripe()
     pricing = _offer_pricing(payload.offer_choice)
     quantity = _parse_quantity(payload.package_quantity)
@@ -189,8 +255,78 @@ def create_apple_pay_checkout_session(payload: ApplePayCheckoutRequest) -> Apple
             detail="Payment session did not return a checkout URL.",
         )
 
+    _merge_submission_payment_data(
+        db,
+        payload.submission_id,
+        payment_option="apple_pay",
+        payment_status="checkout_created",
+        provider="stripe",
+        session_id=str(session_id),
+        checkout_url=str(checkout_url),
+        amount_total_cents=total_cents,
+    )
+
     return ApplePayCheckoutResponse(
         checkout_url=str(checkout_url),
         session_id=str(session_id),
         amount_total_cents=total_cents,
     )
+
+
+def _sync_from_checkout_session(db: Session, checkout_session: dict, *, status_value: str) -> None:
+    metadata = checkout_session.get("metadata") or {}
+    submission_id_raw = metadata.get("submission_id")
+    if not submission_id_raw:
+        return
+    try:
+        submission_id = int(str(submission_id_raw).strip())
+    except ValueError:
+        return
+
+    amount_total_cents = checkout_session.get("amount_total")
+    try:
+        amount_total_cents_int = int(amount_total_cents) if amount_total_cents is not None else None
+    except (ValueError, TypeError):
+        amount_total_cents_int = None
+
+    _merge_submission_payment_data(
+        db,
+        submission_id,
+        payment_option="apple_pay",
+        payment_status=status_value,
+        provider="stripe",
+        session_id=checkout_session.get("id"),
+        checkout_url=checkout_session.get("url"),
+        amount_total_cents=amount_total_cents_int,
+    )
+
+
+@router.post("/stripe/webhook", response_model=StripeWebhookResponse)
+async def stripe_webhook(
+    request: Request,
+    db: Session = Depends(get_db),
+) -> StripeWebhookResponse:
+    stripe = _load_stripe()
+    webhook_secret = _load_stripe_webhook_secret()
+    payload = await request.body()
+    signature = request.headers.get("stripe-signature")
+
+    try:
+        event = stripe.Webhook.construct_event(payload=payload, sig_header=signature, secret=webhook_secret)
+    except Exception as exc:
+        logger.warning("Stripe webhook signature verification failed: %s", exc)
+        raise HTTPException(status_code=400, detail="Invalid Stripe webhook signature") from exc
+
+    event_type = str(event.get("type") or "")
+    obj = ((event.get("data") or {}).get("object") or {})
+    if not isinstance(obj, dict):
+        return StripeWebhookResponse(received=True)
+
+    if event_type in {"checkout.session.completed", "checkout.session.async_payment_succeeded"}:
+        _sync_from_checkout_session(db, obj, status_value="paid")
+    elif event_type in {"checkout.session.expired"}:
+        _sync_from_checkout_session(db, obj, status_value="expired")
+    elif event_type in {"checkout.session.async_payment_failed"}:
+        _sync_from_checkout_session(db, obj, status_value="failed")
+
+    return StripeWebhookResponse(received=True)

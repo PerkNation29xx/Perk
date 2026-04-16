@@ -383,6 +383,13 @@ async function loadContactInbox() {
   return await res.json();
 }
 
+async function loadOrders() {
+  const res = await apiFetch(`${config.api_v1_prefix}/admin/orders?limit=300`);
+  if (res.status === 403) throw new Error("Forbidden (admin only).");
+  if (!res.ok) throw new Error(`Orders failed (${res.status})`);
+  return await res.json();
+}
+
 async function loadDisputes() {
   const res = await apiFetch(`${config.api_v1_prefix}/admin/disputes`);
   if (res.status === 403) throw new Error("Forbidden (admin only).");
@@ -704,6 +711,36 @@ async function renderContactInboxView(container) {
     { label: "Inquiry", key: "inquiry" },
   ];
   container.appendChild(renderTable(columns, submissions, { emptyText: "No website submissions found." }));
+}
+
+function orderStatusTag(order) {
+  const statusText = order.payment_status || "submitted";
+  let kind = "";
+  if (statusText === "paid") kind = "ok";
+  else if (statusText === "failed") kind = "danger";
+  else if (statusText === "checkout_created" || statusText === "expired") kind = "warn";
+  return tag(statusText, kind);
+}
+
+async function renderOrdersView(container) {
+  setViewTitle("Orders", "Checkout submissions and payment status");
+  const orders = await loadOrders();
+  const columns = [
+    { label: "ID", key: "id", mono: true },
+    { label: "Created", key: "created_at", mono: true },
+    { label: "Customer", key: "customer_name" },
+    { label: "Email", key: "email" },
+    { label: "Phone", key: "phone" },
+    { label: "Offer", key: "offer_choice" },
+    { label: "Park", key: "selected_park" },
+    { label: "Qty", key: "package_quantity" },
+    { label: "Payment", key: "payment_option", render: (o) => o.payment_option || "not selected" },
+    { label: "Status", key: "payment_status", render: (o) => orderStatusTag(o) },
+    { label: "Amount", key: "payment_amount_usd", render: (o) => (o.payment_amount_usd ? fmtUsd(o.payment_amount_usd) : "") },
+    { label: "Stripe session", key: "stripe_checkout_session_id", mono: true },
+    { label: "Summary", key: "summary" },
+  ];
+  container.appendChild(renderTable(columns, orders, { emptyText: "No orders found." }));
 }
 
 async function renderDisputesView(container) {
@@ -1078,6 +1115,9 @@ async function renderCurrentView() {
         break;
       case "contactInbox":
         await renderContactInboxView(container);
+        break;
+      case "orders":
+        await renderOrdersView(container);
         break;
       case "disputes":
         await renderDisputesView(container);

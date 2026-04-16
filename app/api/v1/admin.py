@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from typing import Optional
@@ -30,6 +31,7 @@ from app.db.models import (
 from app.schemas import (
     APIMessage,
     AdminContactInboxRow,
+    AdminOrderRow,
     AdminAuditLogRow,
     AdminMerchantRow,
     AdminOverviewOut,
@@ -167,6 +169,48 @@ def resolve_dispute(
 
 def _quantize_usd(value: Decimal) -> Decimal:
     return value.quantize(Decimal("0.01"))
+
+
+def _parse_payload_json(raw: Optional[str]) -> dict:
+    if not raw:
+        return {}
+    try:
+        parsed = json.loads(raw)
+    except Exception:
+        return {}
+    return parsed if isinstance(parsed, dict) else {}
+
+
+def _first_non_empty(*values: Optional[str]) -> Optional[str]:
+    for value in values:
+        if value is None:
+            continue
+        text = str(value).strip()
+        if text:
+            return text
+    return None
+
+
+def _parse_payment_amount_usd(payload: dict) -> Optional[Decimal]:
+    for key in ("payment_amount_cents", "amount_total_cents"):
+        raw = payload.get(key)
+        if raw in (None, ""):
+            continue
+        try:
+            cents = int(str(raw).strip())
+            return _quantize_usd(Decimal(cents) / Decimal("100"))
+        except Exception:
+            continue
+
+    for key in ("payment_amount_usd", "amount_usd"):
+        raw = payload.get(key)
+        if raw in (None, ""):
+            continue
+        try:
+            return _quantize_usd(Decimal(str(raw).strip()))
+        except Exception:
+            continue
+    return None
 
 
 @router.get("/overview", response_model=AdminOverviewOut)
@@ -642,6 +686,76 @@ def admin_contact_inbox(
         )
         for r in rows
     ]
+
+
+@router.get("/orders", response_model=list[AdminOrderRow])
+def admin_orders(
+    q: Optional[str] = None,
+    limit: int = Query(default=200, ge=1, le=500),
+    offset: int = Query(default=0, ge=0),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles(UserRole.admin)),
+) -> list[AdminOrderRow]:
+    del current_user
+
+    query = select(WebLeadSubmission).where(WebLeadSubmission.form_type == "checkout")
+    if q:
+        like = f"%{q.strip()}%"
+        query = query.where(
+            or_(
+                WebLeadSubmission.email.ilike(like),
+                WebLeadSubmission.name.ilike(like),
+                WebLeadSubmission.contact_name.ilike(like),
+                WebLeadSubmission.phone.ilike(like),
+                WebLeadSubmission.inquiry.ilike(like),
+                WebLeadSubmission.source_page.ilike(like),
+                WebLeadSubmission.payload_json.ilike(like),
+            )
+        )
+
+    rows = db.scalars(
+        query.order_by(WebLeadSubmission.created_at.desc(), WebLeadSubmission.id.desc())
+        .limit(limit)
+        .offset(offset)
+    ).all()
+
+    out: list[AdminOrderRow] = []
+    for row in rows:
+        payload = _parse_payload_json(row.payload_json)
+        customer_name = _first_non_empty(
+            row.name,
+            row.contact_name,
+            payload.get("full_name"),
+            payload.get("name"),
+            payload.get("contact_name"),
+        )
+        payment_option = _first_non_empty(payload.get("payment_option"))
+        payment_status = _first_non_empty(payload.get("payment_status"))
+        payment_provider = _first_non_empty(payload.get("payment_provider"))
+        stripe_session_id = _first_non_empty(payload.get("stripe_checkout_session_id"))
+        payment_amount_usd = _parse_payment_amount_usd(payload)
+
+        out.append(
+            AdminOrderRow(
+                id=row.id,
+                created_at=row.created_at,
+                source_page=row.source_page,
+                customer_name=customer_name,
+                email=row.email,
+                phone=_first_non_empty(row.phone, payload.get("phone")),
+                offer_choice=_first_non_empty(payload.get("offer_choice"), payload.get("selected_offer")),
+                selected_park=_first_non_empty(payload.get("selected_park"), payload.get("park")),
+                package_quantity=_first_non_empty(payload.get("package_quantity")),
+                payment_option=payment_option,
+                payment_status=payment_status,
+                payment_provider=payment_provider,
+                payment_amount_usd=payment_amount_usd,
+                stripe_checkout_session_id=stripe_session_id,
+                summary=_first_non_empty(row.inquiry, payload.get("notes"), payload.get("inquiry")),
+            )
+        )
+
+    return out
 
 
 @router.get("/audit", response_model=list[AdminAuditLogRow])
