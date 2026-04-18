@@ -735,6 +735,7 @@ async function renderOrdersView(container) {
     { label: "Park", key: "selected_park" },
     { label: "Qty", key: "package_quantity" },
     { label: "Payment", key: "payment_option", render: (o) => o.payment_option || "not selected" },
+    { label: "Mode", key: "stripe_mode", render: (o) => o.stripe_mode || "-" },
     { label: "Status", key: "payment_status", render: (o) => orderStatusTag(o) },
     { label: "Amount", key: "payment_amount_usd", render: (o) => (o.payment_amount_usd ? fmtUsd(o.payment_amount_usd) : "") },
     { label: "Stripe session", key: "stripe_checkout_session_id", mono: true },

@@ -37,6 +37,8 @@ class UserRegister(BaseModel):
     location_consent: bool = True
     alert_radius_miles: int = 5
     notification_categories: Optional[str] = None
+    sms_opt_in: bool = False
+    sms_opt_in_source: Optional[str] = Field(default=None, max_length=80)
 
 
 class LoginRequest(BaseModel):
@@ -57,6 +59,11 @@ class UserOut(BaseModel):
     location_consent: bool
     alert_radius_miles: int
     notification_categories: Optional[str]
+    sms_opt_in: bool
+    sms_opt_in_at: Optional[datetime]
+    sms_opt_in_source: Optional[str]
+    sms_opt_out_at: Optional[datetime]
+    sms_welcome_sent_at: Optional[datetime]
     email_verified: bool
 
 
@@ -68,10 +75,13 @@ class UserPreferencesUpdate(BaseModel):
     """
 
     reward_preference: Optional[RewardPreference] = None
+    phone: Optional[str] = Field(default=None, max_length=32)
     notifications_enabled: Optional[bool] = None
     location_consent: Optional[bool] = None
     alert_radius_miles: Optional[int] = None
     notification_categories: Optional[str] = None
+    sms_opt_in: Optional[bool] = None
+    sms_opt_in_source: Optional[str] = Field(default=None, max_length=80)
 
 
 class RegisterResponse(BaseModel):
@@ -413,6 +423,7 @@ class WebFormSubmitResponse(BaseModel):
     submission_id: int
     mirrored_to_backup: bool = False
     emailed_to_support: bool = False
+    sms_acknowledged: bool = False
 
 
 # Admin portal schemas
@@ -555,6 +566,7 @@ class AdminOrderRow(BaseModel):
     payment_option: Optional[str] = None
     payment_status: Optional[str] = None
     payment_provider: Optional[str] = None
+    stripe_mode: Optional[str] = None
     payment_amount_usd: Optional[Decimal] = None
     stripe_checkout_session_id: Optional[str] = None
     summary: Optional[str] = None

@@ -48,6 +48,22 @@ class Settings(BaseSettings):
     supabase_email_redirect_path: str = "/login"
     supabase_password_reset_redirect_path: str = "/reset-password"
 
+    # Stripe/Apple Pay checkout (web campaign payments).
+    # Apple Pay is surfaced by Stripe Checkout on supported Apple devices/browsers
+    # after your Stripe domain verification is complete.
+    # Backward-compatible single-key settings:
+    stripe_secret_key: Optional[str] = None
+    stripe_publishable_key: Optional[str] = None
+    stripe_webhook_secret: Optional[str] = None
+    # Dual-mode settings for test/live toggle:
+    stripe_mode: str = "test"  # "test" | "live"
+    stripe_secret_key_test: Optional[str] = None
+    stripe_publishable_key_test: Optional[str] = None
+    stripe_webhook_secret_test: Optional[str] = None
+    stripe_secret_key_live: Optional[str] = None
+    stripe_publishable_key_live: Optional[str] = None
+    stripe_webhook_secret_live: Optional[str] = None
+
     # Public invite link base used for referral QR/link payloads.
     # Supports either a query-param URL (e.g. https://perknation.app/invite)
     # or a templated URL containing `{code}`.
@@ -99,6 +115,30 @@ class Settings(BaseSettings):
     smtp_use_tls: bool = True
     smtp_use_ssl: bool = False
     smtp_timeout_seconds: int = 20
+
+    # SMS notifications.
+    sms_enabled: bool = False
+    sms_provider: str = "twilio"
+    sms_send_timeout_seconds: int = 12
+
+    # Twilio credentials / sender pools.
+    twilio_account_sid: Optional[str] = None
+    twilio_auth_token: Optional[str] = None
+    # Dedicated Messaging Service SIDs keep PerkNation and The HQ isolated.
+    twilio_messaging_service_sid_perknation: Optional[str] = None
+    twilio_messaging_service_sid_hq: Optional[str] = None
+    # Optional delivery callback endpoint for outbound messages.
+    twilio_status_callback_url: Optional[str] = None
+
+    # Webhook verification for inbound/status callbacks.
+    sms_validate_webhook_signature: bool = True
+    # Optional external base URL used for Twilio signature validation when
+    # running behind reverse proxies (example: https://api.perknation.net).
+    sms_webhook_base_url: Optional[str] = None
+
+    # Feature flags / templates.
+    sms_welcome_enabled: bool = True
+    sms_contact_ack_enabled: bool = False
 
     # AI assistant provider.
     ai_enabled: bool = True

@@ -732,6 +732,7 @@ def admin_orders(
         payment_option = _first_non_empty(payload.get("payment_option"))
         payment_status = _first_non_empty(payload.get("payment_status"))
         payment_provider = _first_non_empty(payload.get("payment_provider"))
+        stripe_mode = _first_non_empty(payload.get("stripe_mode"))
         stripe_session_id = _first_non_empty(payload.get("stripe_checkout_session_id"))
         payment_amount_usd = _parse_payment_amount_usd(payload)
 
@@ -749,6 +750,7 @@ def admin_orders(
                 payment_option=payment_option,
                 payment_status=payment_status,
                 payment_provider=payment_provider,
+                stripe_mode=stripe_mode,
                 payment_amount_usd=payment_amount_usd,
                 stripe_checkout_session_id=stripe_session_id,
                 summary=_first_non_empty(row.inquiry, payload.get("notes"), payload.get("inquiry")),
