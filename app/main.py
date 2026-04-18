@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import logging
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse, Response
@@ -15,15 +16,27 @@ from app.services.seed import seed_if_empty
 # Import models so SQLAlchemy metadata includes all tables.
 from app.db import models as _models  # noqa: F401
 
+logger = logging.getLogger(__name__)
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    Base.metadata.create_all(bind=engine)
-    run_migrations(engine)
+    app.state.db_ready = False
+    app.state.db_startup_error = None
+    try:
+        Base.metadata.create_all(bind=engine)
+        run_migrations(engine)
 
-    if settings.seed_default_data:
-        with SessionLocal() as db:
-            seed_if_empty(db)
+        if settings.seed_default_data:
+            with SessionLocal() as db:
+                seed_if_empty(db)
+        app.state.db_ready = True
+    except Exception as exc:  # noqa: BLE001
+        # Keep web/API process healthy for platform health checks even if DB is
+        # temporarily unreachable during boot. API handlers touching DB will
+        # still return operational errors until connectivity is restored.
+        app.state.db_startup_error = str(exc)
+        logger.exception("Database init failed during startup; continuing in degraded mode")
 
     yield
 

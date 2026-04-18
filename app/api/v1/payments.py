@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import logging
-import os
 from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
 from typing import Optional
@@ -12,8 +11,9 @@ from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
-from app.core.config import settings
 from app.db.models import WebLeadSubmission
+from app.services.runtime_settings import get_effective_payment_setting, normalize_stripe_mode
+from app.core.config import settings
 
 router = APIRouter(prefix="/web/payments", tags=["web-payments"])
 logger = logging.getLogger(__name__)
@@ -115,45 +115,38 @@ def _build_cancel_url(source_page: str) -> str:
     return f"{settings.public_web_base_url.rstrip('/')}{path}{connector}payment=cancelled"
 
 
-def _normalize_stripe_mode(raw_mode: Optional[str], *, fallback: str = "test") -> str:
-    mode = (raw_mode or "").strip().lower()
-    if mode in _ALLOWED_STRIPE_MODES:
-        return mode
-    return fallback
+def _effective_default_stripe_mode(*, db: Session) -> str:
+    from_settings = get_effective_payment_setting(db, "stripe_mode", fallback="test")
+    return normalize_stripe_mode(from_settings, fallback="test")
 
 
-def _effective_default_stripe_mode() -> str:
-    from_settings = os.environ.get("STRIPE_MODE") or getattr(settings, "stripe_mode", None)
-    return _normalize_stripe_mode(from_settings, fallback="test")
-
-
-def _resolve_requested_stripe_mode(raw_mode: Optional[str]) -> str:
+def _resolve_requested_stripe_mode(raw_mode: Optional[str], *, db: Session) -> str:
     if raw_mode is None:
-        return _effective_default_stripe_mode()
+        return _effective_default_stripe_mode(db=db)
     mode = (raw_mode or "").strip().lower()
     if mode not in _ALLOWED_STRIPE_MODES:
         raise HTTPException(status_code=400, detail="Unsupported Stripe mode. Use test or live.")
     return mode
 
 
-def _mode_secret_key(mode: str) -> str:
+def _mode_secret_key(mode: str, *, db: Session) -> str:
     if mode == "live":
-        return (os.environ.get("STRIPE_SECRET_KEY_LIVE") or getattr(settings, "stripe_secret_key_live", None) or "").strip()
-    return (os.environ.get("STRIPE_SECRET_KEY_TEST") or getattr(settings, "stripe_secret_key_test", None) or "").strip()
+        return get_effective_payment_setting(db, "stripe_secret_key_live", fallback="") or ""
+    return get_effective_payment_setting(db, "stripe_secret_key_test", fallback="") or ""
 
 
-def _legacy_secret_key() -> str:
-    return (os.environ.get("STRIPE_SECRET_KEY") or getattr(settings, "stripe_secret_key", None) or "").strip()
+def _legacy_secret_key(*, db: Session) -> str:
+    return get_effective_payment_setting(db, "stripe_secret_key", fallback="") or ""
 
 
-def _mode_webhook_secret(mode: str) -> str:
+def _mode_webhook_secret(mode: str, *, db: Session) -> str:
     if mode == "live":
-        return (os.environ.get("STRIPE_WEBHOOK_SECRET_LIVE") or getattr(settings, "stripe_webhook_secret_live", None) or "").strip()
-    return (os.environ.get("STRIPE_WEBHOOK_SECRET_TEST") or getattr(settings, "stripe_webhook_secret_test", None) or "").strip()
+        return get_effective_payment_setting(db, "stripe_webhook_secret_live", fallback="") or ""
+    return get_effective_payment_setting(db, "stripe_webhook_secret_test", fallback="") or ""
 
 
-def _legacy_webhook_secret() -> str:
-    return (os.environ.get("STRIPE_WEBHOOK_SECRET") or getattr(settings, "stripe_webhook_secret", None) or "").strip()
+def _legacy_webhook_secret(*, db: Session) -> str:
+    return get_effective_payment_setting(db, "stripe_webhook_secret", fallback="") or ""
 
 
 def _import_stripe():
@@ -168,8 +161,8 @@ def _import_stripe():
     return stripe
 
 
-def _load_stripe(mode: str):
-    stripe_secret_key = _mode_secret_key(mode) or _legacy_secret_key()
+def _load_stripe(mode: str, *, db: Session):
+    stripe_secret_key = _mode_secret_key(mode, db=db) or _legacy_secret_key(db=db)
     if not stripe_secret_key:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
@@ -182,7 +175,7 @@ def _load_stripe(mode: str):
     return stripe
 
 
-def _webhook_secret_candidates() -> list[tuple[str, str]]:
+def _webhook_secret_candidates(*, db: Session) -> list[tuple[str, str]]:
     """
     Return ordered webhook-secret candidates:
     1) currently selected Stripe mode
@@ -190,18 +183,18 @@ def _webhook_secret_candidates() -> list[tuple[str, str]]:
     3) legacy STRIPE_WEBHOOK_SECRET
     """
 
-    preferred = _effective_default_stripe_mode()
+    preferred = _effective_default_stripe_mode(db=db)
     ordered_modes = [preferred] + [m for m in ("test", "live") if m != preferred]
     out: list[tuple[str, str]] = []
     seen: set[str] = set()
 
     for mode in ordered_modes:
-        secret = _mode_webhook_secret(mode)
+        secret = _mode_webhook_secret(mode, db=db)
         if secret and secret not in seen:
             seen.add(secret)
             out.append((mode, secret))
 
-    legacy = _legacy_webhook_secret()
+    legacy = _legacy_webhook_secret(db=db)
     if legacy and legacy not in seen:
         out.append((preferred, legacy))
 
@@ -261,8 +254,8 @@ def create_apple_pay_checkout_session(
     payload: ApplePayCheckoutRequest,
     db: Session = Depends(get_db),
 ) -> ApplePayCheckoutResponse:
-    stripe_mode = _resolve_requested_stripe_mode(payload.stripe_mode)
-    stripe = _load_stripe(stripe_mode)
+    stripe_mode = _resolve_requested_stripe_mode(payload.stripe_mode, db=db)
+    stripe = _load_stripe(stripe_mode, db=db)
     pricing = _offer_pricing(payload.offer_choice)
     quantity = _parse_quantity(payload.package_quantity)
 
@@ -387,7 +380,7 @@ async def stripe_webhook(
     db: Session = Depends(get_db),
 ) -> StripeWebhookResponse:
     stripe = _import_stripe()
-    candidates = _webhook_secret_candidates()
+    candidates = _webhook_secret_candidates(db=db)
     if not candidates:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
@@ -397,7 +390,7 @@ async def stripe_webhook(
     payload = await request.body()
     signature = request.headers.get("stripe-signature")
     event = None
-    matched_mode = _effective_default_stripe_mode()
+    matched_mode = _effective_default_stripe_mode(db=db)
     last_exc: Optional[Exception] = None
     for candidate_mode, secret in candidates:
         try:

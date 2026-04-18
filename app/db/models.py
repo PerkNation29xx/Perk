@@ -105,6 +105,13 @@ class User(Base):
     alert_radius_miles: Mapped[int] = mapped_column(default=5, nullable=False)
     # Comma-separated category keys (e.g. "restaurant,gas,retail").
     notification_categories: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    # SMS consent and delivery telemetry.
+    sms_opt_in: Mapped[bool] = mapped_column(default=False, nullable=False)
+    sms_opt_in_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    sms_opt_in_source: Mapped[Optional[str]] = mapped_column(String(80), nullable=True)
+    sms_opt_out_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    sms_last_error: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    sms_welcome_sent_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     email_verified: Mapped[bool] = mapped_column(default=False)
     email_verification_code_hash: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
     email_verification_expires_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
@@ -535,6 +542,20 @@ class AuditLog(Base):
     after_snapshot: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class RuntimeSetting(Base):
+    """
+    Persisted runtime configuration key/value pairs editable from admin UI.
+
+    Values are restricted to admin-only APIs; public APIs never expose them.
+    """
+
+    __tablename__ = "runtime_settings"
+
+    key: Mapped[str] = mapped_column(String(120), primary_key=True)
+    value: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
 
 
 class PrivateAssistantMessage(Base):

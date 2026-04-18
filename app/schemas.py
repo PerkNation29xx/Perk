@@ -572,6 +572,38 @@ class AdminOrderRow(BaseModel):
     summary: Optional[str] = None
 
 
+class AdminPaymentSettingsOut(BaseModel):
+    stripe_mode: str
+
+    stripe_publishable_key_test: Optional[str] = None
+    stripe_secret_key_test: Optional[str] = None
+    stripe_webhook_secret_test: Optional[str] = None
+
+    stripe_publishable_key_live: Optional[str] = None
+    stripe_secret_key_live: Optional[str] = None
+    stripe_webhook_secret_live: Optional[str] = None
+
+    stripe_publishable_key: Optional[str] = None
+    stripe_secret_key: Optional[str] = None
+    stripe_webhook_secret: Optional[str] = None
+
+
+class AdminPaymentSettingsUpdate(BaseModel):
+    stripe_mode: Optional[str] = None
+
+    stripe_publishable_key_test: Optional[str] = None
+    stripe_secret_key_test: Optional[str] = None
+    stripe_webhook_secret_test: Optional[str] = None
+
+    stripe_publishable_key_live: Optional[str] = None
+    stripe_secret_key_live: Optional[str] = None
+    stripe_webhook_secret_live: Optional[str] = None
+
+    stripe_publishable_key: Optional[str] = None
+    stripe_secret_key: Optional[str] = None
+    stripe_webhook_secret: Optional[str] = None
+
+
 class AdminAuditLogRow(BaseModel):
     id: int
     actor_user_id: Optional[int] = None

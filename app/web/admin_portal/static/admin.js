@@ -390,6 +390,26 @@ async function loadOrders() {
   return await res.json();
 }
 
+async function loadPaymentSettings() {
+  const res = await apiFetch(`${config.api_v1_prefix}/admin/payments/settings`);
+  if (res.status === 403) throw new Error("Forbidden (admin only).");
+  if (!res.ok) throw new Error(`Payment settings failed (${res.status})`);
+  return await res.json();
+}
+
+async function savePaymentSettings(payload) {
+  const res = await apiFetch(`${config.api_v1_prefix}/admin/payments/settings`, {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+  const body = await res.json().catch(() => ({}));
+  if (res.status === 403) throw new Error("Forbidden (admin only).");
+  if (!res.ok) {
+    throw new Error(body.detail || body.message || `Payment settings update failed (${res.status})`);
+  }
+  return body;
+}
+
 async function loadDisputes() {
   const res = await apiFetch(`${config.api_v1_prefix}/admin/disputes`);
   if (res.status === 403) throw new Error("Forbidden (admin only).");
@@ -742,6 +762,204 @@ async function renderOrdersView(container) {
     { label: "Summary", key: "summary" },
   ];
   container.appendChild(renderTable(columns, orders, { emptyText: "No orders found." }));
+}
+
+function asText(value) {
+  return value == null ? "" : String(value);
+}
+
+function wireSecretToggle(toggleBtn, input) {
+  if (!toggleBtn || !input) return;
+  toggleBtn.addEventListener("click", () => {
+    const show = input.type === "password";
+    input.type = show ? "text" : "password";
+    toggleBtn.textContent = show ? "Hide" : "Show";
+  });
+}
+
+function setAllSecretInputVisibility(root, showSecrets) {
+  const buttons = qsa("[data-secret-toggle]", root);
+  buttons.forEach((btn) => {
+    const targetId = btn.dataset.secretToggle;
+    const input = qs(`#${targetId}`, root);
+    if (!input) return;
+    input.type = showSecrets ? "text" : "password";
+    btn.textContent = showSecrets ? "Hide" : "Show";
+  });
+}
+
+async function renderPaymentsView(container) {
+  setViewTitle("Payments", "Stripe mode and API key management");
+  const settings = await loadPaymentSettings();
+
+  const card = document.createElement("section");
+  card.className = "card";
+  card.innerHTML = `
+    <div class="row row--space">
+      <div>
+        <div class="h2">Stripe payment controls</div>
+        <div class="muted small">Switch between test/live and update both key sets from admin.</div>
+      </div>
+      <div class="pill pill--muted">Current mode: ${asText(settings.stripe_mode || "test")}</div>
+    </div>
+
+    <form id="paymentSettingsForm" class="form" style="max-width: 980px;">
+      <label class="field">
+        <span>Active mode</span>
+        <select id="stripeModeInput" class="select">
+          <option value="test">test</option>
+          <option value="live">live</option>
+        </select>
+      </label>
+
+      <div class="row" style="margin-top: 4px;">
+        <button class="btn btn--ghost" id="showAllSecretsBtn" type="button">Show all secrets</button>
+      </div>
+
+      <div class="row" style="align-items: flex-start;">
+        <section class="card card--tight" style="flex: 1 1 460px; margin: 0;">
+          <div class="h2">Test keys</div>
+          <label class="field">
+            <span>Publishable key (test)</span>
+            <input id="stripePublishableTestInput" type="text" autocomplete="off" />
+          </label>
+          <label class="field">
+            <span>Secret key (test)</span>
+            <div class="row">
+              <input id="stripeSecretTestInput" type="password" autocomplete="off" />
+              <button class="btn btn--ghost" type="button" data-secret-toggle="stripeSecretTestInput">Show</button>
+            </div>
+          </label>
+          <label class="field">
+            <span>Webhook secret (test)</span>
+            <div class="row">
+              <input id="stripeWebhookTestInput" type="password" autocomplete="off" />
+              <button class="btn btn--ghost" type="button" data-secret-toggle="stripeWebhookTestInput">Show</button>
+            </div>
+          </label>
+        </section>
+
+        <section class="card card--tight" style="flex: 1 1 460px; margin: 0;">
+          <div class="h2">Live keys</div>
+          <label class="field">
+            <span>Publishable key (live)</span>
+            <input id="stripePublishableLiveInput" type="text" autocomplete="off" />
+          </label>
+          <label class="field">
+            <span>Secret key (live)</span>
+            <div class="row">
+              <input id="stripeSecretLiveInput" type="password" autocomplete="off" />
+              <button class="btn btn--ghost" type="button" data-secret-toggle="stripeSecretLiveInput">Show</button>
+            </div>
+          </label>
+          <label class="field">
+            <span>Webhook secret (live)</span>
+            <div class="row">
+              <input id="stripeWebhookLiveInput" type="password" autocomplete="off" />
+              <button class="btn btn--ghost" type="button" data-secret-toggle="stripeWebhookLiveInput">Show</button>
+            </div>
+          </label>
+        </section>
+      </div>
+
+      <details>
+        <summary class="muted small" style="cursor: pointer;">Legacy fallback keys (optional)</summary>
+        <div class="row" style="align-items: flex-start; margin-top: 8px;">
+          <label class="field" style="flex: 1 1 320px;">
+            <span>Publishable key (fallback)</span>
+            <input id="stripePublishableFallbackInput" type="text" autocomplete="off" />
+          </label>
+          <label class="field" style="flex: 1 1 320px;">
+            <span>Secret key (fallback)</span>
+            <div class="row">
+              <input id="stripeSecretFallbackInput" type="password" autocomplete="off" />
+              <button class="btn btn--ghost" type="button" data-secret-toggle="stripeSecretFallbackInput">Show</button>
+            </div>
+          </label>
+          <label class="field" style="flex: 1 1 320px;">
+            <span>Webhook secret (fallback)</span>
+            <div class="row">
+              <input id="stripeWebhookFallbackInput" type="password" autocomplete="off" />
+              <button class="btn btn--ghost" type="button" data-secret-toggle="stripeWebhookFallbackInput">Show</button>
+            </div>
+          </label>
+        </div>
+      </details>
+
+      <div class="row">
+        <button class="btn btn--primary" id="savePaymentSettingsBtn" type="submit">Save payment settings</button>
+        <span class="muted small" id="paymentSettingsHint"></span>
+      </div>
+    </form>
+  `;
+  container.appendChild(card);
+
+  const form = qs("#paymentSettingsForm", card);
+  const hint = qs("#paymentSettingsHint", card);
+  const saveBtn = qs("#savePaymentSettingsBtn", card);
+  const showAllBtn = qs("#showAllSecretsBtn", card);
+
+  const modeInput = qs("#stripeModeInput", card);
+  const publishableTestInput = qs("#stripePublishableTestInput", card);
+  const secretTestInput = qs("#stripeSecretTestInput", card);
+  const webhookTestInput = qs("#stripeWebhookTestInput", card);
+  const publishableLiveInput = qs("#stripePublishableLiveInput", card);
+  const secretLiveInput = qs("#stripeSecretLiveInput", card);
+  const webhookLiveInput = qs("#stripeWebhookLiveInput", card);
+  const publishableFallbackInput = qs("#stripePublishableFallbackInput", card);
+  const secretFallbackInput = qs("#stripeSecretFallbackInput", card);
+  const webhookFallbackInput = qs("#stripeWebhookFallbackInput", card);
+
+  modeInput.value = asText(settings.stripe_mode || "test");
+  publishableTestInput.value = asText(settings.stripe_publishable_key_test);
+  secretTestInput.value = asText(settings.stripe_secret_key_test);
+  webhookTestInput.value = asText(settings.stripe_webhook_secret_test);
+  publishableLiveInput.value = asText(settings.stripe_publishable_key_live);
+  secretLiveInput.value = asText(settings.stripe_secret_key_live);
+  webhookLiveInput.value = asText(settings.stripe_webhook_secret_live);
+  publishableFallbackInput.value = asText(settings.stripe_publishable_key);
+  secretFallbackInput.value = asText(settings.stripe_secret_key);
+  webhookFallbackInput.value = asText(settings.stripe_webhook_secret);
+
+  qsa("[data-secret-toggle]", card).forEach((btn) => {
+    const targetId = btn.dataset.secretToggle;
+    wireSecretToggle(btn, qs(`#${targetId}`, card));
+  });
+
+  let showSecrets = false;
+  showAllBtn.addEventListener("click", () => {
+    showSecrets = !showSecrets;
+    setAllSecretInputVisibility(card, showSecrets);
+    showAllBtn.textContent = showSecrets ? "Hide all secrets" : "Show all secrets";
+  });
+
+  form.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    saveBtn.disabled = true;
+    hint.textContent = "Saving…";
+    try {
+      const payload = {
+        stripe_mode: modeInput.value.trim(),
+        stripe_publishable_key_test: publishableTestInput.value.trim(),
+        stripe_secret_key_test: secretTestInput.value.trim(),
+        stripe_webhook_secret_test: webhookTestInput.value.trim(),
+        stripe_publishable_key_live: publishableLiveInput.value.trim(),
+        stripe_secret_key_live: secretLiveInput.value.trim(),
+        stripe_webhook_secret_live: webhookLiveInput.value.trim(),
+        stripe_publishable_key: publishableFallbackInput.value.trim(),
+        stripe_secret_key: secretFallbackInput.value.trim(),
+        stripe_webhook_secret: webhookFallbackInput.value.trim(),
+      };
+      const updated = await savePaymentSettings(payload);
+      hint.textContent = `Saved. Active mode: ${updated.stripe_mode || modeInput.value}.`;
+      setStatus(`Payment settings updated. Active mode: ${updated.stripe_mode || modeInput.value}.`);
+    } catch (e) {
+      hint.textContent = "";
+      setStatus(e.message || String(e));
+    } finally {
+      saveBtn.disabled = false;
+    }
+  });
 }
 
 async function renderDisputesView(container) {
@@ -1119,6 +1337,9 @@ async function renderCurrentView() {
         break;
       case "orders":
         await renderOrdersView(container);
+        break;
+      case "payments":
+        await renderPaymentsView(container);
         break;
       case "disputes":
         await renderDisputesView(container);

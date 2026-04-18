@@ -31,6 +31,8 @@ from app.db.models import (
 from app.schemas import (
     APIMessage,
     AdminContactInboxRow,
+    AdminPaymentSettingsOut,
+    AdminPaymentSettingsUpdate,
     AdminOrderRow,
     AdminAuditLogRow,
     AdminMerchantRow,
@@ -50,6 +52,7 @@ from app.schemas import (
     TransactionStatus,
 )
 from app.services.audit import log_action
+from app.services.runtime_settings import apply_payment_settings_updates, get_payment_settings_snapshot
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -758,6 +761,56 @@ def admin_orders(
         )
 
     return out
+
+
+@router.get("/payments/settings", response_model=AdminPaymentSettingsOut)
+def admin_payment_settings(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles(UserRole.admin)),
+) -> AdminPaymentSettingsOut:
+    del current_user
+    snapshot = get_payment_settings_snapshot(db)
+    return AdminPaymentSettingsOut(**snapshot)
+
+
+@router.put("/payments/settings", response_model=AdminPaymentSettingsOut)
+def admin_update_payment_settings(
+    payload: AdminPaymentSettingsUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles(UserRole.admin)),
+) -> AdminPaymentSettingsOut:
+    updates = payload.model_dump(exclude_unset=True)
+    if not updates:
+        snapshot = get_payment_settings_snapshot(db)
+        return AdminPaymentSettingsOut(**snapshot)
+
+    before = get_payment_settings_snapshot(db)
+    try:
+        after = apply_payment_settings_updates(db, updates)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    changed_keys = ",".join(sorted(updates.keys()))
+    log_action(
+        db,
+        actor=current_user,
+        action="admin.payment.settings.update",
+        object_type="system",
+        object_id="stripe",
+        before_snapshot=(
+            f"mode={before.get('stripe_mode')};"
+            f"test_secret_set={bool(before.get('stripe_secret_key_test'))};"
+            f"live_secret_set={bool(before.get('stripe_secret_key_live'))}"
+        ),
+        after_snapshot=(
+            f"mode={after.get('stripe_mode')};"
+            f"test_secret_set={bool(after.get('stripe_secret_key_test'))};"
+            f"live_secret_set={bool(after.get('stripe_secret_key_live'))};"
+            f"changed={changed_keys}"
+        ),
+    )
+    db.commit()
+    return AdminPaymentSettingsOut(**after)
 
 
 @router.get("/audit", response_model=list[AdminAuditLogRow])

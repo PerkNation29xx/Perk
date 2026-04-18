@@ -29,6 +29,7 @@ class Settings(BaseSettings):
     database_user: Optional[str] = None
     database_password: Optional[str] = None
     database_sslmode: Optional[str] = None
+    database_connect_timeout_seconds: int = 5
     # Workaround for environments that cannot reach database over IPv6.
     # When enabled, resolves DATABASE_HOST to IPv4 and passes hostaddr to libpq.
     database_force_ipv4: bool = False
@@ -206,6 +207,7 @@ class Settings(BaseSettings):
         query = {}
         if sslmode:
             query["sslmode"] = sslmode
+        query["connect_timeout"] = str(max(1, int(self.database_connect_timeout_seconds or 5)))
         # Some cloud runtimes (including specific Render regions) can fail
         # routing to Supabase over IPv6. Resolve and use an IPv4 address.
         should_force_ipv4 = bool(self.database_host) and (
@@ -267,25 +269,26 @@ class Settings(BaseSettings):
             return normalized_url
 
         host = url.host or ""
-        should_force_ipv4 = bool(host) and (
-            self.database_force_ipv4 or self._is_supabase_host(host)
-        )
-        if not should_force_ipv4:
-            return normalized_url
-
-        resolved_host = self._resolve_ipv4_host(host, url.port or self.database_port)
-        if not resolved_host:
-            return normalized_url
-
         query = dict(url.query) if url.query else {}
         if "sslmode" not in query and self._is_supabase_host(host):
             query["sslmode"] = "require"
+        if "connect_timeout" not in query:
+            query["connect_timeout"] = str(max(1, int(self.database_connect_timeout_seconds or 5)))
+
+        host_value = host
+        should_force_ipv4 = bool(host) and (
+            self.database_force_ipv4 or self._is_supabase_host(host)
+        )
+        if should_force_ipv4:
+            resolved_host = self._resolve_ipv4_host(host, url.port or self.database_port)
+            if resolved_host:
+                host_value = resolved_host
 
         ipv4_url = URL.create(
             drivername=url.drivername,
             username=url.username,
             password=url.password,
-            host=resolved_host,
+            host=host_value,
             port=url.port,
             database=url.database,
             query=query or None,
