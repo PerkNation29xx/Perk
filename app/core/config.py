@@ -16,8 +16,9 @@ class Settings(BaseSettings):
     project_name: str = "PerkNation Backend"
     api_v1_prefix: str = "/v1"
 
-    # Default: local SQLite for development.
-    database_url: str = "sqlite:///./perknation.db"
+    # Default: writable SQLite fallback.
+    # On hosted platforms, writing under the app source directory may fail.
+    database_url: str = "sqlite:////tmp/perknation.db"
 
     # Optional: configure Postgres via discrete env vars. This avoids URL-encoding
     # issues for passwords with special characters (e.g. '#' or '@'), and is
@@ -101,7 +102,7 @@ class Settings(BaseSettings):
     # Primary write goes to DATABASE_* (or DATABASE_URL). If enabled, each form
     # submission is also mirrored to a local backup DB URL.
     forms_backup_enabled: bool = True
-    forms_backup_database_url: str = "sqlite:///./perknation_forms_backup.db"
+    forms_backup_database_url: str = "sqlite:////tmp/perknation_forms_backup.db"
 
     # Contact form notifications.
     # If SMTP is configured, new contact submissions can be emailed to support.
