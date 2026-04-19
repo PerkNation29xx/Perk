@@ -77,6 +77,15 @@
     }
     .hspCheckoutLabel textarea{min-height:96px;resize:vertical}
     .hspCheckoutSummary{border-radius:18px;border:1px solid rgba(230,184,74,.24);background:rgba(230,184,74,.08);padding:14px;margin:14px 0}
+    .hspCheckoutSection{padding-top:0}
+    .hspCheckoutShell{
+      border-radius:24px;
+      border:1px solid rgba(15,23,42,.14);
+      background:rgba(15,23,42,.03);
+      box-shadow:var(--shadow-soft);
+      padding:18px;
+    }
+    .hspCheckoutHeader{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
     .hspCheckoutToast{display:none;margin-top:12px;padding:12px 14px;border-radius:16px;border:1px solid rgba(250,247,247,.16);background:rgba(250,247,247,.03)}
     .hspCheckoutToast.show{display:block}
     .hspCheckoutToast.error{border-color:rgba(195,63,22,.45);background:rgba(195,63,22,.08)}
@@ -551,138 +560,137 @@
   </section>
 </main>
 
-<div class="modalOverlay" data-hsp-checkout-overlay>
-  <div class="modal">
-    <div class="modalHeader">
-      <div>
-        <div class="modalTitle">Complete your Perk Nation purchase request</div>
-        <div class="small hspMuted">Choose Zelle or Apple Pay and keep this campaign attached to the checkout path.</div>
-      </div>
-      <button class="modalClose" type="button" aria-label="Close checkout" data-hsp-checkout-close>✕</button>
-    </div>
-
-    <div class="hspCheckoutSummary">
-      <div class="pill">Selected offer</div>
-      <div class="h3" style="margin:10px 0 4px" data-hsp-selected-offer>Hollywood Sports offer campaign</div>
-      <div class="small hspMuted">Choose your park, package, and preferred visit window. Perk Nation will keep the offer attached to your request.</div>
-    </div>
-
-    <form data-hsp-checkout-form novalidate>
-      <input type="hidden" name="selected_offer" value="Hollywood Sports offer campaign" />
-      <input type="hidden" name="selected_offer_code" value="hsp-campaign" />
-      <div class="hspCheckoutGrid">
-        <label class="hspCheckoutLabel span2">
-          <span>Offer package</span>
-          <select name="offer_choice" data-hsp-offer-choice required>
-            <option value="">Select offer package</option>
-            <option value="$70 Bundle (12 park passes, $500+ value)">$70 Bundle (12 park passes, $500+ value)</option>
-            <option value="$5 Admission Promo (Save $60+)">$5 Admission Promo (Save $60+)</option>
-          </select>
-        </label>
-        <label class="hspCheckoutLabel span2">
-          <span>Participating park</span>
-          <select name="selected_park" required>
-            <option value="">Select a park</option>
-            <option value="Hollywood Sports - Bellflower">Hollywood Sports - Bellflower</option>
-            <option value="SC Village - Chino">SC Village - Chino</option>
-            <option value="Giant Paintball - Lakeside">Giant Paintball - Lakeside</option>
-            <option value="Combat Paintball - Castaic">Combat Paintball - Castaic</option>
-            <option value="Giant Party Sports - Allen">Giant Party Sports - Allen</option>
-            <option value="Help me choose">Help me choose</option>
-          </select>
-        </label>
-        <label class="hspCheckoutLabel">
-          <span>Full name</span>
-          <input type="text" name="full_name" autocomplete="name" required />
-        </label>
-        <label class="hspCheckoutLabel">
-          <span>Email</span>
-          <input type="email" name="email" autocomplete="email" required />
-        </label>
-        <label class="hspCheckoutLabel">
-          <span>Phone</span>
-          <input type="tel" name="phone" autocomplete="tel" />
-        </label>
-        <label class="hspCheckoutLabel">
-          <span>Package quantity</span>
-          <select name="package_quantity">
-            <option value="1">1 package</option>
-            <option value="2">2 packages</option>
-            <option value="3">3 packages</option>
-            <option value="4">4 packages</option>
-            <option value="5+">5+ packages</option>
-          </select>
-        </label>
-        <label class="hspCheckoutLabel">
-          <span>Preferred visit date</span>
-          <input type="date" name="visit_date" />
-        </label>
-        <label class="hspCheckoutLabel">
-          <span>Party size</span>
-          <select name="party_size">
-            <option value="">Select party size</option>
-            <option value="1-4">1-4</option>
-            <option value="5-9">5-9</option>
-            <option value="10-19">10-19</option>
-            <option value="20+">20+</option>
-          </select>
-        </label>
-        <label class="hspCheckoutLabel span2">
-          <span>Payment method</span>
-          <select name="payment_option" data-hsp-payment-option>
-            <option value="zelle">Pay now with Zelle</option>
-            <option value="apple_pay">Pay now with Apple Pay</option>
-          </select>
-        </label>
-        <div class="hspZellePanel span2" data-hsp-zelle-panel>
-          <div class="hspZelleHeader">
-            <div>
-              <div class="pill">Zelle payment</div>
-              <p class="small hspMuted" style="margin:8px 0 0">Use this email to send payment, then submit your request so Perk Nation can match your order.</p>
-            </div>
-            <div class="hspZelleNumber" data-hsp-zelle-number>mc2019llc@gmail.com</div>
-          </div>
-          <div class="hspZelleBody">
-            <img
-              class="hspZelleQr"
-              alt="Zelle QR for mc2019llc@gmail.com"
-              src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=Zelle%20Payment%20to%20mc2019llc%40gmail.com%20for%20PerkNation%20Hollywood%20Sports%20Offer"
-              loading="lazy"
-            />
-            <div>
-              <p class="hspZelleHint">Memo format: <strong>HSP + your full name + selected offer</strong>.</p>
-              <p class="hspZelleHint">This helps us match your payment quickly to your reservation.</p>
-              <button class="hspCopyBtn" type="button" data-hsp-copy-zelle>Copy Zelle email</button>
-            </div>
-          </div>
+<section class="section hspCheckoutSection" id="buy-now" data-hsp-checkout-overlay>
+  <div class="container">
+    <div class="hspCheckoutShell">
+      <div class="hspCheckoutHeader">
+        <div>
+          <div class="h3" style="margin:0">Complete your Perk Nation purchase</div>
+          <div class="small hspMuted">Apple Pay (Stripe) is the default checkout. Zelle is available below.</div>
         </div>
-        <div class="hspApplePayPanel span2" data-hsp-apple-pay-panel hidden>
-          <div class="hspApplePayHeader">
-            <div>
-              <div class="pill">Apple Pay checkout</div>
-              <p class="small hspMuted" style="margin:8px 0 0">Submit your request, then continue to secure checkout to complete payment with Apple Pay.</p>
+      </div>
+
+      <div class="hspCheckoutSummary">
+        <div class="pill">Selected offer</div>
+        <div class="h3" style="margin:10px 0 4px" data-hsp-selected-offer>Hollywood Sports offer campaign</div>
+        <div class="small hspMuted">Choose your park, package, and preferred visit window, then tap Buy now.</div>
+      </div>
+
+      <form data-hsp-checkout-form novalidate>
+        <input type="hidden" name="selected_offer" value="Hollywood Sports offer campaign" />
+        <input type="hidden" name="selected_offer_code" value="hsp-campaign" />
+        <div class="hspCheckoutGrid">
+          <label class="hspCheckoutLabel span2">
+            <span>Offer package</span>
+            <select name="offer_choice" data-hsp-offer-choice required>
+              <option value="">Select offer package</option>
+              <option value="$70 Bundle (12 park passes, $500+ value)">$70 Bundle (12 park passes, $500+ value)</option>
+              <option value="$5 Admission Promo (Save $60+)">$5 Admission Promo (Save $60+)</option>
+            </select>
+          </label>
+          <label class="hspCheckoutLabel span2">
+            <span>Participating park</span>
+            <select name="selected_park" required>
+              <option value="">Select a park</option>
+              <option value="Hollywood Sports - Bellflower">Hollywood Sports - Bellflower</option>
+              <option value="SC Village - Chino">SC Village - Chino</option>
+              <option value="Giant Paintball - Lakeside">Giant Paintball - Lakeside</option>
+              <option value="Combat Paintball - Castaic">Combat Paintball - Castaic</option>
+              <option value="Giant Party Sports - Allen">Giant Party Sports - Allen</option>
+              <option value="Help me choose">Help me choose</option>
+            </select>
+          </label>
+          <label class="hspCheckoutLabel">
+            <span>Full name</span>
+            <input type="text" name="full_name" autocomplete="name" required />
+          </label>
+          <label class="hspCheckoutLabel">
+            <span>Email</span>
+            <input type="email" name="email" autocomplete="email" required />
+          </label>
+          <label class="hspCheckoutLabel">
+            <span>Phone</span>
+            <input type="tel" name="phone" autocomplete="tel" />
+          </label>
+          <label class="hspCheckoutLabel">
+            <span>Package quantity</span>
+            <select name="package_quantity">
+              <option value="1">1 package</option>
+              <option value="2">2 packages</option>
+              <option value="3">3 packages</option>
+              <option value="4">4 packages</option>
+              <option value="5+">5+ packages</option>
+            </select>
+          </label>
+          <label class="hspCheckoutLabel">
+            <span>Preferred visit date</span>
+            <input type="date" name="visit_date" />
+          </label>
+          <label class="hspCheckoutLabel">
+            <span>Party size</span>
+            <select name="party_size">
+              <option value="">Select party size</option>
+              <option value="1-4">1-4</option>
+              <option value="5-9">5-9</option>
+              <option value="10-19">10-19</option>
+              <option value="20+">20+</option>
+            </select>
+          </label>
+          <label class="hspCheckoutLabel span2">
+            <span>Payment method</span>
+            <select name="payment_option" data-hsp-payment-option>
+              <option value="apple_pay">Pay now with Apple Pay</option>
+              <option value="zelle">Pay now with Zelle</option>
+            </select>
+          </label>
+          <div class="hspApplePayPanel span2" data-hsp-apple-pay-panel>
+            <div class="hspApplePayHeader">
+              <div>
+                <div class="pill">Apple Pay checkout</div>
+                <p class="small hspMuted" style="margin:8px 0 0">Tap Buy now to continue to secure Stripe checkout with Apple Pay.</p>
+              </div>
             </div>
-            <button class="hspApplePayBtn" type="button" data-hsp-apple-pay-checkout>Continue to Apple Pay</button>
+            <p class="small hspMuted" style="margin:0">Apple Pay is presented by Stripe Checkout on supported Apple devices and browsers.</p>
           </div>
-          <p class="small hspMuted" style="margin:0">Apple Pay is presented by Stripe Checkout on supported Apple devices and browsers.</p>
+          <div class="hspZellePanel span2" data-hsp-zelle-panel hidden>
+            <div class="hspZelleHeader">
+              <div>
+                <div class="pill">Zelle payment</div>
+                <p class="small hspMuted" style="margin:8px 0 0">Use this email to send payment, then tap Buy now so Perk Nation can match your order.</p>
+              </div>
+              <div class="hspZelleNumber" data-hsp-zelle-number>mc2019llc@gmail.com</div>
+            </div>
+            <div class="hspZelleBody">
+              <img
+                class="hspZelleQr"
+                alt="Zelle QR for mc2019llc@gmail.com"
+                src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=Zelle%20Payment%20to%20mc2019llc%40gmail.com%20for%20PerkNation%20Hollywood%20Sports%20Offer"
+                loading="lazy"
+              />
+              <div>
+                <p class="hspZelleHint">Memo format: <strong>HSP + your full name + selected offer</strong>.</p>
+                <p class="hspZelleHint">This helps us match your payment quickly to your reservation.</p>
+                <button class="hspCopyBtn" type="button" data-hsp-copy-zelle>Copy Zelle email</button>
+              </div>
+            </div>
+          </div>
+          <label class="hspCheckoutLabel span2">
+            <span>Notes</span>
+            <textarea name="inquiry" placeholder="Tell Perk Nation if you want the $5 promo or the $70 bundle, plus any scheduling details."></textarea>
+          </label>
+          <label class="hspCheckoutLabel" style="display:none">
+            <span>Website</span>
+            <input type="text" name="website_url" tabindex="-1" autocomplete="off" />
+          </label>
         </div>
-        <label class="hspCheckoutLabel span2">
-          <span>Notes</span>
-          <textarea name="inquiry" placeholder="Tell Perk Nation if you want the $5 promo or the $70 bundle, plus any scheduling details."></textarea>
-        </label>
-        <label class="hspCheckoutLabel" style="display:none">
-          <span>Website</span>
-          <input type="text" name="website_url" tabindex="-1" autocomplete="off" />
-        </label>
-      </div>
-      <div class="hspSupportActions" style="margin-top:16px">
-        <button class="btn primary" type="submit">Submit purchase request</button>
-        <button class="btn" type="button" data-hsp-checkout-close>Cancel</button>
-      </div>
-      <div class="hspCheckoutToast" data-hsp-checkout-toast></div>
-    </form>
+        <div class="hspSupportActions" style="margin-top:16px">
+          <button class="btn primary" type="submit">Buy now</button>
+        </div>
+        <div class="hspCheckoutToast" data-hsp-checkout-toast></div>
+      </form>
+    </div>
   </div>
-</div>
+</section>
 
 <footer class="footer">
   <div class="container">
@@ -826,26 +834,24 @@
   })();
 
   (() => {
-    const overlay = document.querySelector("[data-hsp-checkout-overlay]");
+    const checkoutSection = document.querySelector("[data-hsp-checkout-overlay]");
     const form = document.querySelector("[data-hsp-checkout-form]");
-    if (!overlay || !form) return;
+    if (!checkoutSection || !form) return;
 
-    const offerDisplay = overlay.querySelector("[data-hsp-selected-offer]");
+    const offerDisplay = checkoutSection.querySelector("[data-hsp-selected-offer]");
     const offerField = form.querySelector('input[name="selected_offer"]');
     const offerCodeField = form.querySelector('input[name="selected_offer_code"]');
     const offerChoiceField = form.querySelector('[name="offer_choice"]');
     const paymentOptionField = form.querySelector('[name="payment_option"]');
     const zellePanel = form.querySelector("[data-hsp-zelle-panel]");
     const applePayPanel = form.querySelector("[data-hsp-apple-pay-panel]");
-    const applePayContinueButton = form.querySelector("[data-hsp-apple-pay-checkout]");
     const zelleNumberNode = form.querySelector("[data-hsp-zelle-number]");
     const zelleNumber = (zelleNumberNode?.textContent || "mc2019llc@gmail.com").trim();
     const copyZelleButton = form.querySelector("[data-hsp-copy-zelle]");
-    const toast = overlay.querySelector("[data-hsp-checkout-toast]");
+    const toast = form.querySelector("[data-hsp-checkout-toast]");
     const submit = form.querySelector('button[type="submit"]');
     const storageKey = "perknation_hsp_checkout_backup";
     const triggers = document.querySelectorAll("[data-hsp-checkout-trigger]");
-    const closers = overlay.querySelectorAll("[data-hsp-checkout-close]");
     const offerChoiceByCode = {
       "hsp-five-dollar": "$5 Admission Promo (Save $60+)",
       "hsp-seventy-bundle": "$70 Bundle (12 park passes, $500+ value)",
@@ -869,7 +875,7 @@
       toast.classList.remove("show", "error", "success");
     };
 
-    const selectedPaymentOption = () => String(paymentOptionField?.value || "zelle").trim().toLowerCase();
+    const selectedPaymentOption = () => String(paymentOptionField?.value || "apple_pay").trim().toLowerCase();
 
     const syncPaymentPanels = () => {
       const payment = selectedPaymentOption();
@@ -930,14 +936,10 @@
       if (offerChoiceField) {
         offerChoiceField.value = inferOfferChoice(offerLabel, offerCode);
       }
-      if (paymentOptionField) paymentOptionField.value = "zelle";
+      if (paymentOptionField) paymentOptionField.value = "apple_pay";
       syncPaymentPanels();
       clearToast();
-      overlay.classList.add("modalShow");
-    };
-
-    const closeCheckout = () => {
-      overlay.classList.remove("modalShow");
+      checkoutSection.scrollIntoView({ behavior: "smooth", block: "start" });
     };
 
     triggers.forEach((button) => {
@@ -947,14 +949,6 @@
           button.getAttribute("data-offer-code") || "hsp-campaign"
         );
       });
-    });
-
-    closers.forEach((button) => {
-      button.addEventListener("click", closeCheckout);
-    });
-
-    overlay.addEventListener("click", (event) => {
-      if (event.target === overlay) closeCheckout();
     });
 
     if (paymentOptionField) {
@@ -972,16 +966,6 @@
         } catch (error) {
           setToast("Copy failed. Please use mc2019llc@gmail.com.", "error");
         }
-      });
-    }
-
-    if (applePayContinueButton) {
-      applePayContinueButton.addEventListener("click", async () => {
-        if (selectedPaymentOption() !== "apple_pay") {
-          if (paymentOptionField) paymentOptionField.value = "apple_pay";
-          syncPaymentPanels();
-        }
-        setToast("Submit the request form to continue to Apple Pay.", "success");
       });
     }
 
@@ -1008,8 +992,8 @@
       }
 
       submit.disabled = true;
-      submit.dataset.originalText = submit.dataset.originalText || submit.textContent || "Submit purchase request";
-      submit.textContent = "Submitting...";
+      submit.dataset.originalText = submit.dataset.originalText || submit.textContent || "Buy now";
+      submit.textContent = "Processing...";
 
       try {
         const response = await fetch("/v1/web/forms/checkout", {
@@ -1031,19 +1015,19 @@
 
         localStorage.removeItem(storageKey);
         if (paymentOption === "apple_pay") {
-          setToast(`Purchase request received. Reference #${payload.submission_id}. Redirecting to Apple Pay checkout...`, "success");
+          setToast(`Order received. Reference #${payload.submission_id}. Redirecting to Apple Pay checkout...`, "success");
           await startApplePayCheckout(data, payload.submission_id);
           return;
         }
 
         const paymentStatus = "Zelle payment selected to mc2019llc@gmail.com.";
-        setToast(`Purchase request received. Reference #${payload.submission_id}. ${paymentStatus}`, "success");
+        setToast(`Order received. Reference #${payload.submission_id}. ${paymentStatus}`, "success");
         form.reset();
         offerDisplay.textContent = "Hollywood Sports offer campaign";
         offerField.value = "Hollywood Sports offer campaign";
         offerCodeField.value = "hsp-campaign";
         if (offerChoiceField) offerChoiceField.value = "";
-        if (paymentOptionField) paymentOptionField.value = "zelle";
+        if (paymentOptionField) paymentOptionField.value = "apple_pay";
         syncPaymentPanels();
       } catch (error) {
         const existing = JSON.parse(localStorage.getItem(storageKey) || "[]");
@@ -1052,7 +1036,7 @@
         setToast(`${String(error && error.message ? error.message : "Checkout request failed.")} Saved locally as fallback.`, "error");
       } finally {
         submit.disabled = false;
-        submit.textContent = submit.dataset.originalText || "Submit purchase request";
+        submit.textContent = submit.dataset.originalText || "Buy now";
       }
     });
   })();
