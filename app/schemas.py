@@ -426,6 +426,23 @@ class WebFormSubmitResponse(BaseModel):
     sms_acknowledged: bool = False
 
 
+class CheckoutPassStatusOut(BaseModel):
+    submission_id: int
+    payment_status: Optional[str] = None
+    customer_name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    offer_choice: Optional[str] = None
+    selected_park: Optional[str] = None
+    package_quantity: Optional[str] = None
+    pass_code: Optional[str] = None
+    pass_status: Optional[str] = None
+    pass_expires_at: Optional[datetime] = None
+    pass_redeemed_at: Optional[datetime] = None
+    pass_account_url: Optional[str] = None
+    pass_wallet_url: Optional[str] = None
+    pass_view_url: Optional[str] = None
+
+
 # Admin portal schemas
 
 
@@ -569,7 +586,66 @@ class AdminOrderRow(BaseModel):
     stripe_mode: Optional[str] = None
     payment_amount_usd: Optional[Decimal] = None
     stripe_checkout_session_id: Optional[str] = None
+    pass_code: Optional[str] = None
+    pass_status: Optional[str] = None
+    pass_expires_at: Optional[datetime] = None
+    pass_redeemed_at: Optional[datetime] = None
+    pass_account_url: Optional[str] = None
+    pass_wallet_url: Optional[str] = None
+    pass_view_url: Optional[str] = None
     summary: Optional[str] = None
+
+
+class AdminOperatorAccessOut(BaseModel):
+    is_admin: bool
+    is_operator: bool
+    can_scan_tickets: bool
+
+
+class AdminTicketScanRequest(BaseModel):
+    code: str = Field(min_length=1, max_length=512)
+
+
+class AdminTicketScanRow(BaseModel):
+    order_id: int
+    created_at: datetime
+    customer_name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    phone: Optional[str] = None
+    offer_choice: Optional[str] = None
+    selected_park: Optional[str] = None
+    package_quantity: Optional[str] = None
+    pass_code: str
+    pass_status: str
+    pass_issued_at: Optional[datetime] = None
+    pass_expires_at: Optional[datetime] = None
+    pass_redeemed_at: Optional[datetime] = None
+    pass_scan_count: int = 0
+    pass_account_url: Optional[str] = None
+    pass_wallet_url: Optional[str] = None
+    pass_view_url: Optional[str] = None
+
+
+class AdminTicketScanResult(BaseModel):
+    order_id: Optional[int] = None
+    created_at: Optional[datetime] = None
+    customer_name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    phone: Optional[str] = None
+    offer_choice: Optional[str] = None
+    selected_park: Optional[str] = None
+    package_quantity: Optional[str] = None
+    pass_code: Optional[str] = None
+    pass_status: Optional[str] = None
+    pass_issued_at: Optional[datetime] = None
+    pass_expires_at: Optional[datetime] = None
+    pass_redeemed_at: Optional[datetime] = None
+    pass_scan_count: int = 0
+    pass_account_url: Optional[str] = None
+    pass_wallet_url: Optional[str] = None
+    pass_view_url: Optional[str] = None
+    result_status: str
+    message: str
 
 
 class AdminPaymentSettingsOut(BaseModel):
