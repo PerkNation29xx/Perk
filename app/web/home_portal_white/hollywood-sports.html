@@ -639,24 +639,27 @@
           <label class="hspCheckoutLabel span2">
             <span>Payment method</span>
             <select name="payment_option" data-hsp-payment-option>
-              <option value="apple_pay">Pay now with Apple Pay</option>
-              <option value="zelle">Pay now with Zelle</option>
+              <option value="apple_pay">Pay online with Stripe (Apple Pay / cards)</option>
+              <option value="zelle">Manual payment with Zelle</option>
             </select>
           </label>
           <div class="hspApplePayPanel span2" data-hsp-apple-pay-panel>
             <div class="hspApplePayHeader">
               <div>
-                <div class="pill">Apple Pay checkout</div>
-                <p class="small hspMuted" style="margin:8px 0 0">Tap Buy now to continue to secure Stripe checkout with Apple Pay.</p>
+                <div class="pill">Stripe checkout</div>
+                <p class="small hspMuted" style="margin:8px 0 0">Buy now opens Stripe checkout with Apple Pay, cards, and other supported payment methods.</p>
               </div>
             </div>
-            <p class="small hspMuted" style="margin:0">Apple Pay is presented by Stripe Checkout on supported Apple devices and browsers.</p>
+            <p class="small hspMuted" style="margin:0">Stripe automatically shows the payment options available on your device/browser.</p>
+            <div class="hspSupportActions">
+              <button class="btn primary" type="submit" data-hsp-stripe-submit>Buy now</button>
+            </div>
           </div>
           <div class="hspZellePanel span2" data-hsp-zelle-panel hidden>
             <div class="hspZelleHeader">
               <div>
                 <div class="pill">Zelle payment</div>
-                <p class="small hspMuted" style="margin:8px 0 0">Use this email to send payment, then tap Buy now so Perk Nation can match your order.</p>
+                <p class="small hspMuted" style="margin:8px 0 0">Zelle is a manual payment flow. Send payment first, then submit your request below.</p>
               </div>
               <div class="hspZelleNumber" data-hsp-zelle-number>mc2019llc@gmail.com</div>
             </div>
@@ -673,6 +676,9 @@
                 <button class="hspCopyBtn" type="button" data-hsp-copy-zelle>Copy Zelle email</button>
               </div>
             </div>
+            <div class="hspSupportActions">
+              <button class="btn" type="submit" data-hsp-zelle-submit>Submit Zelle request</button>
+            </div>
           </div>
           <label class="hspCheckoutLabel span2">
             <span>Notes</span>
@@ -682,9 +688,6 @@
             <span>Website</span>
             <input type="text" name="website_url" tabindex="-1" autocomplete="off" />
           </label>
-        </div>
-        <div class="hspSupportActions" style="margin-top:16px">
-          <button class="btn primary" type="submit">Buy now</button>
         </div>
         <div class="hspCheckoutToast" data-hsp-checkout-toast></div>
       </form>
@@ -845,11 +848,13 @@
     const paymentOptionField = form.querySelector('[name="payment_option"]');
     const zellePanel = form.querySelector("[data-hsp-zelle-panel]");
     const applePayPanel = form.querySelector("[data-hsp-apple-pay-panel]");
+    const stripeSubmit = form.querySelector("[data-hsp-stripe-submit]");
+    const zelleSubmit = form.querySelector("[data-hsp-zelle-submit]");
+    const submitButtons = [stripeSubmit, zelleSubmit].filter(Boolean);
     const zelleNumberNode = form.querySelector("[data-hsp-zelle-number]");
     const zelleNumber = (zelleNumberNode?.textContent || "mc2019llc@gmail.com").trim();
     const copyZelleButton = form.querySelector("[data-hsp-copy-zelle]");
     const toast = form.querySelector("[data-hsp-checkout-toast]");
-    const submit = form.querySelector('button[type="submit"]');
     const storageKey = "perknation_hsp_checkout_backup";
     const triggers = document.querySelectorAll("[data-hsp-checkout-trigger]");
     const offerChoiceByCode = {
@@ -936,6 +941,10 @@
       if (offerChoiceField) {
         offerChoiceField.value = inferOfferChoice(offerLabel, offerCode);
       }
+      const selectedBundle = String(offerChoiceField?.value || "").trim();
+      if (selectedBundle) {
+        offerDisplay.textContent = `${offerLabel || "Hollywood Sports offer campaign"} - ${selectedBundle}`;
+      }
       if (paymentOptionField) paymentOptionField.value = "apple_pay";
       syncPaymentPanels();
       clearToast();
@@ -955,6 +964,14 @@
       paymentOptionField.addEventListener("change", () => {
         syncPaymentPanels();
         clearToast();
+      });
+    }
+
+    if (offerChoiceField) {
+      offerChoiceField.addEventListener("change", () => {
+        const selectedBundle = String(offerChoiceField.value || "").trim();
+        const baseOffer = String(offerField?.value || "Hollywood Sports offer campaign").trim();
+        offerDisplay.textContent = selectedBundle ? `${baseOffer} - ${selectedBundle}` : baseOffer;
       });
     }
 
@@ -991,9 +1008,15 @@
         return;
       }
 
-      submit.disabled = true;
-      submit.dataset.originalText = submit.dataset.originalText || submit.textContent || "Buy now";
-      submit.textContent = "Processing...";
+      const activeSubmit = event.submitter || (paymentOption === "zelle" ? zelleSubmit : stripeSubmit);
+      submitButtons.forEach((button) => {
+        button.disabled = true;
+      });
+      if (activeSubmit) {
+        const fallback = paymentOption === "zelle" ? "Submit Zelle request" : "Buy now";
+        activeSubmit.dataset.originalText = activeSubmit.dataset.originalText || activeSubmit.textContent || fallback;
+        activeSubmit.textContent = paymentOption === "zelle" ? "Submitting..." : "Processing...";
+      }
 
       try {
         const response = await fetch("/v1/web/forms/checkout", {
@@ -1015,7 +1038,7 @@
 
         localStorage.removeItem(storageKey);
         if (paymentOption === "apple_pay") {
-          setToast(`Order received. Reference #${payload.submission_id}. Redirecting to Apple Pay checkout...`, "success");
+          setToast(`Order received. Reference #${payload.submission_id}. Redirecting to secure Stripe checkout...`, "success");
           await startApplePayCheckout(data, payload.submission_id);
           return;
         }
@@ -1035,8 +1058,11 @@
         localStorage.setItem(storageKey, JSON.stringify(existing));
         setToast(`${String(error && error.message ? error.message : "Checkout request failed.")} Saved locally as fallback.`, "error");
       } finally {
-        submit.disabled = false;
-        submit.textContent = submit.dataset.originalText || "Buy now";
+        submitButtons.forEach((button) => {
+          button.disabled = false;
+          const fallback = button === zelleSubmit ? "Submit Zelle request" : "Buy now";
+          button.textContent = button.dataset.originalText || fallback;
+        });
       }
     });
   })();
