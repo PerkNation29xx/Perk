@@ -108,6 +108,20 @@
     }
     .hspZelleHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
     .hspApplePayHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .hspPaymentLogos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .hspPaymentLogo{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(15,23,42,.16);
+      background:#fff;
+      color:#111827;
+      font-size:12px;
+      font-weight:800;
+    }
+    .hspPaymentLogo img{width:18px;height:18px;display:block}
     .hspZelleNumber{
       display:inline-flex;
       align-items:center;
@@ -156,6 +170,7 @@
       .hspCheckoutGrid{grid-template-columns:1fr}
       .hspCheckoutGrid .span2{grid-column:auto}
       .hspZelleBody{grid-template-columns:1fr;justify-items:start}
+      .hspPaymentLogos{grid-template-columns:repeat(2,minmax(0,1fr))}
     }
   </style>
 </head>
@@ -579,6 +594,7 @@
       <form data-hsp-checkout-form novalidate>
         <input type="hidden" name="selected_offer" value="Hollywood Sports offer campaign" />
         <input type="hidden" name="selected_offer_code" value="hsp-campaign" />
+        <input type="hidden" name="payment_option" value="apple_pay" />
         <div class="hspCheckoutGrid">
           <label class="hspCheckoutLabel span2">
             <span>Offer package</span>
@@ -636,30 +652,31 @@
               <option value="20+">20+</option>
             </select>
           </label>
-          <label class="hspCheckoutLabel span2">
-            <span>Payment method</span>
-            <select name="payment_option" data-hsp-payment-option>
-              <option value="apple_pay">Pay online with Stripe (Apple Pay / cards)</option>
-              <option value="zelle">Manual payment with Zelle</option>
-            </select>
-          </label>
           <div class="hspApplePayPanel span2" data-hsp-apple-pay-panel>
             <div class="hspApplePayHeader">
               <div>
-                <div class="pill">Stripe checkout</div>
-                <p class="small hspMuted" style="margin:8px 0 0">Buy now opens Stripe checkout with Apple Pay, cards, and other supported payment methods.</p>
+                <div class="pill">Pay online</div>
+                <p class="small hspMuted" style="margin:8px 0 0">Buy now opens secure online payment with supported methods.</p>
               </div>
             </div>
             <p class="small hspMuted" style="margin:0">Stripe automatically shows the payment options available on your device/browser.</p>
+            <div class="hspPaymentLogos" aria-label="Supported payment methods">
+              <div class="hspPaymentLogo"><img src="https://cdn.jsdelivr.net/npm/simple-icons@11/icons/applepay.svg" alt="Apple Pay logo" loading="lazy" /><span>Apple Pay</span></div>
+              <div class="hspPaymentLogo"><img src="https://cdn.jsdelivr.net/npm/simple-icons@11/icons/googlepay.svg" alt="Google Pay logo" loading="lazy" /><span>Google Pay</span></div>
+              <div class="hspPaymentLogo"><img src="https://cdn.jsdelivr.net/npm/simple-icons@11/icons/visa.svg" alt="Visa logo" loading="lazy" /><span>Visa</span></div>
+              <div class="hspPaymentLogo"><img src="https://cdn.jsdelivr.net/npm/simple-icons@11/icons/mastercard.svg" alt="Mastercard logo" loading="lazy" /><span>Mastercard</span></div>
+              <div class="hspPaymentLogo"><img src="https://cdn.jsdelivr.net/npm/simple-icons@11/icons/americanexpress.svg" alt="American Express logo" loading="lazy" /><span>Amex</span></div>
+              <div class="hspPaymentLogo"><img src="https://cdn.jsdelivr.net/npm/simple-icons@11/icons/discover.svg" alt="Discover logo" loading="lazy" /><span>Discover</span></div>
+            </div>
             <div class="hspSupportActions">
               <button class="btn primary" type="submit" data-hsp-stripe-submit>Buy now</button>
             </div>
           </div>
-          <div class="hspZellePanel span2" data-hsp-zelle-panel hidden>
+          <div class="hspZellePanel span2" data-hsp-zelle-panel>
             <div class="hspZelleHeader">
               <div>
                 <div class="pill">Zelle payment</div>
-                <p class="small hspMuted" style="margin:8px 0 0">Zelle is a manual payment flow. Send payment first, then submit your request below.</p>
+                <p class="small hspMuted" style="margin:8px 0 0">Zelle is manual. Send payment first, then submit your request.</p>
               </div>
               <div class="hspZelleNumber" data-hsp-zelle-number>mc2019llc@gmail.com</div>
             </div>
@@ -844,10 +861,8 @@
     const offerDisplay = checkoutSection.querySelector("[data-hsp-selected-offer]");
     const offerField = form.querySelector('input[name="selected_offer"]');
     const offerCodeField = form.querySelector('input[name="selected_offer_code"]');
+    const paymentOptionInput = form.querySelector('input[name="payment_option"]');
     const offerChoiceField = form.querySelector('[name="offer_choice"]');
-    const paymentOptionField = form.querySelector('[name="payment_option"]');
-    const zellePanel = form.querySelector("[data-hsp-zelle-panel]");
-    const applePayPanel = form.querySelector("[data-hsp-apple-pay-panel]");
     const stripeSubmit = form.querySelector("[data-hsp-stripe-submit]");
     const zelleSubmit = form.querySelector("[data-hsp-zelle-submit]");
     const submitButtons = [stripeSubmit, zelleSubmit].filter(Boolean);
@@ -878,14 +893,6 @@
       if (!toast) return;
       toast.textContent = "";
       toast.classList.remove("show", "error", "success");
-    };
-
-    const selectedPaymentOption = () => String(paymentOptionField?.value || "apple_pay").trim().toLowerCase();
-
-    const syncPaymentPanels = () => {
-      const payment = selectedPaymentOption();
-      if (zellePanel) zellePanel.hidden = payment !== "zelle";
-      if (applePayPanel) applePayPanel.hidden = payment !== "apple_pay";
     };
 
     const buildApplePayPayload = (data, submissionId) => {
@@ -945,8 +952,7 @@
       if (selectedBundle) {
         offerDisplay.textContent = `${offerLabel || "Hollywood Sports offer campaign"} - ${selectedBundle}`;
       }
-      if (paymentOptionField) paymentOptionField.value = "apple_pay";
-      syncPaymentPanels();
+      if (paymentOptionInput) paymentOptionInput.value = "apple_pay";
       clearToast();
       checkoutSection.scrollIntoView({ behavior: "smooth", block: "start" });
     };
@@ -959,13 +965,6 @@
         );
       });
     });
-
-    if (paymentOptionField) {
-      paymentOptionField.addEventListener("change", () => {
-        syncPaymentPanels();
-        clearToast();
-      });
-    }
 
     if (offerChoiceField) {
       offerChoiceField.addEventListener("change", () => {
@@ -986,14 +985,14 @@
       });
     }
 
-    syncPaymentPanels();
-
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       clearToast();
 
+      const activeSubmit = event.submitter || stripeSubmit;
+      const paymentOption = activeSubmit === zelleSubmit ? "zelle" : "apple_pay";
+      if (paymentOptionInput) paymentOptionInput.value = paymentOption;
       const data = Object.fromEntries(new FormData(form).entries());
-      const paymentOption = selectedPaymentOption();
       data.payment_option = paymentOption;
       if (!String(data.full_name || "").trim() || !String(data.email || "").trim() || !String(data.selected_offer || "").trim()) {
         setToast("Full name, email, and selected offer are required.", "error");
@@ -1008,7 +1007,6 @@
         return;
       }
 
-      const activeSubmit = event.submitter || (paymentOption === "zelle" ? zelleSubmit : stripeSubmit);
       submitButtons.forEach((button) => {
         button.disabled = true;
       });
@@ -1038,7 +1036,7 @@
 
         localStorage.removeItem(storageKey);
         if (paymentOption === "apple_pay") {
-          setToast(`Order received. Reference #${payload.submission_id}. Redirecting to secure Stripe checkout...`, "success");
+          setToast(`Order received. Reference #${payload.submission_id}. Redirecting to secure payment page...`, "success");
           await startApplePayCheckout(data, payload.submission_id);
           return;
         }
@@ -1050,8 +1048,7 @@
         offerField.value = "Hollywood Sports offer campaign";
         offerCodeField.value = "hsp-campaign";
         if (offerChoiceField) offerChoiceField.value = "";
-        if (paymentOptionField) paymentOptionField.value = "apple_pay";
-        syncPaymentPanels();
+        if (paymentOptionInput) paymentOptionInput.value = "apple_pay";
       } catch (error) {
         const existing = JSON.parse(localStorage.getItem(storageKey) || "[]");
         existing.push({ ...data, ts: new Date().toISOString() });
