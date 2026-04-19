@@ -1,12 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Perk Nation mark">
   <defs>
-    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#e6b84a"/>
-      <stop offset="1" stop-color="#f5d27d"/>
+    <radialGradient id="glow" cx="20%" cy="18%" r="46%">
+      <stop offset="0" stop-color="#fff3df" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#fff3df" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="admin-gold-blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e4ba74"/>
+      <stop offset="1" stop-color="#7ec7f8"/>
     </linearGradient>
   </defs>
-  <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#g2)"/>
-  <path d="M46 16l-4 8 9-2-5 7 8 1-8 3 4 7-7-4-3 8-1-8-7 6 2-9-8 4 4-7-8-3 8-1-5-7 9 2z"
-        fill="#0d0d0d" opacity=".18"/>
-  <text x="32" y="40" text-anchor="middle" font-family="Rethink Sans, ui-sans-serif, system-ui" font-size="24" font-weight="900" fill="#0d0d0d">PN</text>
+  <rect x="3" y="3" width="58" height="58" rx="18" fill="url(#admin-gold-blue)"/>
+  <rect x="3" y="3" width="58" height="58" rx="18" fill="url(#glow)"/>
+  <rect x="3.5" y="3.5" width="57" height="57" rx="17.5" fill="none" stroke="rgba(255,255,255,0.28)"/>
+  <text
+    x="32"
+    y="41"
+    text-anchor="middle"
+    font-family="Sora, ui-sans-serif, system-ui"
+    font-size="24"
+    font-weight="800"
+    letter-spacing="0.5"
+    fill="#16120a"
+  >PK</text>
 </svg>
