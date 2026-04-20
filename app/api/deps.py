@@ -42,7 +42,7 @@ def _resolve_user_from_token(db: Session, token: str) -> User:
     )
 
     # Preferred: Supabase Auth tokens (when configured).
-    if settings.supabase_url and settings.supabase_anon_key:
+    if settings.effective_supabase_url and settings.effective_supabase_anon_key:
         try:
             sb_user = fetch_supabase_user(token)
         except SupabaseAuthError as exc:

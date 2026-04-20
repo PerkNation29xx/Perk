@@ -313,6 +313,27 @@ class Settings(BaseSettings):
         return f"{base.rstrip('/')}/{raw}"
 
     @property
+    def effective_supabase_url(self) -> Optional[str]:
+        candidate = (self.supabase_url or "").strip()
+        if candidate:
+            return candidate
+        fallback = (os.environ.get("SUPABASE_URL") or os.environ.get("NEXT_PUBLIC_SUPABASE_URL") or "").strip()
+        return fallback or None
+
+    @property
+    def effective_supabase_anon_key(self) -> Optional[str]:
+        candidate = (self.supabase_anon_key or "").strip()
+        if candidate:
+            return candidate
+        fallback = (
+            os.environ.get("SUPABASE_ANON_KEY")
+            or os.environ.get("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+            or os.environ.get("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY")
+            or ""
+        ).strip()
+        return fallback or None
+
+    @property
     def supabase_email_redirect_url(self) -> str:
         return self._join_public_url(self.public_web_base_url, self.supabase_email_redirect_path)
 

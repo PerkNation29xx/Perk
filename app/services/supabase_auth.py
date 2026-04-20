@@ -31,16 +31,18 @@ def fetch_supabase_user(access_token: str) -> SupabaseUser:
     throughput, you can switch to local JWT verification later.
     """
 
-    if not settings.supabase_url or not settings.supabase_anon_key:
+    supabase_url = settings.effective_supabase_url
+    supabase_anon_key = settings.effective_supabase_anon_key
+    if not supabase_url or not supabase_anon_key:
         raise SupabaseAuthError("Supabase Auth is not configured (missing SUPABASE_URL / SUPABASE_ANON_KEY)")
 
-    url = settings.supabase_url.rstrip("/") + "/auth/v1/user"
+    url = supabase_url.rstrip("/") + "/auth/v1/user"
     req = urllib.request.Request(
         url,
         method="GET",
         headers={
             "Authorization": f"Bearer {access_token}",
-            "apikey": settings.supabase_anon_key,
+            "apikey": supabase_anon_key,
             "Accept": "application/json",
         },
     )
@@ -63,4 +65,3 @@ def fetch_supabase_user(access_token: str) -> SupabaseUser:
         email=payload.get("email"),
         user_metadata=payload.get("user_metadata") or {},
     )
-

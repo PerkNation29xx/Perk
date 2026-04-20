@@ -393,7 +393,9 @@ def web_portal_config() -> dict[str, str]:
     but you should still only serve these portals on trusted origins.
     """
 
-    if not settings.supabase_url or not settings.supabase_anon_key:
+    supabase_url = settings.effective_supabase_url
+    supabase_anon_key = settings.effective_supabase_anon_key
+    if not supabase_url or not supabase_anon_key:
         return {
             "error": "Supabase is not configured on the backend. Set SUPABASE_URL and SUPABASE_ANON_KEY.",
         }
@@ -401,8 +403,8 @@ def web_portal_config() -> dict[str, str]:
     return {
         "project_name": settings.project_name,
         "api_v1_prefix": settings.api_v1_prefix,
-        "supabase_url": settings.supabase_url,
-        "supabase_anon_key": settings.supabase_anon_key,
+        "supabase_url": supabase_url,
+        "supabase_anon_key": supabase_anon_key,
         "auth_email_redirect_url": settings.supabase_email_redirect_url,
         "auth_password_reset_redirect_url": settings.supabase_password_reset_redirect_url,
     }
