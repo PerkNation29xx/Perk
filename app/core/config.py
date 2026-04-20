@@ -165,6 +165,9 @@ class Settings(BaseSettings):
     # Private message-box allowlist (owner/operator channels).
     owner_admin_message_email: str = "billy@neonflux.net"
     owner_ios_message_email: str = "billynavidad@icloud.com"
+    # Additional scanner/operator emails (comma-separated) allowed to use
+    # ticket-scan APIs without full admin role.
+    operator_scanner_emails: str = ""
 
     @staticmethod
     def _is_supabase_host(host: Optional[str]) -> bool:
@@ -182,7 +185,10 @@ class Settings(BaseSettings):
         using SQLAlchemy's URL builder (handles quoting/escaping).
         """
         normalized_url = (self.database_url or "").strip()
-        if normalized_url and normalized_url != "sqlite:///./perknation.db":
+        # Only treat DATABASE_URL as explicitly configured when it differs from
+        # the built-in SQLite defaults. Otherwise, allow DATABASE_* discrete
+        # settings to drive hosted Postgres connections.
+        if normalized_url and normalized_url not in {"sqlite:///./perknation.db", "sqlite:////tmp/perknation.db"}:
             # If an explicit DATABASE_URL is provided (e.g., Supabase pooler),
             # prefer it over discrete DATABASE_* vars. Still normalize it so
             # Supabase direct hosts can be forced onto IPv4 in cloud runtimes.
