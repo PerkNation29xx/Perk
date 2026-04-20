@@ -12,13 +12,6 @@ from app.db.models import RewardPreference, User, UserRole, UserStatus
 from app.db.session import SessionLocal
 from app.services.referrals import ensure_referral_profile
 from app.services.security import decode_access_token
-from app.services.sms_notifications import (
-    apply_sms_dispatch_result,
-    apply_sms_opt_in,
-    normalize_phone,
-    parse_opt_in_value,
-    send_welcome_sms,
-)
 from app.services.supabase_auth import SupabaseAuthError, fetch_supabase_user
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.api_v1_prefix}/auth/token")
@@ -93,12 +86,11 @@ def _resolve_user_from_token(db: Session, token: str) -> User:
             if not full_name:
                 full_name = sb_user.email.split("@", 1)[0] if sb_user.email else "PerkNation User"
 
-            phone_raw = meta.get("phone")
-            phone = normalize_phone(phone_raw if isinstance(phone_raw, str) else None)
-            if phone:
-                existing_phone_user = db.scalar(select(User).where(User.phone == phone))
-                if existing_phone_user:
-                    phone = None
+            phone = meta.get("phone")
+            if isinstance(phone, str):
+                phone = phone.strip() or None
+            else:
+                phone = None
 
             notifications_enabled = meta.get("notifications_enabled", meta.get("notificationsEnabled", True))
             if not isinstance(notifications_enabled, bool):
@@ -130,16 +122,6 @@ def _resolve_user_from_token(db: Session, token: str) -> User:
                         cleaned.append(token)
                 notification_categories = ",".join(cleaned) if cleaned else None
 
-            sms_opt_in_value = parse_opt_in_value(meta.get("sms_opt_in", meta.get("smsOptIn")))
-            sms_opt_in = sms_opt_in_value is True
-            sms_opt_in_source = str(
-                meta.get("sms_opt_in_source")
-                or meta.get("smsOptInSource")
-                or "supabase_signup"
-            ).strip()[:80]
-            if not sms_opt_in_source:
-                sms_opt_in_source = "supabase_signup"
-
             user = User(
                 full_name=full_name,
                 email=normalized_email,
@@ -154,18 +136,11 @@ def _resolve_user_from_token(db: Session, token: str) -> User:
                 email_verified=True,
                 supabase_user_id=sb_user.id,
             )
-            if sms_opt_in and phone:
-                apply_sms_opt_in(user, opted_in=True, source=sms_opt_in_source)
             db.add(user)
             db.flush()
             ensure_referral_profile(db, user)
             db.commit()
             db.refresh(user)
-
-            welcome_result = send_welcome_sms(user, brand="perknation")
-            if apply_sms_dispatch_result(user, welcome_result, welcome=True):
-                db.commit()
-                db.refresh(user)
         elif force_owner_admin and user.role != UserRole.admin:
             # Repair drift: the owner account must retain admin access.
             user.role = UserRole.admin
