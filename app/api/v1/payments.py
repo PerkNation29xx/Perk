@@ -286,6 +286,54 @@ def _derive_checkout_status(checkout_session: dict) -> str:
     return "checkout_created"
 
 
+def _build_checkout_payload_from_session(
+    checkout_session: dict,
+    *,
+    session_id: str,
+    payment_status: str,
+    stripe_mode: str,
+    amount_total_cents: Optional[int],
+) -> dict:
+    metadata = checkout_session.get("metadata") or {}
+    return {
+        "selected_offer": str(metadata.get("selected_offer") or "").strip(),
+        "offer_choice": str(metadata.get("offer_choice") or "").strip(),
+        "selected_park": str(metadata.get("selected_park") or "").strip(),
+        "full_name": str(metadata.get("full_name") or "").strip(),
+        "email": str(metadata.get("email") or "").strip().lower(),
+        "phone": str(metadata.get("phone") or "").strip(),
+        "package_quantity": "1",
+        "payment_option": "apple_pay",
+        "payment_status": payment_status,
+        "payment_provider": "stripe",
+        "stripe_mode": stripe_mode,
+        "stripe_checkout_session_id": session_id,
+        "stripe_checkout_url": checkout_session.get("url"),
+        "payment_amount_cents": amount_total_cents,
+    }
+
+
+def _checkout_submission_summary(seed_payload: dict) -> str:
+    bits: list[str] = []
+    for label, key in (
+        ("Offer", "selected_offer"),
+        ("Offer choice", "offer_choice"),
+        ("Park", "selected_park"),
+    ):
+        value = str(seed_payload.get(key) or "").strip()
+        if value:
+            bits.append(f"{label}: {value}")
+
+    bits.append("Payment: Apple Pay (Stripe Checkout)")
+    amount_cents = seed_payload.get("payment_amount_cents")
+    try:
+        if amount_cents is not None:
+            bits.append(f"Amount: ${int(amount_cents) / 100:.2f}")
+    except Exception:
+        pass
+    return " | ".join(bits)
+
+
 def _sync_checkout_from_stripe(
     db: Session,
     session_id: str,
@@ -334,18 +382,65 @@ def _sync_checkout_from_stripe(
         except Exception:
             submission_id = None
 
-        if not submission_id:
-            continue
-
         amount_total_raw = checkout_session.get("amount_total")
         try:
             amount_total_cents = int(amount_total_raw) if amount_total_raw is not None else None
         except Exception:
             amount_total_cents = None
 
+        row: Optional[WebLeadSubmission] = None
+        if submission_id:
+            _merge_submission_payment_data(
+                db,
+                submission_id,
+                payment_option="apple_pay",
+                payment_status=status_value,
+                provider="stripe",
+                stripe_mode=mode,
+                session_id=session_id_text,
+                checkout_url=checkout_session.get("url"),
+                amount_total_cents=amount_total_cents,
+            )
+            candidate_row = db.get(WebLeadSubmission, submission_id)
+            if candidate_row and candidate_row.form_type == "checkout":
+                row = candidate_row
+
+        # Recovery fallback: if checkout row is missing (for example after DB reset),
+        # reconstruct a minimal checkout submission from Stripe session metadata.
+        if row is None:
+            source_page = _normalize_source_page_path(str(metadata.get("source_page") or ""))
+            seed_payload = _build_checkout_payload_from_session(
+                checkout_session,
+                session_id=session_id_text,
+                payment_status=status_value,
+                stripe_mode=mode,
+                amount_total_cents=amount_total_cents,
+            )
+            contact_name = str(seed_payload.get("full_name") or "").strip() or None
+            email = str(seed_payload.get("email") or "").strip().lower() or None
+            phone = str(seed_payload.get("phone") or "").strip() or None
+            row = WebLeadSubmission(
+                form_type="checkout",
+                source_page=source_page,
+                name=contact_name,
+                company="Hollywood Sports x Perk Nation",
+                email=email,
+                phone=phone,
+                inquiry=_checkout_submission_summary(seed_payload),
+                contact_name=contact_name,
+                payload_json=json.dumps(seed_payload, separators=(",", ":"), ensure_ascii=False),
+                ip_address=None,
+                user_agent=None,
+            )
+            if submission_id and not db.get(WebLeadSubmission, submission_id):
+                row.id = submission_id
+            db.add(row)
+            db.commit()
+            db.refresh(row)
+
         _merge_submission_payment_data(
             db,
-            submission_id,
+            row.id,
             payment_option="apple_pay",
             payment_status=status_value,
             provider="stripe",
@@ -354,7 +449,8 @@ def _sync_checkout_from_stripe(
             checkout_url=checkout_session.get("url"),
             amount_total_cents=amount_total_cents,
         )
-        row = db.get(WebLeadSubmission, submission_id)
+
+        row = db.get(WebLeadSubmission, row.id)
         if row and row.form_type == "checkout":
             payload = _parse_payload_json(row.payload_json)
             if status_value == "paid":
