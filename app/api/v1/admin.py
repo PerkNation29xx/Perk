@@ -1,15 +1,17 @@
 from __future__ import annotations
 
 import json
+import logging
 from datetime import datetime, timedelta, timezone
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, selectinload
 
-from app.api.deps import get_db, require_roles
+from app.api.deps import get_current_user, get_db, require_roles
+from app.core.config import settings
 from app.db.models import (
     AuditLog,
     DisputeCase,
@@ -31,6 +33,9 @@ from app.db.models import (
 from app.schemas import (
     APIMessage,
     AdminContactInboxRow,
+    AdminOrderRefundOut,
+    AdminOrderRefundRequest,
+    AdminOperatorAccessOut,
     AdminPaymentSettingsOut,
     AdminPaymentSettingsUpdate,
     AdminOrderRow,
@@ -42,6 +47,9 @@ from app.schemas import (
     AdminSeriesPointInt,
     AdminStockConversionRow,
     AdminSupportTicketRow,
+    AdminTicketScanRequest,
+    AdminTicketScanResult,
+    AdminTicketScanRow,
     AdminTransactionRow,
     AdminUserRow,
     DisputeOut,
@@ -52,9 +60,42 @@ from app.schemas import (
     TransactionStatus,
 )
 from app.services.audit import log_action
-from app.services.runtime_settings import apply_payment_settings_updates, get_payment_settings_snapshot
+from app.services.campaign_passes import list_recent_checkout_passes, scan_checkout_pass
+from app.services.runtime_settings import (
+    apply_payment_settings_updates,
+    get_effective_payment_setting,
+    get_payment_settings_snapshot,
+    normalize_stripe_mode,
+)
 
 router = APIRouter(prefix="/admin", tags=["admin"])
+logger = logging.getLogger(__name__)
+
+
+def _operator_email_allowlist() -> set[str]:
+    raw_values = [settings.operator_scanner_emails, settings.owner_admin_message_email]
+    out: set[str] = set()
+    for raw in raw_values:
+        for token in str(raw or "").split(","):
+            email = token.strip().lower()
+            if email:
+                out.add(email)
+    return out
+
+
+def _is_operator_user(user: User) -> bool:
+    email = str(user.email or "").strip().lower()
+    if not email:
+        return False
+    return email in _operator_email_allowlist()
+
+
+def require_admin_or_operator(
+    current_user: User = Depends(get_current_user),
+) -> User:
+    if current_user.role == UserRole.admin or _is_operator_user(current_user):
+        return current_user
+    raise HTTPException(status_code=403, detail="Forbidden")
 
 
 @router.get("/approvals", response_model=list[OfferOut])
@@ -214,6 +255,113 @@ def _parse_payment_amount_usd(payload: dict) -> Optional[Decimal]:
         except Exception:
             continue
     return None
+
+
+def _parse_amount_cents(payload: dict, *keys: str) -> Optional[int]:
+    for key in keys:
+        raw = payload.get(key)
+        if raw in (None, ""):
+            continue
+        try:
+            value = int(str(raw).strip())
+        except Exception:
+            continue
+        if value >= 0:
+            return value
+    return None
+
+
+def _parse_refund_amount_usd(payload: dict) -> Optional[Decimal]:
+    cents = _parse_amount_cents(payload, "refund_amount_cents")
+    if cents is not None:
+        return _quantize_usd(Decimal(cents) / Decimal("100"))
+
+    for key in ("refund_amount_usd",):
+        raw = payload.get(key)
+        if raw in (None, ""):
+            continue
+        try:
+            return _quantize_usd(Decimal(str(raw).strip()))
+        except Exception:
+            continue
+    return None
+
+
+def _effective_default_stripe_mode(*, db: Session) -> str:
+    raw = get_effective_payment_setting(db, "stripe_mode", fallback="test")
+    return normalize_stripe_mode(raw, fallback="test")
+
+
+def _mode_secret_key(mode: str, *, db: Session) -> str:
+    if mode == "live":
+        return get_effective_payment_setting(db, "stripe_secret_key_live", fallback="") or ""
+    return get_effective_payment_setting(db, "stripe_secret_key_test", fallback="") or ""
+
+
+def _legacy_secret_key(*, db: Session) -> str:
+    return get_effective_payment_setting(db, "stripe_secret_key", fallback="") or ""
+
+
+def _import_stripe():
+    try:
+        import stripe  # type: ignore
+    except Exception as exc:
+        raise HTTPException(status_code=503, detail="Stripe SDK is not available on this backend.") from exc
+    return stripe
+
+
+def _load_stripe(*, mode: str, db: Session):
+    secret = _mode_secret_key(mode, db=db) or _legacy_secret_key(db=db)
+    if not secret:
+        raise HTTPException(status_code=503, detail=f"Stripe ({mode}) is not configured on this backend.")
+    stripe = _import_stripe()
+    stripe.api_key = secret
+    return stripe
+
+
+def _stripe_obj_to_dict(value: object) -> dict:
+    if isinstance(value, dict):
+        return dict(value)
+    for method_name in ("to_dict_recursive", "to_dict"):
+        method = getattr(value, method_name, None)
+        if callable(method):
+            try:
+                candidate = method()
+                if isinstance(candidate, dict):
+                    return candidate
+            except Exception:
+                continue
+    return {}
+
+
+def _extract_payment_intent_id(checkout_session: dict) -> Optional[str]:
+    payment_intent = checkout_session.get("payment_intent")
+    if isinstance(payment_intent, str):
+        value = payment_intent.strip()
+        return value or None
+    if isinstance(payment_intent, dict):
+        value = str(payment_intent.get("id") or "").strip()
+        return value or None
+    payment_intent_dict = _stripe_obj_to_dict(payment_intent)
+    value = str(payment_intent_dict.get("id") or "").strip()
+    return value or None
+
+
+def _parse_iso_datetime(raw: Optional[str]) -> Optional[datetime]:
+    if not raw:
+        return None
+    text = str(raw).strip()
+    if not text:
+        return None
+    if text.endswith("Z"):
+        text = f"{text[:-1]}+00:00"
+    try:
+        parsed = datetime.fromisoformat(text)
+    except Exception:
+        return None
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
 
 
 @router.get("/overview", response_model=AdminOverviewOut)
@@ -738,6 +886,20 @@ def admin_orders(
         stripe_mode = _first_non_empty(payload.get("stripe_mode"))
         stripe_session_id = _first_non_empty(payload.get("stripe_checkout_session_id"))
         payment_amount_usd = _parse_payment_amount_usd(payload)
+        payment_card_brand = _first_non_empty(payload.get("payment_card_brand"))
+        payment_card_last4 = _first_non_empty(payload.get("payment_card_last4"))
+        stripe_refund_id = _first_non_empty(payload.get("stripe_refund_id"))
+        refund_status = _first_non_empty(payload.get("refund_status"))
+        refund_reason = _first_non_empty(payload.get("refund_reason"))
+        refund_amount_usd = _parse_refund_amount_usd(payload)
+        refunded_at = _parse_iso_datetime(_first_non_empty(payload.get("refunded_at"), payload.get("refund_updated_at")))
+        pass_code = _first_non_empty(payload.get("pass_code"))
+        pass_status = _first_non_empty(payload.get("pass_status"))
+        pass_expires_at = _parse_iso_datetime(_first_non_empty(payload.get("pass_expires_at")))
+        pass_redeemed_at = _parse_iso_datetime(_first_non_empty(payload.get("pass_redeemed_at")))
+        pass_account_url = _first_non_empty(payload.get("pass_account_url"))
+        pass_wallet_url = _first_non_empty(payload.get("pass_wallet_url"))
+        pass_view_url = _first_non_empty(payload.get("pass_view_url"))
 
         out.append(
             AdminOrderRow(
@@ -755,12 +917,253 @@ def admin_orders(
                 payment_provider=payment_provider,
                 stripe_mode=stripe_mode,
                 payment_amount_usd=payment_amount_usd,
+                payment_card_brand=payment_card_brand,
+                payment_card_last4=payment_card_last4,
                 stripe_checkout_session_id=stripe_session_id,
+                stripe_refund_id=stripe_refund_id,
+                refund_status=refund_status,
+                refund_amount_usd=refund_amount_usd,
+                refund_reason=refund_reason,
+                refunded_at=refunded_at,
+                pass_code=pass_code,
+                pass_status=pass_status,
+                pass_expires_at=pass_expires_at,
+                pass_redeemed_at=pass_redeemed_at,
+                pass_account_url=pass_account_url,
+                pass_wallet_url=pass_wallet_url,
+                pass_view_url=pass_view_url,
                 summary=_first_non_empty(row.inquiry, payload.get("notes"), payload.get("inquiry")),
             )
         )
 
     return out
+
+
+@router.post("/orders/{order_id}/refund", response_model=AdminOrderRefundOut)
+def admin_refund_order(
+    order_id: int,
+    payload: AdminOrderRefundRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles(UserRole.admin)),
+) -> AdminOrderRefundOut:
+    row = db.get(WebLeadSubmission, order_id)
+    if not row or row.form_type != "checkout":
+        raise HTTPException(status_code=404, detail="Order not found.")
+
+    order_payload = _parse_payload_json(row.payload_json)
+    stripe_session_id = _first_non_empty(order_payload.get("stripe_checkout_session_id"))
+    if not stripe_session_id:
+        raise HTTPException(status_code=400, detail="This order does not have a Stripe checkout session.")
+
+    payment_status = str(order_payload.get("payment_status") or "").strip().lower()
+    if payment_status not in {"paid", "partially_refunded", "refunded"}:
+        raise HTTPException(status_code=400, detail="Only paid Stripe orders can be refunded.")
+
+    preferred_mode = _first_non_empty(order_payload.get("stripe_mode"), _effective_default_stripe_mode(db=db))
+    stripe_mode = normalize_stripe_mode(preferred_mode, fallback="test")
+    stripe = _load_stripe(mode=stripe_mode, db=db)
+
+    try:
+        checkout_obj = stripe.checkout.Session.retrieve(stripe_session_id, expand=["payment_intent"])
+    except Exception as exc:  # noqa: BLE001
+        logger.exception("Stripe checkout session lookup failed for order %s (%s): %s", order_id, stripe_mode, exc)
+        raise HTTPException(status_code=502, detail="Unable to verify payment session with Stripe right now.") from exc
+
+    checkout_session = _stripe_obj_to_dict(checkout_obj)
+    if not checkout_session:
+        raise HTTPException(status_code=502, detail="Stripe checkout session returned an invalid response.")
+
+    payment_intent_id = _extract_payment_intent_id(checkout_session)
+    if not payment_intent_id:
+        raise HTTPException(status_code=400, detail="Stripe payment intent is missing for this order.")
+
+    amount_total_cents = _parse_amount_cents(checkout_session, "amount_total")
+    if amount_total_cents is None:
+        amount_total_cents = _parse_amount_cents(order_payload, "payment_amount_cents", "amount_total_cents")
+    if amount_total_cents is None or amount_total_cents <= 0:
+        raise HTTPException(status_code=400, detail="Unable to determine paid amount for this order.")
+
+    already_refunded_cents = _parse_amount_cents(order_payload, "refund_amount_cents") or 0
+    remaining_cents = max(amount_total_cents - already_refunded_cents, 0)
+    if remaining_cents <= 0:
+        raise HTTPException(status_code=409, detail="This order is already fully refunded.")
+
+    requested_amount_usd = payload.amount_usd
+    if requested_amount_usd is None:
+        refund_cents = remaining_cents
+    else:
+        try:
+            normalized_usd = _quantize_usd(Decimal(str(requested_amount_usd)))
+            refund_cents = int((normalized_usd * Decimal("100")).to_integral_value())
+        except (InvalidOperation, TypeError, ValueError) as exc:
+            raise HTTPException(status_code=400, detail="Refund amount must be a valid USD value.") from exc
+        if refund_cents <= 0:
+            raise HTTPException(status_code=400, detail="Refund amount must be greater than $0.00.")
+
+    if refund_cents > remaining_cents:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Refund exceeds remaining amount. Maximum refundable is ${remaining_cents / 100:.2f}.",
+        )
+
+    reason_text = _first_non_empty(payload.reason)
+    stripe_reason = None
+    if reason_text:
+        lowered_reason = reason_text.lower()
+        if "fraud" in lowered_reason:
+            stripe_reason = "fraudulent"
+        elif "duplicate" in lowered_reason:
+            stripe_reason = "duplicate"
+        else:
+            stripe_reason = "requested_by_customer"
+
+    refund_create_payload = {
+        "payment_intent": payment_intent_id,
+        "amount": refund_cents,
+        "metadata": {
+            "order_id": str(order_id),
+            "stripe_checkout_session_id": stripe_session_id,
+            "stripe_mode": stripe_mode,
+        },
+    }
+    if stripe_reason:
+        refund_create_payload["reason"] = stripe_reason
+
+    try:
+        refund_obj = stripe.Refund.create(**refund_create_payload)
+    except Exception as exc:  # noqa: BLE001
+        logger.exception("Stripe refund failed for order %s (%s): %s", order_id, stripe_mode, exc)
+        raise HTTPException(status_code=502, detail="Stripe rejected the refund request.") from exc
+
+    refund_dict = _stripe_obj_to_dict(refund_obj)
+    refund_status = str(refund_dict.get("status") or "").strip().lower() or "unknown"
+    stripe_refund_id = _first_non_empty(refund_dict.get("id"))
+    reported_amount_cents = _parse_amount_cents(refund_dict, "amount") or refund_cents
+
+    applied_amount_cents = 0
+    if refund_status not in {"failed", "canceled"}:
+        applied_amount_cents = max(reported_amount_cents, 0)
+
+    new_refunded_total_cents = min(amount_total_cents, already_refunded_cents + applied_amount_cents)
+    now_utc = datetime.now(timezone.utc)
+    now_iso = now_utc.isoformat()
+
+    order_payload["stripe_mode"] = stripe_mode
+    if stripe_refund_id:
+        order_payload["stripe_refund_id"] = stripe_refund_id
+    order_payload["refund_status"] = refund_status
+    order_payload["refund_updated_at"] = now_iso
+    order_payload["refunded_at"] = now_iso
+
+    if reason_text:
+        order_payload["refund_reason"] = reason_text
+
+    if applied_amount_cents > 0:
+        order_payload["refund_amount_cents"] = new_refunded_total_cents
+        order_payload["refund_amount_usd"] = f"{(Decimal(new_refunded_total_cents) / Decimal('100')):.2f}"
+        if new_refunded_total_cents >= amount_total_cents:
+            order_payload["payment_status"] = "refunded"
+            if payload.cancel_order:
+                order_payload["order_status"] = "cancelled"
+                order_payload["order_cancelled_at"] = now_iso
+                order_payload["pass_status"] = "refunded"
+                order_payload["pass_revoked_at"] = now_iso
+                order_payload["pass_revoked_reason"] = reason_text or "Refunded by admin."
+        elif order_payload.get("payment_status") == "paid":
+            order_payload["payment_status"] = "partially_refunded"
+
+    refund_events = order_payload.get("refund_events")
+    if not isinstance(refund_events, list):
+        refund_events = []
+    refund_events.append(
+        {
+            "refund_id": stripe_refund_id,
+            "status": refund_status,
+            "amount_cents": applied_amount_cents,
+            "requested_amount_cents": refund_cents,
+            "reason": reason_text,
+            "created_at": now_iso,
+            "actor_email": str(current_user.email or "").strip().lower(),
+        }
+    )
+    order_payload["refund_events"] = refund_events[-25:]
+
+    before_payment_status = payment_status
+    after_payment_status = str(order_payload.get("payment_status") or "").strip().lower() or payment_status
+    before_pass_status = str(_first_non_empty(_parse_payload_json(row.payload_json).get("pass_status")) or "").strip().lower()
+    after_pass_status = str(order_payload.get("pass_status") or "").strip().lower()
+
+    row.payload_json = json.dumps(order_payload, separators=(",", ":"), ensure_ascii=False)
+    db.add(row)
+    log_action(
+        db,
+        actor=current_user,
+        action="admin.order.refund",
+        object_type="checkout_order",
+        object_id=str(row.id),
+        before_snapshot=f"payment_status={before_payment_status};pass_status={before_pass_status}",
+        after_snapshot=(
+            f"payment_status={after_payment_status};"
+            f"pass_status={after_pass_status};"
+            f"refund_status={refund_status};"
+            f"refund_id={stripe_refund_id or ''};"
+            f"refund_amount_cents={applied_amount_cents}"
+        ),
+    )
+    db.commit()
+
+    refunded_amount_usd = _quantize_usd(Decimal(applied_amount_cents) / Decimal("100"))
+    return AdminOrderRefundOut(
+        order_id=row.id,
+        payment_status=after_payment_status,
+        stripe_mode=stripe_mode,
+        stripe_checkout_session_id=stripe_session_id,
+        stripe_payment_intent_id=payment_intent_id,
+        stripe_refund_id=stripe_refund_id,
+        refund_status=refund_status,
+        refunded_amount_usd=refunded_amount_usd,
+        refund_reason=reason_text,
+        pass_status=_first_non_empty(order_payload.get("pass_status")),
+        refunded_at=now_utc,
+    )
+
+
+@router.get("/operator/access", response_model=AdminOperatorAccessOut)
+def admin_operator_access(
+    current_user: User = Depends(get_current_user),
+) -> AdminOperatorAccessOut:
+    is_admin = current_user.role == UserRole.admin
+    is_operator = _is_operator_user(current_user)
+    return AdminOperatorAccessOut(
+        is_admin=is_admin,
+        is_operator=is_operator,
+        can_scan_tickets=(is_admin or is_operator),
+    )
+
+
+@router.get("/operator/tickets", response_model=list[AdminTicketScanRow])
+def admin_operator_tickets(
+    limit: int = Query(default=200, ge=1, le=500),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin_or_operator),
+) -> list[AdminTicketScanRow]:
+    del current_user
+    rows = list_recent_checkout_passes(db, limit=limit)
+    return [AdminTicketScanRow.model_validate(row) for row in rows]
+
+
+@router.post("/operator/tickets/scan", response_model=AdminTicketScanResult)
+def admin_operator_scan_ticket(
+    payload: AdminTicketScanRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_admin_or_operator),
+) -> AdminTicketScanResult:
+    result = scan_checkout_pass(
+        db,
+        payload.code,
+        scanner_email=str(current_user.email or "").strip().lower(),
+    )
+    return AdminTicketScanResult.model_validate(result)
 
 
 @router.get("/payments/settings", response_model=AdminPaymentSettingsOut)

@@ -85,6 +85,61 @@ let aiConversation = [];
 let aiModel = null;
 let messageBoxConversation = [];
 let messageBoxModel = null;
+let currentUserProfile = null;
+let operatorAccess = {
+  is_admin: false,
+  is_operator: false,
+  can_scan_tickets: false,
+};
+let ticketScannerRuntime = {
+  stream: null,
+  pollTimer: 0,
+  active: false,
+  lastCode: "",
+  lastCodeAt: 0,
+  videoEl: null,
+};
+
+function initialAdminViewFromUrl() {
+  const pathname = String(window.location.pathname || "").toLowerCase().replace(/\/+$/, "");
+  if (pathname === "/admin/ticket-scanner") {
+    return "ticketScanner";
+  }
+
+  const query = new URLSearchParams(window.location.search || "");
+  const requested = String(query.get("view") || "").toLowerCase().replace(/[-_]/g, "");
+  if (requested === "ticketscanner") {
+    return "ticketScanner";
+  }
+
+  return null;
+}
+
+function stopTicketScannerCamera() {
+  ticketScannerRuntime.active = false;
+  ticketScannerRuntime.lastCode = "";
+  ticketScannerRuntime.lastCodeAt = 0;
+
+  if (ticketScannerRuntime.pollTimer) {
+    window.clearTimeout(ticketScannerRuntime.pollTimer);
+    ticketScannerRuntime.pollTimer = 0;
+  }
+
+  if (ticketScannerRuntime.stream) {
+    ticketScannerRuntime.stream.getTracks().forEach((track) => track.stop());
+    ticketScannerRuntime.stream = null;
+  }
+
+  if (ticketScannerRuntime.videoEl) {
+    try {
+      ticketScannerRuntime.videoEl.pause();
+    } catch {
+      // no-op
+    }
+    ticketScannerRuntime.videoEl.srcObject = null;
+    ticketScannerRuntime.videoEl = null;
+  }
+}
 
 function resetAiConversation() {
   aiConversation = [
@@ -299,6 +354,15 @@ async function loadMe() {
   return await res.json();
 }
 
+async function loadOperatorAccess() {
+  const res = await apiFetch(`${config.api_v1_prefix}/admin/operator/access`);
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(body.detail || body.message || `Operator access check failed (${res.status})`);
+  }
+  return body;
+}
+
 async function loadOverview() {
   const days = Number(qs("#daysSelect").value) || 30;
   const res = await apiFetch(`${config.api_v1_prefix}/admin/overview?days=${days}`);
@@ -390,6 +454,37 @@ async function loadOrders() {
   return await res.json();
 }
 
+async function refundOrder(orderId, payload) {
+  const res = await apiFetch(`${config.api_v1_prefix}/admin/orders/${orderId}/refund`, {
+    method: "POST",
+    body: JSON.stringify(payload || {}),
+  });
+  const body = await res.json().catch(() => ({}));
+  if (res.status === 403) throw new Error("Forbidden (admin only).");
+  if (!res.ok) {
+    throw new Error(body.detail || body.message || `Refund failed (${res.status})`);
+  }
+  return body;
+}
+
+async function loadTicketScanRows() {
+  const res = await apiFetch(`${config.api_v1_prefix}/admin/operator/tickets?limit=250`);
+  if (res.status === 403) throw new Error("Forbidden (admin or operator only).");
+  if (!res.ok) throw new Error(`Ticket list failed (${res.status})`);
+  return await res.json();
+}
+
+async function scanTicketCode(code) {
+  const res = await apiFetch(`${config.api_v1_prefix}/admin/operator/tickets/scan`, {
+    method: "POST",
+    body: JSON.stringify({ code }),
+  });
+  const body = await res.json().catch(() => ({}));
+  if (res.status === 403) throw new Error("Forbidden (admin or operator only).");
+  if (!res.ok) throw new Error(body.detail || body.message || `Ticket scan failed (${res.status})`);
+  return body;
+}
+
 async function loadPaymentSettings() {
   const res = await apiFetch(`${config.api_v1_prefix}/admin/payments/settings`);
   if (res.status === 403) throw new Error("Forbidden (admin only).");
@@ -476,10 +571,55 @@ function updateUiAuthState() {
     loginCard.hidden = true;
     portal.hidden = false;
   } else {
+    stopTicketScannerCamera();
     sessionPill.textContent = "Signed out";
     logoutBtn.disabled = true;
     loginCard.hidden = false;
     portal.hidden = true;
+  }
+
+  applyAccessToNavigation();
+}
+
+function applyAccessToNavigation() {
+  const hasSession = !!(loadSession() && loadSession().access_token);
+  const navButtons = qsa(".navitem");
+  const scannerBtn = qs('.navitem[data-view="ticketScanner"]');
+
+  if (!hasSession) {
+    navButtons.forEach((btn) => {
+      btn.hidden = false;
+      btn.disabled = false;
+    });
+    return;
+  }
+
+  const canScan = !!operatorAccess.can_scan_tickets;
+  const isAdmin = !!operatorAccess.is_admin;
+
+  navButtons.forEach((btn) => {
+    const view = btn.dataset.view;
+    const isScanner = view === "ticketScanner";
+
+    if (isAdmin) {
+      btn.hidden = false;
+      btn.disabled = false;
+      return;
+    }
+
+    if (canScan && isScanner) {
+      btn.hidden = false;
+      btn.disabled = false;
+      return;
+    }
+
+    btn.hidden = true;
+    btn.disabled = true;
+  });
+
+  if (scannerBtn) {
+    scannerBtn.hidden = !canScan;
+    scannerBtn.disabled = !canScan;
   }
 }
 
@@ -737,9 +877,28 @@ function orderStatusTag(order) {
   const statusText = order.payment_status || "submitted";
   let kind = "";
   if (statusText === "paid") kind = "ok";
+  else if (statusText === "partially_refunded") kind = "warn";
+  else if (statusText === "refunded") kind = "danger";
   else if (statusText === "failed") kind = "danger";
   else if (statusText === "checkout_created" || statusText === "expired") kind = "warn";
   return tag(statusText, kind);
+}
+
+function refundStatusTag(order) {
+  const value = String(order.refund_status || "").toLowerCase();
+  if (!value) return document.createTextNode("");
+  let kind = "";
+  if (value === "succeeded") kind = "ok";
+  else if (value === "pending" || value === "requires_action") kind = "warn";
+  else if (value === "failed" || value === "canceled") kind = "danger";
+  return tag(value, kind);
+}
+
+function canRefundOrder(order) {
+  const status = String(order.payment_status || "").toLowerCase();
+  const hasStripeSession = !!String(order.stripe_checkout_session_id || "").trim();
+  if (!hasStripeSession) return false;
+  return status === "paid" || status === "partially_refunded";
 }
 
 async function renderOrdersView(container) {
@@ -758,10 +917,377 @@ async function renderOrdersView(container) {
     { label: "Mode", key: "stripe_mode", render: (o) => o.stripe_mode || "-" },
     { label: "Status", key: "payment_status", render: (o) => orderStatusTag(o) },
     { label: "Amount", key: "payment_amount_usd", render: (o) => (o.payment_amount_usd ? fmtUsd(o.payment_amount_usd) : "") },
+    { label: "Refund", key: "refund_status", render: (o) => refundStatusTag(o) },
+    { label: "Refunded", key: "refund_amount_usd", render: (o) => (o.refund_amount_usd ? fmtUsd(o.refund_amount_usd) : "") },
+    {
+      label: "Card",
+      key: "payment_card_last4",
+      render: (o) => (o.payment_card_last4 ? `${o.payment_card_brand || "card"} •••• ${o.payment_card_last4}` : ""),
+    },
+    { label: "Pass code", key: "pass_code", mono: true },
+    { label: "Pass status", key: "pass_status", render: (o) => {
+        const value = o.pass_status || "";
+        let kind = "";
+        if (value === "active") kind = "ok";
+        else if (value === "redeemed") kind = "warn";
+        else if (value === "expired") kind = "danger";
+        else if (value === "refunded") kind = "danger";
+        return value ? tag(value, kind) : document.createTextNode("");
+      }
+    },
     { label: "Stripe session", key: "stripe_checkout_session_id", mono: true },
+    { label: "Stripe refund", key: "stripe_refund_id", mono: true },
+    {
+      label: "Action",
+      key: "_refund",
+      render: (o) => {
+        if (!canRefundOrder(o)) return document.createTextNode("");
+        const btn = document.createElement("button");
+        btn.className = "btn btn--danger";
+        btn.textContent = "Cancel + refund";
+        btn.addEventListener("click", async () => {
+          const reason = prompt("Refund reason (required):", "Customer canceled order");
+          if (reason === null) return;
+          if (!reason.trim()) {
+            alert("Please provide a refund reason.");
+            return;
+          }
+
+          const amountInput = prompt("Refund amount in USD (leave blank for full refund):", "");
+          if (amountInput === null) return;
+
+          const request = {
+            cancel_order: true,
+            reason: reason.trim(),
+          };
+          if (amountInput.trim()) {
+            const parsed = Number(amountInput.trim());
+            if (!Number.isFinite(parsed) || parsed <= 0) {
+              alert("Refund amount must be a positive number.");
+              return;
+            }
+            request.amount_usd = Number(parsed.toFixed(2));
+          }
+
+          if (!confirm(`Issue Stripe refund now for order #${o.id}?`)) return;
+
+          btn.disabled = true;
+          try {
+            const result = await refundOrder(o.id, request);
+            setStatus(
+              `Refund ${result.refund_status || "submitted"} for order #${o.id}: ${fmtUsd(result.refunded_amount_usd)}.`
+            );
+            await renderCurrentView();
+          } catch (e) {
+            setStatus(e.message || String(e));
+          } finally {
+            btn.disabled = false;
+          }
+        });
+        return btn;
+      },
+    },
     { label: "Summary", key: "summary" },
   ];
   container.appendChild(renderTable(columns, orders, { emptyText: "No orders found." }));
+}
+
+function ticketStatusTag(value) {
+  const normalized = String(value || "").toLowerCase();
+  let kind = "";
+  if (normalized === "active") kind = "ok";
+  else if (normalized === "redeemed") kind = "warn";
+  else if (normalized === "expired") kind = "danger";
+  return tag(normalized || "unknown", kind);
+}
+
+async function createTicketScannerEngine() {
+  if ("BarcodeDetector" in window) {
+    try {
+      const supported = typeof window.BarcodeDetector.getSupportedFormats === "function"
+        ? await window.BarcodeDetector.getSupportedFormats()
+        : [];
+      const preferred = ["qr_code", "aztec", "pdf417", "code_128"];
+      const formats = Array.isArray(supported) && supported.length
+        ? preferred.filter((item) => supported.includes(item))
+        : [];
+      const detector = formats.length
+        ? new window.BarcodeDetector({ formats })
+        : new window.BarcodeDetector();
+      return { mode: "barcode", detector };
+    } catch {
+      // Fall through to jsQR fallback.
+    }
+  }
+
+  if (typeof window.jsQR === "function") {
+    return { mode: "jsqr" };
+  }
+
+  return null;
+}
+
+async function renderTicketScannerView(container) {
+  setViewTitle("Ticket Scanner", "Scan and deactivate park entry passes");
+  stopTicketScannerCamera();
+
+  const card = document.createElement("section");
+  card.className = "card";
+  card.innerHTML = `
+    <div class="row row--space">
+      <div>
+        <div class="h2">Operator scan console</div>
+        <div class="muted small">Scan once to redeem. Redeemed passes are blocked from double spending.</div>
+      </div>
+      <div class="pill pill--muted">Access: admin/operator</div>
+    </div>
+    <section class="card card--tight" style="margin-top: 12px;">
+      <div class="row row--space">
+        <div>
+          <div class="h2">Live camera scanner</div>
+          <div class="muted small">Use the camera to scan QR payloads directly at park check-in.</div>
+        </div>
+      </div>
+      <div class="row" style="align-items: flex-start; gap: 12px; margin-top: 10px;">
+        <div style="flex: 1 1 420px;">
+          <video id="ticketCameraPreview" autoplay muted playsinline style="width: 100%; max-width: 520px; aspect-ratio: 4 / 3; border-radius: 12px; border: 1px solid var(--stroke); background: rgba(12, 19, 33, 0.45);"></video>
+          <div id="ticketCameraHint" class="muted small" style="margin-top: 8px;">Camera is off.</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; min-width: 190px;">
+          <button class="btn btn--primary" id="ticketCameraStartBtn" type="button">Open camera scanner</button>
+          <button class="btn btn--ghost" id="ticketCameraStopBtn" type="button">Stop camera</button>
+        </div>
+      </div>
+    </section>
+    <form id="ticketScanForm" class="form" style="max-width: 860px;">
+      <label class="field">
+        <span>Pass code or QR payload</span>
+        <input id="ticketScanInput" type="text" autocomplete="off" placeholder="Scan code or paste URL payload" required />
+      </label>
+      <div class="row">
+        <button class="btn btn--primary" id="ticketScanBtn" type="submit">Scan ticket</button>
+        <button class="btn btn--ghost" id="ticketReloadBtn" type="button">Refresh list</button>
+        <span class="muted small" id="ticketScanHint"></span>
+      </div>
+    </form>
+    <div id="ticketScanResult" style="margin-top: 10px;"></div>
+    <div id="ticketScanTable" style="margin-top: 12px;"></div>
+  `;
+  container.appendChild(card);
+
+  const form = qs("#ticketScanForm", card);
+  const input = qs("#ticketScanInput", card);
+  const scanBtn = qs("#ticketScanBtn", card);
+  const reloadBtn = qs("#ticketReloadBtn", card);
+  const hint = qs("#ticketScanHint", card);
+  const resultWrap = qs("#ticketScanResult", card);
+  const tableWrap = qs("#ticketScanTable", card);
+  const cameraPreview = qs("#ticketCameraPreview", card);
+  const cameraHint = qs("#ticketCameraHint", card);
+  const cameraStartBtn = qs("#ticketCameraStartBtn", card);
+  const cameraStopBtn = qs("#ticketCameraStopBtn", card);
+  let scanInFlight = false;
+
+  const renderResult = (result) => {
+    if (!result) {
+      resultWrap.innerHTML = "";
+      return;
+    }
+    const statusBadge = ticketStatusTag(result.pass_status || result.result_status || "unknown");
+    const shell = document.createElement("div");
+    shell.className = "card card--tight";
+    shell.style.margin = "0";
+    shell.style.borderColor = "var(--stroke)";
+    shell.innerHTML = `
+      <div class="row row--space">
+        <div>
+          <div class="h2">Scan result</div>
+          <div class="muted small">${result.message || ""}</div>
+        </div>
+      </div>
+    `;
+    const details = document.createElement("div");
+    details.className = "row";
+    details.style.marginTop = "10px";
+    details.style.gap = "12px";
+    details.appendChild(statusBadge);
+    if (result.pass_code) {
+      details.appendChild(tag(`code ${result.pass_code}`, ""));
+    }
+    if (result.customer_name) {
+      details.appendChild(tag(result.customer_name, ""));
+    }
+    shell.appendChild(details);
+    resultWrap.innerHTML = "";
+    resultWrap.appendChild(shell);
+  };
+
+  const loadTable = async () => {
+    const rows = await loadTicketScanRows();
+    const columns = [
+      { label: "Order", key: "order_id", mono: true },
+      { label: "Created", key: "created_at", mono: true },
+      { label: "Customer", key: "customer_name" },
+      { label: "Email", key: "email" },
+      { label: "Pass code", key: "pass_code", mono: true },
+      { label: "Status", key: "pass_status", render: (r) => ticketStatusTag(r.pass_status) },
+      { label: "Expires", key: "pass_expires_at", mono: true },
+      { label: "Redeemed", key: "pass_redeemed_at", mono: true },
+      { label: "Scans", key: "pass_scan_count", render: (r) => fmtInt(r.pass_scan_count || 0) },
+      { label: "Park", key: "selected_park" },
+      { label: "Offer", key: "offer_choice" },
+    ];
+    tableWrap.innerHTML = "";
+    tableWrap.appendChild(renderTable(columns, rows, { emptyText: "No ticket passes issued yet." }));
+  };
+
+  const submitScanCode = async (rawCode, scanSourceLabel) => {
+    const code = String(rawCode || "").trim();
+    if (!code || scanInFlight) return;
+
+    scanInFlight = true;
+    scanBtn.disabled = true;
+    hint.textContent = scanSourceLabel || "Scanning...";
+    try {
+      const result = await scanTicketCode(code);
+      renderResult(result);
+      input.value = "";
+      await loadTable();
+      hint.textContent = "";
+      setStatus(result.message || "Ticket scanned.");
+    } catch (e) {
+      hint.textContent = "";
+      setStatus(e.message || String(e));
+    } finally {
+      scanBtn.disabled = false;
+      scanInFlight = false;
+    }
+  };
+
+  const setCameraHint = (message, isError) => {
+    if (!cameraHint) return;
+    cameraHint.textContent = message || "";
+    cameraHint.style.color = isError ? "var(--danger)" : "var(--muted)";
+  };
+
+  const startCameraScanner = async () => {
+    if (!cameraPreview) return;
+    if (!navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== "function") {
+      setCameraHint("Camera access is not available in this browser.", true);
+      return;
+    }
+
+    cameraStartBtn.disabled = true;
+    setCameraHint("Requesting camera permission...", false);
+    stopTicketScannerCamera();
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: { ideal: "environment" },
+        },
+      });
+
+      ticketScannerRuntime.stream = stream;
+      ticketScannerRuntime.videoEl = cameraPreview;
+      cameraPreview.srcObject = stream;
+      try {
+        await cameraPreview.play();
+      } catch {
+        // Browsers may auto-play after a short delay.
+      }
+
+      const engine = await createTicketScannerEngine();
+      if (!engine) {
+        setCameraHint("Camera opened, but this browser cannot decode QR codes automatically. Paste the pass code below.", true);
+        return;
+      }
+
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      ticketScannerRuntime.active = true;
+      setCameraHint("Camera active. Hold the QR code in view.", false);
+
+      const poll = async () => {
+        if (!ticketScannerRuntime.active) return;
+
+        let scannedValue = "";
+        try {
+          if (engine.mode === "barcode") {
+            const results = await engine.detector.detect(cameraPreview);
+            if (Array.isArray(results) && results.length > 0) {
+              scannedValue = String(results[0].rawValue || "").trim();
+            }
+          } else if (engine.mode === "jsqr" && ctx) {
+            const width = cameraPreview.videoWidth || 0;
+            const height = cameraPreview.videoHeight || 0;
+            if (width > 0 && height > 0) {
+              canvas.width = width;
+              canvas.height = height;
+              ctx.drawImage(cameraPreview, 0, 0, width, height);
+              const frame = ctx.getImageData(0, 0, width, height);
+              const qr = window.jsQR(frame.data, width, height, { inversionAttempts: "attemptBoth" });
+              scannedValue = qr && qr.data ? String(qr.data).trim() : "";
+            }
+          }
+        } catch {
+          // Ignore frame-level decode errors.
+        }
+
+        if (scannedValue) {
+          const now = Date.now();
+          const sameAsLast = scannedValue === ticketScannerRuntime.lastCode;
+          if (!sameAsLast || (now - ticketScannerRuntime.lastCodeAt) > 2500) {
+            ticketScannerRuntime.lastCode = scannedValue;
+            ticketScannerRuntime.lastCodeAt = now;
+            input.value = scannedValue;
+            void submitScanCode(scannedValue, "Ticket scanned from camera...");
+          }
+        }
+
+        ticketScannerRuntime.pollTimer = window.setTimeout(poll, 450);
+      };
+
+      ticketScannerRuntime.pollTimer = window.setTimeout(poll, 150);
+    } catch (e) {
+      const message = e && e.message ? e.message : String(e);
+      setCameraHint(`Could not open camera: ${message}`, true);
+      stopTicketScannerCamera();
+    } finally {
+      cameraStartBtn.disabled = false;
+    }
+  };
+
+  reloadBtn.addEventListener("click", async () => {
+    reloadBtn.disabled = true;
+    hint.textContent = "Refreshing...";
+    try {
+      await loadTable();
+      hint.textContent = "";
+    } catch (e) {
+      hint.textContent = "";
+      setStatus(e.message || String(e));
+    } finally {
+      reloadBtn.disabled = false;
+    }
+  });
+
+  form.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    await submitScanCode(input.value, "Scanning...");
+  });
+
+  cameraStartBtn.addEventListener("click", async () => {
+    await startCameraScanner();
+  });
+
+  cameraStopBtn.addEventListener("click", () => {
+    stopTicketScannerCamera();
+    setCameraHint("Camera stopped.", false);
+  });
+
+  await loadTable();
+  await startCameraScanner();
 }
 
 function asText(value) {
@@ -1307,6 +1833,9 @@ async function renderMessageBoxView(container) {
 
 async function renderCurrentView() {
   const container = qs("#viewContainer");
+  if (currentView !== "ticketScanner") {
+    stopTicketScannerCamera();
+  }
   container.innerHTML = "";
 
   try {
@@ -1337,6 +1866,9 @@ async function renderCurrentView() {
         break;
       case "orders":
         await renderOrdersView(container);
+        break;
+      case "ticketScanner":
+        await renderTicketScannerView(container);
         break;
       case "payments":
         await renderPaymentsView(container);
@@ -1383,11 +1915,23 @@ function wireNav() {
 async function init() {
   resetAiConversation();
   resetMessageBoxConversation();
+  const requestedView = initialAdminViewFromUrl();
+  if (requestedView) {
+    currentView = requestedView;
+  }
   qs("#dismissStatusBtn").addEventListener("click", clearStatus);
 
   qs("#logoutBtn").addEventListener("click", () => {
+    stopTicketScannerCamera();
     clearSession();
+    currentUserProfile = null;
+    operatorAccess = {
+      is_admin: false,
+      is_operator: false,
+      can_scan_tickets: false,
+    };
     updateUiAuthState();
+    applyAccessToNavigation();
     resetAiConversation();
     resetMessageBoxConversation();
     setStatus("Signed out.");
@@ -1426,16 +1970,22 @@ async function init() {
 
       // Confirm backend sees the user (and role).
       const me = await loadMe();
+      currentUserProfile = me;
       const role = me.role || "unknown";
+      operatorAccess = await loadOperatorAccess();
       const pill = qs("#sessionPill");
       pill.textContent = `Signed in: ${me.email} (${role})`;
 
-      if (role !== "admin") {
-        setStatus("Signed in, but not an admin. Promote this user to admin in the backend DB, then refresh.");
-      } else {
+      if (!operatorAccess.can_scan_tickets && role !== "admin") {
+        setStatus("Signed in, but this account is not allowed in admin or operator mode.");
+      } else if (operatorAccess.is_admin) {
         setStatus("Signed in as admin.");
+      } else {
+        setStatus("Signed in as operator. Ticket scanner mode is enabled.");
+        currentView = "ticketScanner";
       }
 
+      applyAccessToNavigation();
       setActiveNav(currentView);
       await renderCurrentView();
     } catch (e) {
@@ -1449,9 +1999,16 @@ async function init() {
   wireNav();
 
   updateUiAuthState();
+  applyAccessToNavigation();
   if (loadSession()) {
     try {
       const me = await loadMe();
+      currentUserProfile = me;
+      operatorAccess = await loadOperatorAccess();
+      if (!operatorAccess.is_admin && operatorAccess.can_scan_tickets) {
+        currentView = "ticketScanner";
+      }
+      applyAccessToNavigation();
       qs("#sessionPill").textContent = `Signed in: ${me.email} (${me.role || "unknown"})`;
       setActiveNav(currentView);
       await renderCurrentView();

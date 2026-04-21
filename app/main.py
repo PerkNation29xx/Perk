@@ -141,6 +141,11 @@ def admin_portal() -> str:
     return _read_html_or_missing(_ADMIN_PORTAL_DIR / "index.html", "Admin portal")
 
 
+@app.get("/admin/ticket-scanner", response_class=HTMLResponse)
+def admin_ticket_scanner_portal() -> str:
+    return _read_html_or_missing(_ADMIN_PORTAL_DIR / "index.html", "Admin portal")
+
+
 @app.get("/user", response_class=HTMLResponse)
 def user_portal() -> str:
     return _read_html_or_missing(_USER_PORTAL_DIR / "index.html", "User portal")

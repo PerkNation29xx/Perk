@@ -443,6 +443,24 @@ class CheckoutPassStatusOut(BaseModel):
     pass_view_url: Optional[str] = None
 
 
+class CheckoutUserPassOut(BaseModel):
+    submission_id: int
+    created_at: datetime
+    offer_choice: Optional[str] = None
+    selected_park: Optional[str] = None
+    package_quantity: Optional[str] = None
+    payment_status: Optional[str] = None
+    pass_code: Optional[str] = None
+    pass_status: Optional[str] = None
+    pass_expires_at: Optional[datetime] = None
+    pass_redeemed_at: Optional[datetime] = None
+    pass_account_url: Optional[str] = None
+    pass_wallet_url: Optional[str] = None
+    pass_view_url: Optional[str] = None
+    payment_card_last4: Optional[str] = None
+    payment_card_brand: Optional[str] = None
+
+
 # Admin portal schemas
 
 
@@ -585,7 +603,14 @@ class AdminOrderRow(BaseModel):
     payment_provider: Optional[str] = None
     stripe_mode: Optional[str] = None
     payment_amount_usd: Optional[Decimal] = None
+    payment_card_brand: Optional[str] = None
+    payment_card_last4: Optional[str] = None
     stripe_checkout_session_id: Optional[str] = None
+    stripe_refund_id: Optional[str] = None
+    refund_status: Optional[str] = None
+    refund_amount_usd: Optional[Decimal] = None
+    refund_reason: Optional[str] = None
+    refunded_at: Optional[datetime] = None
     pass_code: Optional[str] = None
     pass_status: Optional[str] = None
     pass_expires_at: Optional[datetime] = None
@@ -594,6 +619,26 @@ class AdminOrderRow(BaseModel):
     pass_wallet_url: Optional[str] = None
     pass_view_url: Optional[str] = None
     summary: Optional[str] = None
+
+
+class AdminOrderRefundRequest(BaseModel):
+    amount_usd: Optional[Decimal] = Field(default=None, gt=Decimal("0"))
+    reason: Optional[str] = Field(default=None, max_length=255)
+    cancel_order: bool = True
+
+
+class AdminOrderRefundOut(BaseModel):
+    order_id: int
+    payment_status: str
+    stripe_mode: str
+    stripe_checkout_session_id: Optional[str] = None
+    stripe_payment_intent_id: Optional[str] = None
+    stripe_refund_id: Optional[str] = None
+    refund_status: str
+    refunded_amount_usd: Decimal
+    refund_reason: Optional[str] = None
+    pass_status: Optional[str] = None
+    refunded_at: datetime
 
 
 class AdminOperatorAccessOut(BaseModel):
