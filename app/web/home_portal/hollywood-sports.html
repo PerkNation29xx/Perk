@@ -388,18 +388,40 @@
               <option value="Help me choose">Help me choose</option>
             </select>
           </label>
+          <label class="hspCheckoutLabel span2">
+            <span>Account access</span>
+            <select name="account_mode" data-hsp-account-mode required>
+              <option value="create">Create account with this purchase</option>
+              <option value="login">I already have a PerkNation account</option>
+            </select>
+          </label>
           <label class="hspCheckoutLabel">
-            <span>Full name</span>
-            <input type="text" name="full_name" autocomplete="name" required />
+            <span>First name</span>
+            <input type="text" name="account_first_name" autocomplete="given-name" data-hsp-first-name required />
+          </label>
+          <label class="hspCheckoutLabel">
+            <span>Last name</span>
+            <input type="text" name="account_last_name" autocomplete="family-name" data-hsp-last-name required />
           </label>
           <label class="hspCheckoutLabel">
             <span>Email</span>
-            <input type="email" name="email" autocomplete="email" required />
+            <input type="email" name="email" autocomplete="email" data-hsp-email required />
           </label>
           <label class="hspCheckoutLabel">
             <span>Phone</span>
-            <input type="tel" name="phone" autocomplete="tel" />
+            <input type="tel" name="phone" autocomplete="tel" data-hsp-phone required />
           </label>
+          <label class="hspCheckoutLabel">
+            <span>Password</span>
+            <input type="password" name="account_password" autocomplete="current-password" minlength="8" data-hsp-password required />
+          </label>
+          <label class="hspCheckoutLabel">
+            <span>Confirm password</span>
+            <input type="password" name="account_password_confirm" autocomplete="current-password" minlength="8" data-hsp-password-confirm required />
+          </label>
+          <div class="small hspMuted span2" data-hsp-account-hint>
+            Create a PerkNation account during purchase so your pass is attached to your account automatically.
+          </div>
           <label class="hspCheckoutLabel">
             <span>Package quantity</span>
             <select name="package_quantity">
@@ -875,6 +897,14 @@
     const copyZelleButton = form.querySelector("[data-hsp-copy-zelle]");
     const toast = form.querySelector("[data-hsp-checkout-toast]");
     const passPanel = form.querySelector("[data-hsp-pass-panel]");
+    const accountModeField = form.querySelector("[data-hsp-account-mode]");
+    const accountHint = form.querySelector("[data-hsp-account-hint]");
+    const firstNameField = form.querySelector("[data-hsp-first-name]");
+    const lastNameField = form.querySelector("[data-hsp-last-name]");
+    const emailField = form.querySelector("[data-hsp-email]");
+    const phoneField = form.querySelector("[data-hsp-phone]");
+    const passwordField = form.querySelector("[data-hsp-password]");
+    const passwordConfirmField = form.querySelector("[data-hsp-password-confirm]");
     const storageKey = "perknation_hsp_checkout_backup";
     const checkoutSourcePage = "/hollywood-sports";
     const triggers = document.querySelectorAll("[data-hsp-checkout-trigger]");
@@ -887,6 +917,8 @@
       "hsp-private-group": "$70 Bundle (12 park passes, $500+ value)",
       "hsp-campaign": ""
     };
+    const accountStorageKey = "perknation_hsp_checkout_auth";
+    let webConfigPromise = null;
 
     const setToast = (message, kind) => {
       if (!toast) return;
@@ -906,6 +938,262 @@
       if (!passPanel) return;
       passPanel.hidden = true;
       passPanel.innerHTML = "";
+    };
+
+    const scrollToPassPanel = () => {
+      if (!passPanel || passPanel.hidden) return;
+      window.requestAnimationFrame(() => {
+        passPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    };
+
+    const readJsonResponse = async (response) => {
+      const raw = await response.text();
+      if (!raw) return {};
+      try {
+        return JSON.parse(raw);
+      } catch (_error) {
+        return {};
+      }
+    };
+
+    const loadWebConfig = async () => {
+      if (!webConfigPromise) {
+        webConfigPromise = fetch("/web/config")
+          .then((res) => res.json())
+          .then((cfg) => {
+            if (cfg.error) throw new Error(cfg.error);
+            if (!cfg.supabase_url || !cfg.supabase_anon_key) {
+              throw new Error("Account service is not configured. Please try again later.");
+            }
+            return cfg;
+          });
+      }
+      return webConfigPromise;
+    };
+
+    const withRedirectParam = (url, redirectTo) => {
+      if (!redirectTo) return url;
+      try {
+        const parsed = new URL(url, window.location.origin);
+        parsed.searchParams.set("redirect_to", redirectTo);
+        return parsed.toString();
+      } catch (_error) {
+        return url;
+      }
+    };
+
+    const supabasePost = async (path, payload, redirectTo) => {
+      const cfg = await loadWebConfig();
+      const url = withRedirectParam(`${cfg.supabase_url}${path}`, redirectTo || "");
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "apikey": cfg.supabase_anon_key,
+          "Authorization": `Bearer ${cfg.supabase_anon_key}`,
+          ...(redirectTo ? { redirect_to: redirectTo } : {})
+        },
+        body: JSON.stringify(payload)
+      });
+      const data = await readJsonResponse(response);
+      if (!response.ok) {
+        const detail = data.error_description || data.message || data.msg || data.error || `Auth request failed (${response.status})`;
+        throw new Error(String(detail));
+      }
+      return data;
+    };
+
+    const supabaseSignIn = async (email, password) => {
+      return await supabasePost("/auth/v1/token?grant_type=password", { email, password });
+    };
+
+    const supabaseSignUp = async (email, password, metadata) => {
+      const cfg = await loadWebConfig();
+      const redirectTo = String(cfg.auth_email_redirect_url || `${window.location.origin}/login`);
+      return await supabasePost(
+        "/auth/v1/signup",
+        {
+          email,
+          password,
+          data: metadata,
+          options: {
+            data: metadata,
+            emailRedirectTo: redirectTo,
+            redirectTo
+          }
+        },
+        redirectTo
+      );
+    };
+
+    const envelopeToAccessToken = (envelope) => {
+      if (!envelope || typeof envelope !== "object") return "";
+      return String(
+        envelope.access_token ||
+        (envelope.session && envelope.session.access_token) ||
+        ""
+      ).trim();
+    };
+
+    const normalizePhone = (raw) => String(raw || "").trim();
+    const normalizeEmail = (raw) => String(raw || "").trim().toLowerCase();
+    const normalizeText = (raw) => String(raw || "").trim();
+
+    const setAccountModeUi = () => {
+      const mode = String(accountModeField?.value || "create").toLowerCase();
+      const isCreate = mode !== "login";
+
+      if (firstNameField) firstNameField.required = isCreate;
+      if (lastNameField) lastNameField.required = isCreate;
+      if (phoneField) phoneField.required = isCreate;
+      if (passwordConfirmField) {
+        passwordConfirmField.required = isCreate;
+        passwordConfirmField.disabled = !isCreate;
+      }
+
+      if (accountHint) {
+        accountHint.textContent = isCreate
+          ? "Create your account now so this pass is automatically attached to your profile."
+          : "Sign in with your existing account. Your purchase and pass will be added to it.";
+      }
+    };
+
+    const prefillAccountFields = () => {
+      try {
+        const raw = localStorage.getItem(accountStorageKey);
+        if (!raw) return;
+        const snapshot = JSON.parse(raw);
+        if (!snapshot || typeof snapshot !== "object") return;
+        if (firstNameField && !firstNameField.value) firstNameField.value = normalizeText(snapshot.first_name);
+        if (lastNameField && !lastNameField.value) lastNameField.value = normalizeText(snapshot.last_name);
+        if (emailField && !emailField.value) emailField.value = normalizeEmail(snapshot.email);
+        if (phoneField && !phoneField.value) phoneField.value = normalizePhone(snapshot.phone);
+      } catch (_error) {
+        // Ignore bad local snapshot.
+      }
+    };
+
+    const resolveAccountContext = async (data) => {
+      const mode = String(data.account_mode || "create").trim().toLowerCase();
+      const email = normalizeEmail(data.email);
+      const phone = normalizePhone(data.phone);
+      const firstName = normalizeText(data.account_first_name);
+      const lastName = normalizeText(data.account_last_name);
+      const fullNameFromFields = [firstName, lastName].filter(Boolean).join(" ").trim();
+      const password = String(data.account_password || "");
+      const passwordConfirm = String(data.account_password_confirm || "");
+
+      if (!email) {
+        throw new Error("Email is required.");
+      }
+      if (!password) {
+        throw new Error("Password is required.");
+      }
+      if (password.length < 8) {
+        throw new Error("Password must be at least 8 characters.");
+      }
+
+      let accessToken = "";
+      let accountCreated = false;
+      let accountVerifiedSession = false;
+      let resolvedFirstName = firstName;
+      let resolvedLastName = lastName;
+      let resolvedFullName = fullNameFromFields;
+      let resolvedPhone = phone;
+
+      if (mode === "login") {
+        const signInEnvelope = await supabaseSignIn(email, password);
+        accessToken = envelopeToAccessToken(signInEnvelope);
+        accountVerifiedSession = !!accessToken;
+      } else {
+        if (!firstName || !lastName || !phone) {
+          throw new Error("First name, last name, and phone are required to create an account.");
+        }
+        if (!passwordConfirm) {
+          throw new Error("Confirm password is required.");
+        }
+        if (password !== passwordConfirm) {
+          throw new Error("Passwords do not match.");
+        }
+
+        const signUpEnvelope = await supabaseSignUp(email, password, {
+          full_name: fullNameFromFields || "PerkNation Member",
+          phone,
+          role: "consumer",
+          reward_preference: "cash",
+          notifications_enabled: true,
+          location_consent: true,
+          alert_radius_miles: 5,
+          notification_categories: "restaurant,gas,retail"
+        });
+        accountCreated = true;
+        accessToken = envelopeToAccessToken(signUpEnvelope);
+        accountVerifiedSession = !!accessToken;
+
+        if (!accessToken) {
+          try {
+            const signInEnvelope = await supabaseSignIn(email, password);
+            accessToken = envelopeToAccessToken(signInEnvelope);
+            accountVerifiedSession = !!accessToken;
+          } catch (_error) {
+            // Account can still be created but pending email verification.
+          }
+        }
+      }
+
+      if (accessToken) {
+        try {
+          const meRes = await fetch("/v1/auth/me", {
+            headers: {
+              "Accept": "application/json",
+              "Authorization": `Bearer ${accessToken}`
+            }
+          });
+          if (meRes.ok) {
+            const me = await meRes.json();
+            const fullName = normalizeText(me.full_name);
+            if (fullName) {
+              resolvedFullName = fullName;
+              const bits = fullName.split(/\s+/).filter(Boolean);
+              if (bits.length) {
+                resolvedFirstName = bits[0];
+                resolvedLastName = bits.slice(1).join(" ");
+              }
+            }
+            const meEmail = normalizeEmail(me.email);
+            if (meEmail) {
+              data.email = meEmail;
+            }
+            const mePhone = normalizePhone(me.phone);
+            if (mePhone) {
+              resolvedPhone = mePhone;
+            }
+          }
+        } catch (_error) {
+          // Best effort only.
+        }
+      }
+
+      if (!resolvedFullName) {
+        resolvedFullName = String(email.split("@")[0] || "PerkNation Member").trim();
+      }
+      if (!resolvedFirstName) {
+        resolvedFirstName = resolvedFullName.split(/\s+/)[0] || "PerkNation";
+      }
+
+      return {
+        mode,
+        email: normalizeEmail(data.email || email),
+        phone: normalizePhone(resolvedPhone || phone),
+        firstName: normalizeText(resolvedFirstName || firstName),
+        lastName: normalizeText(resolvedLastName || lastName),
+        fullName: normalizeText(resolvedFullName || fullNameFromFields),
+        accessToken,
+        accountCreated,
+        accountVerifiedSession
+      };
     };
 
     const renderPassPanel = (receipt) => {
@@ -946,6 +1234,7 @@
           </div>
         </div>
       `;
+      scrollToPassPanel();
     };
 
     const loadCheckoutPassReceipt = async (sessionId) => {
@@ -961,28 +1250,35 @@
       return payload;
     };
 
-    const buildApplePayPayload = (data, submissionId) => {
+    const buildApplePayPayload = (data, submissionId, accountContext) => {
       return {
         source_page: checkoutSourcePage,
         offer_choice: String(data.offer_choice || ""),
         package_quantity: String(data.package_quantity || "1"),
         selected_offer: String(data.selected_offer || ""),
         selected_park: String(data.selected_park || ""),
-        full_name: String(data.full_name || ""),
-        email: String(data.email || ""),
-        phone: String(data.phone || ""),
+        full_name: String(accountContext?.fullName || data.full_name || ""),
+        email: String(accountContext?.email || data.email || ""),
+        phone: String(accountContext?.phone || data.phone || ""),
+        account_email: String(accountContext?.email || data.email || ""),
+        account_first_name: String(accountContext?.firstName || data.account_first_name || ""),
+        account_last_name: String(accountContext?.lastName || data.account_last_name || ""),
+        account_full_name: String(accountContext?.fullName || data.full_name || ""),
+        account_phone: String(accountContext?.phone || data.phone || ""),
+        account_mode: String(accountContext?.mode || data.account_mode || "create"),
         submission_id: typeof submissionId === "number" ? submissionId : undefined
       };
     };
 
-    const startApplePayCheckout = async (data, submissionId) => {
+    const startApplePayCheckout = async (data, submissionId, accessToken, accountContext) => {
       const response = await fetch("/v1/web/payments/apple-pay/checkout-session", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json"
+          "Accept": "application/json",
+          ...(accessToken ? { "Authorization": `Bearer ${accessToken}` } : {})
         },
-        body: JSON.stringify(buildApplePayPayload(data, submissionId))
+        body: JSON.stringify(buildApplePayPayload(data, submissionId, accountContext))
       });
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) {
@@ -1043,6 +1339,12 @@
       });
     }
 
+    if (accountModeField) {
+      accountModeField.addEventListener("change", setAccountModeUi);
+      setAccountModeUi();
+    }
+    prefillAccountFields();
+
     if (copyZelleButton) {
       copyZelleButton.addEventListener("click", async () => {
         try {
@@ -1063,16 +1365,16 @@
       if (paymentOptionInput) paymentOptionInput.value = paymentOption;
       const data = Object.fromEntries(new FormData(form).entries());
       data.payment_option = paymentOption;
-      if (!String(data.full_name || "").trim() || !String(data.email || "").trim() || !String(data.selected_offer || "").trim()) {
-        setToast("Full name, email, and selected offer are required.", "error");
-        return;
-      }
       if (!String(data.offer_choice || "").trim()) {
         setToast("Choose an offer package ($1 mini, $5 promo, or $70 bundle).", "error");
         return;
       }
       if (!String(data.selected_park || "").trim()) {
         setToast("Choose a participating park.", "error");
+        return;
+      }
+      if (!String(data.selected_offer || "").trim()) {
+        setToast("Selected offer is required.", "error");
         return;
       }
 
@@ -1086,11 +1388,49 @@
       }
 
       try {
+        const accountContext = await resolveAccountContext(data);
+        if (!accountContext.fullName) {
+          throw new Error("Full name is required.");
+        }
+        if (!accountContext.email) {
+          throw new Error("Email is required.");
+        }
+        if (!accountContext.phone) {
+          throw new Error("Phone is required.");
+        }
+
+        data.full_name = accountContext.fullName;
+        data.email = accountContext.email;
+        data.phone = accountContext.phone;
+        data.account_email = accountContext.email;
+        data.account_first_name = accountContext.firstName;
+        data.account_last_name = accountContext.lastName;
+        data.account_full_name = accountContext.fullName;
+        data.account_phone = accountContext.phone;
+        data.account_mode = accountContext.mode;
+        data.account_created_via_checkout = accountContext.accountCreated ? "true" : "false";
+        data.account_verified_session = accountContext.accountVerifiedSession ? "true" : "false";
+        data.account_password_captured = String(Boolean(data.account_password));
+        delete data.account_password;
+        delete data.account_password_confirm;
+
+        localStorage.setItem(
+          accountStorageKey,
+          JSON.stringify({
+            email: accountContext.email,
+            first_name: accountContext.firstName,
+            last_name: accountContext.lastName,
+            phone: accountContext.phone,
+            ts: new Date().toISOString()
+          })
+        );
+
         const response = await fetch("/v1/web/forms/checkout", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Accept": "application/json"
+            "Accept": "application/json",
+            ...(accountContext.accessToken ? { "Authorization": `Bearer ${accountContext.accessToken}` } : {})
           },
           body: JSON.stringify({
             source_page: checkoutSourcePage,
@@ -1106,13 +1446,18 @@
         localStorage.removeItem(storageKey);
         if (paymentOption === "apple_pay") {
           setToast(`Order received. Reference #${payload.submission_id}. Redirecting to secure payment page...`, "success");
-          await startApplePayCheckout(data, payload.submission_id);
+          await startApplePayCheckout(data, payload.submission_id, accountContext.accessToken, accountContext);
           return;
         }
 
         const paymentStatus = "Zelle payment selected to mc2019llc@gmail.com.";
         setToast(`Order received. Reference #${payload.submission_id}. ${paymentStatus}`, "success");
         form.reset();
+        if (accountModeField) {
+          accountModeField.value = "create";
+          setAccountModeUi();
+        }
+        prefillAccountFields();
         offerDisplay.textContent = "Hollywood Sports offer campaign";
         offerField.value = "Hollywood Sports offer campaign";
         offerCodeField.value = "hsp-campaign";
@@ -1121,7 +1466,10 @@
         hidePassPanel();
       } catch (error) {
         const existing = JSON.parse(localStorage.getItem(storageKey) || "[]");
-        existing.push({ ...data, ts: new Date().toISOString() });
+        const backupData = { ...data };
+        delete backupData.account_password;
+        delete backupData.account_password_confirm;
+        existing.push({ ...backupData, ts: new Date().toISOString() });
         localStorage.setItem(storageKey, JSON.stringify(existing));
         setToast(`${String(error && error.message ? error.message : "Checkout request failed.")} Saved locally as fallback.`, "error");
       } finally {
@@ -1146,6 +1494,7 @@
       try {
         const receipt = await loadCheckoutPassReceipt(sessionId);
         renderPassPanel(receipt);
+        scrollToPassPanel();
         setToast("Payment complete. Your pass is ready below and emailed to you.", "success");
       } catch (error) {
         setToast(String(error && error.message ? error.message : "Could not load pass details right now."), "error");

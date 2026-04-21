@@ -353,21 +353,9 @@ def list_offers(
     if not offers:
         return []
 
-    # Strict geo-radius filtering:
-    # when caller provides lat/lon, only include offers within the consumer's
-    # configured alert radius. This keeps discovery aligned with the user's
-    # nearby preference instead of merely ranking by proximity.
-    if latitude is not None and longitude is not None and current_user.alert_radius_miles > 0:
-        in_radius: list[Offer] = []
-        for offer in offers:
-            offer_lat, offer_lon = _offer_coordinates(offer)
-            if offer_lat is None or offer_lon is None:
-                continue
-            if _haversine_miles(latitude, longitude, offer_lat, offer_lon) <= float(current_user.alert_radius_miles):
-                in_radius.append(offer)
-        offers = in_radius
-        if not offers:
-            return []
+    # Keep offer inventory consistent for signed-in consumer surfaces.
+    # We still use geo inputs for ranking (nearby first), nearby alerts, and
+    # badges, but we do not hard-filter out non-local offers here.
 
     offer_ids = [offer.id for offer in offers]
     activation_counts_rows = db.execute(
