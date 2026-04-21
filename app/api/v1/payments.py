@@ -61,6 +61,10 @@ class OfferPricing:
 
 
 _HSP_PRICING: dict[str, OfferPricing] = {
+    "$1 mini test pass (live qa)": OfferPricing(
+        label="$1 Mini Test Pass (Live QA)",
+        unit_amount_cents=100,
+    ),
     "$5 admission promo (save $60+)": OfferPricing(
         label="$5 Admission Promo",
         unit_amount_cents=500,

@@ -290,7 +290,7 @@
   <section class="section">
     <div class="container">
       <h2 class="h2">Offer lineup</h2>
-      <p class="hspMuted">Two live offers are active in this campaign: the $70 bundle and the $5 promo. Choose either offer to continue to checkout.</p>
+      <p class="hspMuted">Three live options are active in this campaign: the $70 bundle, the $5 promo, and a $1 mini test pass for live QA checkout verification.</p>
 
       <div class="hspOfferGrid">
         <article class="hspOfferCard">
@@ -330,6 +330,25 @@
             </div>
           </div>
         </article>
+
+        <article class="hspOfferCard">
+          <div class="hspOfferBody">
+            <div class="hspOfferEyebrow">
+              <span class="pill">$1 mini</span>
+              <span class="rating">Live QA</span>
+            </div>
+            <h3 class="h3">$1 Mini Test Pass (Live QA)</h3>
+            <p class="reviewLead">Low-cost live checkout option to validate payment, pass issuance, QR rendering, and wallet handoff in production.</p>
+            <ul class="hspOfferList">
+              <li><strong>Use case:</strong> end-to-end production testing with real payment rails.</li>
+              <li><strong>Flow:</strong> Stripe checkout, pass generation, and operator scan all remain active.</li>
+              <li><strong>Note:</strong> intended for platform QA and operational testing.</li>
+            </ul>
+            <div class="hspOfferActions" style="margin-top:14px">
+              <button class="btn primary" type="button" data-hsp-checkout-trigger data-offer-label="$1 Mini Test Pass (Live QA)" data-offer-code="hsp-one-dollar-mini">Buy now</button>
+            </div>
+          </div>
+        </article>
       </div>
     </div>
   </section>
@@ -359,6 +378,7 @@
             <span>Offer package</span>
             <select name="offer_choice" data-hsp-offer-choice required>
               <option value="">Select offer package</option>
+              <option value="$1 Mini Test Pass (Live QA)">$1 Mini Test Pass (Live QA)</option>
               <option value="$70 Bundle (12 park passes, $500+ value)">$70 Bundle (12 park passes, $500+ value)</option>
               <option value="$5 Admission Promo (Save $60+)">$5 Admission Promo (Save $60+)</option>
             </select>
@@ -866,6 +886,7 @@
     const checkoutSourcePage = "/white/hollywood-sports";
     const triggers = document.querySelectorAll("[data-hsp-checkout-trigger]");
     const offerChoiceByCode = {
+      "hsp-one-dollar-mini": "$1 Mini Test Pass (Live QA)",
       "hsp-five-dollar": "$5 Admission Promo (Save $60+)",
       "hsp-seventy-bundle": "$70 Bundle (12 park passes, $500+ value)",
       "hsp-park-pass": "$70 Bundle (12 park passes, $500+ value)",
@@ -985,6 +1006,8 @@
       const byCode = offerChoiceByCode[(offerCode || "").trim().toLowerCase()];
       if (typeof byCode === "string") return byCode;
       const label = String(offerLabel || "").toLowerCase();
+      if (label.includes("$1")) return "$1 Mini Test Pass (Live QA)";
+      if (label.includes("mini test")) return "$1 Mini Test Pass (Live QA)";
       if (label.includes("$5")) return "$5 Admission Promo (Save $60+)";
       if (label.includes("$70")) return "$70 Bundle (12 park passes, $500+ value)";
       if (label.includes("golden")) return "$70 Bundle (12 park passes, $500+ value)";
@@ -1052,7 +1075,7 @@
         return;
       }
       if (!String(data.offer_choice || "").trim()) {
-        setToast("Choose either the $5 promo or the $70 bundle.", "error");
+        setToast("Choose an offer package ($1 mini, $5 promo, or $70 bundle).", "error");
         return;
       }
       if (!String(data.selected_park || "").trim()) {
