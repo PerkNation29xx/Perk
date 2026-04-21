@@ -952,6 +952,11 @@
       window.requestAnimationFrame(() => {
         passPanel.scrollIntoView({ behavior: "smooth", block: "start" });
       });
+      window.setTimeout(() => {
+        if (passPanel && !passPanel.hidden) {
+          passPanel.scrollIntoView({ behavior: "auto", block: "start" });
+        }
+      }, 320);
     };
 
     const readJsonResponse = async (response) => {
