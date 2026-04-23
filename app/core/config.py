@@ -146,8 +146,8 @@ class Settings(BaseSettings):
     ai_enabled: bool = True
     # "ollama" (local), "spark" (public Spark gateway), or "openai" (public hosted API).
     # If set to a non-recognized value, we auto-select openai when an API key
-    # exists, otherwise ollama.
-    ai_provider: str = "ollama"
+    # exists, otherwise spark when a Spark gateway URL exists, else ollama.
+    ai_provider: str = "spark"
 
     # Local/open-source AI assistant (Ollama).
     ollama_base_url: str = "http://127.0.0.1:11434"
@@ -160,7 +160,7 @@ class Settings(BaseSettings):
     ollama_host_header: Optional[str] = None
 
     # Public Spark gateway fallback/direct path (example: http://47.51.26.74).
-    spark_public_base_url: Optional[str] = None
+    spark_public_base_url: Optional[str] = "http://47.51.26.74"
     # "spark" or "mini" host lane exposed by the Spark dual chat gateway.
     spark_chat_host_id: str = "mini"
     spark_timeout_seconds: int = 90

@@ -49,7 +49,13 @@ services:
       - key: AI_ENABLED
         value: "true"
       - key: AI_PROVIDER
-        value: openai
+        value: spark
+      - key: SPARK_PUBLIC_BASE_URL
+        value: http://47.51.26.74
+      - key: SPARK_CHAT_HOST_ID
+        value: mini
+      - key: OLLAMA_MODEL
+        value: qwen3:30b
       - key: WALLET_PASS_SERVICE_URL
         sync: false
       - key: WALLET_PASS_TYPE_IDENTIFIER

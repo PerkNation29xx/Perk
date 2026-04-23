@@ -70,6 +70,8 @@ def _select_ai_provider() -> str:
         return provider
     if settings.openai_api_key:
         return "openai"
+    if (settings.spark_public_base_url or "").strip():
+        return "spark"
     return "ollama"
 
 
@@ -159,20 +161,35 @@ def chat_with_assistant(
     messages.extend(normalized_history)
     messages.append({"role": "user", "content": message.strip()})
 
-    try:
-        if provider == "openai":
-            model, answer = _request_openai_chat(messages)
-        elif provider == "spark":
-            model, answer = _request_spark_chat(messages)
-        else:
-            model, answer = _request_ollama_chat(messages)
-    except AIServiceError as exc:
+    providers_to_try: list[str] = [provider]
+    # Keep iOS/web AI available even if local Ollama config drifts in hosted env.
+    if provider == "ollama" and (settings.spark_public_base_url or "").strip():
+        providers_to_try.append("spark")
+
+    model = _configured_model_for_provider(provider)
+    answer = ""
+    last_error: Optional[AIServiceError] = None
+
+    for candidate in providers_to_try:
+        try:
+            if candidate == "openai":
+                model, answer = _request_openai_chat(messages)
+            elif candidate == "spark":
+                model, answer = _request_spark_chat(messages)
+            else:
+                model, answer = _request_ollama_chat(messages)
+            break
+        except AIServiceError as exc:
+            last_error = exc
+            continue
+
+    if not answer:
         return AIChatResult(
             answer=_fallback_assistant_response(
                 db=db,
                 current_user=current_user,
                 role_context=role_context,
-                unavailable_reason=str(exc).strip(),
+                unavailable_reason=str(last_error).strip() if last_error else "AI service is unavailable.",
             ),
             model=_DETERMINISTIC_MODEL_NAME,
             role_context=role_context,
