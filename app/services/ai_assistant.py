@@ -66,7 +66,7 @@ def resolve_context(user_role: Optional[UserRole], requested_context: Optional[s
 
 def _select_ai_provider() -> str:
     provider = (settings.ai_provider or "").strip().lower()
-    if provider in {"ollama", "openai"}:
+    if provider in {"ollama", "openai", "spark"}:
         return provider
     if settings.openai_api_key:
         return "openai"
@@ -76,6 +76,8 @@ def _select_ai_provider() -> str:
 def _configured_model_for_provider(provider: str) -> str:
     if provider == "openai":
         return settings.openai_model
+    if provider == "spark":
+        return settings.ollama_model
     return settings.ollama_model
 
 
@@ -160,6 +162,8 @@ def chat_with_assistant(
     try:
         if provider == "openai":
             model, answer = _request_openai_chat(messages)
+        elif provider == "spark":
+            model, answer = _request_spark_chat(messages)
         else:
             model, answer = _request_ollama_chat(messages)
     except AIServiceError as exc:
@@ -195,14 +199,25 @@ def _request_ollama_chat(messages: list[dict[str, str]]) -> tuple[str, str]:
 
     endpoint = settings.ollama_base_url.rstrip("/") + "/api/chat"
     payload = json.dumps(body).encode("utf-8")
+    headers = {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+    }
+    ollama_api_key = (settings.ollama_api_key or "").strip()
+    if ollama_api_key:
+        headers["X-API-Key"] = ollama_api_key
+    ollama_bypass_token = (settings.ollama_bypass_token or "").strip()
+    if ollama_bypass_token:
+        headers["X-Gateway-Bypass-Token"] = ollama_bypass_token
+    ollama_host_header = (settings.ollama_host_header or "").strip()
+    if ollama_host_header:
+        headers["Host"] = ollama_host_header
+
     req = request.Request(
         endpoint,
         data=payload,
         method="POST",
-        headers={
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-        },
+        headers=headers,
     )
 
     try:
@@ -213,7 +228,7 @@ def _request_ollama_chat(messages: list[dict[str, str]]) -> tuple[str, str]:
         raise AIServiceError(f"AI request failed ({exc.code}). {detail}".strip()) from exc
     except error.URLError as exc:
         raise AIServiceError(
-            "AI service is unreachable. Confirm Ollama is running on the backend host."
+            "AI service is unreachable. Confirm Ollama (or gateway) is reachable from the backend host."
         ) from exc
     except TimeoutError as exc:
         raise AIServiceError("AI request timed out. Try again in a few seconds.") from exc
@@ -230,6 +245,74 @@ def _request_ollama_chat(messages: list[dict[str, str]]) -> tuple[str, str]:
         answer = str(message_obj.get("content") or "").strip()
     if not answer:
         answer = str(envelope.get("response") or "").strip()
+    return model, answer
+
+
+def _request_spark_chat(messages: list[dict[str, str]]) -> tuple[str, str]:
+    base = (settings.spark_public_base_url or "").strip()
+    if not base:
+        raise AIServiceError(
+            "AI service is unreachable. SPARK_PUBLIC_BASE_URL is not configured on this backend."
+        )
+
+    host_id = (settings.spark_chat_host_id or "mini").strip().lower()
+    if host_id not in {"spark", "mini"}:
+        host_id = "mini"
+
+    body = {
+        "hostId": host_id,
+        "model": settings.ollama_model,
+        "messages": messages,
+        "temperature": max(0.0, min(settings.ollama_temperature, 1.0)),
+        "maxTokens": 900,
+    }
+    endpoint = base.rstrip("/") + "/api/chat"
+    payload = json.dumps(body).encode("utf-8")
+    req = request.Request(
+        endpoint,
+        data=payload,
+        method="POST",
+        headers={
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+        },
+    )
+
+    try:
+        with request.urlopen(req, timeout=max(5, int(settings.spark_timeout_seconds))) as resp:
+            raw = resp.read().decode("utf-8")
+    except error.HTTPError as exc:
+        detail = exc.read().decode("utf-8", errors="ignore")
+        raise AIServiceError(f"Spark gateway request failed ({exc.code}). {detail}".strip()) from exc
+    except error.URLError as exc:
+        raise AIServiceError("Spark gateway is unreachable from the backend host.") from exc
+    except TimeoutError as exc:
+        raise AIServiceError("Spark gateway request timed out. Try again in a few seconds.") from exc
+
+    try:
+        envelope = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise AIServiceError("Spark gateway returned invalid JSON.") from exc
+
+    model = str(envelope.get("model") or settings.ollama_model)
+    answer = str(envelope.get("content") or "").strip()
+    if not answer:
+        answer = str(envelope.get("rawContent") or "").strip()
+
+    if not answer:
+        raw_obj = envelope.get("raw")
+        if isinstance(raw_obj, dict):
+            choices = raw_obj.get("choices")
+            if isinstance(choices, list) and choices:
+                message_obj = choices[0].get("message")
+                if isinstance(message_obj, dict):
+                    answer = str(message_obj.get("content") or "").strip()
+                    if not answer:
+                        answer = str(message_obj.get("reasoning") or "").strip()
+
+    if not answer:
+        raise AIServiceError("Spark gateway returned an empty response.")
+
     return model, answer
 
 
