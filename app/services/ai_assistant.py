@@ -114,14 +114,16 @@ def chat_with_assistant(
             role_context=role_context,
         )
 
-    # Deterministic read/query hooks for live account data.
+    # Live data query hooks. When AI is enabled, we inject this as context so
+    # the model can keep a natural multi-turn conversation instead of returning
+    # a single deterministic block response.
     query_result = _execute_live_query_if_requested(
         db=db,
         current_user=current_user,
         role_context=role_context,
         message=message,
     )
-    if query_result:
+    if query_result and not settings.ai_enabled:
         return AIChatResult(
             answer=query_result,
             model=_configured_model_for_provider(provider),
@@ -142,21 +144,40 @@ def chat_with_assistant(
 
     system_prompt = _system_prompt_for_context(role_context)
     normalized_history = _normalize_history(history or [])
+    include_live_context = _should_include_live_context(
+        message=message,
+        role_context=role_context,
+        query_result=query_result,
+    )
 
     messages: list[dict[str, str]] = [{"role": "system", "content": system_prompt}]
 
-    snapshot = _build_live_snapshot(db=db, current_user=current_user, role_context=role_context)
-    if snapshot:
-        messages.append(
-            {
-                "role": "system",
-                "content": (
-                    "LIVE ACCOUNT DATA (authoritative):\n"
-                    f"{snapshot}\n\n"
-                    "Use this live data directly when answering account/balance/offer questions."
-                ),
-            }
-        )
+    if include_live_context:
+        snapshot = _build_live_snapshot(db=db, current_user=current_user, role_context=role_context)
+        if snapshot:
+            messages.append(
+                {
+                    "role": "system",
+                    "content": (
+                        "LIVE ACCOUNT DATA (authoritative):\n"
+                        f"{snapshot}\n\n"
+                        "Use this live data directly when answering account/balance/offer questions."
+                    ),
+                }
+            )
+
+        if query_result:
+            messages.append(
+                {
+                    "role": "system",
+                    "content": (
+                        "LIVE QUERY RESULT (authoritative):\n"
+                        f"{query_result}\n\n"
+                        "Use this to answer naturally in conversation. "
+                        "Do not repeat raw blocks unless the user asks for full details."
+                    ),
+                }
+            )
 
     messages.extend(normalized_history)
     messages.append({"role": "user", "content": message.strip()})
@@ -405,7 +426,8 @@ def _extract_openai_answer(envelope: dict) -> str:
 
 def _normalize_history(history: list[dict[str, str]]) -> list[dict[str, str]]:
     items: list[dict[str, str]] = []
-    for item in history[-12:]:
+    # Preserve a deeper conversational window for natural multi-turn chats.
+    for item in history[-40:]:
         role = str(item.get("role") or "").strip().lower()
         if role not in {"user", "assistant"}:
             continue
@@ -414,8 +436,8 @@ def _normalize_history(history: list[dict[str, str]]) -> list[dict[str, str]]:
         if not content:
             continue
 
-        if len(content) > 1500:
-            content = content[:1500]
+        if len(content) > 3000:
+            content = content[:3000]
 
         items.append({"role": role, "content": content})
     return items
@@ -426,24 +448,25 @@ def _system_prompt_for_context(role_context: str) -> str:
         "You are PerkNation AI assistant. Be concise, practical, and accurate. "
         "Never request passwords, one-time codes, or private keys. "
         "If LIVE ACCOUNT DATA is included, use it as source of truth. "
-        "If policy/financial/legal advice is requested, provide general guidance and suggest contacting a qualified professional."
+        "If policy/financial/legal advice is requested, provide general guidance and suggest contacting a qualified professional. "
+        "You can have natural, open-ended conversations on general topics."
     )
 
     if role_context == "merchant":
         return (
-            f"{shared} Focus on merchant operations: offers, locations, activations, transactions, and growth tactics. "
+            f"{shared} Prioritize merchant operations when asked: offers, locations, activations, transactions, and growth tactics. "
             "Use numbered steps when giving operational instructions."
         )
 
     if role_context == "admin":
         return (
-            f"{shared} Focus on admin operations: approvals, disputes, fraud/risk, analytics, and governance. "
+            f"{shared} Prioritize admin operations when asked: approvals, disputes, fraud/risk, analytics, and governance. "
             "Prefer measurable recommendations and mention tradeoffs."
         )
 
     if role_context == "consumer":
         return (
-            f"{shared} Focus on consumer experience: nearby offers, wallet, rewards, referrals, and profile preferences. "
+            f"{shared} Prioritize consumer experience when asked: nearby offers, wallet, rewards, referrals, and profile preferences. "
             "If user asks to redeem/settle, require explicit phrase 'confirm redeem' or 'confirm settle'."
         )
 
@@ -994,3 +1017,81 @@ def _normalize_user_text(text: str) -> str:
 
 def _contains_any(text: str, patterns: tuple[str, ...]) -> bool:
     return any(pattern in text for pattern in patterns)
+
+
+def _should_include_live_context(
+    *,
+    message: str,
+    role_context: str,
+    query_result: Optional[str],
+) -> bool:
+    if query_result:
+        return True
+
+    text = _normalize_user_text(message)
+    if not text:
+        return False
+
+    if role_context == "consumer":
+        return _contains_any(
+            text,
+            (
+                "my ",
+                "account",
+                "wallet",
+                "balance",
+                "offer",
+                "offers",
+                "promo",
+                "promotion",
+                "deal",
+                "deals",
+                "reward",
+                "rewards",
+                "transaction",
+                "transactions",
+                "referral",
+                "profile",
+                "settings",
+            ),
+        )
+
+    if role_context == "merchant":
+        return _contains_any(
+            text,
+            (
+                "merchant",
+                "offer",
+                "offers",
+                "location",
+                "locations",
+                "activation",
+                "activations",
+                "transaction",
+                "transactions",
+                "volume",
+                "kpi",
+                "analytics",
+            ),
+        )
+
+    if role_context == "admin":
+        return _contains_any(
+            text,
+            (
+                "admin",
+                "approval",
+                "approvals",
+                "dispute",
+                "disputes",
+                "ticket",
+                "tickets",
+                "risk",
+                "fraud",
+                "analytics",
+                "users",
+                "orders",
+            ),
+        )
+
+    return False
