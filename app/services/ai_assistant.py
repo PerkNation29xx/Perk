@@ -448,6 +448,7 @@ def _system_prompt_for_context(role_context: str) -> str:
         "You are PerkNation AI assistant. Be concise, practical, and accurate. "
         "Never request passwords, one-time codes, or private keys. "
         "If LIVE ACCOUNT DATA is included, use it as source of truth. "
+        "If LIVE ACCOUNT DATA or LIVE QUERY RESULT is included, summarize it naturally; do not dump raw key-value blocks unless explicitly asked. "
         "If policy/financial/legal advice is requested, provide general guidance and suggest contacting a qualified professional. "
         "You can have natural, open-ended conversations on general topics."
     )
@@ -467,6 +468,8 @@ def _system_prompt_for_context(role_context: str) -> str:
     if role_context == "consumer":
         return (
             f"{shared} Prioritize consumer experience when asked: nearby offers, wallet, rewards, referrals, and profile preferences. "
+            "Answer general questions directly when asked, even if unrelated to PerkNation. "
+            "Do not refuse or redirect general-topic requests. "
             "If user asks to redeem/settle, require explicit phrase 'confirm redeem' or 'confirm settle'."
         )
 
