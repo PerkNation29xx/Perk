@@ -8,6 +8,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.db.models import RestaurantKnowledge
+from app.services.restaurant_vector_rag import semantic_search_restaurants
 
 
 @dataclass(frozen=True)
@@ -914,7 +915,7 @@ def build_ai_restaurant_context(db: Session, *, message: str, limit: int = 10) -
     neighborhood_hint = _infer_neighborhood_hint(message)
     cuisine_hint = _infer_cuisine_hint(message)
 
-    matches = search_restaurants(
+    lexical_matches = search_restaurants(
         db,
         query=message,
         city_hint=city_hint,
@@ -922,6 +923,37 @@ def build_ai_restaurant_context(db: Session, *, message: str, limit: int = 10) -
         cuisine_hint=cuisine_hint,
         limit=limit,
     )
+    try:
+        semantic_matches = semantic_search_restaurants(
+            db,
+            query=message,
+            limit=limit,
+        )
+    except Exception:
+        semantic_matches = []
+
+    semantic_similarity_by_id: dict[int, float] = {}
+    ordered: list[RestaurantKnowledge] = []
+    seen: set[int] = set()
+    for match in semantic_matches:
+        rid = int(match.restaurant.id)
+        semantic_similarity_by_id[rid] = max(
+            semantic_similarity_by_id.get(rid, 0.0),
+            float(match.similarity or 0.0),
+        )
+        if rid in seen:
+            continue
+        ordered.append(match.restaurant)
+        seen.add(rid)
+
+    for row in lexical_matches:
+        rid = int(row.id)
+        if rid in seen:
+            continue
+        ordered.append(row)
+        seen.add(rid)
+
+    matches = ordered[:limit]
     if not matches:
         return ""
 
@@ -940,9 +972,14 @@ def build_ai_restaurant_context(db: Session, *, message: str, limit: int = 10) -
             if parts:
                 highlight_text = "; highlights=" + ", ".join(parts[:3])
 
+        semantic_note = ""
+        similarity = semantic_similarity_by_id.get(int(row.id))
+        if similarity is not None:
+            semantic_note = f"; semantic_similarity={float(similarity):.3f}"
+
         lines.append(
             f"- {row.name} | location={location} | cuisine={row.cuisine} | price={price} | "
-            f"summary={row.summary}{highlight_text}"
+            f"summary={row.summary}{highlight_text}{semantic_note}"
         )
 
     lines.append(

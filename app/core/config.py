@@ -173,6 +173,25 @@ class Settings(BaseSettings):
     openai_timeout_seconds: int = 60
     openai_temperature: float = 0.2
 
+    # Restaurant/local-discovery vector RAG (Phase 2).
+    # Uses pgvector when available on Postgres and JSON-vector fallback otherwise.
+    rag_embeddings_enabled: bool = True
+    rag_auto_embed_restaurants: bool = True
+    # "auto" picks openai when OPENAI_API_KEY exists, else ollama.
+    rag_embedding_provider: str = "auto"  # "auto" | "openai" | "ollama"
+    rag_embedding_dimensions: int = 1536
+    rag_embedding_timeout_seconds: int = 8
+    rag_embedding_batch_size: int = 32
+    rag_semantic_weight: float = 6.5
+    rag_semantic_min_similarity: float = 0.12
+
+    # OpenAI embedding model defaults.
+    rag_openai_embedding_model: str = "text-embedding-3-small"
+
+    # Ollama embedding model defaults.
+    rag_ollama_embedding_base_url: str = "http://127.0.0.1:11434"
+    rag_ollama_embedding_model: str = "nomic-embed-text"
+
     # Private message-box allowlist (owner/operator channels).
     owner_admin_message_email: str = "billy@neonflux.net"
     owner_ios_message_email: str = "billynavidad@icloud.com"
