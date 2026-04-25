@@ -96,6 +96,7 @@ class Settings(BaseSettings):
     wallet_hq_wwdr_certificate_pem: Optional[str] = None
 
     seed_default_data: bool = True
+    seed_restaurant_knowledge_data: bool = True
     email_verification_code_ttl_minutes: int = 30
     dev_expose_email_verification_code: bool = False
 

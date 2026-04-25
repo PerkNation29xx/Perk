@@ -11,6 +11,7 @@ from app.core.config import settings
 from app.db.base import Base
 from app.db.migrate import run_migrations
 from app.db.session import SessionLocal, engine
+from app.services.la_restaurant_knowledge import seed_la_restaurant_knowledge
 from app.services.seed import seed_if_empty
 
 # Import models so SQLAlchemy metadata includes all tables.
@@ -27,9 +28,12 @@ async def lifespan(app: FastAPI):
         Base.metadata.create_all(bind=engine)
         run_migrations(engine)
 
-        if settings.seed_default_data:
+        if settings.seed_default_data or settings.seed_restaurant_knowledge_data:
             with SessionLocal() as db:
-                seed_if_empty(db)
+                if settings.seed_default_data:
+                    seed_if_empty(db)
+                if settings.seed_restaurant_knowledge_data:
+                    seed_la_restaurant_knowledge(db)
         app.state.db_ready = True
     except Exception as exc:  # noqa: BLE001
         # Keep web/API process healthy for platform health checks even if DB is

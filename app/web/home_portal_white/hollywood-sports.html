@@ -824,6 +824,7 @@
     const input = form.querySelector("textarea");
     const submit = form.querySelector('button[type="submit"]');
     const promptButtons = document.querySelectorAll("[data-hsp-prompt]");
+    const conversation = [];
 
     const appendMessage = (role, text) => {
       const bubble = document.createElement("div");
@@ -831,10 +832,29 @@
       bubble.textContent = text;
       messages.appendChild(bubble);
       messages.scrollTop = messages.scrollHeight;
+      conversation.push({ role, text: String(text || "") });
     };
 
-    const buildReply = (message) => {
-      const text = message.toLowerCase();
+    messages.querySelectorAll(".hspChatMessage").forEach((node) => {
+      const role = node.classList.contains("user") ? "user" : "assistant";
+      const text = String(node.textContent || "").trim();
+      if (text) {
+        conversation.push({ role, text });
+      }
+    });
+
+    const readJson = async (response) => {
+      const raw = await response.text();
+      if (!raw) return {};
+      try {
+        return JSON.parse(raw);
+      } catch (_err) {
+        return {};
+      }
+    };
+
+    const fallbackReply = (message) => {
+      const text = String(message || "").toLowerCase();
       if (/(which|what|where).*(park|location)|park.*(list|take|accept)|all five/.test(text)) {
         return "The $5 admission promo is valid at all five participating parks: Hollywood Sports in Bellflower, SC Village in Chino, Giant Paintball in Lakeside, Combat Paintball in Castaic, and Giant Party Sports in Allen.";
       }
@@ -856,6 +876,36 @@
       return "I can help with the five participating parks, the $5 admission promo, the $70 bundle, blackout dates, private-group rules, or the best next step before checkout.";
     };
 
+    const fetchAiReply = async (prompt) => {
+      const history = conversation
+        .slice(-10)
+        .map((entry) => ({
+          role: String(entry.role || "").toLowerCase() === "user" ? "user" : "assistant",
+          content: String(entry.text || "").slice(0, 1500),
+        }));
+      const response = await fetch("/v1/ai/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({
+          message: String(prompt || "").slice(0, 2000),
+          context: "public",
+          history,
+        }),
+      });
+      const body = await readJson(response);
+      if (!response.ok) {
+        const detail = body.detail || body.message || `AI request failed (${response.status})`;
+        throw new Error(detail);
+      }
+      return {
+        answer: String(body.answer || "").trim() || "No response.",
+        model: String(body.model || "").trim(),
+      };
+    };
+
     const sendMessage = async (message) => {
       const trimmed = message.trim();
       if (!trimmed) return;
@@ -864,13 +914,21 @@
       input.value = "";
       input.focus();
       submit.disabled = true;
-      status.textContent = "Looking up the offer details...";
+      status.textContent = "Thinking...";
 
-      window.setTimeout(() => {
-        appendMessage("assistant", buildReply(trimmed));
-        status.textContent = "Answered by the Perk Nation offer assistant.";
+      try {
+        const ai = await fetchAiReply(trimmed);
+        appendMessage("assistant", ai.answer);
+        status.textContent = ai.model
+          ? `Answered by AI model: ${ai.model}.`
+          : "Answered by the Perk Nation AI assistant.";
+      } catch (err) {
+        appendMessage("assistant", fallbackReply(trimmed));
+        const reason = (err && err.message) ? String(err.message) : "temporary AI error";
+        status.textContent = `AI unavailable (${reason}); returned campaign guidance.`;
+      } finally {
         submit.disabled = false;
-      }, 280);
+      }
     };
 
     form.addEventListener("submit", async (event) => {

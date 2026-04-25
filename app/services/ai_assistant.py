@@ -26,6 +26,7 @@ from app.db.models import (
     UserRole,
 )
 from app.services.audit import log_action
+from app.services.la_restaurant_knowledge import build_ai_restaurant_context, is_restaurant_discovery_query
 
 
 class AIServiceError(RuntimeError):
@@ -149,6 +150,7 @@ def chat_with_assistant(
         role_context=role_context,
         query_result=query_result,
     )
+    include_restaurant_context = db is not None and is_restaurant_discovery_query(message)
 
     messages: list[dict[str, str]] = [{"role": "system", "content": system_prompt}]
 
@@ -175,6 +177,21 @@ def chat_with_assistant(
                         f"{query_result}\n\n"
                         "Use this to answer naturally in conversation. "
                         "Do not repeat raw blocks unless the user asks for full details."
+                    ),
+                }
+            )
+
+    if include_restaurant_context and db is not None:
+        restaurant_context = build_ai_restaurant_context(db, message=message, limit=10)
+        if restaurant_context:
+            messages.append(
+                {
+                    "role": "system",
+                    "content": (
+                        f"{restaurant_context}\n\n"
+                        "Use this context to answer restaurant discovery questions naturally. "
+                        "If user asks for recommendations, suggest top matches and ask one focused "
+                        "follow-up question (neighborhood, cuisine, budget, or vibe)."
                     ),
                 }
             )

@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from decimal import Decimal
 from typing import Optional
 
-from sqlalchemy import DateTime, Enum, ForeignKey, Numeric, String, Text, UniqueConstraint
+from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, Numeric, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
@@ -241,6 +241,29 @@ class Location(Base):
 
     merchant: Mapped[MerchantProfile] = relationship(back_populates="locations")
     offers: Mapped[list["Offer"]] = relationship(back_populates="location")
+
+
+class RestaurantKnowledge(Base):
+    __tablename__ = "restaurant_knowledge"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    slug: Mapped[str] = mapped_column(String(160), unique=True, index=True)
+    name: Mapped[str] = mapped_column(String(180), index=True)
+    city: Mapped[str] = mapped_column(String(80), index=True)
+    neighborhood: Mapped[Optional[str]] = mapped_column(String(120), nullable=True, index=True)
+    cuisine: Mapped[str] = mapped_column(String(120), index=True)
+    price_tier: Mapped[Optional[str]] = mapped_column(String(16), nullable=True)
+    address: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    latitude: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 7), nullable=True)
+    longitude: Mapped[Optional[Decimal]] = mapped_column(Numeric(10, 7), nullable=True)
+    summary: Mapped[str] = mapped_column(Text)
+    highlights: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    website_url: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    source_label: Mapped[Optional[str]] = mapped_column(String(120), nullable=True)
+    source_url: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
 
 
 class Offer(Base):

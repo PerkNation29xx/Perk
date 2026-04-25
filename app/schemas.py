@@ -130,6 +130,30 @@ class LocationOut(BaseModel):
     status: str
 
 
+class RestaurantKnowledgeOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    slug: str
+    name: str
+    city: str
+    neighborhood: Optional[str] = None
+    cuisine: str
+    price_tier: Optional[str] = None
+    address: Optional[str] = None
+    latitude: Optional[Decimal] = None
+    longitude: Optional[Decimal] = None
+    summary: str
+    highlights: Optional[str] = None
+    website_url: Optional[str] = None
+
+
+class RestaurantKnowledgeSearchResponse(BaseModel):
+    query: str
+    count: int
+    results: list[RestaurantKnowledgeOut]
+
+
 class OfferCreate(BaseModel):
     title: str
     offer_type: str = "boost"
