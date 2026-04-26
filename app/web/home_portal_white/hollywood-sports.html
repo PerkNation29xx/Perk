@@ -66,6 +66,34 @@
     .hspCheckoutGrid .span2{grid-column:span 2}
     .hspCheckoutLabel{display:grid;gap:7px}
     .hspCheckoutLabel span{font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:#0f172a;font-weight:900}
+    .hspAccountModeSwitch{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+    .hspAccountModeBtn{
+      width:100%;
+      border-radius:999px;
+      border:1.5px solid rgba(30,41,59,.34);
+      background:#eef2ff;
+      color:#0f172a;
+      padding:10px 14px;
+      font:inherit;
+      font-weight:800;
+      cursor:pointer;
+      transition:all .16s ease;
+    }
+    .hspAccountModeBtn:hover{
+      border-color:rgba(37,99,235,.52);
+      background:#e2e8f0;
+    }
+    .hspAccountModeBtn.is-active{
+      background:#0f172a;
+      border-color:#0f172a;
+      color:#fff;
+      box-shadow:0 6px 14px rgba(15,23,42,.24);
+    }
+    .hspFieldError{
+      color:#b91c1c;
+      font-size:13px;
+      font-weight:700;
+    }
     .hspCheckoutLabel input,.hspCheckoutLabel select,.hspCheckoutLabel textarea{
       width:100%;
       border-radius:16px;
@@ -395,13 +423,14 @@
               <option value="Help me choose">Help me choose</option>
             </select>
           </label>
-          <label class="hspCheckoutLabel span2">
+          <div class="hspCheckoutLabel span2">
             <span>Account access</span>
-            <select name="account_mode" data-hsp-account-mode required>
-              <option value="create">Create account with this purchase</option>
-              <option value="login">I already have a PerkNation account</option>
-            </select>
-          </label>
+            <input type="hidden" name="account_mode" data-hsp-account-mode value="create" />
+            <div class="hspAccountModeSwitch" data-hsp-account-mode-switch role="group" aria-label="Account access">
+              <button type="button" class="hspAccountModeBtn is-active" data-hsp-account-mode-button="create" aria-pressed="true">Create account</button>
+              <button type="button" class="hspAccountModeBtn" data-hsp-account-mode-button="login" aria-pressed="false">Sign in</button>
+            </div>
+          </div>
           <label class="hspCheckoutLabel">
             <span>First name</span>
             <input type="text" name="account_first_name" autocomplete="given-name" data-hsp-first-name required />
@@ -418,14 +447,15 @@
             <span>Phone</span>
             <input type="tel" name="phone" autocomplete="tel" data-hsp-phone required />
           </label>
-          <label class="hspCheckoutLabel">
+          <label class="hspCheckoutLabel" data-hsp-password-row>
             <span>Password</span>
             <input type="password" name="account_password" autocomplete="current-password" minlength="8" data-hsp-password required />
           </label>
-          <label class="hspCheckoutLabel">
+          <label class="hspCheckoutLabel" data-hsp-password-confirm-row>
             <span>Confirm password</span>
             <input type="password" name="account_password_confirm" autocomplete="current-password" minlength="8" data-hsp-password-confirm required />
           </label>
+          <div class="small hspFieldError span2" data-hsp-password-mismatch hidden>Passwords do not match.</div>
           <div class="small hspMuted span2" data-hsp-account-hint>
             Create a PerkNation account during purchase so your pass is attached to your account automatically.
           </div>
@@ -963,13 +993,17 @@
     const toast = form.querySelector("[data-hsp-checkout-toast]");
     const passPanel = form.querySelector("[data-hsp-pass-panel]");
     const accountModeField = form.querySelector("[data-hsp-account-mode]");
+    const accountModeButtons = form.querySelectorAll("[data-hsp-account-mode-button]");
     const accountHint = form.querySelector("[data-hsp-account-hint]");
     const firstNameField = form.querySelector("[data-hsp-first-name]");
     const lastNameField = form.querySelector("[data-hsp-last-name]");
     const emailField = form.querySelector("[data-hsp-email]");
     const phoneField = form.querySelector("[data-hsp-phone]");
     const passwordField = form.querySelector("[data-hsp-password]");
+    const passwordRow = form.querySelector("[data-hsp-password-row]");
     const passwordConfirmField = form.querySelector("[data-hsp-password-confirm]");
+    const passwordConfirmRow = form.querySelector("[data-hsp-password-confirm-row]");
+    const passwordMismatchNode = form.querySelector("[data-hsp-password-mismatch]");
     const storageKey = "perknation_hsp_checkout_backup";
     const checkoutSourcePage = "/white/hollywood-sports";
     const triggers = document.querySelectorAll("[data-hsp-checkout-trigger]");
@@ -1111,6 +1145,40 @@
     const normalizeEmail = (raw) => String(raw || "").trim().toLowerCase();
     const normalizeText = (raw) => String(raw || "").trim();
 
+    const renderAccountModeButtons = (mode) => {
+      accountModeButtons.forEach((button) => {
+        const value = String(button.getAttribute("data-hsp-account-mode-button") || "").trim().toLowerCase();
+        const isActive = value === mode;
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", isActive ? "true" : "false");
+      });
+    };
+
+    const setPasswordMismatch = (message) => {
+      const text = String(message || "").trim();
+      if (passwordConfirmField) {
+        passwordConfirmField.setCustomValidity(text);
+      }
+      if (passwordMismatchNode) {
+        passwordMismatchNode.textContent = text || "Passwords do not match.";
+        passwordMismatchNode.hidden = !text;
+      }
+    };
+
+    const updatePasswordMismatchState = () => {
+      const mode = String(accountModeField?.value || "create").toLowerCase();
+      const isCreate = mode !== "login";
+      if (!isCreate) {
+        setPasswordMismatch("");
+        return true;
+      }
+      const password = String(passwordField?.value || "");
+      const confirm = String(passwordConfirmField?.value || "");
+      const mismatch = password.length > 0 && confirm.length > 0 && password !== confirm;
+      setPasswordMismatch(mismatch ? "Passwords do not match." : "");
+      return !mismatch;
+    };
+
     const setAccountModeUi = () => {
       const mode = String(accountModeField?.value || "create").toLowerCase();
       const isCreate = mode !== "login";
@@ -1118,10 +1186,25 @@
       if (firstNameField) firstNameField.required = isCreate;
       if (lastNameField) lastNameField.required = isCreate;
       if (phoneField) phoneField.required = isCreate;
+      if (passwordField) {
+        passwordField.autocomplete = isCreate ? "new-password" : "current-password";
+      }
+      if (passwordRow) {
+        passwordRow.hidden = false;
+      }
       if (passwordConfirmField) {
         passwordConfirmField.required = isCreate;
         passwordConfirmField.disabled = !isCreate;
+        if (!isCreate) {
+          passwordConfirmField.value = "";
+        }
       }
+      if (passwordConfirmRow) {
+        passwordConfirmRow.hidden = !isCreate;
+      }
+
+      renderAccountModeButtons(isCreate ? "create" : "login");
+      updatePasswordMismatchState();
 
       if (accountHint) {
         accountHint.textContent = isCreate
@@ -1410,8 +1493,21 @@
     }
 
     if (accountModeField) {
-      accountModeField.addEventListener("change", setAccountModeUi);
+      accountModeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const nextMode = String(button.getAttribute("data-hsp-account-mode-button") || "").trim().toLowerCase();
+          if (!nextMode || (nextMode !== "create" && nextMode !== "login")) return;
+          accountModeField.value = nextMode;
+          setAccountModeUi();
+        });
+      });
       setAccountModeUi();
+    }
+    if (passwordField) {
+      passwordField.addEventListener("input", updatePasswordMismatchState);
+    }
+    if (passwordConfirmField) {
+      passwordConfirmField.addEventListener("input", updatePasswordMismatchState);
     }
     prefillAccountFields();
 
@@ -1445,6 +1541,10 @@
       }
       if (!String(data.selected_offer || "").trim()) {
         setToast("Selected offer is required.", "error");
+        return;
+      }
+      if (!updatePasswordMismatchState()) {
+        setToast("Passwords do not match.", "error");
         return;
       }
 
