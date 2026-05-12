@@ -1025,6 +1025,7 @@
     };
     const accountStorageKey = "perknation_hsp_checkout_auth";
     let webConfigPromise = null;
+    let signedInSession = null;
 
     const setToast = (message, kind) => {
       if (!toast) return;
@@ -1151,6 +1152,121 @@
     const normalizePhone = (raw) => String(raw || "").trim();
     const normalizeEmail = (raw) => String(raw || "").trim().toLowerCase();
     const normalizeText = (raw) => String(raw || "").trim();
+    const splitFirstLast = (fullName) => {
+      const cleaned = normalizeText(fullName);
+      if (!cleaned) return { first: "", last: "" };
+      const parts = cleaned.split(/\s+/).filter(Boolean);
+      return {
+        first: parts[0] || "",
+        last: parts.slice(1).join(" ")
+      };
+    };
+    const clearSignedInSession = () => {
+      signedInSession = null;
+    };
+    const setSignedInSession = (session) => {
+      signedInSession = session && session.accessToken ? session : null;
+    };
+    const setAccountHintForMode = (isCreate) => {
+      if (!accountHint) return;
+      if (isCreate) {
+        accountHint.textContent = "Create your account now so this pass is automatically attached to your profile.";
+        return;
+      }
+      if (signedInSession && signedInSession.email) {
+        accountHint.textContent = `Signed in as ${signedInSession.email}. Continue with Buy now to complete checkout.`;
+        return;
+      }
+      accountHint.textContent = "Sign in with your existing account. Your purchase and pass will be added to it.";
+    };
+    const attemptInlineSignIn = async () => {
+      const email = normalizeEmail(emailField?.value || "");
+      const password = String(passwordField?.value || "");
+      if (!email) {
+        setToast("Enter your email to sign in.", "error");
+        return null;
+      }
+      if (!password) {
+        setToast("Enter your password to sign in.", "error");
+        return null;
+      }
+
+      accountModeButtons.forEach((button) => {
+        button.disabled = true;
+      });
+      setToast("Signing in...", "success");
+
+      try {
+        const envelope = await supabaseSignIn(email, password);
+        const accessToken = envelopeToAccessToken(envelope);
+        if (!accessToken) {
+          throw new Error("Sign-in succeeded but no session token was returned.");
+        }
+
+        let resolvedEmail = email;
+        let resolvedFullName = normalizeText([firstNameField?.value, lastNameField?.value].filter(Boolean).join(" "));
+        let resolvedPhone = normalizePhone(phoneField?.value || "");
+
+        try {
+          const meRes = await fetch("/v1/auth/me", {
+            headers: {
+              "Accept": "application/json",
+              "Authorization": `Bearer ${accessToken}`
+            }
+          });
+          if (meRes.ok) {
+            const me = await meRes.json();
+            resolvedEmail = normalizeEmail(me.email || resolvedEmail);
+            resolvedFullName = normalizeText(me.full_name || resolvedFullName);
+            resolvedPhone = normalizePhone(me.phone || resolvedPhone);
+          }
+        } catch (_error) {
+          // Best effort only.
+        }
+
+        if (!resolvedFullName) {
+          resolvedFullName = normalizeText((resolvedEmail.split("@")[0] || "PerkNation Member").replace(/[._-]+/g, " "));
+        }
+        const parts = splitFirstLast(resolvedFullName);
+        if (firstNameField && parts.first) firstNameField.value = parts.first;
+        if (lastNameField && parts.last) lastNameField.value = parts.last;
+        if (phoneField && resolvedPhone) phoneField.value = resolvedPhone;
+        if (emailField && resolvedEmail) emailField.value = resolvedEmail;
+
+        setSignedInSession({
+          email: resolvedEmail,
+          accessToken,
+          fullName: resolvedFullName,
+          firstName: parts.first,
+          lastName: parts.last,
+          phone: resolvedPhone
+        });
+
+        localStorage.setItem(
+          accountStorageKey,
+          JSON.stringify({
+            email: resolvedEmail,
+            first_name: parts.first,
+            last_name: parts.last,
+            phone: resolvedPhone,
+            ts: new Date().toISOString()
+          })
+        );
+
+        setAccountHintForMode(false);
+        setToast("Signed in. Continue with Buy now to complete checkout.", "success");
+        return signedInSession;
+      } catch (error) {
+        clearSignedInSession();
+        setAccountHintForMode(false);
+        setToast(String(error && error.message ? error.message : "Sign-in failed."), "error");
+        return null;
+      } finally {
+        accountModeButtons.forEach((button) => {
+          button.disabled = false;
+        });
+      }
+    };
 
     const renderAccountModeButtons = (mode) => {
       accountModeButtons.forEach((button) => {
@@ -1224,12 +1340,7 @@
 
       renderAccountModeButtons(isCreate ? "create" : "login");
       updatePasswordMismatchState();
-
-      if (accountHint) {
-        accountHint.textContent = isCreate
-          ? "Create your account now so this pass is automatically attached to your profile."
-          : "Sign in with your existing account. Your purchase and pass will be added to it.";
-      }
+      setAccountHintForMode(isCreate);
     };
 
     const prefillAccountFields = () => {
@@ -1273,9 +1384,18 @@
       let resolvedPhone = phone;
 
       if (mode === "login") {
-        const signInEnvelope = await supabaseSignIn(email, password);
-        accessToken = envelopeToAccessToken(signInEnvelope);
-        accountVerifiedSession = !!accessToken;
+        if (signedInSession && signedInSession.accessToken && signedInSession.email === email) {
+          accessToken = signedInSession.accessToken;
+          accountVerifiedSession = true;
+          resolvedFirstName = normalizeText(signedInSession.firstName || resolvedFirstName);
+          resolvedLastName = normalizeText(signedInSession.lastName || resolvedLastName);
+          resolvedFullName = normalizeText(signedInSession.fullName || resolvedFullName);
+          resolvedPhone = normalizePhone(signedInSession.phone || resolvedPhone);
+        } else {
+          const signInEnvelope = await supabaseSignIn(email, password);
+          accessToken = envelopeToAccessToken(signInEnvelope);
+          accountVerifiedSession = !!accessToken;
+        }
       } else {
         if (password.length < 8) {
           throw new Error("Password must be at least 8 characters.");
@@ -1353,6 +1473,20 @@
       }
       if (!resolvedFirstName) {
         resolvedFirstName = resolvedFullName.split(/\s+/)[0] || "PerkNation";
+      }
+
+      if (mode === "login" && accessToken) {
+        const normalizedSessionEmail = normalizeEmail(data.email || email);
+        const sessionName = normalizeText(resolvedFullName || fullNameFromFields);
+        const parts = splitFirstLast(sessionName || normalizedSessionEmail.split("@")[0]);
+        setSignedInSession({
+          email: normalizedSessionEmail,
+          accessToken,
+          fullName: sessionName || `${parts.first} ${parts.last}`.trim(),
+          firstName: parts.first,
+          lastName: parts.last,
+          phone: normalizePhone(resolvedPhone || phone)
+        });
       }
 
       return {
@@ -1513,20 +1647,47 @@
 
     if (accountModeField) {
       accountModeButtons.forEach((button) => {
-        button.addEventListener("click", () => {
+        button.addEventListener("click", async () => {
           const nextMode = String(button.getAttribute("data-hsp-account-mode-button") || "").trim().toLowerCase();
           if (!nextMode || (nextMode !== "create" && nextMode !== "login")) return;
+          const currentMode = String(accountModeField?.value || "create").trim().toLowerCase();
+          const wasActive = currentMode === nextMode;
           accountModeField.value = nextMode;
           setAccountModeUi();
+          if (nextMode === "create") {
+            clearSignedInSession();
+            return;
+          }
+          const hasCredentials = Boolean(normalizeEmail(emailField?.value || "")) || Boolean(String(passwordField?.value || ""));
+          if (wasActive || hasCredentials) {
+            await attemptInlineSignIn();
+          }
         });
       });
       setAccountModeUi();
     }
     if (passwordField) {
-      passwordField.addEventListener("input", updatePasswordMismatchState);
+      passwordField.addEventListener("input", () => {
+        clearSignedInSession();
+        updatePasswordMismatchState();
+        if (String(accountModeField?.value || "").toLowerCase() === "login") {
+          setAccountHintForMode(false);
+        }
+      });
     }
     if (passwordConfirmField) {
       passwordConfirmField.addEventListener("input", updatePasswordMismatchState);
+    }
+    if (emailField) {
+      emailField.addEventListener("input", () => {
+        const current = normalizeEmail(emailField.value || "");
+        if (signedInSession && current !== signedInSession.email) {
+          clearSignedInSession();
+        }
+        if (String(accountModeField?.value || "").toLowerCase() === "login") {
+          setAccountHintForMode(false);
+        }
+      });
     }
     prefillAccountFields();
 
