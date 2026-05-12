@@ -418,10 +418,10 @@
           </label>
           <div class="hspCheckoutLabel span2">
             <span>Account access</span>
-            <input type="hidden" name="account_mode" data-hsp-account-mode value="create" />
+            <input type="hidden" name="account_mode" data-hsp-account-mode value="login" />
             <div class="hspAccountModeSwitch" data-hsp-account-mode-switch role="group" aria-label="Account access">
-              <button type="button" class="hspAccountModeBtn is-active" data-hsp-account-mode-button="create" aria-pressed="true">Create account</button>
-              <button type="button" class="hspAccountModeBtn" data-hsp-account-mode-button="login" aria-pressed="false">Sign in</button>
+              <button type="button" class="hspAccountModeBtn" data-hsp-account-mode-button="create" aria-pressed="false">Create account</button>
+              <button type="button" class="hspAccountModeBtn is-active" data-hsp-account-mode-button="login" aria-pressed="true">Sign in</button>
             </div>
           </div>
           <label class="hspCheckoutLabel">
@@ -442,15 +442,15 @@
           </label>
           <label class="hspCheckoutLabel" data-hsp-password-row>
             <span>Password</span>
-            <input type="password" name="account_password" autocomplete="current-password" minlength="8" data-hsp-password required />
+            <input type="password" name="account_password" autocomplete="current-password" data-hsp-password required />
           </label>
-          <label class="hspCheckoutLabel" data-hsp-password-confirm-row>
+          <label class="hspCheckoutLabel" data-hsp-password-confirm-row hidden>
             <span>Confirm password</span>
-            <input type="password" name="account_password_confirm" autocomplete="current-password" minlength="8" data-hsp-password-confirm required />
+            <input type="password" name="account_password_confirm" autocomplete="new-password" data-hsp-password-confirm />
           </label>
           <div class="small hspFieldError span2" data-hsp-password-mismatch hidden>Passwords do not match.</div>
           <div class="small hspMuted span2" data-hsp-account-hint>
-            Create a PerkNation account during purchase so your pass is attached to your account automatically.
+            Sign in with your existing account. Your purchase and pass will be added to it.
           </div>
           <label class="hspCheckoutLabel">
             <span>Package quantity</span>
@@ -1237,9 +1237,6 @@
       if (!password) {
         throw new Error("Password is required.");
       }
-      if (password.length < 8) {
-        throw new Error("Password must be at least 8 characters.");
-      }
 
       let accessToken = "";
       let accountCreated = false;
@@ -1254,6 +1251,9 @@
         accessToken = envelopeToAccessToken(signInEnvelope);
         accountVerifiedSession = !!accessToken;
       } else {
+        if (password.length < 8) {
+          throw new Error("Password must be at least 8 characters.");
+        }
         if (!firstName || !lastName || !phone) {
           throw new Error("First name, last name, and phone are required to create an account.");
         }
