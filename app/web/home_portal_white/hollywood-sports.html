@@ -435,11 +435,11 @@
               <button type="button" class="hspAccountModeBtn is-active" data-hsp-account-mode-button="login" aria-pressed="true">Sign in</button>
             </div>
           </div>
-          <label class="hspCheckoutLabel">
+          <label class="hspCheckoutLabel" hidden>
             <span>First name</span>
             <input type="text" name="account_first_name" autocomplete="given-name" data-hsp-first-name required />
           </label>
-          <label class="hspCheckoutLabel">
+          <label class="hspCheckoutLabel" hidden>
             <span>Last name</span>
             <input type="text" name="account_last_name" autocomplete="family-name" data-hsp-last-name required />
           </label>
@@ -447,7 +447,7 @@
             <span>Email</span>
             <input type="email" name="email" autocomplete="email" data-hsp-email required />
           </label>
-          <label class="hspCheckoutLabel">
+          <label class="hspCheckoutLabel" hidden>
             <span>Phone</span>
             <input type="tel" name="phone" autocomplete="tel" data-hsp-phone required />
           </label>
@@ -1003,6 +1003,9 @@
     const lastNameField = form.querySelector("[data-hsp-last-name]");
     const emailField = form.querySelector("[data-hsp-email]");
     const phoneField = form.querySelector("[data-hsp-phone]");
+    const firstNameRow = firstNameField ? firstNameField.closest(".hspCheckoutLabel") : null;
+    const lastNameRow = lastNameField ? lastNameField.closest(".hspCheckoutLabel") : null;
+    const phoneRow = phoneField ? phoneField.closest(".hspCheckoutLabel") : null;
     const passwordField = form.querySelector("[data-hsp-password]");
     const passwordRow = form.querySelector("[data-hsp-password-row]");
     const passwordConfirmField = form.querySelector("[data-hsp-password-confirm]");
@@ -1187,9 +1190,21 @@
       const mode = String(accountModeField?.value || "create").toLowerCase();
       const isCreate = mode !== "login";
 
-      if (firstNameField) firstNameField.required = isCreate;
-      if (lastNameField) lastNameField.required = isCreate;
-      if (phoneField) phoneField.required = isCreate;
+      if (firstNameRow) firstNameRow.hidden = !isCreate;
+      if (lastNameRow) lastNameRow.hidden = !isCreate;
+      if (phoneRow) phoneRow.hidden = !isCreate;
+      if (firstNameField) {
+        firstNameField.required = isCreate;
+        firstNameField.disabled = !isCreate;
+      }
+      if (lastNameField) {
+        lastNameField.required = isCreate;
+        lastNameField.disabled = !isCreate;
+      }
+      if (phoneField) {
+        phoneField.required = isCreate;
+        phoneField.disabled = !isCreate;
+      }
       if (passwordField) {
         passwordField.autocomplete = isCreate ? "new-password" : "current-password";
       }
@@ -1568,9 +1583,6 @@
         }
         if (!accountContext.email) {
           throw new Error("Email is required.");
-        }
-        if (!accountContext.phone) {
-          throw new Error("Phone is required.");
         }
 
         data.full_name = accountContext.fullName;
