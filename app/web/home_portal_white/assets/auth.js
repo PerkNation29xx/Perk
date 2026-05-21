@@ -14,6 +14,8 @@
     apiPrefix: "/api/v1",
     supabaseUrl: "",
     supabaseAnonKey: "",
+    authEmailRedirectUrl: `${window.location.origin}/login`,
+    authPasswordResetRedirectUrl: `${window.location.origin}/reset-password`,
   };
 
   function showMessage(el, message, isError) {
@@ -125,6 +127,12 @@
         if (typeof body.supabase_anon_key === "string") {
           state.supabaseAnonKey = body.supabase_anon_key.trim();
         }
+        if (typeof body.auth_email_redirect_url === "string" && body.auth_email_redirect_url.trim()) {
+          state.authEmailRedirectUrl = body.auth_email_redirect_url.trim();
+        }
+        if (typeof body.auth_password_reset_redirect_url === "string" && body.auth_password_reset_redirect_url.trim()) {
+          state.authPasswordResetRedirectUrl = body.auth_password_reset_redirect_url.trim();
+        }
       }
     } catch {
       // Keep defaults.
@@ -150,6 +158,48 @@
     }
   }
 
+  function withRedirectParam(url, redirectTo) {
+    if (!redirectTo) return url;
+    try {
+      const parsed = new URL(url, window.location.origin);
+      parsed.searchParams.set("redirect_to", redirectTo);
+      return parsed.toString();
+    } catch {
+      return url;
+    }
+  }
+
+  async function readJsonResponse(response) {
+    const raw = await response.text();
+    if (!raw) return {};
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return {};
+    }
+  }
+
+  async function submitFormToBackend(formType, data) {
+    const response = await fetch(`/v1/web/forms/${encodeURIComponent(formType)}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        source_page: window.location.pathname,
+        data,
+      }),
+    });
+
+    const payload = await readJsonResponse(response);
+    if (!response.ok) {
+      const detail = payload.detail || payload.message || `Request failed (${response.status})`;
+      throw new Error(detail);
+    }
+    return payload;
+  }
+
   async function supabaseSignIn(email, password) {
     assertConfig();
     const url = `${state.supabaseUrl}/auth/v1/token?grant_type=password`;
@@ -169,25 +219,74 @@
 
   async function supabaseSignUp(email, password, metadata) {
     assertConfig();
-    const url = `${state.supabaseUrl}/auth/v1/signup`;
+    const redirectTo = state.authEmailRedirectUrl;
+    const url = withRedirectParam(`${state.supabaseUrl}/auth/v1/signup`, redirectTo);
+    const profileData = metadata || {};
     const res = await fetch(url, {
       method: "POST",
       headers: {
         apikey: state.supabaseAnonKey,
         "Content-Type": "application/json",
+        redirect_to: redirectTo,
       },
       body: JSON.stringify({
         email,
         password,
         options: {
-          data: metadata || {},
+          data: profileData,
+          emailRedirectTo: redirectTo,
+          redirectTo,
         },
+        data: profileData,
       }),
     });
     if (!res.ok) {
       throw new Error(await parseErrorBody(res));
     }
     return await res.json();
+  }
+
+  async function supabaseRequestPasswordReset(email) {
+    assertConfig();
+    const redirectTo = state.authPasswordResetRedirectUrl;
+    const url = withRedirectParam(`${state.supabaseUrl}/auth/v1/recover`, redirectTo);
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        apikey: state.supabaseAnonKey,
+        "Content-Type": "application/json",
+        redirect_to: redirectTo,
+      },
+      body: JSON.stringify({
+        email,
+        options: {
+          emailRedirectTo: redirectTo,
+          redirectTo,
+        },
+      }),
+    });
+    if (!res.ok) {
+      throw new Error(await parseErrorBody(res));
+    }
+    return await readJsonResponse(res);
+  }
+
+  async function supabaseUpdatePassword(accessToken, password) {
+    assertConfig();
+    const url = `${state.supabaseUrl}/auth/v1/user`;
+    const res = await fetch(url, {
+      method: "PUT",
+      headers: {
+        apikey: state.supabaseAnonKey,
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ password }),
+    });
+    if (!res.ok) {
+      throw new Error(await parseErrorBody(res));
+    }
+    return await readJsonResponse(res);
   }
 
   async function fetchMe(accessToken) {
@@ -235,6 +334,20 @@
     return "/user";
   }
 
+  function readSafeNextPath() {
+    try {
+      const params = new URLSearchParams(window.location.search || "");
+      const raw = String(params.get("next") || "").trim();
+      if (!raw) return "";
+      if (!raw.startsWith("/")) return "";
+      if (raw.startsWith("//")) return "";
+      if (raw.includes("://")) return "";
+      return raw;
+    } catch {
+      return "";
+    }
+  }
+
   function setActiveRole(buttons, activeRole, attrName) {
     buttons.forEach((btn) => {
       const role = btn.getAttribute(attrName);
@@ -250,6 +363,7 @@
 
     const message = qs("#loginMessage");
     const submitBtn = qs("#loginSubmitBtn");
+    const forgotBtn = qs("#forgotPasswordBtn");
     const roleInput = qs("#loginRoleInput");
     const roleButtons = qsa("[data-login-role]");
 
@@ -316,13 +430,38 @@
 
         saveSessionForRole(actualRole, session);
         showMessage(message, "Signed in. Redirecting...", false);
-        window.location.href = portalRouteForRole(actualRole);
+        window.location.href = readSafeNextPath() || portalRouteForRole(actualRole);
       } catch (err) {
         showMessage(message, humanizeError(err && err.message ? err.message : err), true);
       } finally {
         submitBtn.disabled = false;
       }
     });
+
+    if (forgotBtn) {
+      forgotBtn.addEventListener("click", async () => {
+        const email = String(qs("#loginEmailInput")?.value || "").trim();
+        if (!email) {
+          showMessage(message, "Enter your email, then tap Forgot password.", true);
+          return;
+        }
+
+        forgotBtn.disabled = true;
+        showMessage(message, "Sending password reset email...", false);
+        try {
+          await supabaseRequestPasswordReset(email);
+          showMessage(
+            message,
+            "Password reset email sent. Check your inbox for a secure reset link.",
+            false
+          );
+        } catch (err) {
+          showMessage(message, humanizeError(err && err.message ? err.message : err), true);
+        } finally {
+          forgotBtn.disabled = false;
+        }
+      });
+    }
   }
 
   function validatePasswordPair(password, confirm) {
@@ -333,6 +472,67 @@
       return "Passwords do not match.";
     }
     return "";
+  }
+
+  function bindPasswordToggleButtons(root) {
+    qsa("[data-password-toggle]", root || document).forEach((toggleBtn) => {
+      if (!toggleBtn || toggleBtn.dataset.bound === "1") return;
+      const targetId = String(toggleBtn.getAttribute("data-password-target") || "").trim();
+      if (!targetId) return;
+      const input = document.getElementById(targetId);
+      if (!input) return;
+
+      const setState = (visible) => {
+        input.setAttribute("type", visible ? "text" : "password");
+        toggleBtn.textContent = visible ? "Hide" : "Show";
+        toggleBtn.setAttribute("aria-pressed", visible ? "true" : "false");
+      };
+
+      setState(String(toggleBtn.getAttribute("aria-pressed")) === "true");
+      toggleBtn.addEventListener("click", () => {
+        setState(input.type === "password");
+        if (typeof input.focus === "function") {
+          input.focus({ preventScroll: true });
+        }
+      });
+      toggleBtn.dataset.bound = "1";
+    });
+  }
+
+  function bindLivePasswordPairValidation(messageEl, passwordInput, confirmInput) {
+    if (!messageEl || !passwordInput || !confirmInput) return;
+
+    const update = () => {
+      const password = String(passwordInput.value || "");
+      const confirm = String(confirmInput.value || "");
+      if (!password && !confirm) {
+        showMessage(messageEl, "", false);
+        return;
+      }
+      if (password && password.length < 8) {
+        showMessage(messageEl, "Password must be at least 8 characters.", true);
+        return;
+      }
+      if (confirm && password !== confirm) {
+        showMessage(messageEl, "Passwords do not match.", true);
+        return;
+      }
+      showMessage(messageEl, "", false);
+    };
+
+    passwordInput.addEventListener("input", update);
+    confirmInput.addEventListener("input", update);
+    passwordInput.addEventListener("blur", update);
+    confirmInput.addEventListener("blur", update);
+  }
+
+  async function tryImmediateSignInAfterSignup(email, password) {
+    try {
+      const envelope = await supabaseSignIn(email, password);
+      return normalizeSupabaseEnvelope(email, envelope);
+    } catch {
+      return null;
+    }
   }
 
   function bindCreateAccountPage() {
@@ -354,6 +554,20 @@
         setRegisterRole(btn.getAttribute("data-register-role") || "consumer");
       });
     });
+
+    bindPasswordToggleButtons(consumerForm);
+    bindPasswordToggleButtons(merchantForm);
+
+    bindLivePasswordPairValidation(
+      qs("#consumerRegisterMessage"),
+      qs("#consumerPasswordInput"),
+      qs("#consumerPasswordConfirmInput")
+    );
+    bindLivePasswordPairValidation(
+      qs("#merchantRegisterMessage"),
+      qs("#merchantPasswordInput"),
+      qs("#merchantPasswordConfirmInput")
+    );
 
     consumerForm.addEventListener("submit", async (ev) => {
       ev.preventDefault();
@@ -393,7 +607,34 @@
           notification_categories: "restaurant,gas,retail",
         });
 
-        showMessage(message, "Account created. Check email to verify, then use Login.", false);
+        try {
+          await submitFormToBackend("member", {
+            full_name: fullName,
+            email,
+            phone,
+            live_account_created: "true",
+          });
+        } catch {
+          // Lead mirroring is best effort.
+        }
+
+        const session = await tryImmediateSignInAfterSignup(email, password);
+        if (session) {
+          let role = "consumer";
+          try {
+            const me = await fetchMe(session.access_token);
+            role = String((me && me.role) || "consumer").toLowerCase();
+          } catch {
+            role = "consumer";
+          }
+
+          saveSessionForRole(role, session);
+          showMessage(message, "Account created and signed in. Redirecting...", false);
+          window.location.href = portalRouteForRole(role);
+          return;
+        }
+
+        showMessage(message, "Account created. You can log in now.", false);
         consumerForm.reset();
       } catch (err) {
         showMessage(message, humanizeError(err && err.message ? err.message : err), true);
@@ -412,6 +653,8 @@
       const contactName = String(qs("#merchantContactNameInput")?.value || "").trim();
       const email = String(qs("#merchantEmailInput")?.value || "").trim();
       const phone = String(qs("#merchantPhoneInput")?.value || "").trim();
+      const address = String(qs("#merchantAddressInput")?.value || "").trim();
+      const website = String(qs("#merchantWebsiteInput")?.value || "").trim();
       const password = String(qs("#merchantPasswordInput")?.value || "");
       const confirm = String(qs("#merchantPasswordConfirmInput")?.value || "");
 
@@ -434,6 +677,8 @@
           full_name: `${contactName} (${businessName})`,
           business_name: businessName,
           phone: phone || null,
+          address: address || null,
+          website: website || null,
           role: "merchant",
           reward_preference: "cash",
           notifications_enabled: true,
@@ -442,7 +687,37 @@
           notification_categories: "restaurant,gas,retail",
         });
 
-        showMessage(message, "Merchant account created. Check email to verify, then use Login.", false);
+        try {
+          await submitFormToBackend("merchant", {
+            company: businessName,
+            contact_name: contactName,
+            email,
+            phone,
+            address,
+            website,
+            live_account_created: "true",
+          });
+        } catch {
+          // Lead mirroring is best effort.
+        }
+
+        const session = await tryImmediateSignInAfterSignup(email, password);
+        if (session) {
+          let role = "merchant";
+          try {
+            const me = await fetchMe(session.access_token);
+            role = String((me && me.role) || "merchant").toLowerCase();
+          } catch {
+            role = "merchant";
+          }
+
+          saveSessionForRole(role, session);
+          showMessage(message, "Merchant account created and signed in. Redirecting...", false);
+          window.location.href = portalRouteForRole(role);
+          return;
+        }
+
+        showMessage(message, "Merchant account created. You can log in now.", false);
         merchantForm.reset();
       } catch (err) {
         showMessage(message, humanizeError(err && err.message ? err.message : err), true);
@@ -454,10 +729,111 @@
     setRegisterRole("consumer");
   }
 
+  function readRecoveryAccessToken() {
+    const hashParams = new URLSearchParams((window.location.hash || "").replace(/^#/, ""));
+    const queryParams = new URLSearchParams(window.location.search || "");
+    return (
+      hashParams.get("access_token") ||
+      queryParams.get("access_token") ||
+      ""
+    ).trim();
+  }
+
+  function bindResetPasswordPage() {
+    const requestForm = qs("#passwordResetRequestForm");
+    const resetForm = qs("#passwordResetForm");
+    if (!requestForm || !resetForm) return;
+
+    const requestMessage = qs("#passwordResetRequestMessage");
+    const resetMessage = qs("#resetPasswordMessage");
+    const requestSubmitBtn = qs("#passwordResetRequestSubmitBtn");
+    const resetSubmitBtn = qs("#resetPasswordSubmitBtn");
+    const tokenHint = qs("#resetTokenHint");
+
+    function setResetMode(hasToken) {
+      requestForm.hidden = hasToken;
+      resetForm.hidden = !hasToken;
+      if (tokenHint) {
+        tokenHint.textContent = hasToken
+          ? "Secure reset link detected. Set your new password."
+          : "Use your account email to request a secure reset link.";
+      }
+    }
+
+    setResetMode(Boolean(readRecoveryAccessToken()));
+
+    requestForm.addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      const email = String(qs("#passwordResetEmailInput")?.value || "").trim();
+      if (!email) {
+        showMessage(requestMessage, "Email is required.", true);
+        return;
+      }
+
+      requestSubmitBtn.disabled = true;
+      showMessage(requestMessage, "Sending reset email...", false);
+      try {
+        await supabaseRequestPasswordReset(email);
+        showMessage(
+          requestMessage,
+          "Reset email sent. Open the link in your inbox to set a new password.",
+          false
+        );
+      } catch (err) {
+        showMessage(requestMessage, humanizeError(err && err.message ? err.message : err), true);
+      } finally {
+        requestSubmitBtn.disabled = false;
+      }
+    });
+
+    resetForm.addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      const token = readRecoveryAccessToken();
+      const password = String(qs("#newPasswordInput")?.value || "");
+      const confirm = String(qs("#confirmNewPasswordInput")?.value || "");
+
+      if (!token) {
+        showMessage(resetMessage, "Reset token is missing. Request a new reset email.", true);
+        setResetMode(false);
+        return;
+      }
+
+      if (password.length < 8) {
+        showMessage(resetMessage, "Password must be at least 8 characters.", true);
+        return;
+      }
+
+      if (password !== confirm) {
+        showMessage(resetMessage, "Passwords do not match.", true);
+        return;
+      }
+
+      resetSubmitBtn.disabled = true;
+      showMessage(resetMessage, "Updating password...", false);
+      try {
+        await supabaseUpdatePassword(token, password);
+        showMessage(
+          resetMessage,
+          "Password updated. You can now sign in from the login page.",
+          false
+        );
+        resetForm.reset();
+        window.history.replaceState({}, document.title, window.location.pathname);
+        setResetMode(false);
+      } catch (err) {
+        showMessage(resetMessage, humanizeError(err && err.message ? err.message : err), true);
+      } finally {
+        resetSubmitBtn.disabled = false;
+      }
+    });
+  }
+
   async function init() {
     await loadConfig();
+    bindPasswordToggleButtons(document);
     bindLoginPage();
     bindCreateAccountPage();
+    bindResetPasswordPage();
   }
 
   init();
