@@ -9,6 +9,7 @@ from email.message import EmailMessage
 from html import escape
 from typing import Any, Optional
 from urllib.parse import parse_qs, quote, urlencode, urlsplit
+from urllib.request import Request, urlopen
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -20,6 +21,8 @@ logger = logging.getLogger(__name__)
 
 PASS_VALIDITY = timedelta(days=365)
 PASS_CODE_PREFIX = "PKI-HSP"
+PASS_QR_SIZE_PX = 320
+PASS_QR_FETCH_TIMEOUT_SECONDS = 8
 
 
 def _utcnow() -> datetime:
@@ -100,6 +103,8 @@ def _generate_pass_code(row_id: int) -> str:
 def _build_pass_urls(pass_code: str) -> dict[str, str]:
     api_base = _api_base_url()
     pass_view_url = f"{api_base}/web/payments/pass/{quote(pass_code, safe='')}"
+    pass_qr_payload = pass_view_url
+    pass_qr_image_url = _build_qr_image_url(pass_qr_payload)
     wallet_query = urlencode(
         {
             "title": "PerkNation Park Entry Pass",
@@ -111,10 +116,49 @@ def _build_pass_urls(pass_code: str) -> dict[str, str]:
     wallet_pass_url = f"{api_base}/wallet/pass?{wallet_query}"
     return {
         "pass_view_url": pass_view_url,
-        "pass_qr_payload": pass_view_url,
+        "pass_qr_payload": pass_qr_payload,
+        "pass_qr_image_url": pass_qr_image_url,
         "pass_wallet_url": wallet_pass_url,
         "pass_account_url": _default_account_url(),
     }
+
+
+def _build_qr_image_url(payload: str) -> str:
+    qr_payload = str(payload or "").strip()
+    if not qr_payload:
+        return ""
+    return (
+        "https://api.qrserver.com/v1/create-qr-code/"
+        f"?size={PASS_QR_SIZE_PX}x{PASS_QR_SIZE_PX}&data="
+        + quote(qr_payload, safe="")
+    )
+
+
+def _fetch_qr_png_bytes(qr_image_url: str) -> Optional[bytes]:
+    url = str(qr_image_url or "").strip()
+    if not url:
+        return None
+
+    try:
+        req = Request(
+            url,
+            headers={
+                "User-Agent": "PerkNation/1.0 (+https://perknation.net)",
+                "Accept": "image/png,image/*;q=0.8,*/*;q=0.5",
+            },
+        )
+        with urlopen(req, timeout=PASS_QR_FETCH_TIMEOUT_SECONDS) as response:  # noqa: S310
+            data = response.read()
+            content_type = str(response.headers.get("Content-Type") or "").lower()
+            if not data:
+                return None
+            if content_type and "image" not in content_type:
+                logger.warning("Checkout pass QR fetch returned non-image content-type: %s", content_type)
+                return None
+            return data
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Checkout pass QR fetch failed for %s: %s", url, exc)
+        return None
 
 
 def _extract_pass_code(raw_value: str) -> str:
@@ -190,6 +234,25 @@ def _send_checkout_pass_email(row: WebLeadSubmission, payload: dict[str, Any]) -
     account_url = str(payload.get("pass_account_url") or _default_account_url()).strip()
     wallet_pass_url = str(payload.get("pass_wallet_url") or "").strip()
     pass_view_url = str(payload.get("pass_view_url") or "").strip()
+    pass_qr_payload = str(payload.get("pass_qr_payload") or pass_view_url or pass_code).strip()
+    qr_image_url = str(payload.get("pass_qr_image_url") or _build_qr_image_url(pass_qr_payload)).strip()
+    inline_qr_png = _fetch_qr_png_bytes(qr_image_url)
+
+    qr_block_html = ""
+    if inline_qr_png:
+        qr_block_html = """
+              <div style="margin:8px 0 14px;">
+                <div style="margin:0 0 8px;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:#64748b;">Entry QR code</div>
+                <img src="cid:perknation-pass-qr" alt="PerkNation entry QR code" style="width:220px;height:220px;border-radius:12px;border:1px solid #e2e8f0;background:#fff;padding:4px;" />
+              </div>
+        """.strip()
+    elif qr_image_url:
+        qr_block_html = f"""
+              <div style="margin:8px 0 14px;">
+                <div style="margin:0 0 8px;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:#64748b;">Entry QR code</div>
+                <img src="{escape(qr_image_url, quote=True)}" alt="PerkNation entry QR code" style="width:220px;height:220px;border-radius:12px;border:1px solid #e2e8f0;background:#fff;padding:4px;" />
+              </div>
+        """.strip()
 
     msg = EmailMessage()
     msg["From"] = sender
@@ -210,6 +273,7 @@ def _send_checkout_pass_email(row: WebLeadSubmission, payload: dict[str, Any]) -
         f"Account: {account_url}",
         f"Wallet pass: {wallet_pass_url}",
         f"Pass page: {pass_view_url}",
+        f"Entry QR: {qr_image_url}",
         "",
         "This pass is valid for one year and will be deactivated after it is scanned at the park.",
         "",
@@ -238,6 +302,7 @@ def _send_checkout_pass_email(row: WebLeadSubmission, payload: dict[str, Any]) -
                 <tr><td style=\"padding:6px 0;color:#6b7280;\">Pass code</td><td style=\"padding:6px 0;font-weight:700;letter-spacing:0.03em;\">{escape(pass_code)}</td></tr>
                 <tr><td style=\"padding:6px 0;color:#6b7280;\">Expires</td><td style=\"padding:6px 0;font-weight:600;\">{escape(expires_text)}</td></tr>
               </table>
+              {qr_block_html}
               <p style=\"margin:0 0 10px;\"><a href=\"{escape(account_url, quote=True)}\" style=\"color:#0f5bd8;font-weight:600;\">Open your account</a></p>
               <p style=\"margin:0 0 10px;\"><a href=\"{escape(wallet_pass_url, quote=True)}\" style=\"color:#0f5bd8;font-weight:600;\">Add pass to Apple Wallet</a></p>
               <p style=\"margin:0 0 14px;\"><a href=\"{escape(pass_view_url, quote=True)}\" style=\"color:#0f5bd8;font-weight:600;\">View pass + scan link</a></p>
@@ -248,6 +313,16 @@ def _send_checkout_pass_email(row: WebLeadSubmission, payload: dict[str, Any]) -
     </html>
     """.strip()
     msg.add_alternative(html, subtype="html")
+    if inline_qr_png:
+        html_part = msg.get_payload()[-1]
+        html_part.add_related(
+            inline_qr_png,
+            maintype="image",
+            subtype="png",
+            cid="<perknation-pass-qr>",
+            filename="perknation-pass-qr.png",
+            disposition="inline",
+        )
 
     try:
         if settings.smtp_use_ssl:
