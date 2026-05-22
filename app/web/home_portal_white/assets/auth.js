@@ -57,7 +57,7 @@
       lower.includes("not verified") ||
       lower.includes("confirm your email")
     ) {
-      return "Email is not verified yet. Check your inbox, then sign in again.";
+      return "Email is not verified yet. Confirm from inbox/spam, then sign in again.";
     }
 
     if (
@@ -219,7 +219,7 @@
 
   async function supabaseSignUp(email, password, metadata) {
     assertConfig();
-    const redirectTo = state.authEmailRedirectUrl;
+    const redirectTo = buildEmailConfirmationRedirect();
     const url = withRedirectParam(`${state.supabaseUrl}/auth/v1/signup`, redirectTo);
     const profileData = metadata || {};
     const res = await fetch(url, {
@@ -244,6 +244,19 @@
       throw new Error(await parseErrorBody(res));
     }
     return await res.json();
+  }
+
+  function buildEmailConfirmationRedirect() {
+    const fallback = String(state.authEmailRedirectUrl || `${window.location.origin}/login`).trim();
+    const nextPath = readSafeNextPath();
+    if (!nextPath) return fallback;
+    try {
+      const parsed = new URL(fallback, window.location.origin);
+      parsed.searchParams.set("next", nextPath);
+      return parsed.toString();
+    } catch {
+      return fallback;
+    }
   }
 
   async function supabaseRequestPasswordReset(email) {
@@ -634,7 +647,11 @@
           return;
         }
 
-        showMessage(message, "Account created. You can log in now.", false);
+        if (readSafeNextPath()) {
+          showMessage(message, "Account created. Confirm your email, then sign in to continue your purchase.", false);
+        } else {
+          showMessage(message, "Account created. You can log in now.", false);
+        }
         consumerForm.reset();
       } catch (err) {
         showMessage(message, humanizeError(err && err.message ? err.message : err), true);
@@ -717,7 +734,11 @@
           return;
         }
 
-        showMessage(message, "Merchant account created. You can log in now.", false);
+        if (readSafeNextPath()) {
+          showMessage(message, "Merchant account created. Confirm your email, then sign in to continue your setup.", false);
+        } else {
+          showMessage(message, "Merchant account created. You can log in now.", false);
+        }
         merchantForm.reset();
       } catch (err) {
         showMessage(message, humanizeError(err && err.message ? err.message : err), true);
