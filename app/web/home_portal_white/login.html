@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Login - Perk Nation</title>
+  <link rel="canonical" href="/white/login" />
   <meta name="description" content="Sign in to your Perk Nation user or merchant account." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -14,7 +15,7 @@
 <header class="header">
   <div class="container">
     <div class="nav">
-      <a class="brand" href="index.html" aria-label="Perk Nation home">
+      <a class="brand" href="/white/" aria-label="Perk Nation home">
         <span class="brandMark" aria-hidden="true">
           <img src="assets/mark.svg" alt="" width="24" height="24" />
         </span>
@@ -22,26 +23,26 @@
       </a>
 
       <nav class="navlinks" aria-label="Primary navigation">
-        <a href="guests.html">Members</a>
-        <a href="merchants.html">Merchants</a>
-        <a href="how-it-works.html">How it Works</a>
-        <a href="contact-us.html">Contact Us</a>
-        <a href="faq.html">FAQ</a>
+        <a href="/white/members">Members</a>
+        <a href="/white/merchants">Merchants</a>
+        <a href="/white/how-it-works">How it Works</a>
+        <a href="/white/contact-us">Contact Us</a>
+        <a href="/white/faq">FAQ</a>
       </nav>
 
       <div class="navcta">
         <button class="btn menuBtn" data-menu-btn aria-label="Open menu">☰</button>
-        <a class="btn ghost" href="login.html" aria-current="page">Login</a>
+        <a class="btn ghost" href="/white/login" aria-current="page">Login</a>
       </div>
     </div>
 
     <div class="mobileMenu" data-mobile-menu>
-      <a href="guests.html">Members</a>
-      <a href="merchants.html">Merchants</a>
-      <a href="how-it-works.html">How it Works</a>
-      <a href="contact-us.html">Contact Us</a>
-      <a href="faq.html">FAQ</a>
-      <a href="login.html">Login</a>
+      <a href="/white/members">Members</a>
+      <a href="/white/merchants">Merchants</a>
+      <a href="/white/how-it-works">How it Works</a>
+      <a href="/white/contact-us">Contact Us</a>
+      <a href="/white/faq">FAQ</a>
+      <a href="/white/login">Login</a>
     </div>
   </div>
 </header>
@@ -69,9 +70,17 @@
 
           <div class="authActions">
             <button id="loginSubmitBtn" class="btn" type="submit">Sign in</button>
-            <a class="btn" href="create-account.html">Create new account</a>
+            <button id="forgotPasswordBtn" class="btn" type="button">Forgot password</button>
+            <a class="btn" href="/white/create-account">Create new account</a>
           </div>
           <div id="loginMessage" class="notice" hidden></div>
+          <div id="loginRecoveryPrompt" class="notice loginRecoveryPrompt" hidden>
+            <div>
+              <strong>Need to reset your password?</strong>
+              <span>Send a secure reset link to <span id="loginRecoveryEmail"></span>.</span>
+            </div>
+            <button id="loginRecoverySendBtn" class="btn small" type="button">Send reset link</button>
+          </div>
         </form>
       </div>
 
@@ -89,7 +98,7 @@
           </div>
           <div class="kpi">
             <div class="t">Need a new account?</div>
-            <div class="v"><a href="create-account.html">Create one here</a></div>
+            <div class="v"><a href="/white/create-account">Create one here</a></div>
           </div>
         </div>
       </div>

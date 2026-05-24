@@ -52,6 +52,36 @@
 </header>
 
 <main>
+  <section class="hero campaignHero" id="featured-campaign">
+    <div class="container campaignHeroGrid">
+      <div class="campaignHeroCopy">
+        <div class="badge">Featured campaign</div>
+        <h1 class="h1 luxTitle">Hollywood Sports packages are live.</h1>
+        <p class="p">
+          Get the $70 park-pass bundle, $5 admission promo, or a quick test pass through the Perk Nation checkout flow.
+          Choose your park, package, and visit window in one place.
+        </p>
+        <div class="heroActions">
+          <a class="btn primary" href="/hollywood-sports#buy-now">Buy a package</a>
+          <a class="btn" href="/hollywood-sports">View all Hollywood Sports offers</a>
+        </div>
+        <div class="campaignHeroStats" aria-label="Hollywood Sports campaign highlights">
+          <div><strong>5</strong><span>paintball parks</span></div>
+          <div><strong>$5</strong><span>admission promo</span></div>
+          <div><strong>$70</strong><span>bundle option</span></div>
+        </div>
+      </div>
+
+      <div class="campaignHeroMedia">
+        <img src="/assets/campaigns/hsp-ticket-sheet-front-rotated.jpg" alt="Hollywood Sports package offer artwork" fetchpriority="high" />
+        <div class="campaignHeroCallout">
+          <span>Start here</span>
+          <strong>Purchase your package before browsing Pasadena dining.</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="hero heroLuxury">
     <div class="container grid2">
       <div>
@@ -83,22 +113,38 @@
     </div>
   </section>
 
-  <section class="section">
+  <section class="section aiDiscoverySection" id="local-ai-assistant">
     <div class="container">
-      <div class="card pad" style="display:grid;grid-template-columns:1.05fr .95fr;gap:18px;align-items:center">
-        <div>
-          <div class="badge">Featured campaign</div>
-          <h2 class="h2">Hollywood Sports offers and $5 admission promos are live in Perk Nation.</h2>
-          <p class="muted">The HSP campaign now includes park-pass offers, group savings, and $5 admission promos, all mapped into the live backend offer set.</p>
-          <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap">
-            <a class="btn primary" href="/hollywood-sports">View the offer</a>
-            <a class="btn" href="/create-account">Unlock in Perk Nation</a>
+      <div class="card pad aiDiscoveryCard">
+        <div class="aiDiscoveryHeader">
+          <div>
+            <div class="badge">AI Local Guide</div>
+            <h2 class="h2">Ask Perk Nation what to do nearby.</h2>
+            <p class="muted">Get recommendations for local restaurants, nearby offers, and places to check out around Los Angeles.</p>
+          </div>
+          <div class="small aiDiscoveryMeta" data-home-ai-status>
+            Ready. Share your area, cuisine, category, or vibe.
           </div>
         </div>
-        <article class="photoTile" style="margin:0">
-          <img src="/assets/campaigns/hsp-ticket-sheet-front-rotated.jpg" alt="Hollywood Sports campaign art" loading="lazy" style="height:100%;max-height:340px;object-fit:cover" />
-          <figcaption>Current HSP creative, participating parks, and the active promo lineup.</figcaption>
-        </article>
+
+        <div class="aiDiscoveryMessages" data-home-ai-messages>
+          <div class="aiBubble assistant">
+            Tell me where you are and what you are in the mood for, and I will recommend local places with active Perk Nation offers when available.
+          </div>
+        </div>
+
+        <form class="aiDiscoveryComposer" data-home-ai-form>
+          <textarea
+            data-home-ai-input
+            placeholder="Example: What are good local restaurants near Old Pasadena for date night?"
+            aria-label="Ask Perk Nation AI for local recommendations"
+            required
+          ></textarea>
+          <div class="aiDiscoveryActions">
+            <button class="btn primary" type="submit" data-home-ai-send>Get recommendations</button>
+            <button class="btn" type="button" data-home-ai-clear>Clear</button>
+          </div>
+        </form>
       </div>
     </div>
   </section>

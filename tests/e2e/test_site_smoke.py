@@ -52,6 +52,34 @@ def test_signed_out_portals_hide_dashboard_sections(page: Page, base_url: str) -
     assert page.locator("#portalSection").is_hidden()
 
 
+def test_login_invalid_credentials_offers_password_reset(page: Page, base_url: str) -> None:
+    page.route(
+        "**/auth/v1/token?grant_type=password",
+        lambda route: route.fulfill(
+            status=400,
+            content_type="application/json",
+            body='{"error":"invalid_credentials","msg":"Invalid login credentials"}',
+        ),
+    )
+    page.route(
+        "**/auth/v1/recover*",
+        lambda route: route.fulfill(status=200, content_type="application/json", body="{}"),
+    )
+
+    page.goto(f"{base_url}/login", wait_until="domcontentloaded")
+    page.locator("#loginEmailInput").fill("cs@perknation.app")
+    page.locator("#loginPasswordInput").fill("wrong-password")
+    page.get_by_role("button", name="Sign in").click()
+
+    expect(page.locator("#loginMessage")).to_contain_text("Email or password is incorrect.")
+    expect(page.locator("#loginRecoveryPrompt")).to_be_visible()
+    expect(page.locator("#loginRecoveryPrompt")).to_contain_text("cs@perknation.app")
+
+    page.get_by_role("button", name="Send reset link").click()
+    expect(page.locator("#loginMessage")).to_contain_text("Password reset email sent.")
+    expect(page.locator("#loginRecoveryPrompt")).to_be_hidden()
+
+
 def test_admin_portal_exposes_message_box_and_private_message_route(page: Page, base_url: str) -> None:
     page.goto(f"{base_url}/admin", wait_until="domcontentloaded")
     expect(page.locator('.navitem[data-view="messageBox"]')).to_be_visible()

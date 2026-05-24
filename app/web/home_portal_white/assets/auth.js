@@ -47,7 +47,8 @@
 
     if (
       lower.includes("invalid login credentials") ||
-      lower.includes("invalid credentials")
+      lower.includes("invalid credentials") ||
+      lower.includes("invalid_credentials")
     ) {
       return "Email or password is incorrect.";
     }
@@ -79,6 +80,16 @@
     }
 
     return message;
+  }
+
+  function isInvalidCredentialError(raw) {
+    const lower = String(raw || "").toLowerCase();
+    return (
+      lower.includes("invalid login credentials") ||
+      lower.includes("invalid credentials") ||
+      lower.includes("invalid_credentials") ||
+      lower.includes("email or password is incorrect")
+    );
   }
 
   function normalizeSupabaseEnvelope(email, envelope) {
@@ -377,8 +388,58 @@
     const message = qs("#loginMessage");
     const submitBtn = qs("#loginSubmitBtn");
     const forgotBtn = qs("#forgotPasswordBtn");
+    const recoveryPrompt = qs("#loginRecoveryPrompt");
+    const recoveryEmail = qs("#loginRecoveryEmail");
+    const recoverySendBtn = qs("#loginRecoverySendBtn");
     const roleInput = qs("#loginRoleInput");
     const roleButtons = qsa("[data-login-role]");
+    const emailInput = qs("#loginEmailInput");
+    const passwordInput = qs("#loginPasswordInput");
+
+    function currentLoginEmail() {
+      return String(emailInput?.value || "").trim();
+    }
+
+    function hideRecoveryPrompt() {
+      if (recoveryPrompt) recoveryPrompt.hidden = true;
+      if (recoveryEmail) recoveryEmail.textContent = "";
+    }
+
+    function showRecoveryPrompt(email) {
+      if (!recoveryPrompt || !recoveryEmail || !email) return;
+      recoveryEmail.textContent = email;
+      recoveryPrompt.hidden = false;
+    }
+
+    async function sendLoginResetEmail(email, triggerButton) {
+      if (!email) {
+        showMessage(message, "Enter your email, then request a password reset.", true);
+        hideRecoveryPrompt();
+        return;
+      }
+
+      if (triggerButton) triggerButton.disabled = true;
+      if (forgotBtn) forgotBtn.disabled = true;
+      if (recoverySendBtn) recoverySendBtn.disabled = true;
+      showMessage(message, "Sending password reset email...", false);
+
+      try {
+        await supabaseRequestPasswordReset(email);
+        hideRecoveryPrompt();
+        showMessage(
+          message,
+          "Password reset email sent. Check your inbox for a secure reset link.",
+          false
+        );
+      } catch (err) {
+        showMessage(message, humanizeError(err && err.message ? err.message : err), true);
+        showRecoveryPrompt(email);
+      } finally {
+        if (triggerButton) triggerButton.disabled = false;
+        if (forgotBtn) forgotBtn.disabled = false;
+        if (recoverySendBtn) recoverySendBtn.disabled = false;
+      }
+    }
 
     roleButtons.forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -386,22 +447,28 @@
         roleInput.value = role;
         setActiveRole(roleButtons, role, "data-login-role");
         showMessage(message, "", false);
+        hideRecoveryPrompt();
       });
     });
+
+    emailInput?.addEventListener("input", hideRecoveryPrompt);
+    passwordInput?.addEventListener("input", hideRecoveryPrompt);
 
     form.addEventListener("submit", async (ev) => {
       ev.preventDefault();
 
       const selectedRole = (roleInput.value || "consumer").toLowerCase();
-      const email = String(qs("#loginEmailInput")?.value || "").trim();
-      const password = String(qs("#loginPasswordInput")?.value || "");
+      const email = currentLoginEmail();
+      const password = String(passwordInput?.value || "");
 
       if (!email || !password) {
         showMessage(message, "Email and password are required.", true);
+        hideRecoveryPrompt();
         return;
       }
 
       submitBtn.disabled = true;
+      hideRecoveryPrompt();
       showMessage(message, "Signing in...", false);
 
       try {
@@ -429,6 +496,7 @@
             `This account is ${roleToLabel(actualRole)}. Select ${roleToLabel(actualRole)} to continue.`,
             true
           );
+          hideRecoveryPrompt();
           return;
         }
 
@@ -438,6 +506,7 @@
             `This account is ${roleToLabel(actualRole)}. Select ${roleToLabel(actualRole)} to continue.`,
             true
           );
+          hideRecoveryPrompt();
           return;
         }
 
@@ -445,7 +514,13 @@
         showMessage(message, "Signed in. Redirecting...", false);
         window.location.href = readSafeNextPath() || portalRouteForRole(actualRole);
       } catch (err) {
-        showMessage(message, humanizeError(err && err.message ? err.message : err), true);
+        const rawError = err && err.message ? err.message : err;
+        showMessage(message, humanizeError(rawError), true);
+        if (isInvalidCredentialError(rawError)) {
+          showRecoveryPrompt(email);
+        } else {
+          hideRecoveryPrompt();
+        }
       } finally {
         submitBtn.disabled = false;
       }
@@ -453,26 +528,13 @@
 
     if (forgotBtn) {
       forgotBtn.addEventListener("click", async () => {
-        const email = String(qs("#loginEmailInput")?.value || "").trim();
-        if (!email) {
-          showMessage(message, "Enter your email, then tap Forgot password.", true);
-          return;
-        }
+        await sendLoginResetEmail(currentLoginEmail(), forgotBtn);
+      });
+    }
 
-        forgotBtn.disabled = true;
-        showMessage(message, "Sending password reset email...", false);
-        try {
-          await supabaseRequestPasswordReset(email);
-          showMessage(
-            message,
-            "Password reset email sent. Check your inbox for a secure reset link.",
-            false
-          );
-        } catch (err) {
-          showMessage(message, humanizeError(err && err.message ? err.message : err), true);
-        } finally {
-          forgotBtn.disabled = false;
-        }
+    if (recoverySendBtn) {
+      recoverySendBtn.addEventListener("click", async () => {
+        await sendLoginResetEmail(currentLoginEmail(), recoverySendBtn);
       });
     }
   }

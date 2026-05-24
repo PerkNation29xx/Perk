@@ -242,6 +242,85 @@ img{max-width:100%; display:block}
 .sectionVideo{
   padding-top: 8px;
 }
+
+.aiDiscoverySection{
+  padding-top: 4px;
+}
+
+.aiDiscoveryCard{
+  display: grid;
+  gap: 14px;
+}
+
+.aiDiscoveryHeader{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.aiDiscoveryMeta{
+  color: var(--muted2);
+  max-width: 380px;
+}
+
+.aiDiscoveryMessages{
+  display: grid;
+  gap: 10px;
+  max-height: 340px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.aiBubble{
+  border-radius: 16px;
+  padding: 11px 13px;
+  border: 1px solid var(--line);
+  background: rgba(250,247,247,.03);
+  white-space: pre-wrap;
+}
+
+.aiBubble.assistant{
+  background: rgba(250,247,247,.05);
+}
+
+.aiBubble.user{
+  background: rgba(230,184,74,.16);
+  border-color: rgba(230,184,74,.42);
+}
+
+.aiDiscoveryComposer{
+  display: grid;
+  gap: 10px;
+}
+
+.aiDiscoveryComposer textarea{
+  width: 100%;
+  min-height: 98px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: rgba(250,247,247,.03);
+  color: var(--ink);
+  padding: 12px;
+  font: inherit;
+  resize: vertical;
+}
+
+.aiDiscoveryComposer textarea::placeholder{
+  color: var(--muted2);
+}
+
+.aiDiscoveryComposer textarea:focus{
+  outline: 2px solid rgba(230,184,74,.48);
+  outline-offset: 1px;
+}
+
+.aiDiscoveryActions{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 .videoCard{
   margin-top: 16px;
   border-radius: 24px;
@@ -411,6 +490,39 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   box-shadow: 0 0 0 4px rgba(230,184,74,.18);
 }
 
+.passwordField{
+  position: relative;
+}
+
+.passwordField .input{
+  padding-right: 82px;
+}
+
+.passwordToggle{
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  border: 1px solid rgba(15,23,42,.24);
+  background: rgba(15,23,42,.06);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 5px 10px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.passwordToggle:hover{
+  background: rgba(15,23,42,.12);
+}
+
+.passwordToggle:focus-visible{
+  outline: 2px solid rgba(230,184,74,.72);
+  outline-offset: 2px;
+}
+
 .notice{
   padding: 12px 12px;
   border-radius: 20px;
@@ -468,6 +580,24 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   display: none;
 }
 
+.loginRecoveryPrompt{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-top: 2px;
+  border-style: solid;
+  background: rgba(230,184,74,.12);
+  border-color: rgba(230,184,74,.42);
+}
+.loginRecoveryPrompt div{
+  display:grid;
+  gap:2px;
+}
+.loginRecoveryPrompt strong{
+  color: var(--ink);
+}
+
 .footer{
   padding: 34px 0;
   border-top: 1px solid rgba(15,23,42,.12);
@@ -488,9 +618,18 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px 20px;
 }
+.buildBadge{
+  margin-top: 14px;
+  width: 100%;
+  text-align: right;
+  color: var(--muted2);
+  font-size: 12px;
+  letter-spacing: .2px;
+}
 @media (max-width: 760px){
   .footer > .container > div:first-child{flex-wrap:wrap !important}
   .footerGrid{grid-template-columns:1fr 1fr}
+  .buildBadge{text-align:left}
 }
 @media (max-width: 520px){.footerGrid{grid-template-columns:1fr}}
 
@@ -592,8 +731,92 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 .accOpen .accPanel{display:block}
 
 /* Luxury dining homepage additions */
+.campaignHero{
+  padding-top: 70px;
+  padding-bottom: 36px;
+}
+.campaignHeroGrid{
+  display:grid;
+  grid-template-columns: minmax(0, .9fr) minmax(340px, 1.1fr);
+  gap:28px;
+  align-items:center;
+}
+.campaignHeroCopy{
+  display:grid;
+  gap:14px;
+}
+.campaignHeroCopy .badge{
+  justify-self:start;
+}
+.campaignHeroCopy .p{
+  max-width: 680px;
+}
+.campaignHeroStats{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap:10px;
+  margin-top: 4px;
+}
+.campaignHeroStats div{
+  border: 1px solid var(--line);
+  background: rgba(15,23,42,.035);
+  border-radius: 18px;
+  padding: 12px;
+}
+.campaignHeroStats strong{
+  display:block;
+  font-size: 26px;
+  line-height: 1;
+  color: #9b6f00;
+}
+.campaignHeroStats span{
+  display:block;
+  margin-top:6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+.campaignHeroMedia{
+  position:relative;
+  min-height: 430px;
+  border-radius: var(--radius-xl);
+  overflow:hidden;
+  border: 1px solid rgba(15,23,42,.16);
+  box-shadow: var(--shadow);
+  background: rgba(15,23,42,.035);
+}
+.campaignHeroMedia img{
+  width:100%;
+  height:100%;
+  min-height: 430px;
+  object-fit: cover;
+}
+.campaignHeroCallout{
+  position:absolute;
+  left:16px;
+  right:16px;
+  bottom:16px;
+  border: 1px solid rgba(15,23,42,.16);
+  border-radius: 18px;
+  padding: 14px;
+  background: linear-gradient(180deg, rgba(255,255,255,.50), rgba(255,255,255,.94));
+  display:grid;
+  gap:4px;
+}
+.campaignHeroCallout span{
+  color: #9b6f00;
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 900;
+  letter-spacing:.08em;
+}
+.campaignHeroCallout strong{
+  color: var(--ink);
+  font-size: 18px;
+  line-height:1.25;
+}
 .heroLuxury{
-  padding-top: 74px;
+  padding-top: 42px;
   padding-bottom: 32px;
 }
 .luxTitle{
@@ -725,6 +948,15 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 @media (max-width: 980px){
   .heroShell,
   .heroImage{min-height: 420px}
+  .campaignHero{padding-top: 42px}
+  .campaignHeroGrid{grid-template-columns:1fr}
+  .campaignHeroMedia,
+  .campaignHeroMedia img{min-height: 320px}
+  .campaignHeroStats{grid-template-columns:1fr}
+  .loginRecoveryPrompt{
+    align-items:stretch;
+    flex-direction:column;
+  }
   .reviewGrid{grid-template-columns: 1fr}
   .photoRail{grid-template-columns: 1fr}
   .photoTile img{height: 240px}
