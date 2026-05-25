@@ -14,6 +14,11 @@
       crossorigin=""
     />
     <link rel="stylesheet" href="/user/static/user.css" />
+    <style>
+      [hidden] {
+        display: none !important;
+      }
+    </style>
   </head>
   <body>
     <header class="topbar">
@@ -25,10 +30,6 @@
             <div class="subtitle">User portal</div>
           </div>
         </a>
-        <div id="signedOutTopLinks" class="topLinks">
-          <a href="/login">Login</a>
-          <a href="/create-account">Create account</a>
-        </div>
         <details id="topConsumerMenu" class="topMenu" hidden>
           <summary aria-label="Consumer menu">
             <span class="hamburgerIcon" aria-hidden="true">☰</span>
