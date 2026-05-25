@@ -1341,6 +1341,7 @@
       if (!passPanel) return;
       const passCode = String(receipt.pass_code || "").trim();
       const passStatus = String(receipt.pass_status || "").trim() || "pending";
+      const paymentStatus = String(receipt.payment_status || "").trim().toLowerCase();
       const passExpiresAt = receipt.pass_expires_at ? new Date(receipt.pass_expires_at) : null;
       const expiresText = passExpiresAt && !Number.isNaN(passExpiresAt.getTime())
         ? passExpiresAt.toLocaleString()
@@ -1355,11 +1356,12 @@
         ? `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(qrPayload)}`
         : "";
       const deliveryActions = passDeliveryActionsHtml({ walletUrl, googleWalletUrl, pdfUrl });
+      const isReady = paymentStatus === "paid" && !!passCode;
 
       passPanel.hidden = false;
       passPanel.innerHTML = `
         <div class="hspSupportHeading">
-          <h3 class="h3" style="margin:0">Your park entry pass is ready</h3>
+          <h3 class="h3" style="margin:0">${isReady ? "Your park entry pass is ready" : "Payment is still confirming"}</h3>
           <div class="pill">Status: ${passStatus}</div>
         </div>
         <div class="hspPassGrid">
@@ -1367,13 +1369,13 @@
           <div class="hspPassMeta"><div class="label">Expires</div><div class="value">${expiresText}</div></div>
         </div>
         <div class="hspZelleBody">
-          ${qrUrl ? `<img class="hspPassQr" src="${qrUrl}" alt="Entry pass QR" loading="lazy" />` : ""}
+          ${isReady && qrUrl ? `<img class="hspPassQr" src="${qrUrl}" alt="Entry pass QR" loading="lazy" />` : ""}
           <div>
-            <p class="hspZelleHint">This pass allows park entry after scanning once by an operator. After scan, it is automatically deactivated.</p>
+            <p class="hspZelleHint">${isReady ? "This pass allows park entry after scanning once by an operator. After scan, it is automatically deactivated." : "Stripe has not returned the paid confirmation yet. Keep this page open or refresh your account in a few moments."}</p>
             <div class="hspSupportActions" style="margin-top:10px">
               <a class="btn" href="${escapeHtml(accountUrl)}">Open account</a>
-              ${deliveryActions}
-              ${passViewUrl ? `<a class="btn" href="${escapeHtml(passViewUrl)}" target="_blank" rel="noopener">View pass page</a>` : ""}
+              ${isReady ? deliveryActions : ""}
+              ${isReady && passViewUrl ? `<a class="btn" href="${escapeHtml(passViewUrl)}" target="_blank" rel="noopener">View pass page</a>` : ""}
             </div>
           </div>
         </div>
@@ -1392,6 +1394,21 @@
         throw new Error(payload.detail || payload.message || `Checkout status lookup failed (${response.status})`);
       }
       return payload;
+    };
+
+    const checkoutReceiptReady = (receipt) => {
+      return String(receipt?.payment_status || "").toLowerCase() === "paid" && !!String(receipt?.pass_code || "").trim();
+    };
+
+    const waitForCheckoutPassReceipt = async (sessionId) => {
+      let latest = null;
+      for (let attempt = 1; attempt <= 10; attempt += 1) {
+        latest = await loadCheckoutPassReceipt(sessionId);
+        if (checkoutReceiptReady(latest)) return latest;
+        setToast(`Payment received. Confirming pass with Stripe (${attempt}/10)...`, "success");
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+      }
+      return latest;
     };
 
     const buildApplePayPayload = (data, submissionId, accountContext) => {
@@ -1654,10 +1671,14 @@
       checkoutSection.scrollIntoView({ behavior: "smooth", block: "start" });
       setToast("Payment complete. Loading your entry pass...", "success");
       try {
-        const receipt = await loadCheckoutPassReceipt(sessionId);
+        const receipt = await waitForCheckoutPassReceipt(sessionId);
         renderPassPanel(receipt);
         scrollToPassPanel();
-        setToast("Payment complete. Your pass is ready below and emailed to you.", "success");
+        if (checkoutReceiptReady(receipt)) {
+          setToast("Payment complete. Your pass is ready below and emailed to you.", "success");
+        } else {
+          setToast("Payment is recorded, but Stripe confirmation is still pending. Refresh your account shortly.", "error");
+        }
       } catch (error) {
         setToast(String(error && error.message ? error.message : "Could not load pass details right now."), "error");
       }

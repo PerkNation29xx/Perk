@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import zlib
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
@@ -686,7 +687,42 @@ def _pdf_escape(value: object) -> str:
     )
 
 
-def _build_text_pdf(lines: list[str]) -> bytes:
+def _build_qr_image_stream(payload: str, *, size_px: int = 220) -> Optional[dict[str, object]]:
+    qr_payload = str(payload or "").strip()
+    if not qr_payload:
+        return None
+
+    try:
+        import qrcode  # type: ignore
+        from PIL import Image  # type: ignore
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("QR PDF dependency is unavailable: %s", exc)
+        return None
+
+    try:
+        qr = qrcode.QRCode(
+            version=None,
+            error_correction=qrcode.constants.ERROR_CORRECT_M,
+            box_size=8,
+            border=3,
+        )
+        qr.add_data(qr_payload)
+        qr.make(fit=True)
+        image = qr.make_image(fill_color="black", back_color="white").convert("RGB")
+        resample = getattr(getattr(Image, "Resampling", Image), "NEAREST", 0)
+        image = image.resize((size_px, size_px), resample=resample)
+        return {
+            "width": size_px,
+            "height": size_px,
+            "data": zlib.compress(image.tobytes()),
+        }
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("QR PDF generation failed: %s", exc)
+        return None
+
+
+def _build_text_pdf(lines: list[str], *, qr_payload: str = "") -> bytes:
+    qr_image = _build_qr_image_stream(qr_payload)
     y = 756
     content_lines = ["BT", "/F1 18 Tf", f"72 {y} Td", f"({_pdf_escape(lines[0] if lines else 'PerkNation')}) Tj"]
     y_step = 18
@@ -699,15 +735,54 @@ def _build_text_pdf(lines: list[str]) -> bytes:
         content_lines.append(f"({_pdf_escape(line)}) Tj")
         y -= y_step
     content_lines.append("ET")
+    if qr_image:
+        content_lines.extend(
+            [
+                "q",
+                "170 0 0 170 370 520 cm",
+                "/Im1 Do",
+                "Q",
+                "BT",
+                "/F1 9 Tf",
+                "374 500 Td",
+                "(Scan QR for live ticket status) Tj",
+                "ET",
+            ]
+        )
     stream = "\n".join(content_lines).encode("latin-1", errors="replace")
 
+    resources = b"<< /Font << /F1 4 0 R >> >>"
+    objects: list[bytes]
+    if qr_image:
+        resources = b"<< /Font << /F1 4 0 R >> /XObject << /Im1 6 0 R >> >>"
+    page_obj = (
+        b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources "
+        + resources
+        + b" /Contents 5 0 R >>"
+    )
     objects: list[bytes] = [
         b"<< /Type /Catalog /Pages 2 0 R >>",
         b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-        b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>",
+        page_obj,
         b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
         b"<< /Length " + str(len(stream)).encode("ascii") + b" >>\nstream\n" + stream + b"\nendstream",
     ]
+    if qr_image:
+        data = qr_image["data"]
+        assert isinstance(data, bytes)
+        objects.append(
+            (
+                b"<< /Type /XObject /Subtype /Image /Width "
+                + str(qr_image["width"]).encode("ascii")
+                + b" /Height "
+                + str(qr_image["height"]).encode("ascii")
+                + b" /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /FlateDecode /Length "
+                + str(len(data)).encode("ascii")
+                + b" >>\nstream\n"
+                + data
+                + b"\nendstream"
+            )
+        )
 
     pdf = bytearray(b"%PDF-1.4\n")
     offsets = [0]
@@ -1025,6 +1100,30 @@ def checkout_status(
     return _build_checkout_pass_status(row, payload)
 
 
+def _sync_pending_checkout_row(
+    db: Session,
+    row: WebLeadSubmission,
+    payload: dict,
+) -> tuple[WebLeadSubmission, dict]:
+    payment_status = str(payload.get("payment_status") or "").strip().lower()
+    session_id = str(payload.get("stripe_checkout_session_id") or "").strip()
+
+    if payment_status != "paid" and session_id:
+        refreshed_lookup = _sync_checkout_from_stripe(
+            db,
+            session_id,
+            preferred_mode=(str(payload.get("stripe_mode") or "").strip().lower() or None),
+        )
+        if refreshed_lookup is not None:
+            row, payload = refreshed_lookup
+            payment_status = str(payload.get("payment_status") or "").strip().lower()
+
+    if payment_status == "paid":
+        payload = ensure_paid_order_pass(db, row, notify_customer=True)
+
+    return row, payload
+
+
 @router.get("/my-passes", response_model=list[CheckoutUserPassOut])
 def my_checkout_passes(
     limit: int = Query(default=50, ge=1, le=200),
@@ -1066,8 +1165,7 @@ def my_checkout_passes(
         payload = _parse_payload_json(row.payload_json)
         if not _checkout_matches_user(row, payload, current_user):
             continue
-        if _safe_lower(str(payload.get("payment_status") or "")) == "paid":
-            payload = ensure_paid_order_pass(db, row, notify_customer=False)
+        row, payload = _sync_pending_checkout_row(db, row, payload)
         out.append(_build_user_pass_row(row, payload))
         seen_submission_ids.add(row.id)
         if len(out) >= limit:
@@ -1125,7 +1223,7 @@ def public_pass_pdf(
         "",
         "Support: cs@perknation.app",
     ]
-    pdf = _build_text_pdf(lines)
+    pdf = _build_text_pdf(lines, qr_payload=qr_payload)
     filename = f"{normalized_code.lower() or 'perknation-ticket'}-receipt-ticket.pdf"
     return Response(
         content=pdf,
