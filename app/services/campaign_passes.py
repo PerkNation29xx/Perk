@@ -221,6 +221,58 @@ def _refresh_expiration(payload: dict[str, Any], *, now: Optional[datetime] = No
     return changed
 
 
+def _reconcile_unpaid_checkout_payload(payload: dict[str, Any], *, now: Optional[datetime] = None) -> bool:
+    now_utc = now or _utcnow()
+    payment_status = str(payload.get("payment_status") or "").strip().lower()
+    pass_status = str(payload.get("pass_status") or "").strip().lower()
+    changed = False
+
+    final_status_by_payment = {
+        "expired": "expired",
+        "failed": "failed",
+        "canceled": "canceled",
+        "cancelled": "canceled",
+        "refunded": "refunded",
+    }
+    target_status = final_status_by_payment.get(payment_status)
+
+    if target_status and pass_status not in {"redeemed", "refunded"}:
+        if pass_status != target_status:
+            payload["pass_status"] = target_status
+            payload["pass_wallet_last_updated_at"] = _to_iso_utc(now_utc)
+            changed = True
+        return changed
+
+    if payment_status in {"", "pending", "checkout_created", "unpaid"}:
+        if pass_status in {"", "pending"} and not str(payload.get("pass_code") or "").strip():
+            payload["pass_status"] = "payment_pending"
+            changed = True
+
+    return changed
+
+
+def reconcile_checkout_pass_state(
+    db: Session,
+    row: WebLeadSubmission,
+    payload: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+    reconciled = payload if isinstance(payload, dict) else _parse_payload(row.payload_json)
+    changed = False
+
+    if _reconcile_unpaid_checkout_payload(reconciled):
+        changed = True
+    if _refresh_expiration(reconciled):
+        changed = True
+
+    if changed:
+        row.payload_json = _dump_payload(reconciled)
+        db.add(row)
+        db.commit()
+        db.refresh(row)
+
+    return reconciled
+
+
 def _pass_wallet_web_service_url() -> str:
     return f"{_api_base_url()}/wallet"
 
@@ -474,7 +526,8 @@ def ensure_paid_order_pass(
             payload["pass_expires_at"] = _to_iso_utc(expires_at)
             changed = True
 
-        if not str(payload.get("pass_status") or "").strip():
+        current_pass_status = str(payload.get("pass_status") or "").strip().lower()
+        if current_pass_status in {"", "pending", "payment_pending", "failed", "canceled"}:
             payload["pass_status"] = "active"
             changed = True
 
@@ -518,6 +571,8 @@ def ensure_paid_order_pass(
                     payload["pass_email_status"] = "failed"
                     changed = True
     else:
+        if _reconcile_unpaid_checkout_payload(payload, now=now_utc):
+            changed = True
         if _refresh_expiration(payload, now=now_utc):
             changed = True
 

@@ -60,7 +60,7 @@ from app.schemas import (
     TransactionStatus,
 )
 from app.services.audit import log_action
-from app.services.campaign_passes import list_recent_checkout_passes, scan_checkout_pass
+from app.services.campaign_passes import list_recent_checkout_passes, reconcile_checkout_pass_state, scan_checkout_pass
 from app.services.runtime_settings import (
     apply_payment_settings_updates,
     get_effective_payment_setting,
@@ -842,6 +842,8 @@ def admin_contact_inbox(
 @router.get("/orders", response_model=list[AdminOrderRow])
 def admin_orders(
     q: Optional[str] = None,
+    payment_status: Optional[str] = Query(default=None, max_length=64),
+    pass_status: Optional[str] = Query(default=None, max_length=64),
     limit: int = Query(default=200, ge=1, le=500),
     offset: int = Query(default=0, ge=0),
     db: Session = Depends(get_db),
@@ -864,15 +866,33 @@ def admin_orders(
             )
         )
 
+    payment_status_filter = str(payment_status or "").strip().lower()
+    pass_status_filter = str(pass_status or "").strip().lower()
+
+    # Status fields live in the flexible checkout payload. Fetch a wider window,
+    # reconcile stale rows, then apply status filters consistently in Python.
+    fetch_limit = max(limit + offset, 500) if (payment_status_filter or pass_status_filter) else limit
+    fetch_offset = 0 if (payment_status_filter or pass_status_filter) else offset
+
     rows = db.scalars(
         query.order_by(WebLeadSubmission.created_at.desc(), WebLeadSubmission.id.desc())
-        .limit(limit)
-        .offset(offset)
+        .limit(fetch_limit)
+        .offset(fetch_offset)
     ).all()
 
     out: list[AdminOrderRow] = []
+    skipped = 0
     for row in rows:
         payload = _parse_payload_json(row.payload_json)
+        payload = reconcile_checkout_pass_state(db, row, payload)
+        if payment_status_filter and str(payload.get("payment_status") or "").strip().lower() != payment_status_filter:
+            continue
+        if pass_status_filter and str(payload.get("pass_status") or "").strip().lower() != pass_status_filter:
+            continue
+        if (payment_status_filter or pass_status_filter) and skipped < offset:
+            skipped += 1
+            continue
+
         customer_name = _first_non_empty(
             row.name,
             row.contact_name,
@@ -935,6 +955,8 @@ def admin_orders(
                 summary=_first_non_empty(row.inquiry, payload.get("notes"), payload.get("inquiry")),
             )
         )
+        if len(out) >= limit:
+            break
 
     return out
 

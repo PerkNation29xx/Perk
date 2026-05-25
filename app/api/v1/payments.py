@@ -24,6 +24,7 @@ from app.services.campaign_passes import (
     ensure_paid_order_pass,
     find_checkout_by_pass_code,
     find_checkout_by_stripe_session_id,
+    reconcile_checkout_pass_state,
 )
 from app.services.runtime_settings import get_effective_payment_setting, get_runtime_setting, normalize_stripe_mode
 from app.core.config import settings
@@ -1119,6 +1120,8 @@ def checkout_status(
             payment_status = str(payload.get("payment_status") or "").strip().lower()
     if payment_status == "paid":
         payload = ensure_paid_order_pass(db, row, notify_customer=True)
+    else:
+        payload = reconcile_checkout_pass_state(db, row, payload)
 
     return _build_checkout_pass_status(row, payload)
 
@@ -1143,6 +1146,8 @@ def _sync_pending_checkout_row(
 
     if payment_status == "paid":
         payload = ensure_paid_order_pass(db, row, notify_customer=True)
+    else:
+        payload = reconcile_checkout_pass_state(db, row, payload)
 
     return row, payload
 

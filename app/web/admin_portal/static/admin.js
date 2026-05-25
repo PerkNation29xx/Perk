@@ -91,6 +91,11 @@ let operatorAccess = {
   is_operator: false,
   can_scan_tickets: false,
 };
+let orderFilters = {
+  q: "",
+  payment_status: "",
+  pass_status: "",
+};
 let ticketScannerRuntime = {
   stream: null,
   pollTimer: 0,
@@ -447,8 +452,18 @@ async function loadContactInbox() {
   return await res.json();
 }
 
-async function loadOrders() {
-  const res = await apiFetch(`${config.api_v1_prefix}/admin/orders?limit=300`);
+async function loadOrders(filters) {
+  const params = new URLSearchParams();
+  params.set("limit", "300");
+  const activeFilters = filters || orderFilters || {};
+  const q = String(activeFilters.q || "").trim();
+  const paymentStatus = String(activeFilters.payment_status || "").trim();
+  const passStatus = String(activeFilters.pass_status || "").trim();
+  if (q) params.set("q", q);
+  if (paymentStatus) params.set("payment_status", paymentStatus);
+  if (passStatus) params.set("pass_status", passStatus);
+
+  const res = await apiFetch(`${config.api_v1_prefix}/admin/orders?${params.toString()}`);
   if (res.status === 403) throw new Error("Forbidden (admin only).");
   if (!res.ok) throw new Error(`Orders failed (${res.status})`);
   return await res.json();
@@ -879,7 +894,7 @@ function orderStatusTag(order) {
   if (statusText === "paid") kind = "ok";
   else if (statusText === "partially_refunded") kind = "warn";
   else if (statusText === "refunded") kind = "danger";
-  else if (statusText === "failed") kind = "danger";
+  else if (statusText === "failed" || statusText === "canceled") kind = "danger";
   else if (statusText === "checkout_created" || statusText === "expired") kind = "warn";
   return tag(statusText, kind);
 }
@@ -902,8 +917,78 @@ function canRefundOrder(order) {
 }
 
 async function renderOrdersView(container) {
-  setViewTitle("Orders", "Checkout submissions and payment status");
-  const orders = await loadOrders();
+  setViewTitle("HSP Transactions", "Search checkout transactions, payment status, passes, and Stripe data");
+  const orders = await loadOrders(orderFilters);
+
+  const searchCard = document.createElement("section");
+  searchCard.className = "card card--tight";
+  searchCard.innerHTML = `
+    <form id="orderSearchForm" class="form" style="max-width: 1120px;">
+      <div class="row" style="align-items: flex-end;">
+        <label class="field" style="flex: 1 1 420px;">
+          <span>Search all transaction data</span>
+          <input id="orderSearchInput" type="search" autocomplete="off" placeholder="Email, phone, pass code, Stripe session, card last4, offer, park..." />
+        </label>
+        <label class="field" style="flex: 0 1 220px;">
+          <span>Payment status</span>
+          <select id="orderPaymentStatusInput" class="select">
+            <option value="">All</option>
+            <option value="paid">paid</option>
+            <option value="checkout_created">checkout_created</option>
+            <option value="pending">pending</option>
+            <option value="expired">expired</option>
+            <option value="failed">failed</option>
+            <option value="canceled">canceled</option>
+            <option value="refunded">refunded</option>
+            <option value="partially_refunded">partially_refunded</option>
+          </select>
+        </label>
+        <label class="field" style="flex: 0 1 220px;">
+          <span>Pass status</span>
+          <select id="orderPassStatusInput" class="select">
+            <option value="">All</option>
+            <option value="active">active</option>
+            <option value="issued">issued</option>
+            <option value="redeemed">redeemed</option>
+            <option value="payment_pending">payment_pending</option>
+            <option value="expired">expired</option>
+            <option value="failed">failed</option>
+            <option value="canceled">canceled</option>
+            <option value="refunded">refunded</option>
+          </select>
+        </label>
+        <button class="btn btn--primary" type="submit">Search</button>
+        <button class="btn btn--ghost" id="orderSearchClearBtn" type="button">Clear</button>
+      </div>
+      <div class="muted small">Showing ${fmtInt(orders.length)} matching HSP checkout transactions. Search covers order payloads, pass codes, Stripe ids, card last4, customer data, offer, park, and source page.</div>
+    </form>
+  `;
+  container.appendChild(searchCard);
+
+  const searchForm = qs("#orderSearchForm", searchCard);
+  const searchInput = qs("#orderSearchInput", searchCard);
+  const paymentStatusInput = qs("#orderPaymentStatusInput", searchCard);
+  const passStatusInput = qs("#orderPassStatusInput", searchCard);
+  const clearBtn = qs("#orderSearchClearBtn", searchCard);
+  searchInput.value = orderFilters.q || "";
+  paymentStatusInput.value = orderFilters.payment_status || "";
+  passStatusInput.value = orderFilters.pass_status || "";
+
+  searchForm.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    orderFilters = {
+      q: searchInput.value.trim(),
+      payment_status: paymentStatusInput.value,
+      pass_status: passStatusInput.value,
+    };
+    await renderCurrentView();
+  });
+
+  clearBtn.addEventListener("click", async () => {
+    orderFilters = { q: "", payment_status: "", pass_status: "" };
+    await renderCurrentView();
+  });
+
   const columns = [
     { label: "ID", key: "id", mono: true },
     { label: "Created", key: "created_at", mono: true },
@@ -930,8 +1015,8 @@ async function renderOrdersView(container) {
         let kind = "";
         if (value === "active") kind = "ok";
         else if (value === "redeemed") kind = "warn";
-        else if (value === "expired") kind = "danger";
-        else if (value === "refunded") kind = "danger";
+        else if (value === "payment_pending") kind = "warn";
+        else if (["expired", "refunded", "failed", "canceled"].includes(value)) kind = "danger";
         return value ? tag(value, kind) : document.createTextNode("");
       }
     },

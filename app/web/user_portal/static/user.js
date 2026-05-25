@@ -1076,8 +1076,34 @@
       return;
     }
 
-    const current = rows.filter((row) => ["active", "issued", "pending"].includes(String(row.pass_status || "pending").toLowerCase()));
-    const past = rows.filter((row) => !["active", "issued", "pending"].includes(String(row.pass_status || "pending").toLowerCase()));
+    const statusLabel = (value) => safeText(value || "")
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+    const effectivePassStatus = (row) => {
+      const passStatus = String(row.pass_status || "").toLowerCase();
+      const paymentStatus = String(row.payment_status || "").toLowerCase();
+      if (passStatus) return passStatus;
+      if (["expired", "failed", "canceled", "cancelled", "refunded"].includes(paymentStatus)) {
+        return paymentStatus === "cancelled" ? "canceled" : paymentStatus;
+      }
+      if (paymentStatus && paymentStatus !== "paid") return "payment_pending";
+      return "payment_pending";
+    };
+    const effectivePaymentStatus = (row) => String(row.payment_status || "pending").toLowerCase();
+
+    const current = rows.filter((row) => {
+      const passStatus = effectivePassStatus(row);
+      const paymentStatus = effectivePaymentStatus(row);
+      return paymentStatus === "paid" && ["active", "issued"].includes(passStatus);
+    });
+    const pending = rows.filter((row) => {
+      const passStatus = effectivePassStatus(row);
+      return ["payment_pending", "pending"].includes(passStatus);
+    });
+    const past = rows.filter((row) => {
+      const passStatus = effectivePassStatus(row);
+      return !["active", "issued", "payment_pending", "pending"].includes(passStatus);
+    });
 
     const renderGroup = (title, groupRows) => {
       const group = document.createElement("div");
@@ -1091,7 +1117,13 @@
       if (!groupRows.length) {
         const empty = document.createElement("div");
         empty.className = "list-item muted";
-        empty.textContent = title === "Current passes" ? "No current passes." : "No past or deactivated passes yet.";
+        if (title === "Current passes") {
+          empty.textContent = "No current passes.";
+        } else if (title === "Pending purchases") {
+          empty.textContent = "No pending purchases.";
+        } else {
+          empty.textContent = "No past or deactivated passes yet.";
+        }
         group.appendChild(empty);
         host.appendChild(group);
         return;
@@ -1103,8 +1135,8 @@
 
       const offerChoice = safeText(row.offer_choice || "Campaign pass");
       const passCode = safeText(row.pass_code || "Pending");
-      const passStatus = safeText(row.pass_status || "pending");
-      const paymentStatus = safeText(row.payment_status || "pending");
+      const passStatus = effectivePassStatus(row);
+      const paymentStatus = effectivePaymentStatus(row);
       const selectedPark = safeText(row.selected_park || "Participating park");
       const expires = row.pass_expires_at ? fmtDateTime(row.pass_expires_at) : "N/A";
       const redeemed = row.pass_redeemed_at ? fmtDateTime(row.pass_redeemed_at) : "";
@@ -1117,9 +1149,9 @@
       item.innerHTML = `
         <div class="row row-space">
           <strong>${offerChoice}</strong>
-          <span class="small muted">${safeText(passStatus)}</span>
+          <span class="small muted">${statusLabel(passStatus)}</span>
         </div>
-        <div class="small muted">Pass: ${passCode} • Payment: ${paymentStatus} • Amount: ${amount}</div>
+        <div class="small muted">Pass: ${passCode} • Payment: ${statusLabel(paymentStatus)} • Amount: ${amount}</div>
         <div class="small muted">${selectedPark} • Expires ${expires}</div>
         ${redeemed ? `<div class="small muted">Deactivated ${redeemed}</div>` : ""}
         <div class="small muted">${paidCard}</div>
@@ -1189,6 +1221,7 @@
     };
 
     renderGroup("Current passes", current);
+    renderGroup("Pending purchases", pending);
     renderGroup("Past and deactivated passes", past);
   }
 
