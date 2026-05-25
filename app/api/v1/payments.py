@@ -161,6 +161,10 @@ def _resolve_public_base_url(request: Optional[Request] = None) -> str:
     return fallback
 
 
+def _canonical_web_base_url() -> str:
+    return "https://perknation.app"
+
+
 def _build_success_url(source_page: str, *, base_url: Optional[str] = None) -> str:
     path = _normalize_source_page_path(source_page)
     host = (base_url or settings.public_web_base_url or "https://perknation.app").rstrip("/")
@@ -1166,10 +1170,10 @@ def public_pass_view(
     package_quantity = str(payload.get("package_quantity") or "1").strip()
     expires_at = _parse_iso_datetime(payload.get("pass_expires_at"))
     redeemed_at = _parse_iso_datetime(payload.get("pass_redeemed_at"))
-    account_url = str(payload.get("pass_account_url") or f"{settings.public_web_base_url.rstrip('/')}/login").strip()
+    account_url = str(payload.get("pass_account_url") or f"{_canonical_web_base_url()}/login").strip()
     wallet_url = str(payload.get("pass_wallet_url") or "").strip()
     google_wallet_url = str(payload.get("pass_google_wallet_url") or "").strip()
-    pdf_url = _pass_pdf_url(payload) or f"{settings.public_web_base_url.rstrip('/')}{settings.api_v1_prefix}/web/payments/pass/{quote(normalized_code, safe='')}/pdf"
+    pdf_url = _pass_pdf_url(payload) or f"{_canonical_web_base_url()}{settings.api_v1_prefix}/web/payments/pass/{quote(normalized_code, safe='')}/pdf"
     pass_link = str(payload.get("pass_view_url") or "").strip()
     qr_payload = str(payload.get("pass_qr_payload") or pass_link or "").strip()
     qr_url = (
@@ -1298,7 +1302,7 @@ def public_pass_view(
       {f'<a class="btn primary walletAction" data-apple-wallet-action href="{escape(wallet_url, quote=True)}" hidden>Add to Apple Wallet</a>' if wallet_url else ''}
       {f'<a class="btn primary walletAction" data-google-wallet-action href="{escape(google_wallet_url, quote=True)}" hidden>Add to Google Wallet</a>' if google_wallet_url else ''}
       <a class="btn walletAction" data-pdf-ticket-action href="{escape(pdf_url, quote=True)}">Download PDF receipt + ticket</a>
-      <a class="btn" href="{escape(settings.public_web_base_url.rstrip('/') + '/hollywood-sports', quote=True)}">Back to offer</a>
+      <a class="btn" href="{escape(_canonical_web_base_url() + '/hollywood-sports', quote=True)}">Back to offer</a>
     </div>
   </article>
   <script>

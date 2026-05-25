@@ -82,7 +82,14 @@ def _to_iso_utc(dt: datetime) -> str:
 
 
 def _web_base_url() -> str:
-    return (settings.public_web_base_url or "https://perknation.app").rstrip("/")
+    configured = (settings.public_web_base_url or "https://perknation.app").strip().rstrip("/")
+    try:
+        host = (urlsplit(configured).hostname or "").lower()
+    except Exception:
+        host = ""
+    if host not in {"perknation.app", "www.perknation.app"}:
+        return "https://perknation.app"
+    return "https://perknation.app"
 
 
 def _api_base_url() -> str:
