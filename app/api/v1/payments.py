@@ -327,14 +327,24 @@ def _checkout_session_to_dict(session_obj) -> dict:
     return {}
 
 
+def _payment_intent_from_checkout_session(checkout_session: dict) -> dict:
+    payment_intent = checkout_session.get("payment_intent") or {}
+    return _checkout_session_to_dict(payment_intent)
+
+
 def _derive_checkout_status(checkout_session: dict) -> str:
     payment_status = str(checkout_session.get("payment_status") or "").strip().lower()
     session_status = str(checkout_session.get("status") or "").strip().lower()
+    payment_intent_status = str(
+        _payment_intent_from_checkout_session(checkout_session).get("status") or ""
+    ).strip().lower()
     if payment_status == "paid":
+        return "paid"
+    if payment_intent_status == "succeeded":
         return "paid"
     if session_status == "expired":
         return "expired"
-    if payment_status in {"failed", "canceled"}:
+    if payment_status in {"failed", "canceled"} or payment_intent_status == "canceled":
         return "failed"
     return "checkout_created"
 
@@ -494,16 +504,29 @@ def _sync_checkout_from_stripe(
         except HTTPException:
             continue
 
-        try:
-            checkout_obj = stripe.checkout.Session.retrieve(
+        checkout_obj = None
+        lookup_errors: list[str] = []
+        for expand_fields in (
+            ["payment_intent.latest_charge.payment_method_details.card"],
+            ["payment_intent"],
+            [],
+        ):
+            try:
+                if expand_fields:
+                    checkout_obj = stripe.checkout.Session.retrieve(session_id_text, expand=expand_fields)
+                else:
+                    checkout_obj = stripe.checkout.Session.retrieve(session_id_text)
+                break
+            except Exception as exc:  # noqa: BLE001
+                lookup_errors.append(str(exc))
+                continue
+        if checkout_obj is None:
+            logger.warning(
+                "Stripe session lookup failed for %s in %s mode: %s",
                 session_id_text,
-                expand=[
-                    "payment_intent.latest_charge.payment_method_details.card",
-                    "payment_intent.charges.data.payment_method_details.card",
-                ],
+                mode,
+                " | ".join(lookup_errors),
             )
-        except Exception as exc:  # noqa: BLE001
-            logger.warning("Stripe session lookup failed for %s in %s mode: %s", session_id_text, mode, exc)
             continue
 
         checkout_session = _checkout_session_to_dict(checkout_obj)

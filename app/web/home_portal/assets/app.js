@@ -115,6 +115,203 @@
   }
   wireThemeToggle();
 
+  function parseAppScriptVersion(){
+    const scriptNode = Array.from(document.querySelectorAll("script[src]"))
+      .find((node)=> String(node.getAttribute("src") || "").includes("assets/app.js"));
+    if(!scriptNode){
+      return "";
+    }
+    try {
+      const scriptUrl = new URL(scriptNode.getAttribute("src"), window.location.origin);
+      return String(scriptUrl.searchParams.get("v") || "").trim();
+    } catch(_err){
+      return "";
+    }
+  }
+
+  function wireBuildBadge(){
+    const footer = document.querySelector("footer.footer .container") || document.querySelector("footer.footer");
+    if(!footer || footer.querySelector("[data-build-badge]")){
+      return;
+    }
+
+    const badge = document.createElement("div");
+    badge.className = "buildBadge";
+    badge.setAttribute("data-build-badge", "1");
+    footer.appendChild(badge);
+
+    const fallbackVersion = parseAppScriptVersion();
+    if(fallbackVersion){
+      badge.textContent = `Build ${fallbackVersion}`;
+    } else {
+      badge.textContent = "Build loading...";
+    }
+
+    fetch("/web/build", { cache: "no-store" })
+      .then((res)=>{
+        if(!res.ok){
+          throw new Error(`build endpoint failed (${res.status})`);
+        }
+        return res.json();
+      })
+      .then((body)=>{
+        const label = String((body && body.label) || "").trim();
+        const builtAt = String((body && body.built_at) || "").trim();
+        if(label && builtAt){
+          badge.textContent = `${label} • ${builtAt}`;
+          return;
+        }
+        if(label){
+          badge.textContent = label;
+          return;
+        }
+        if(builtAt){
+          badge.textContent = `Build ${builtAt}`;
+          return;
+        }
+        if(!fallbackVersion){
+          badge.textContent = "Build unavailable";
+        }
+      })
+      .catch(()=>{
+        if(!fallbackVersion){
+          badge.textContent = "Build unavailable";
+        }
+      });
+  }
+
+  wireBuildBadge();
+
+  const PUBLIC_USER_SESSION_KEY = "pk_user_portal_session_v2";
+  const PUBLIC_MERCHANT_SESSION_KEY = "pk_merchant_portal_session_v1";
+  const PUBLIC_SESSION_KEYS = [
+    { key: PUBLIC_USER_SESSION_KEY, roleHint: "consumer" },
+    { key: PUBLIC_MERCHANT_SESSION_KEY, roleHint: "merchant" },
+    { key: "pk_user_portal_session_v1", roleHint: "consumer" },
+    { key: "perknation_user_session", roleHint: "consumer" },
+    { key: "perknation_merchant_session", roleHint: "merchant" },
+  ];
+
+  function publicPortalPathForRole(role){
+    const normalized = String(role || "").toLowerCase();
+    if(normalized === "merchant") return "/merchant";
+    if(normalized === "admin") return "/admin";
+    return "/user";
+  }
+
+  function publicAccountLabelForRole(role){
+    const normalized = String(role || "").toLowerCase();
+    if(normalized === "merchant") return "Merchant Dashboard";
+    if(normalized === "admin") return "Admin Dashboard";
+    return "My Account";
+  }
+
+  function readStoredPublicSession(key){
+    try{
+      const raw = localStorage.getItem(key);
+      if(!raw) return null;
+      const parsed = JSON.parse(raw);
+      if(!parsed || typeof parsed !== "object") return null;
+      const accessToken = String(
+        parsed.access_token ||
+        parsed.accessToken ||
+        (parsed.session && parsed.session.access_token) ||
+        ""
+      ).trim();
+      if(!accessToken) return null;
+      return {
+        raw: parsed,
+        accessToken,
+        email: String(parsed.email || "").trim().toLowerCase(),
+        expiresAt: Number(parsed.expires_at || parsed.expiresAt || 0),
+      };
+    }catch(_err){
+      return null;
+    }
+  }
+
+  function isStoredPublicSessionExpired(session){
+    if(!session || !session.expiresAt) return false;
+    return Date.now() > ((session.expiresAt * 1000) - 30000);
+  }
+
+  async function resolveStoredPublicSession(){
+    for(const candidate of PUBLIC_SESSION_KEYS){
+      const session = readStoredPublicSession(candidate.key);
+      if(!session || isStoredPublicSessionExpired(session)){
+        continue;
+      }
+      try{
+        const response = await fetch("/v1/auth/me", {
+          cache: "no-store",
+          headers: {
+            "Accept": "application/json",
+            "Authorization": `Bearer ${session.accessToken}`,
+          },
+        });
+        if(!response.ok){
+          if(response.status === 401 || response.status === 403){
+            try{ localStorage.removeItem(candidate.key); }catch(_storageErr){}
+          }
+          continue;
+        }
+        const me = await response.json();
+        const role = String(me.role || candidate.roleHint || "consumer").toLowerCase();
+        return {
+          ...session,
+          email: String(me.email || session.email || "").trim().toLowerCase(),
+          fullName: String(me.full_name || "").trim(),
+          role,
+        };
+      }catch(_err){
+        continue;
+      }
+    }
+    return null;
+  }
+
+  function shouldReplaceWithAccountLink(link){
+    if(!link) return false;
+    let parsed;
+    try{
+      parsed = new URL(link.getAttribute("href") || "", window.location.origin);
+    }catch(_err){
+      return false;
+    }
+    if(parsed.origin !== window.location.origin) return false;
+    const path = parsed.pathname.replace(/\/$/, "") || "/";
+    const hash = String(parsed.hash || "").toLowerCase();
+    if(path === "/login" || path === "/white/login") return true;
+    if(path === "/create-account" || path === "/white/create-account") return true;
+    if((path === "/members" || path === "/white/members") && hash === "#join") return true;
+    return false;
+  }
+
+  function applySignedInPublicUi(session){
+    const portalPath = publicPortalPathForRole(session && session.role);
+    const label = publicAccountLabelForRole(session && session.role);
+    document.body.setAttribute("data-public-auth-state", "signed-in");
+    document.querySelectorAll("a[href]").forEach((link)=>{
+      if(!shouldReplaceWithAccountLink(link)) return;
+      link.setAttribute("href", portalPath);
+      link.setAttribute("data-public-auth-link", "account");
+      link.textContent = label;
+      if(session && session.email){
+        link.setAttribute("title", `Signed in as ${session.email}`);
+      }
+    });
+  }
+
+  function wirePublicAuthState(){
+    void resolveStoredPublicSession().then((session)=>{
+      if(session && session.accessToken){
+        applySignedInPublicUi(session);
+      }
+    });
+  }
+
+  wirePublicAuthState();
+
   // Cookie banner consent (localStorage)
   const cookie = document.querySelector('[data-cookie]');
   const accept = document.querySelector('[data-cookie-accept]');
@@ -166,7 +363,7 @@
     }
 
     if(lower.includes("password") && lower.includes("least")){
-      return "Password is too short. Use at least 6 characters.";
+      return "Password is too short. Use at least 8 characters.";
     }
 
     if(lower.includes("failed to fetch") || lower.includes("networkerror")){
@@ -236,17 +433,38 @@
     return webConfigPromise;
   }
 
+  function withRedirectParam(url, redirectTo){
+    if(!redirectTo) return url;
+    try {
+      const parsed = new URL(url, window.location.origin);
+      parsed.searchParams.set("redirect_to", redirectTo);
+      return parsed.toString();
+    } catch(_err){
+      return url;
+    }
+  }
+
   async function supabaseSignUp(payload){
     const cfg = await loadWebConfig();
-    const response = await fetch(`${cfg.supabase_url}/auth/v1/signup`, {
+    const redirectTo = String(cfg.auth_email_redirect_url || `${window.location.origin}/login`);
+    const response = await fetch(withRedirectParam(`${cfg.supabase_url}/auth/v1/signup`, redirectTo), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Accept": "application/json",
         "apikey": cfg.supabase_anon_key,
-        "Authorization": `Bearer ${cfg.supabase_anon_key}`
+        "Authorization": `Bearer ${cfg.supabase_anon_key}`,
+        "redirect_to": redirectTo
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+        ...payload,
+        options: {
+          ...(payload && payload.options ? payload.options : {}),
+          data: (payload && payload.data) || {},
+          emailRedirectTo: redirectTo,
+          redirectTo
+        }
+      })
     });
 
     const data = await readJsonResponse(response);
@@ -301,8 +519,8 @@
     if(!fullName || !email || !password){
       throw new Error("Full name, email, and password are required.");
     }
-    if(password.length < 6){
-      throw new Error("Password must be at least 6 characters.");
+    if(password.length < 8){
+      throw new Error("Password must be at least 8 characters.");
     }
     if(password !== confirmPassword){
       throw new Error("Passwords do not match.");
@@ -352,7 +570,7 @@
             loginMsg.includes("not confirmed") ||
             loginMsg.includes("confirm")
           ){
-            throw new Error("This account exists but email is not verified yet. Please wait a few minutes, then use Login page and resend verification.");
+            throw new Error("This account exists but email is not verified yet. Check your spam/junk folder, then use Login page to resend verification.");
           }
           throw new Error("Sign-up email sending is temporarily rate-limited. Please wait a few minutes and try again.");
         }
@@ -365,19 +583,30 @@
       throw new Error("Email already registered. Please log in instead.");
     }
 
-    const maybeAccessToken =
+    let maybeAccessToken =
       (result && result.access_token) ||
       (result && result.session && result.session.access_token) ||
       null;
+    if(!maybeAccessToken){
+      try{
+        const loginEnvelope = await supabaseSignIn(email, password);
+        maybeAccessToken =
+          (loginEnvelope && loginEnvelope.access_token) ||
+          (loginEnvelope && loginEnvelope.session && loginEnvelope.session.access_token) ||
+          null;
+      }catch(_signInErr){
+        // Keep signup success even if immediate sign-in fails.
+      }
+    }
     await bootstrapBackendUser(maybeAccessToken);
 
     // Keep CRM lead capture for the marketing site.
     try {
-      await submitFormToBackend("guest", {
+      await submitFormToBackend("member", {
         full_name: fullName,
-        address: String(data.address || "").trim(),
-        phone: phone,
+        phone,
         email,
+        address: String(data.address || "").trim(),
         dob: String(data.dob || "").trim(),
         live_account_created: "true"
       });
@@ -388,7 +617,7 @@
     form.reset();
     setToast(
       form,
-      "Account created. Check your email to verify, then sign in at /login.",
+      "Account created. Check your inbox and spam/junk for the verification email, then sign in.",
       false
     );
   }
@@ -404,8 +633,8 @@
     if(!email || !password || !contactName || !company){
       throw new Error("Company, contact name, email, and password are required.");
     }
-    if(password.length < 6){
-      throw new Error("Password must be at least 6 characters.");
+    if(password.length < 8){
+      throw new Error("Password must be at least 8 characters.");
     }
     if(password !== confirmPassword){
       throw new Error("Passwords do not match.");
@@ -455,7 +684,7 @@
             loginMsg.includes("not confirmed") ||
             loginMsg.includes("confirm")
           ){
-            throw new Error("This account exists but email is not verified yet. Please wait a few minutes, then use Login page and resend verification.");
+            throw new Error("This account exists but email is not verified yet. Check your spam/junk folder, then use Login page to resend verification.");
           }
           throw new Error("Sign-up email sending is temporarily rate-limited. Please wait a few minutes and try again.");
         }
@@ -467,10 +696,21 @@
       throw new Error("Email already registered. Please log in instead.");
     }
 
-    const maybeAccessToken =
+    let maybeAccessToken =
       (result && result.access_token) ||
       (result && result.session && result.session.access_token) ||
       null;
+    if(!maybeAccessToken){
+      try{
+        const loginEnvelope = await supabaseSignIn(email, password);
+        maybeAccessToken =
+          (loginEnvelope && loginEnvelope.access_token) ||
+          (loginEnvelope && loginEnvelope.session && loginEnvelope.session.access_token) ||
+          null;
+      }catch(_signInErr){
+        // Keep signup success even if immediate sign-in fails.
+      }
+    }
     await bootstrapBackendUser(maybeAccessToken);
 
     try {
@@ -490,7 +730,7 @@
     form.reset();
     setToast(
       form,
-      "Merchant account created. Verify email, then sign in at /login.",
+      "Merchant account created. You can log in now.",
       false
     );
   }
@@ -544,7 +784,7 @@
     });
   }
 
-  wireForm('[data-form="guest"]', 'perknation_guest_leads', 'guest');
+  wireForm('[data-form="member"]', 'perknation_member_leads', 'member');
   wireForm('[data-form="merchant"]', 'perknation_merchant_leads', 'merchant');
   wireForm('[data-form="contact"]', 'perknation_contact_leads', 'contact');
 
@@ -575,6 +815,167 @@
       }, 12000);
     }
   }
+
+  function collectHomeAssistantHistory(messagesNode){
+    if(!messagesNode) return [];
+    return Array.from(messagesNode.querySelectorAll(".aiBubble"))
+      .map((node)=>{
+        const role = node.classList.contains("user") ? "user" : "assistant";
+        const content = String(node.textContent || "").trim();
+        return { role, content };
+      })
+      .filter((entry)=> entry.content.length > 0)
+      .slice(-20);
+  }
+
+  function appendHomeAssistantMessage(messagesNode, role, text){
+    if(!messagesNode) return;
+    const bubble = document.createElement("div");
+    bubble.className = `aiBubble ${role === "user" ? "user" : "assistant"}`;
+    bubble.textContent = String(text || "").trim();
+    messagesNode.appendChild(bubble);
+    messagesNode.scrollTop = messagesNode.scrollHeight;
+  }
+
+  function tryGetBrowserLocation(){
+    if(!("geolocation" in navigator)){
+      return Promise.resolve(null);
+    }
+
+    return new Promise((resolve)=>{
+      let settled = false;
+      const finish = (value)=>{
+        if(settled) return;
+        settled = true;
+        resolve(value);
+      };
+
+      const timer = window.setTimeout(()=> finish(null), 4500);
+      navigator.geolocation.getCurrentPosition(
+        (position)=>{
+          window.clearTimeout(timer);
+          finish({
+            latitude: Number(position.coords.latitude),
+            longitude: Number(position.coords.longitude),
+          });
+        },
+        ()=>{
+          window.clearTimeout(timer);
+          finish(null);
+        },
+        {
+          enableHighAccuracy: false,
+          timeout: 4000,
+          maximumAge: 180000,
+        }
+      );
+    });
+  }
+
+  function shouldIncludeGeoHint(message){
+    const text = String(message || "").toLowerCase();
+    return (
+      text.includes("near") ||
+      text.includes("nearby") ||
+      text.includes("local") ||
+      text.includes("around") ||
+      text.includes("pasadena") ||
+      text.includes("los angeles") ||
+      text.includes("la ")
+    );
+  }
+
+  function wireHomepageAssistant(){
+    const form = document.querySelector("[data-home-ai-form]");
+    const messages = document.querySelector("[data-home-ai-messages]");
+    const status = document.querySelector("[data-home-ai-status]");
+    const input = document.querySelector("[data-home-ai-input]");
+    const sendBtn = document.querySelector("[data-home-ai-send]");
+    const clearBtn = document.querySelector("[data-home-ai-clear]");
+    if(!form || !messages || !input || !sendBtn){
+      return;
+    }
+
+    const setStatus = (value)=>{
+      if(status){
+        status.textContent = String(value || "").trim();
+      }
+    };
+
+    if(clearBtn){
+      clearBtn.addEventListener("click", ()=>{
+        messages.innerHTML = "";
+        appendHomeAssistantMessage(
+          messages,
+          "assistant",
+          "Tell me where you are and what you are in the mood for, and I will recommend local places with active Perk Nation offers when available."
+        );
+        setStatus("Cleared. Ask for local recommendations anytime.");
+      });
+    }
+
+    form.addEventListener("submit", async (event)=>{
+      event.preventDefault();
+      const message = String(input.value || "").trim();
+      if(!message) return;
+
+      appendHomeAssistantMessage(messages, "user", message);
+      input.value = "";
+      input.focus();
+      sendBtn.disabled = true;
+      if(clearBtn) clearBtn.disabled = true;
+      setStatus("Finding local recommendations...");
+
+      try {
+        const includeGeo = shouldIncludeGeoHint(message);
+        const coords = includeGeo ? await tryGetBrowserLocation() : null;
+        const history = collectHomeAssistantHistory(messages);
+
+        const response = await fetch("/v1/ai/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+          },
+          body: JSON.stringify({
+            message,
+            context: "public",
+            history,
+            user_latitude: coords ? coords.latitude : null,
+            user_longitude: coords ? coords.longitude : null,
+          }),
+        });
+
+        const payload = await readJsonResponse(response);
+        if(!response.ok){
+          const detail = payload.detail || payload.message || `AI request failed (${response.status})`;
+          throw new Error(detail);
+        }
+
+        const answer = String(payload.answer || "").trim();
+        if(!answer){
+          throw new Error("AI returned an empty response.");
+        }
+
+        appendHomeAssistantMessage(messages, "assistant", answer);
+        const model = String(payload.model || "").trim();
+        setStatus(model ? `Answered by ${model}.` : "Answered by Perk Nation AI.");
+      } catch(err){
+        appendHomeAssistantMessage(
+          messages,
+          "assistant",
+          "I could not complete that request right now. Try asking with your neighborhood (for example: Old Pasadena, Santa Monica, or Culver City)."
+        );
+        const reason = (err && err.message) ? String(err.message) : "temporary error";
+        setStatus(`Assistant unavailable (${reason}).`);
+      } finally {
+        sendBtn.disabled = false;
+        if(clearBtn) clearBtn.disabled = false;
+      }
+    });
+  }
+
+  wireHomepageAssistant();
 
   document.querySelectorAll('[data-acc]').forEach((item)=>{
     const btn = item.querySelector('button');

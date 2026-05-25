@@ -827,7 +827,7 @@
   </div>
 </div>
 
-<script src="assets/app.js?v=20260406a"></script>
+<script src="assets/app.js?v=20260525a"></script>
 <script>
   (() => {
     const form = document.querySelector("[data-hsp-chat-form]");
@@ -978,6 +978,7 @@
     const passPanel = form.querySelector("[data-hsp-pass-panel]");
     const loginLink = form.querySelector("[data-hsp-login-link]");
     const createAccountLink = form.querySelector("[data-hsp-create-link]");
+    const accountModeInput = form.querySelector('[name="account_mode"]');
     const accountHint = form.querySelector("[data-hsp-account-hint]");
     const emailField = form.querySelector("[data-hsp-email]");
     const phoneField = form.querySelector("[data-hsp-phone]");
@@ -997,6 +998,13 @@
       "hsp-campaign": ""
     };
     const accountStorageKey = "perknation_hsp_checkout_auth";
+    const storedSessionKeys = [
+      { key: "pk_user_portal_session_v2", roleHint: "consumer" },
+      { key: "pk_merchant_portal_session_v1", roleHint: "merchant" },
+      { key: "pk_user_portal_session_v1", roleHint: "consumer" },
+      { key: "perknation_user_session", roleHint: "consumer" },
+      { key: "perknation_merchant_session", roleHint: "merchant" }
+    ];
     let webConfigPromise = null;
     let signedInSession = null;
 
@@ -1131,12 +1139,55 @@
       const parts = cleaned.split(/\s+/).filter(Boolean);
       return { first: parts[0] || "", last: parts.slice(1).join(" ") };
     };
-    const userSessionKey = "pk_user_portal_session_v2";
     const clearSignedInSession = () => {
       signedInSession = null;
     };
     const setSignedInSession = (session) => {
       signedInSession = session && session.accessToken ? session : null;
+    };
+    const portalPathForRole = (role) => {
+      const normalized = String(role || "").toLowerCase();
+      if (normalized === "merchant") return "/merchant";
+      if (normalized === "admin") return "/admin";
+      return "/user";
+    };
+    const accountLinkLabelForRole = (role) => {
+      const normalized = String(role || "").toLowerCase();
+      if (normalized === "merchant") return "Open merchant dashboard";
+      if (normalized === "admin") return "Open admin dashboard";
+      return "Open account";
+    };
+    const sessionAccessToken = (session) => String(
+      session?.access_token ||
+      session?.accessToken ||
+      (session?.session && session.session.access_token) ||
+      ""
+    ).trim();
+    const sessionExpiresAt = (session) => Number(session?.expires_at || session?.expiresAt || 0);
+    const isStoredSessionExpired = (session) => {
+      const expiresAt = sessionExpiresAt(session);
+      if (!expiresAt) return false;
+      return Date.now() > ((expiresAt * 1000) - 30000);
+    };
+    const storedSessionCandidates = () => {
+      const candidates = [];
+      storedSessionKeys.forEach((entry) => {
+        try {
+          const raw = localStorage.getItem(entry.key);
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+          const token = sessionAccessToken(parsed);
+          if (!token || isStoredSessionExpired(parsed)) return;
+          candidates.push({
+            ...entry,
+            token,
+            email: normalizeEmail(parsed?.email || ""),
+          });
+        } catch (_error) {
+          // Ignore invalid local session snapshots.
+        }
+      });
+      return candidates;
     };
     const buildCheckoutNextPath = () => {
       const offerCode = String(offerCodeField?.value || "hsp-campaign").trim();
@@ -1146,18 +1197,46 @@
       return `${checkoutSourcePage}?${params.toString()}#buy-now`;
     };
     const syncAuthLinks = () => {
+      if (signedInSession && signedInSession.accessToken) {
+        const role = signedInSession.role || "consumer";
+        const portalPath = portalPathForRole(role);
+        if (loginLink) {
+          loginLink.hidden = false;
+          loginLink.textContent = accountLinkLabelForRole(role);
+          loginLink.setAttribute("href", portalPath);
+          if (signedInSession.email) {
+            loginLink.setAttribute("title", `Signed in as ${signedInSession.email}`);
+          }
+        }
+        if (createAccountLink) {
+          createAccountLink.hidden = true;
+        }
+        if (accountModeInput) {
+          accountModeInput.value = "signed_in";
+        }
+        return;
+      }
+
       const nextPath = encodeURIComponent(buildCheckoutNextPath());
       if (loginLink) {
+        loginLink.hidden = false;
+        loginLink.textContent = "Sign in before purchase";
+        loginLink.removeAttribute("title");
         loginLink.setAttribute("href", `/login?next=${nextPath}`);
       }
       if (createAccountLink) {
+        createAccountLink.hidden = false;
+        createAccountLink.textContent = "Create account";
         createAccountLink.setAttribute("href", `/create-account?next=${nextPath}`);
+      }
+      if (accountModeInput) {
+        accountModeInput.value = "login";
       }
     };
     const setAccountHint = () => {
       if (!accountHint) return;
       if (signedInSession && signedInSession.email) {
-        accountHint.textContent = `Signed in as ${signedInSession.email}. Continue with Buy now.`;
+        accountHint.textContent = `Signed in as ${signedInSession.email}. Your pass will be saved to this account.`;
         return;
       }
       accountHint.textContent = "Sign in before purchase so your pass is attached to your account.";
@@ -1165,55 +1244,44 @@
     const hydrateSignedInSession = async () => {
       clearSignedInSession();
       try {
-        const raw = localStorage.getItem(userSessionKey);
-        if (!raw) {
-          setAccountHint();
-          return;
+        const candidates = storedSessionCandidates();
+        for (const candidate of candidates) {
+          const meRes = await fetch("/v1/auth/me", {
+            cache: "no-store",
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${candidate.token}`,
+            },
+          });
+          if (!meRes.ok) {
+            if (meRes.status === 401 || meRes.status === 403) {
+              try { localStorage.removeItem(candidate.key); } catch (_storageError) {}
+            }
+            continue;
+          }
+          const me = await meRes.json();
+          const meEmail = normalizeEmail(me?.email || candidate.email || "");
+          const meFullName = normalizeText(me?.full_name || "");
+          const mePhone = normalizePhone(me?.phone || "");
+          const role = normalizeText(me?.role || candidate.roleHint || "consumer").toLowerCase();
+          const parts = splitFirstLast(meFullName);
+          setSignedInSession({
+            accessToken: candidate.token,
+            email: meEmail,
+            fullName: meFullName,
+            firstName: parts.first,
+            lastName: parts.last,
+            phone: mePhone,
+            role,
+          });
+          if (emailField && meEmail) emailField.value = meEmail;
+          if (phoneField && mePhone && !phoneField.value) phoneField.value = mePhone;
+          break;
         }
-        const parsed = JSON.parse(raw);
-        const token = String(parsed?.access_token || "").trim();
-        const savedEmail = normalizeEmail(parsed?.email || "");
-        if (!token) {
-          setAccountHint();
-          return;
-        }
-        setSignedInSession({
-          accessToken: token,
-          email: savedEmail,
-          fullName: "",
-          firstName: "",
-          lastName: "",
-          phone: "",
-        });
-        const meRes = await fetch("/v1/auth/me", {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!meRes.ok) {
-          clearSignedInSession();
-          setAccountHint();
-          return;
-        }
-        const me = await meRes.json();
-        const meEmail = normalizeEmail(me?.email || savedEmail);
-        const meFullName = normalizeText(me?.full_name || "");
-        const mePhone = normalizePhone(me?.phone || "");
-        const parts = splitFirstLast(meFullName);
-        setSignedInSession({
-          accessToken: token,
-          email: meEmail,
-          fullName: meFullName,
-          firstName: parts.first,
-          lastName: parts.last,
-          phone: mePhone,
-        });
-        if (emailField && !emailField.value && meEmail) emailField.value = meEmail;
-        if (phoneField && !phoneField.value && mePhone) phoneField.value = mePhone;
       } catch (_error) {
         clearSignedInSession();
       } finally {
+        syncAuthLinks();
         setAccountHint();
       }
     };
@@ -1273,15 +1341,16 @@
         firstName: parts.first,
         lastName: parts.last,
         phone: resolvedPhone,
+        role: signedInSession?.role || "consumer",
       });
 
-      data.account_mode = "login";
+      data.account_mode = "signed_in";
       data.email = resolvedEmail;
       data.phone = resolvedPhone;
       data.full_name = resolvedFullName;
 
       return {
-        mode: "login",
+        mode: "signed_in",
         email: resolvedEmail,
         phone: resolvedPhone,
         firstName: parts.first,
@@ -1339,7 +1408,10 @@
       const expiresText = passExpiresAt && !Number.isNaN(passExpiresAt.getTime())
         ? passExpiresAt.toLocaleString()
         : "N/A";
-      const accountUrl = String(receipt.pass_account_url || "/login").trim();
+      const accountUrl = String(
+        receipt.pass_account_url ||
+        (signedInSession && signedInSession.accessToken ? portalPathForRole(signedInSession.role) : "/login")
+      ).trim();
       const walletUrl = String(receipt.pass_wallet_url || "").trim();
       const googleWalletUrl = String(receipt.pass_google_wallet_url || "").trim();
       const pdfUrl = String(receipt.pass_pdf_url || "").trim();
