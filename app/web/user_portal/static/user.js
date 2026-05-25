@@ -94,7 +94,7 @@
     }
 
     if (lower.includes("not confirmed") || lower.includes("not verified") || lower.includes("confirm")) {
-      return "Your email is not verified yet. Open the email link, then log in.";
+      return "Your email is not verified yet. Check inbox and spam/junk for the PerkNation email from cs@perknation.app, open the link, then log in.";
     }
 
     if (lower.includes("failed to fetch") || lower.includes("networkerror")) {
@@ -109,6 +109,11 @@
     return lower.includes("over_email_send_rate_limit") || lower.includes("email rate limit exceeded");
   }
 
+  function isInvalidCredentialError(rawMessage) {
+    const lower = String(rawMessage || "").toLowerCase();
+    return lower.includes("invalid login credentials") || lower.includes("email or password is incorrect");
+  }
+
   function normalizeRadius(value) {
     const n = Number(value);
     if (n === 2 || n === 5 || n === 10) return n;
@@ -117,6 +122,70 @@
 
   function qrImageUrl(payload) {
     return `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(payload)}`;
+  }
+
+  function fmtCents(cents) {
+    const n = Number(cents);
+    if (!Number.isFinite(n)) return "N/A";
+    return fmtUsd(n / 100);
+  }
+
+  function isIphoneWalletSupported() {
+    const ua = navigator.userAgent || "";
+    return /iPhone|iPod/.test(ua) && /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
+  }
+
+  function isAndroidDevice() {
+    return /Android/i.test(navigator.userAgent || "");
+  }
+
+  function bindPasswordToggleButtons(root) {
+    qsa("[data-password-toggle]", root || document).forEach((toggleBtn) => {
+      if (!toggleBtn || toggleBtn.dataset.bound === "1") return;
+      const targetId = String(toggleBtn.getAttribute("data-password-target") || "").trim();
+      if (!targetId) return;
+      const input = document.getElementById(targetId);
+      if (!input) return;
+
+      const setState = (visible) => {
+        input.setAttribute("type", visible ? "text" : "password");
+        toggleBtn.textContent = visible ? "Hide" : "Show";
+        toggleBtn.setAttribute("aria-pressed", visible ? "true" : "false");
+      };
+
+      setState(String(toggleBtn.getAttribute("aria-pressed")) === "true");
+      toggleBtn.addEventListener("click", () => {
+        setState(input.type === "password");
+        if (typeof input.focus === "function") {
+          input.focus({ preventScroll: true });
+        }
+      });
+      toggleBtn.dataset.bound = "1";
+    });
+  }
+
+  function signUpPasswordValidationError() {
+    const password = safeText(qs("#signUpPasswordInput") && qs("#signUpPasswordInput").value);
+    const confirm = safeText(qs("#signUpPasswordConfirmInput") && qs("#signUpPasswordConfirmInput").value);
+    if (!password && !confirm) return "";
+    if (password && password.length < 8) return "Password must be at least 8 characters.";
+    if (confirm && password !== confirm) return "Passwords do not match.";
+    return "";
+  }
+
+  function updateSignUpPasswordHint() {
+    const hint = qs("#signUpHint");
+    if (!hint) return;
+    const message = signUpPasswordValidationError();
+    if (message) {
+      hint.textContent = message;
+      hint.classList.add("hint-error");
+      return;
+    }
+    if (hint.classList.contains("hint-error")) {
+      hint.classList.remove("hint-error");
+      hint.textContent = "";
+    }
   }
 
   const OFFER_PHOTO_POOL = [
@@ -177,6 +246,7 @@
     offers: [],
     transactions: [],
     rewards: [],
+    checkoutPasses: [],
     investment: null,
     referral: null,
     supportTickets: [],
@@ -193,6 +263,98 @@
     reviewModalOffer: null,
     reviewModalOverall: 5,
   };
+
+  const CHECKOUT_OFFER_CHOICES = {
+    mini: "$1 mini test pass (live qa)",
+    admission: "$5 admission promo (save $60+)",
+    bundle: "$70 bundle (12 park passes, $500+ value)",
+  };
+
+  function inferCheckoutOfferChoice(offer) {
+    const haystack = `${safeText(offer && offer.title)} ${safeText(offer && offer.terms_text)}`.toLowerCase();
+    if ((haystack.includes("$1") && haystack.includes("mini")) || haystack.includes("mini test pass")) {
+      return CHECKOUT_OFFER_CHOICES.mini;
+    }
+    if (haystack.includes("$70") || haystack.includes("12 park") || haystack.includes("bundle")) {
+      return CHECKOUT_OFFER_CHOICES.bundle;
+    }
+    if (haystack.includes("$5") || haystack.includes("admission promo") || haystack.includes("save $60")) {
+      return CHECKOUT_OFFER_CHOICES.admission;
+    }
+    return null;
+  }
+
+  async function startOfferCheckout(offer) {
+    const offerChoice = inferCheckoutOfferChoice(offer);
+    if (!offerChoice) {
+      throw new Error("This offer is not configured for direct checkout yet.");
+    }
+
+    const accountEmail = safeText(state.me && state.me.email).trim() || safeText(state.session && state.session.email).trim();
+    const payload = {
+      source_page: window.location.pathname || "/user",
+      offer_choice: offerChoice,
+      package_quantity: "1",
+      selected_offer: safeText(offer && offer.title).slice(0, 255) || offerChoice,
+      selected_park: safeText(offer && offer.location_name).slice(0, 255) || null,
+      full_name: safeText(state.me && state.me.full_name).slice(0, 255) || null,
+      email: accountEmail || null,
+      phone: safeText(state.me && state.me.phone).slice(0, 64) || null,
+      account_email: accountEmail || null,
+      account_full_name: safeText(state.me && state.me.full_name).slice(0, 255) || null,
+      account_phone: safeText(state.me && state.me.phone).slice(0, 64) || null,
+      account_mode: "consumer",
+    };
+
+    const { body } = await apiJson(`${config.api_v1_prefix}/web/payments/apple-pay/checkout-session`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    const checkoutUrl = safeText(body && body.checkout_url).trim();
+    if (!checkoutUrl) {
+      throw new Error("Could not start checkout right now.");
+    }
+    showStatus("Redirecting to secure checkout...", false);
+    window.location.assign(checkoutUrl);
+  }
+
+  async function handleCheckoutReturn() {
+    const params = new URLSearchParams(window.location.search || "");
+    const payment = String(params.get("payment") || "").toLowerCase();
+    if (!payment) return;
+
+    try {
+      if (payment === "cancelled") {
+        showStatus("Checkout cancelled. You can try again anytime.", true);
+        return;
+      }
+
+      if (payment === "success") {
+        const sessionId = safeText(params.get("session_id")).trim();
+        if (sessionId) {
+          const { body } = await apiJson(
+            `${config.api_v1_prefix}/web/payments/checkout-status?session_id=${encodeURIComponent(sessionId)}`,
+            { method: "GET" },
+            [404]
+          );
+          const passCode = safeText(body && body.pass_code).trim();
+          if (passCode) {
+            showStatus(`Payment confirmed. Pass ${passCode} is now in Wallet > Park entry passes.`, false);
+          } else {
+            showStatus("Payment confirmed. Your pass is being prepared and will appear in Wallet shortly.", false);
+          }
+        } else {
+          showStatus("Payment confirmed. Open Wallet > Park entry passes to view your ticket.", false);
+        }
+      }
+    } finally {
+      params.delete("payment");
+      params.delete("session_id");
+      const query = params.toString();
+      const nextUrl = `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash || ""}`;
+      window.history.replaceState({}, "", nextUrl);
+    }
+  }
 
   function resetAiConversation() {
     state.aiConversation = [
@@ -262,8 +424,27 @@
     config = data;
   }
 
-  async function supabasePost(path, payload) {
-    const url = `${config.supabase_url}${path}`;
+  function withRedirectParam(url, redirectTo) {
+    if (!redirectTo) return url;
+    try {
+      const parsed = new URL(url, window.location.origin);
+      parsed.searchParams.set("redirect_to", redirectTo);
+      return parsed.toString();
+    } catch {
+      return url;
+    }
+  }
+
+  function authEmailRedirectUrl() {
+    return String(config.auth_email_redirect_url || `${window.location.origin}/login`);
+  }
+
+  function authPasswordResetRedirectUrl() {
+    return String(config.auth_password_reset_redirect_url || `${window.location.origin}/reset-password`);
+  }
+
+  async function supabasePost(path, payload, redirectTo) {
+    const url = withRedirectParam(`${config.supabase_url}${path}`, redirectTo || "");
     const res = await fetch(url, {
       method: "POST",
       headers: {
@@ -271,6 +452,7 @@
         "Accept": "application/json",
         "apikey": config.supabase_anon_key,
         "Authorization": `Bearer ${config.supabase_anon_key}`,
+        ...(redirectTo ? { redirect_to: redirectTo } : {}),
       },
       body: JSON.stringify(payload),
     });
@@ -284,11 +466,18 @@
   }
 
   async function supabaseSignUp(email, password, metadata) {
+    const redirectTo = authEmailRedirectUrl();
+    const profileData = metadata || {};
     const body = await supabasePost("/auth/v1/signup", {
       email,
       password,
-      data: metadata,
-    });
+      data: profileData,
+      options: {
+        data: profileData,
+        emailRedirectTo: redirectTo,
+        redirectTo,
+      },
+    }, redirectTo);
 
     if (body.user && Array.isArray(body.user.identities) && body.user.identities.length === 0) {
       throw new Error("Email already registered. Please log in.");
@@ -311,10 +500,26 @@
   }
 
   async function supabaseResendSignupConfirmation(email) {
+    const redirectTo = authEmailRedirectUrl();
     await supabasePost("/auth/v1/resend", {
       type: "signup",
       email,
-    });
+      options: {
+        emailRedirectTo: redirectTo,
+        redirectTo,
+      },
+    }, redirectTo);
+  }
+
+  async function supabaseRequestPasswordReset(email) {
+    const redirectTo = authPasswordResetRedirectUrl();
+    await supabasePost("/auth/v1/recover", {
+      email,
+      options: {
+        emailRedirectTo: redirectTo,
+        redirectTo,
+      },
+    }, redirectTo);
   }
 
   function envelopeToSession(email, envelope) {
@@ -403,18 +608,36 @@
     logInTab.classList.toggle("is-active", !signUp);
     signUpTab.setAttribute("aria-selected", signUp ? "true" : "false");
     logInTab.setAttribute("aria-selected", !signUp ? "true" : "false");
+    if (!signUp) {
+      const hint = qs("#signUpHint");
+      if (hint && hint.classList.contains("hint-error")) {
+        hint.classList.remove("hint-error");
+        hint.textContent = "";
+      }
+    }
   }
 
   function updateAuthUi() {
     const session = state.session || loadSession();
     const signedIn = !!(session && session.access_token);
+    const logoutBtn = qs("#logoutBtn");
+    const refreshBtn = qs("#refreshAllBtn");
+    const signedOutTopLinks = qs("#signedOutTopLinks");
+    const topConsumerMenu = qs("#topConsumerMenu");
 
     qs("#sessionPill").textContent = signedIn
       ? `Signed in: ${session.email || "consumer"}`
       : "Signed out";
 
-    qs("#logoutBtn").disabled = !signedIn;
-    qs("#refreshAllBtn").disabled = !signedIn;
+    logoutBtn.disabled = !signedIn;
+    refreshBtn.disabled = !signedIn;
+    logoutBtn.hidden = !signedIn;
+    refreshBtn.hidden = !signedIn;
+    if (signedOutTopLinks) signedOutTopLinks.hidden = signedIn;
+    if (topConsumerMenu) {
+      topConsumerMenu.hidden = !signedIn;
+      if (!signedIn) topConsumerMenu.open = false;
+    }
     qs("#authCard").hidden = signedIn;
     qs("#appSection").hidden = !signedIn;
 
@@ -424,6 +647,42 @@
       resetAiConversation();
       renderAiAssistant();
     }
+  }
+
+  function closeTopConsumerMenu() {
+    const menu = qs("#topConsumerMenu");
+    if (menu && menu.open) menu.open = false;
+  }
+
+  function goToMoreSection(sectionId) {
+    switchPanel("more");
+    if (!sectionId) return;
+    window.requestAnimationFrame(() => {
+      const target = qs(`#${sectionId}`);
+      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+  function performLogout() {
+    clearSession();
+    state.me = null;
+    state.offers = [];
+    state.transactions = [];
+    state.rewards = [];
+    state.checkoutPasses = [];
+    state.investment = null;
+    state.referral = null;
+    state.supportTickets = [];
+    state.reviewsByMerchant = {};
+    state.reviewModalOffer = null;
+    state.reviewModalOverall = 5;
+    resetAiConversation();
+    stopLocationTracking();
+    updateAuthUi();
+    switchAuthMode("login");
+    switchPanel("discover");
+    renderAiAssistant();
+    showStatus("Signed out.", false);
   }
 
   function switchPanel(view) {
@@ -703,24 +962,23 @@
     codeBtn.onclick = () => openOfferCodeModal(offer);
     actions.appendChild(codeBtn);
 
+    const checkoutOfferChoice = inferCheckoutOfferChoice(offer);
     const payBtn = document.createElement("button");
     payBtn.className = "btn btn-primary";
     payBtn.type = "button";
-    payBtn.textContent = "Simulate purchase";
-    payBtn.disabled = !offer.is_activated;
+    payBtn.textContent = "Buy now";
+    payBtn.disabled = !offer.is_activated || !checkoutOfferChoice;
+    if (!checkoutOfferChoice) {
+      payBtn.title = "Checkout is not configured for this offer yet.";
+    }
     payBtn.onclick = async () => {
       payBtn.disabled = true;
       try {
-        const amount = Number(qs("#purchaseAmountInput").value);
-        if (!Number.isFinite(amount) || amount <= 0) {
-          throw new Error("Enter a valid purchase amount.");
-        }
-        await simulatePurchase(offer.id, amount);
-        await refreshConsumerData();
+        await startOfferCheckout(offer);
       } catch (err) {
         showStatus(err.message || String(err), true);
       } finally {
-        payBtn.disabled = !offer.is_activated;
+        payBtn.disabled = !offer.is_activated || !checkoutOfferChoice;
       }
     };
     actions.appendChild(payBtn);
@@ -803,6 +1061,182 @@
         <div class="small muted">${safeText(reward.reward_type)} • ${fmtPct(reward.rate_applied)} • Reward #${safeText(reward.id)}</div>
         <div class="small muted">${safeText(reward.state)} • ${fmtDateTime(reward.created_at)}</div>
       `;
+      host.appendChild(item);
+    });
+  }
+
+  function renderCheckoutPasses() {
+    const host = qs("#checkoutPassesWrap");
+    if (!host) return;
+    host.innerHTML = "";
+
+    const rows = Array.isArray(state.checkoutPasses) ? state.checkoutPasses : [];
+    if (!rows.length) {
+      host.innerHTML = `<div class="list-item muted">No paid campaign passes yet.</div>`;
+      return;
+    }
+
+    const current = rows.filter((row) => ["active", "issued", "pending"].includes(String(row.pass_status || "pending").toLowerCase()));
+    const past = rows.filter((row) => !["active", "issued", "pending"].includes(String(row.pass_status || "pending").toLowerCase()));
+
+    const renderGroup = (title, groupRows) => {
+      const group = document.createElement("div");
+      group.className = "checkoutPassGroup";
+      const heading = document.createElement("div");
+      heading.className = "small muted";
+      heading.style.margin = "10px 0 6px";
+      heading.textContent = title;
+      group.appendChild(heading);
+
+      if (!groupRows.length) {
+        const empty = document.createElement("div");
+        empty.className = "list-item muted";
+        empty.textContent = title === "Current passes" ? "No current passes." : "No past or deactivated passes yet.";
+        group.appendChild(empty);
+        host.appendChild(group);
+        return;
+      }
+
+      groupRows.forEach((row) => {
+      const item = document.createElement("div");
+      item.className = "list-item";
+
+      const offerChoice = safeText(row.offer_choice || "Campaign pass");
+      const passCode = safeText(row.pass_code || "Pending");
+      const passStatus = safeText(row.pass_status || "pending");
+      const paymentStatus = safeText(row.payment_status || "pending");
+      const selectedPark = safeText(row.selected_park || "Participating park");
+      const expires = row.pass_expires_at ? fmtDateTime(row.pass_expires_at) : "N/A";
+      const redeemed = row.pass_redeemed_at ? fmtDateTime(row.pass_redeemed_at) : "";
+      const qrPayload = safeText(row.pass_qr_payload || row.pass_view_url).trim();
+      const paidCard = row.payment_card_last4
+        ? `${safeText(row.payment_card_brand || "card")} •••• ${safeText(row.payment_card_last4)}`
+        : "Card details pending";
+      const amount = fmtCents(row.payment_amount_cents);
+
+      item.innerHTML = `
+        <div class="row row-space">
+          <strong>${offerChoice}</strong>
+          <span class="small muted">${safeText(passStatus)}</span>
+        </div>
+        <div class="small muted">Pass: ${passCode} • Payment: ${paymentStatus} • Amount: ${amount}</div>
+        <div class="small muted">${selectedPark} • Expires ${expires}</div>
+        ${redeemed ? `<div class="small muted">Deactivated ${redeemed}</div>` : ""}
+        <div class="small muted">${paidCard}</div>
+      `;
+
+      const actions = document.createElement("div");
+      actions.className = "row";
+      actions.style.marginTop = "8px";
+
+      if (row.pass_view_url) {
+        const viewLink = document.createElement("a");
+        viewLink.className = "btn";
+        viewLink.href = row.pass_view_url;
+        viewLink.target = "_blank";
+        viewLink.rel = "noopener";
+        viewLink.textContent = "View pass";
+        actions.appendChild(viewLink);
+      }
+
+      if (row.pass_wallet_url && isIphoneWalletSupported()) {
+        const walletLink = document.createElement("a");
+        walletLink.className = "btn btn-primary";
+        walletLink.href = row.pass_wallet_url;
+        walletLink.textContent = "Add to Apple Wallet";
+        actions.appendChild(walletLink);
+      }
+
+      if (row.pass_google_wallet_url && isAndroidDevice()) {
+        const googleLink = document.createElement("a");
+        googleLink.className = "btn btn-primary";
+        googleLink.href = row.pass_google_wallet_url;
+        googleLink.textContent = "Add to Google Wallet";
+        actions.appendChild(googleLink);
+      }
+
+      if (row.pass_pdf_url) {
+        const pdfLink = document.createElement("a");
+        pdfLink.className = "btn";
+        pdfLink.href = row.pass_pdf_url;
+        pdfLink.textContent = "PDF receipt + ticket";
+        actions.appendChild(pdfLink);
+      }
+
+      if (actions.children.length) {
+        item.appendChild(actions);
+      }
+
+      if (qrPayload) {
+        const qrWrap = document.createElement("div");
+        qrWrap.className = "checkoutPassQrWrap";
+        const qrLabel = document.createElement("div");
+        qrLabel.className = "checkoutPassQrLabel";
+        qrLabel.textContent = "Saved entry QR";
+        const qrImg = document.createElement("img");
+        qrImg.className = "qr";
+        qrImg.loading = "lazy";
+        qrImg.src = qrImageUrl(qrPayload);
+        qrImg.alt = "Saved park entry QR code";
+        qrWrap.appendChild(qrLabel);
+        qrWrap.appendChild(qrImg);
+        item.appendChild(qrWrap);
+      }
+
+        group.appendChild(item);
+      });
+      host.appendChild(group);
+    };
+
+    renderGroup("Current passes", current);
+    renderGroup("Past and deactivated passes", past);
+  }
+
+  function renderPurchaseHistory() {
+    const host = qs("#purchaseHistoryWrap");
+    if (!host) return;
+    host.innerHTML = "";
+
+    const rows = Array.isArray(state.checkoutPasses) ? state.checkoutPasses : [];
+    if (!rows.length) {
+      host.innerHTML = `<div class="list-item muted">No campaign purchases yet.</div>`;
+      return;
+    }
+
+    rows.forEach((row) => {
+      const item = document.createElement("div");
+      item.className = "list-item";
+      const cardText = row.payment_card_last4
+        ? `${safeText(row.payment_card_brand || "card")} ending in ${safeText(row.payment_card_last4)}`
+        : "Card details pending";
+      item.innerHTML = `
+        <div class="row row-space">
+          <strong>${safeText(row.offer_choice || "Campaign purchase")}</strong>
+          <span class="small muted">${fmtCents(row.payment_amount_cents)}</span>
+        </div>
+        <div class="small muted">${fmtDateTime(row.created_at)} • ${safeText(row.payment_status || "pending")} • ${cardText}</div>
+        <div class="small muted">Order #${safeText(row.submission_id)} • Pass ${safeText(row.pass_code || "pending")}</div>
+      `;
+      const actions = document.createElement("div");
+      actions.className = "row";
+      actions.style.marginTop = "8px";
+      if (row.pass_pdf_url) {
+        const pdfLink = document.createElement("a");
+        pdfLink.className = "btn";
+        pdfLink.href = row.pass_pdf_url;
+        pdfLink.textContent = "Receipt PDF";
+        actions.appendChild(pdfLink);
+      }
+      if (row.pass_view_url) {
+        const viewLink = document.createElement("a");
+        viewLink.className = "btn";
+        viewLink.href = row.pass_view_url;
+        viewLink.target = "_blank";
+        viewLink.rel = "noopener";
+        viewLink.textContent = "Ticket page";
+        actions.appendChild(viewLink);
+      }
+      if (actions.children.length) item.appendChild(actions);
       host.appendChild(item);
     });
   }
@@ -923,7 +1357,7 @@
     const modelPill = qs("#aiModelPill");
     if (!wrap || !modelPill) return;
 
-    modelPill.textContent = `Model: ${state.aiModel || "-"}`;
+    modelPill.textContent = state.aiModel ? `AI model: ${state.aiModel}` : "AI assistant";
     wrap.innerHTML = "";
 
     const rows = Array.isArray(state.aiConversation) ? state.aiConversation : [];
@@ -1014,6 +1448,8 @@
     renderOffers();
     renderTransactions();
     renderRewards();
+    renderCheckoutPasses();
+    renderPurchaseHistory();
     updateKpis();
     renderReferral();
     renderSupportTickets();
@@ -1049,7 +1485,7 @@
       return;
     }
 
-    const [meRes, offersRes, txRes, rewardsRes, invRes, referralRes, supportRes, reviewsRes] = await Promise.all([
+    const [meRes, offersRes, txRes, rewardsRes, invRes, referralRes, supportRes, reviewsRes, passesRes] = await Promise.all([
       apiFetch(`${config.api_v1_prefix}/auth/me`),
       apiFetch(offersPath),
       apiFetch(`${config.api_v1_prefix}/consumer/transactions`),
@@ -1058,6 +1494,7 @@
       apiFetch(`${config.api_v1_prefix}/consumer/referrals/profile`),
       apiFetch(`${config.api_v1_prefix}/consumer/support/tickets`),
       apiFetch(`${config.api_v1_prefix}/consumer/reviews?mine_only=true`),
+      apiFetch(`${config.api_v1_prefix}/web/payments/my-passes`),
     ]);
 
     if (!meRes.ok) throw new Error(`Failed /auth/me (${meRes.status})`);
@@ -1080,6 +1517,7 @@
     state.referral = referralRes.ok ? await referralRes.json() : null;
     state.supportTickets = supportRes.ok ? await supportRes.json() : [];
     state.reviewsByMerchant = reviewsRes.ok ? mapReviewsByMerchant(await reviewsRes.json()) : {};
+    state.checkoutPasses = passesRes.ok ? await passesRes.json() : [];
 
     qs("#sessionPill").textContent = `Signed in: ${safeText(me.email)}`;
     renderAll();
@@ -1096,19 +1534,6 @@
       method: "POST",
     });
     showStatus(body.message || "Offer activated.", false);
-  }
-
-  async function simulatePurchase(offerId, amount) {
-    const { body } = await apiJson(`${config.api_v1_prefix}/consumer/transactions`, {
-      method: "POST",
-      body: JSON.stringify({
-        offer_id: offerId,
-        amount,
-        currency: "USD",
-        rail_type: "card_linked",
-      }),
-    });
-    showStatus(body.message || "Purchase simulated.", false);
   }
 
   async function settleRewards() {
@@ -1229,6 +1654,14 @@
     if (!res.ok) throw new Error(`Support refresh failed (${res.status})`);
     state.supportTickets = await res.json();
     renderSupportTickets();
+  }
+
+  async function refreshCheckoutPasses() {
+    const res = await apiFetch(`${config.api_v1_prefix}/web/payments/my-passes`);
+    if (!res.ok) throw new Error(`Pass refresh failed (${res.status})`);
+    state.checkoutPasses = await res.json();
+    renderCheckoutPasses();
+    renderPurchaseHistory();
   }
 
   function renderHeartButtons(selectedHearts, onSelect) {
@@ -1491,12 +1924,10 @@
       showStatus("Full name, email, and password are required.", true);
       return;
     }
-    if (password.length < 6) {
-      showStatus("Password must be at least 6 characters.", true);
-      return;
-    }
-    if (password !== confirm) {
-      showStatus("Passwords do not match.", true);
+    const passwordError = signUpPasswordValidationError();
+    if (passwordError) {
+      updateSignUpPasswordHint();
+      showStatus(passwordError, true);
       return;
     }
 
@@ -1527,11 +1958,30 @@
         state.pendingVerificationPassword = "";
         qs("#verificationActions").hidden = true;
       } else {
+        try {
+          const signInEnvelope = await supabaseSignIn(email, password);
+          const fallbackSession = envelopeToSession(email, signInEnvelope);
+          if (fallbackSession) {
+            saveSession(fallbackSession);
+            updateAuthUi();
+            await refreshConsumerData();
+            resetAiConversation();
+            renderAiAssistant();
+            showStatus("Account created and signed in.", false);
+            state.pendingVerificationEmail = "";
+            state.pendingVerificationPassword = "";
+            qs("#verificationActions").hidden = true;
+            return;
+          }
+        } catch {
+          // Keep verification actions visible as fallback.
+        }
+
         state.pendingVerificationEmail = email;
         state.pendingVerificationPassword = password;
         qs("#verificationActions").hidden = false;
-        qs("#verificationHint").textContent = "Check your email for a confirmation link.";
-        showStatus("Account created. Check email to verify, then log in.", false);
+        qs("#verificationHint").textContent = "If sign-in is blocked, check spam/junk, resend verification, then try again.";
+        showStatus("Account created. Try logging in now.", false);
         switchAuthMode("login");
       }
     } catch (err) {
@@ -1562,7 +2012,7 @@
             qs("#verificationActions").hidden = false;
             qs("#verificationHint").textContent = "Account exists but email is not verified yet.";
             showStatus(
-              "Account exists, but email is not verified yet. Wait a few minutes, then use “Resend verification email.”",
+              "Account exists, but email is not verified yet. Check spam/junk first, then use “Resend verification email.”",
               true
             );
             return;
@@ -1582,10 +2032,12 @@
           return;
         }
       }
-      showStatus(msg, true);
+      showStatus(humanizeAuthError(msg), true);
     } finally {
       submitBtn.disabled = false;
-      hint.textContent = "";
+      if (!hint.classList.contains("hint-error")) {
+        hint.textContent = "";
+      }
     }
   }
 
@@ -1596,8 +2048,11 @@
 
     const hint = qs("#loginHint");
     const loginBtn = qs("#loginBtn");
+    const recoveryPrompt = qs("#loginRecoveryPrompt");
+    const recoveryEmail = qs("#loginRecoveryEmail");
     loginBtn.disabled = true;
     hint.textContent = "Signing in...";
+    if (recoveryPrompt) recoveryPrompt.hidden = true;
 
     try {
       const envelope = await supabaseSignIn(email, password);
@@ -1623,7 +2078,11 @@
         state.pendingVerificationEmail = email;
         state.pendingVerificationPassword = password;
         qs("#verificationActions").hidden = false;
-        qs("#verificationHint").textContent = "Email not verified yet.";
+        qs("#verificationHint").textContent = "Email not verified yet. Check inbox and spam/junk.";
+      }
+      if (isInvalidCredentialError(msg)) {
+        if (recoveryPrompt) recoveryPrompt.hidden = false;
+        if (recoveryEmail) recoveryEmail.textContent = email;
       }
       showStatus(msg, true);
     } finally {
@@ -1641,7 +2100,7 @@
 
     try {
       await supabaseResendSignupConfirmation(email);
-      showStatus("Confirmation email sent.", false);
+      showStatus("Confirmation email sent. Check inbox and spam/junk.", false);
     } catch (err) {
       showStatus(err.message || String(err), true);
     }
@@ -1674,6 +2133,8 @@
   }
 
   function bindEvents() {
+    bindPasswordToggleButtons(document);
+
     qs("#statusDismissBtn").addEventListener("click", hideStatus);
 
     qs("#signUpTabBtn").addEventListener("click", () => switchAuthMode("signup"));
@@ -1681,28 +2142,73 @@
 
     qs("#signUpForm").addEventListener("submit", handleSignUp);
     qs("#loginForm").addEventListener("submit", handleLogIn);
+    ["#signUpPasswordInput", "#signUpPasswordConfirmInput"].forEach((selector) => {
+      const input = qs(selector);
+      if (!input) return;
+      input.addEventListener("input", updateSignUpPasswordHint);
+      input.addEventListener("blur", updateSignUpPasswordHint);
+    });
+    qs("#forgotPasswordBtn").addEventListener("click", async () => {
+      const email = qs("#emailInput").value.trim();
+      if (!email) {
+        showStatus("Enter your email, then tap Forgot password.", true);
+        return;
+      }
+
+      try {
+        await supabaseRequestPasswordReset(email);
+        showStatus("Password reset email sent. Open the link in your inbox.", false);
+      } catch (err) {
+        showStatus(err.message || String(err), true);
+      }
+    });
+    const recoverySendBtn = qs("#loginRecoverySendBtn");
+    if (recoverySendBtn) {
+      recoverySendBtn.addEventListener("click", async () => {
+        const email = qs("#emailInput").value.trim();
+        if (!email) {
+          showStatus("Enter your email, then request a password reset.", true);
+          return;
+        }
+        recoverySendBtn.disabled = true;
+        try {
+          await supabaseRequestPasswordReset(email);
+          const recoveryPrompt = qs("#loginRecoveryPrompt");
+          if (recoveryPrompt) recoveryPrompt.hidden = true;
+          showStatus("Password reset email sent. Open the link in your inbox.", false);
+        } catch (err) {
+          showStatus(err.message || String(err), true);
+        } finally {
+          recoverySendBtn.disabled = false;
+        }
+      });
+    }
 
     qs("#resendVerificationBtn").addEventListener("click", handleResendVerification);
     qs("#verifyThenLoginBtn").addEventListener("click", handleVerifyThenLogin);
 
-    qs("#logoutBtn").addEventListener("click", () => {
-      clearSession();
-      state.me = null;
-      state.offers = [];
-      state.transactions = [];
-      state.rewards = [];
-      state.investment = null;
-      state.referral = null;
-      state.supportTickets = [];
-      state.reviewsByMerchant = {};
-      state.reviewModalOffer = null;
-      state.reviewModalOverall = 5;
-      resetAiConversation();
-      stopLocationTracking();
-      updateAuthUi();
-      switchAuthMode("login");
-      renderAiAssistant();
-      showStatus("Signed out.", false);
+    qs("#logoutBtn").addEventListener("click", performLogout);
+
+    const topMenuLogoutBtn = qs("#topMenuLogoutBtn");
+    if (topMenuLogoutBtn) {
+      topMenuLogoutBtn.addEventListener("click", () => {
+        closeTopConsumerMenu();
+        performLogout();
+      });
+    }
+
+    qsa("[data-top-view]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        switchPanel(btn.dataset.topView || "discover");
+        closeTopConsumerMenu();
+      });
+    });
+
+    qsa("[data-top-more-target]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        goToMoreSection(btn.dataset.topMoreTarget || "");
+        closeTopConsumerMenu();
+      });
     });
 
     qs("#refreshAllBtn").addEventListener("click", async () => {
@@ -1711,15 +2217,6 @@
         showStatus("Refreshed.", false);
       } catch (err) {
         showStatus(err.message || String(err), true);
-      }
-    });
-
-    qs("#testBackendBtn").addEventListener("click", async () => {
-      try {
-        const res = await fetch(`${config.api_v1_prefix}/health`);
-        showStatus(res.ok ? "Backend reachable." : `Backend check failed (${res.status})`, !res.ok);
-      } catch (err) {
-        showStatus(`Backend check failed: ${err.message || err}`, true);
       }
     });
 
@@ -1814,6 +2311,18 @@
         showStatus(err.message || String(err), true);
       }
     });
+
+    const refreshPassesBtn = qs("#refreshPassesBtn");
+    if (refreshPassesBtn) {
+      refreshPassesBtn.addEventListener("click", async () => {
+        try {
+          await refreshCheckoutPasses();
+          showStatus("Passes refreshed.", false);
+        } catch (err) {
+          showStatus(err.message || String(err), true);
+        }
+      });
+    }
 
     qs("#missingRewardCaseBtn").addEventListener("click", async () => {
       try {
@@ -1936,6 +2445,7 @@
 
     try {
       await refreshConsumerData();
+      await handleCheckoutReturn();
     } catch (err) {
       showStatus(err.message || String(err), true);
     }

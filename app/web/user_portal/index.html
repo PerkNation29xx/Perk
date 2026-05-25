@@ -25,15 +25,33 @@
             <div class="subtitle">User portal</div>
           </div>
         </a>
-        <div class="topLinks">
+        <div id="signedOutTopLinks" class="topLinks">
           <a href="/login">Login</a>
           <a href="/create-account">Create account</a>
         </div>
+        <details id="topConsumerMenu" class="topMenu" hidden>
+          <summary aria-label="Consumer menu">
+            <span class="hamburgerIcon" aria-hidden="true">☰</span>
+            <span>Menu</span>
+          </summary>
+          <div class="topMenuList" role="menu" aria-label="Consumer menu">
+            <button class="topMenuItem" type="button" data-top-view="discover">Discover</button>
+            <button class="topMenuItem" type="button" data-top-view="wallet">Wallet</button>
+            <button class="topMenuItem" type="button" data-top-view="activity">Activity</button>
+            <button class="topMenuItem" type="button" data-top-view="redeem">Redeem</button>
+            <button class="topMenuItem" type="button" data-top-view="more">More</button>
+            <button class="topMenuItem" type="button" data-top-more-target="moreAiCard">AI Assistant</button>
+            <button class="topMenuItem" type="button" data-top-more-target="moreReferralsCard">Referrals</button>
+            <button class="topMenuItem" type="button" data-top-more-target="moreSupportCard">Support</button>
+            <button class="topMenuItem" type="button" data-top-more-target="moreProfileCard">Profile</button>
+            <button id="topMenuLogoutBtn" class="topMenuItem topMenuItemDanger" type="button">Logout</button>
+          </div>
+        </details>
       </div>
       <div class="row">
         <span id="sessionPill" class="pill">Signed out</span>
-        <button id="refreshAllBtn" class="btn btn-ghost" type="button" disabled>Refresh</button>
-        <button id="logoutBtn" class="btn" type="button" disabled>Logout</button>
+        <button id="refreshAllBtn" class="btn btn-ghost" type="button" disabled hidden>Refresh</button>
+        <button id="logoutBtn" class="btn" type="button" disabled hidden>Logout</button>
       </div>
     </header>
 
@@ -51,10 +69,9 @@
       <section class="card" id="authCard">
         <div class="row row-space">
           <h1>Account</h1>
-          <button id="testBackendBtn" class="btn btn-ghost" type="button">Test backend</button>
         </div>
         <p class="muted">
-          Create or log into your <code>consumer</code> account using Supabase Auth. This matches iOS/Android auth behavior.
+          Create or log into your <code>consumer</code> account. This matches iOS and Android account behavior.
         </p>
 
         <div class="auth-tabs" role="tablist" aria-label="Auth mode">
@@ -77,11 +94,37 @@
           </label>
           <label>
             <span>Password</span>
-            <input id="signUpPasswordInput" type="password" autocomplete="new-password" minlength="6" required />
+            <div class="passwordField">
+              <input id="signUpPasswordInput" type="password" autocomplete="new-password" minlength="8" required />
+              <button
+                id="signUpPasswordToggleBtn"
+                class="passwordToggle"
+                type="button"
+                data-password-toggle
+                data-password-target="signUpPasswordInput"
+                aria-label="Show password"
+                aria-pressed="false"
+              >
+                Show
+              </button>
+            </div>
           </label>
           <label>
             <span>Confirm password</span>
-            <input id="signUpPasswordConfirmInput" type="password" autocomplete="new-password" minlength="6" required />
+            <div class="passwordField">
+              <input id="signUpPasswordConfirmInput" type="password" autocomplete="new-password" minlength="8" required />
+              <button
+                id="signUpPasswordConfirmToggleBtn"
+                class="passwordToggle"
+                type="button"
+                data-password-toggle
+                data-password-target="signUpPasswordConfirmInput"
+                aria-label="Show password confirmation"
+                aria-pressed="false"
+              >
+                Show
+              </button>
+            </div>
           </label>
           <div class="row">
             <button id="signUpSubmitBtn" class="btn btn-primary" type="submit">Create account</button>
@@ -96,12 +139,31 @@
           </label>
           <label>
             <span>Password</span>
-            <input id="passwordInput" type="password" autocomplete="current-password" required />
+            <div class="passwordField">
+              <input id="passwordInput" type="password" autocomplete="current-password" required />
+              <button
+                id="loginPasswordToggleBtn"
+                class="passwordToggle"
+                type="button"
+                data-password-toggle
+                data-password-target="passwordInput"
+                aria-label="Show password"
+                aria-pressed="false"
+              >
+                Show
+              </button>
+            </div>
           </label>
           <div class="row">
             <button id="loginBtn" class="btn btn-primary" type="submit">Sign in</button>
+            <button id="forgotPasswordBtn" class="btn" type="button">Forgot password</button>
           </div>
           <div id="loginHint" class="muted small"></div>
+          <div id="loginRecoveryPrompt" class="list-item" hidden>
+            <strong>Need to reset your password?</strong>
+            <div class="small muted">Send a secure reset link to <span id="loginRecoveryEmail"></span>.</div>
+            <button id="loginRecoverySendBtn" class="btn" type="button">Send reset link</button>
+          </div>
         </form>
 
         <div id="verificationActions" class="row" hidden>
@@ -126,7 +188,7 @@
             <div id="mapShell" class="map-shell">
               <div id="offersMap" class="map" aria-label="Offer map"></div>
               <div id="mapFallback" class="map-fallback" hidden>
-                Map unavailable. Offer locations are still listed below.
+                Map view is temporarily unavailable. Offer locations are still listed below.
               </div>
             </div>
             <div class="muted small">Use location + reward-rate filters to discover boosted offers.</div>
@@ -135,10 +197,7 @@
           <section class="card">
             <div class="row row-space">
               <h2>Active and nearby</h2>
-              <div class="row">
-                <label class="small" for="purchaseAmountInput">Purchase amount</label>
-                <input id="purchaseAmountInput" type="number" min="0.01" step="0.01" value="12.00" class="small-input" />
-              </div>
+              <div class="small muted">Activate an offer, then tap <strong>Buy now</strong> for secure checkout.</div>
             </div>
             <div id="offersWrap" class="offer-grid"></div>
           </section>
@@ -174,6 +233,21 @@
               <button id="convertBtn" class="btn btn-primary" type="button">Convert cash to stocks</button>
             </div>
           </section>
+
+          <section class="card">
+            <div class="row row-space">
+              <h2>Park entry passes</h2>
+              <button id="refreshPassesBtn" class="btn btn-ghost" type="button">Refresh</button>
+            </div>
+            <div class="muted small">Paid campaign purchases appear here and stay linked to your account.</div>
+            <div id="checkoutPassesWrap" style="margin-top: 10px;"></div>
+          </section>
+
+          <section class="card">
+            <h2>Purchase history</h2>
+            <div class="muted small">Campaign purchases, receipts, and ticket downloads are saved here.</div>
+            <div id="purchaseHistoryWrap" style="margin-top: 10px;"></div>
+          </section>
         </section>
 
         <section class="view" data-panel="activity" hidden>
@@ -200,10 +274,10 @@
         </section>
 
         <section class="view" data-panel="more" hidden>
-          <section class="card">
+          <section class="card" id="moreAiCard">
             <div class="row row-space">
               <h2>AI Assistant</h2>
-              <div id="aiModelPill" class="pill">Model: -</div>
+              <div id="aiModelPill" class="pill">AI assistant</div>
             </div>
             <div id="aiConversationWrap" class="ai-thread"></div>
             <form id="aiAssistantForm" class="form">
@@ -219,7 +293,7 @@
             </form>
           </section>
 
-          <section class="card">
+          <section class="card" id="moreReferralsCard">
             <h2>Referrals</h2>
             <div class="row">
               <div>
@@ -251,7 +325,7 @@
             </div>
           </section>
 
-          <section class="card">
+          <section class="card" id="moreSupportCard">
             <div class="row row-space">
               <h2>Support</h2>
               <button id="refreshTicketsBtn" class="btn btn-ghost" type="button">Refresh</button>
@@ -285,7 +359,7 @@
             </form>
           </section>
 
-          <section class="card">
+          <section class="card" id="moreProfileCard">
             <h2>Profile preferences</h2>
             <div class="row row-space pref-row">
               <span>Allow location for nearby offers</span>

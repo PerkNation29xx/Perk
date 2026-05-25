@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import smtplib
 from email.message import EmailMessage
+from email.utils import formataddr, parseaddr
 
 from app.core.config import settings
 from app.db.models import WebLeadSubmission
@@ -32,14 +33,18 @@ def send_contact_submission_email(row: WebLeadSubmission) -> bool:
     if not recipient:
         return False
 
-    sender = (
+    sender_candidate = (
         (settings.smtp_from_email or "").strip()
         or (settings.smtp_username or "").strip()
-        or "no-reply@perknation.net"
+        or "cs@perknation.app"
     )
+    sender = parseaddr(sender_candidate)[1] or "cs@perknation.app"
+    if not sender.lower().endswith("@perknation.app"):
+        sender = "cs@perknation.app"
 
     msg = EmailMessage()
-    msg["From"] = sender
+    msg["From"] = formataddr(("PerkNation", sender))
+    msg["Reply-To"] = "cs@perknation.app"
     msg["To"] = recipient
 
     if row.form_type == "checkout":

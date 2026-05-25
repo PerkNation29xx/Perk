@@ -6,6 +6,7 @@ import secrets
 import smtplib
 from datetime import datetime, timedelta, timezone
 from email.message import EmailMessage
+from email.utils import formataddr, formatdate, make_msgid, parseaddr
 from html import escape
 from typing import Any, Optional
 from urllib.parse import parse_qs, quote, urlencode, urlsplit
@@ -16,6 +17,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.db.models import WebLeadSubmission
+from app.services.wallet_passes import wallet_pass_service
 
 logger = logging.getLogger(__name__)
 
@@ -80,7 +82,7 @@ def _to_iso_utc(dt: datetime) -> str:
 
 
 def _web_base_url() -> str:
-    return (settings.public_web_base_url or "https://perknation.net").rstrip("/")
+    return (settings.public_web_base_url or "https://perknation.app").rstrip("/")
 
 
 def _api_base_url() -> str:
@@ -103,6 +105,7 @@ def _generate_pass_code(row_id: int) -> str:
 def _build_pass_urls(pass_code: str) -> dict[str, str]:
     api_base = _api_base_url()
     pass_view_url = f"{api_base}/web/payments/pass/{quote(pass_code, safe='')}"
+    pass_pdf_url = f"{pass_view_url}/pdf"
     pass_qr_payload = pass_view_url
     pass_qr_image_url = _build_qr_image_url(pass_qr_payload)
     wallet_query = urlencode(
@@ -116,9 +119,11 @@ def _build_pass_urls(pass_code: str) -> dict[str, str]:
     wallet_pass_url = f"{api_base}/wallet/pass?{wallet_query}"
     return {
         "pass_view_url": pass_view_url,
+        "pass_pdf_url": pass_pdf_url,
         "pass_qr_payload": pass_qr_payload,
         "pass_qr_image_url": pass_qr_image_url,
         "pass_wallet_url": wallet_pass_url,
+        "pass_google_wallet_url": "",
         "pass_account_url": _default_account_url(),
     }
 
@@ -143,7 +148,7 @@ def _fetch_qr_png_bytes(qr_image_url: str) -> Optional[bytes]:
         req = Request(
             url,
             headers={
-                "User-Agent": "PerkNation/1.0 (+https://perknation.net)",
+                "User-Agent": "PerkNation/1.0 (+https://perknation.app)",
                 "Accept": "image/png,image/*;q=0.8,*/*;q=0.5",
             },
         )
@@ -203,9 +208,55 @@ def _refresh_expiration(payload: dict[str, Any], *, now: Optional[datetime] = No
 
     if status_value in {"", "active", "issued"} and now_utc >= expires_at:
         payload["pass_status"] = "expired"
+        payload["pass_wallet_last_updated_at"] = _to_iso_utc(now_utc)
         changed = True
 
     return changed
+
+
+def _pass_wallet_web_service_url() -> str:
+    return f"{_api_base_url()}/wallet"
+
+
+def _pass_wallet_serial_number(pass_code: str, pass_view_url: str) -> str:
+    return wallet_pass_service.serial_number_for(
+        template="perknation",
+        title="PerkNation Park Entry Pass",
+        code=pass_code,
+        payload=pass_view_url,
+    )
+
+
+def _wallet_registration_tokens(payload: dict[str, Any]) -> list[str]:
+    registrations = payload.get("pass_wallet_registrations")
+    if not isinstance(registrations, dict):
+        return []
+
+    tokens: list[str] = []
+    for record in registrations.values():
+        if not isinstance(record, dict):
+            continue
+        token = str(record.get("pushToken") or record.get("push_token") or "").strip()
+        if token and token not in tokens:
+            tokens.append(token)
+    return tokens
+
+
+def _payment_amount_text(payload: dict[str, Any]) -> str:
+    raw_cents = payload.get("payment_amount_cents")
+    try:
+        cents = int(raw_cents)
+    except Exception:
+        return "N/A"
+    return f"${cents / 100:.2f}"
+
+
+def _payment_card_text(payload: dict[str, Any]) -> str:
+    last4 = str(payload.get("payment_card_last4") or "").strip()
+    if not last4:
+        return "Card details pending"
+    brand = str(payload.get("payment_card_brand") or "card").strip().title()
+    return f"{brand} ending in {last4}"
 
 
 def _smtp_ready() -> bool:
@@ -217,11 +268,14 @@ def _send_checkout_pass_email(row: WebLeadSubmission, payload: dict[str, Any]) -
     if not recipient or not _smtp_ready():
         return False
 
-    sender = (
+    sender_candidate = (
         (settings.smtp_from_email or "").strip()
         or (settings.smtp_username or "").strip()
-        or "no-reply@perknation.net"
+        or "cs@perknation.app"
     )
+    sender = parseaddr(sender_candidate)[1] or "cs@perknation.app"
+    if not sender.lower().endswith("@perknation.app"):
+        sender = "cs@perknation.app"
 
     customer_name = _first_non_empty(row.name, row.contact_name, payload.get("full_name")) or "PerkNation member"
     offer_choice = _first_non_empty(payload.get("offer_choice"), payload.get("selected_offer")) or "Hollywood Sports campaign"
@@ -254,15 +308,33 @@ def _send_checkout_pass_email(row: WebLeadSubmission, payload: dict[str, Any]) -
               </div>
         """.strip()
 
+    amount_text = _payment_amount_text(payload)
+    payment_status = str(payload.get("payment_status") or "paid").strip() or "paid"
+    payment_provider = str(payload.get("payment_provider") or "Stripe").strip() or "Stripe"
+    payment_card = _payment_card_text(payload)
+    pass_pdf_url = str(payload.get("pass_pdf_url") or "").strip()
+    purchased_at = _parse_iso_datetime(payload.get("payment_paid_at")) or row.created_at
+    purchased_text = purchased_at.strftime("%B %d, %Y") if purchased_at else "N/A"
+
     msg = EmailMessage()
-    msg["From"] = sender
+    msg["From"] = formataddr(("PerkNation", sender))
     msg["To"] = recipient
-    msg["Subject"] = "Your PerkNation park entry pass"
+    msg["Reply-To"] = "cs@perknation.app"
+    msg["Date"] = formatdate(localtime=False)
+    msg["Message-ID"] = make_msgid(idstring=f"pass-{pass_code or row.id}", domain="perknation.app")
+    msg["Subject"] = "Your PerkNation receipt and park entry pass"
 
     plain_lines = [
         f"Hi {customer_name},",
         "",
-        "Thanks for your PerkNation purchase.",
+        "Thanks for your PerkNation purchase. Your receipt and park entry pass are below.",
+        "",
+        f"Order #: {row.id}",
+        f"Purchase date: {purchased_text}",
+        f"Amount paid: {amount_text}",
+        f"Payment status: {payment_status}",
+        f"Payment provider: {payment_provider}",
+        f"Payment method: {payment_card}",
         "",
         f"Offer: {offer_choice}",
         f"Park: {selected_park}",
@@ -273,6 +345,7 @@ def _send_checkout_pass_email(row: WebLeadSubmission, payload: dict[str, Any]) -
         f"Account: {account_url}",
         f"Wallet pass: {wallet_pass_url}",
         f"Pass page: {pass_view_url}",
+        f"PDF receipt and ticket: {pass_pdf_url}",
         f"Entry QR: {qr_image_url}",
         "",
         "This pass is valid for one year and will be deactivated after it is scanned at the park.",
@@ -294,7 +367,16 @@ def _send_checkout_pass_email(row: WebLeadSubmission, payload: dict[str, Any]) -
           <tr>
             <td style=\"padding:18px 20px;\">
               <p style=\"margin:0 0 12px;\">Hi {escape(customer_name)},</p>
-              <p style=\"margin:0 0 12px;\">Use this pass at check-in. It expires in one year and deactivates after the first successful scan.</p>
+              <p style=\"margin:0 0 12px;\">Your receipt and park entry pass are ready. Use this pass at check-in. It expires in one year and deactivates after the first successful scan.</p>
+              <div style=\"margin:0 0 12px;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:#64748b;\">Receipt</div>
+              <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%;border-collapse:collapse;margin:8px 0 16px;\">
+                <tr><td style=\"padding:6px 0;color:#6b7280;width:130px;\">Order #</td><td style=\"padding:6px 0;font-weight:600;\">{row.id}</td></tr>
+                <tr><td style=\"padding:6px 0;color:#6b7280;\">Purchase date</td><td style=\"padding:6px 0;font-weight:600;\">{escape(purchased_text)}</td></tr>
+                <tr><td style=\"padding:6px 0;color:#6b7280;\">Amount paid</td><td style=\"padding:6px 0;font-weight:700;\">{escape(amount_text)}</td></tr>
+                <tr><td style=\"padding:6px 0;color:#6b7280;\">Payment</td><td style=\"padding:6px 0;font-weight:600;\">{escape(payment_status.title())} via {escape(payment_provider.title())}</td></tr>
+                <tr><td style=\"padding:6px 0;color:#6b7280;\">Method</td><td style=\"padding:6px 0;font-weight:600;\">{escape(payment_card)}</td></tr>
+              </table>
+              <div style=\"margin:0 0 12px;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:#64748b;\">Ticket</div>
               <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%;border-collapse:collapse;margin:8px 0 16px;\">
                 <tr><td style=\"padding:6px 0;color:#6b7280;width:130px;\">Offer</td><td style=\"padding:6px 0;font-weight:600;\">{escape(offer_choice)}</td></tr>
                 <tr><td style=\"padding:6px 0;color:#6b7280;\">Park</td><td style=\"padding:6px 0;font-weight:600;\">{escape(selected_park)}</td></tr>
@@ -306,6 +388,7 @@ def _send_checkout_pass_email(row: WebLeadSubmission, payload: dict[str, Any]) -
               <p style=\"margin:0 0 10px;\"><a href=\"{escape(account_url, quote=True)}\" style=\"color:#0f5bd8;font-weight:600;\">Open your account</a></p>
               <p style=\"margin:0 0 10px;\"><a href=\"{escape(wallet_pass_url, quote=True)}\" style=\"color:#0f5bd8;font-weight:600;\">Add pass to Apple Wallet</a></p>
               <p style=\"margin:0 0 14px;\"><a href=\"{escape(pass_view_url, quote=True)}\" style=\"color:#0f5bd8;font-weight:600;\">View pass + scan link</a></p>
+              <p style=\"margin:0 0 14px;\"><a href=\"{escape(pass_pdf_url, quote=True)}\" style=\"color:#0f5bd8;font-weight:600;\">Download PDF receipt + ticket</a></p>
             </td>
           </tr>
         </table>
@@ -393,6 +476,23 @@ def ensure_paid_order_pass(
             if str(payload.get(key) or "").strip() != value:
                 payload[key] = value
                 changed = True
+
+        wallet_serial = _pass_wallet_serial_number(pass_code, payload["pass_view_url"])
+        if str(payload.get("pass_wallet_serial_number") or "").strip() != wallet_serial:
+            payload["pass_wallet_serial_number"] = wallet_serial
+            changed = True
+
+        if not str(payload.get("pass_wallet_auth_token") or "").strip():
+            payload["pass_wallet_auth_token"] = secrets.token_urlsafe(32)
+            changed = True
+
+        if str(payload.get("pass_wallet_web_service_url") or "").strip() != _pass_wallet_web_service_url():
+            payload["pass_wallet_web_service_url"] = _pass_wallet_web_service_url()
+            changed = True
+
+        if not str(payload.get("pass_wallet_last_updated_at") or "").strip():
+            payload["pass_wallet_last_updated_at"] = payload["pass_issued_at"]
+            changed = True
 
         if "pass_scan_count" not in payload:
             payload["pass_scan_count"] = 0
@@ -513,7 +613,13 @@ def _build_pass_record(
         "pass_scan_count": int(payload.get("pass_scan_count") or 0),
         "pass_account_url": _first_non_empty(payload.get("pass_account_url"), _default_account_url()),
         "pass_wallet_url": _first_non_empty(payload.get("pass_wallet_url"), ""),
+        "pass_google_wallet_url": _first_non_empty(payload.get("pass_google_wallet_url"), ""),
+        "pass_pdf_url": _first_non_empty(payload.get("pass_pdf_url"), ""),
         "pass_view_url": _first_non_empty(payload.get("pass_view_url"), ""),
+        "payment_amount_cents": payload.get("payment_amount_cents"),
+        "payment_provider": _first_non_empty(payload.get("payment_provider"), ""),
+        "payment_card_last4": _first_non_empty(payload.get("payment_card_last4"), ""),
+        "payment_card_brand": _first_non_empty(payload.get("payment_card_brand"), ""),
     }
 
 
@@ -596,10 +702,19 @@ def scan_checkout_pass(
     payload["pass_redeemed_at"] = _to_iso_utc(now_utc)
     payload["pass_redeemed_by"] = scanner_email.strip().lower()
     payload["pass_scan_count"] = int(payload.get("pass_scan_count") or 0) + 1
+    payload["pass_wallet_last_updated_at"] = _to_iso_utc(now_utc)
     row.payload_json = _dump_payload(payload)
     db.add(row)
     db.commit()
     db.refresh(row)
+
+    try:
+        wallet_pass_service.send_update_notifications(
+            _wallet_registration_tokens(payload),
+            template="perknation",
+        )
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Apple Wallet update notification failed for %s: %s", pass_code, exc)
 
     payload = _parse_payload(row.payload_json)
     return _build_pass_record(
@@ -648,3 +763,135 @@ def list_recent_checkout_passes(db: Session, *, limit: int = 200) -> list[dict[s
         db.commit()
 
     return out
+
+
+def find_checkout_by_wallet_serial(
+    db: Session,
+    serial_number: str,
+) -> Optional[tuple[WebLeadSubmission, dict[str, Any]]]:
+    needle = str(serial_number or "").strip()
+    if not needle:
+        return None
+
+    rows = db.scalars(
+        select(WebLeadSubmission)
+        .where(
+            WebLeadSubmission.form_type == "checkout",
+            WebLeadSubmission.payload_json.ilike(f"%{needle}%"),
+        )
+        .order_by(WebLeadSubmission.created_at.desc(), WebLeadSubmission.id.desc())
+        .limit(50)
+    ).all()
+
+    for row in rows:
+        payload = _parse_payload(row.payload_json)
+        if str(payload.get("pass_wallet_serial_number") or "").strip() == needle:
+            return row, payload
+
+    return None
+
+
+def wallet_pass_authorized(payload: dict[str, Any], authorization: str | None) -> bool:
+    expected = str(payload.get("pass_wallet_auth_token") or "").strip()
+    if not expected:
+        return False
+    header = str(authorization or "").strip()
+    if header.lower().startswith("applepass "):
+        header = header.split(" ", 1)[1].strip()
+    return bool(header) and secrets.compare_digest(header, expected)
+
+
+def register_wallet_device(
+    db: Session,
+    row: WebLeadSubmission,
+    payload: dict[str, Any],
+    *,
+    device_library_identifier: str,
+    push_token: str,
+) -> bool:
+    registrations = payload.get("pass_wallet_registrations")
+    if not isinstance(registrations, dict):
+        registrations = {}
+
+    device_key = str(device_library_identifier or "").strip()
+    token = str(push_token or "").strip()
+    if not device_key or not token:
+        return False
+
+    existing = registrations.get(device_key)
+    is_new = not isinstance(existing, dict) or str(existing.get("pushToken") or "").strip() != token
+    registrations[device_key] = {
+        "pushToken": token,
+        "registered_at": _to_iso_utc(_utcnow()),
+    }
+    payload["pass_wallet_registrations"] = registrations
+    row.payload_json = _dump_payload(payload)
+    db.add(row)
+    db.commit()
+    return is_new
+
+
+def unregister_wallet_device(
+    db: Session,
+    row: WebLeadSubmission,
+    payload: dict[str, Any],
+    *,
+    device_library_identifier: str,
+) -> None:
+    registrations = payload.get("pass_wallet_registrations")
+    if not isinstance(registrations, dict):
+        return
+
+    device_key = str(device_library_identifier or "").strip()
+    if not device_key or device_key not in registrations:
+        return
+
+    registrations.pop(device_key, None)
+    payload["pass_wallet_registrations"] = registrations
+    row.payload_json = _dump_payload(payload)
+    db.add(row)
+    db.commit()
+
+
+def list_wallet_pass_updates_for_device(
+    db: Session,
+    *,
+    device_library_identifier: str,
+    passes_updated_since: str | None,
+    limit: int = 200,
+) -> dict[str, Any]:
+    device_key = str(device_library_identifier or "").strip()
+    if not device_key:
+        return {"lastUpdated": _to_iso_utc(_utcnow()), "serialNumbers": []}
+
+    since_dt = _parse_iso_datetime(passes_updated_since)
+    rows = db.scalars(
+        select(WebLeadSubmission)
+        .where(
+            WebLeadSubmission.form_type == "checkout",
+            WebLeadSubmission.payload_json.ilike(f"%{device_key}%"),
+        )
+        .order_by(WebLeadSubmission.created_at.desc(), WebLeadSubmission.id.desc())
+        .limit(max(1, min(int(limit), 500)))
+    ).all()
+
+    serials: list[str] = []
+    last_updated = _utcnow()
+    for row in rows:
+        payload = _parse_payload(row.payload_json)
+        registrations = payload.get("pass_wallet_registrations")
+        if not isinstance(registrations, dict) or device_key not in registrations:
+            continue
+
+        updated_raw = str(payload.get("pass_wallet_last_updated_at") or payload.get("pass_issued_at") or "").strip()
+        updated_at = _parse_iso_datetime(updated_raw) or row.created_at
+        if since_dt and updated_at <= since_dt:
+            continue
+
+        serial = str(payload.get("pass_wallet_serial_number") or "").strip()
+        if serial and serial not in serials:
+            serials.append(serial)
+        if updated_at and updated_at > last_updated:
+            last_updated = updated_at
+
+    return {"lastUpdated": _to_iso_utc(last_updated), "serialNumbers": serials}

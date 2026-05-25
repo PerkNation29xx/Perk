@@ -407,13 +407,15 @@ class WebFormSubmitRequest(BaseModel):
 
 class AIChatTurn(BaseModel):
     role: Literal["user", "assistant"]
-    content: str = Field(min_length=1, max_length=1500)
+    content: str = Field(min_length=1, max_length=3000)
 
 
 class AIChatRequest(BaseModel):
     message: str = Field(min_length=1, max_length=2000)
     context: Optional[str] = Field(default=None, max_length=32)
-    history: list[AIChatTurn] = Field(default_factory=list, max_length=12)
+    history: list[AIChatTurn] = Field(default_factory=list, max_length=40)
+    user_latitude: Optional[float] = Field(default=None, ge=-90, le=90)
+    user_longitude: Optional[float] = Field(default=None, ge=-180, le=180)
 
 
 class AIChatResponse(BaseModel):
@@ -464,7 +466,14 @@ class CheckoutPassStatusOut(BaseModel):
     pass_redeemed_at: Optional[datetime] = None
     pass_account_url: Optional[str] = None
     pass_wallet_url: Optional[str] = None
+    pass_google_wallet_url: Optional[str] = None
+    pass_pdf_url: Optional[str] = None
     pass_view_url: Optional[str] = None
+    pass_qr_payload: Optional[str] = None
+    payment_amount_cents: Optional[int] = None
+    payment_provider: Optional[str] = None
+    payment_card_last4: Optional[str] = None
+    payment_card_brand: Optional[str] = None
 
 
 class CheckoutUserPassOut(BaseModel):
@@ -480,7 +489,12 @@ class CheckoutUserPassOut(BaseModel):
     pass_redeemed_at: Optional[datetime] = None
     pass_account_url: Optional[str] = None
     pass_wallet_url: Optional[str] = None
+    pass_google_wallet_url: Optional[str] = None
+    pass_pdf_url: Optional[str] = None
     pass_view_url: Optional[str] = None
+    pass_qr_payload: Optional[str] = None
+    payment_amount_cents: Optional[int] = None
+    payment_provider: Optional[str] = None
     payment_card_last4: Optional[str] = None
     payment_card_brand: Optional[str] = None
 

@@ -75,12 +75,26 @@ class WalletPassService:
             ]
         )
 
-    def build_pass(self, *, title: str, code: str, payload: str, template: str = "perknation") -> bytes:
+    def build_pass(
+        self,
+        *,
+        title: str,
+        code: str,
+        payload: str,
+        template: str = "perknation",
+        serial_number: str | None = None,
+        status: str | None = None,
+        expires_at: str | None = None,
+        web_service_url: str | None = None,
+        authentication_token: str | None = None,
+    ) -> bytes:
         resolved = self._resolve_template(template)
-        pass_type_identifier = self._required_template_value(
+        pass_type_identifier, _ = self._resolve_template_value(
             resolved["pass_type_identifier"],
             resolved["pass_type_env_names"],
         )
+        if not pass_type_identifier:
+            return 0
         team_identifier = self._required_template_value(
             resolved["team_identifier"],
             resolved["team_env_names"],
@@ -155,6 +169,11 @@ class WalletPassService:
                 template=resolved["key"],
                 organization_name=resolved["organization_name"],
                 description=resolved["description"],
+                serial_number=serial_number,
+                status=status,
+                expires_at=expires_at,
+                web_service_url=web_service_url,
+                authentication_token=authentication_token,
             )
             (temp_dir / "pass.json").write_text(
                 json.dumps(pass_json, separators=(",", ":"), ensure_ascii=False),
@@ -277,7 +296,15 @@ class WalletPassService:
 
     @staticmethod
     def _has_material(*, path_value: str | None, pem_value: str | None) -> bool:
-        return bool((path_value or "").strip() or (pem_value or "").strip())
+        normalized_path = (path_value or "").strip()
+        if normalized_path:
+            try:
+                if Path(normalized_path).expanduser().exists():
+                    return True
+            except Exception:
+                pass
+
+        return bool((pem_value or "").strip())
 
     def _materialize_material(
         self,
@@ -384,11 +411,30 @@ class WalletPassService:
         template: str,
         organization_name: str,
         description: str,
+        serial_number: str | None,
+        status: str | None,
+        expires_at: str | None,
+        web_service_url: str | None,
+        authentication_token: str | None,
     ) -> dict[str, object]:
-        serial_number = hashlib.sha1(f"{template}|{title}|{code}|{payload}".encode("utf-8")).hexdigest()
+        serial_number = serial_number or self.serial_number_for(
+            template=template,
+            title=title,
+            code=code,
+            payload=payload,
+        )
         support_host = urlparse(payload).netloc or "perknation.app"
         safe_title = title.strip()[:80]
         safe_code = code.strip()[:80]
+        normalized_status = str(status or "active").strip().lower()
+        status_label = {
+            "active": "Active",
+            "issued": "Active",
+            "redeemed": "Redeemed",
+            "expired": "Expired",
+            "voided": "Deactivated",
+        }.get(normalized_status, "Active")
+        is_voided = normalized_status in {"redeemed", "expired", "voided"}
 
         if template == "hq":
             display_name = safe_title or "The HQ Member"
@@ -399,7 +445,7 @@ class WalletPassService:
                 "messageEncoding": "iso-8859-1",
                 "altText": member_id,
             }
-            return {
+            pass_json = {
                 "formatVersion": 1,
                 "passTypeIdentifier": pass_type_identifier,
                 "serialNumber": serial_number,
@@ -442,8 +488,12 @@ class WalletPassService:
                     ],
                 },
             }
+            if web_service_url and authentication_token:
+                pass_json["webServiceURL"] = str(web_service_url).rstrip("/")
+                pass_json["authenticationToken"] = str(authentication_token)
+            return pass_json
 
-        return {
+        pass_json = {
             "formatVersion": 1,
             "passTypeIdentifier": pass_type_identifier,
             "serialNumber": serial_number,
@@ -453,6 +503,7 @@ class WalletPassService:
             "organizationName": organization_name,
             "description": safe_title,
             "logoText": "PerkNation",
+            "voided": is_voided,
             "foregroundColor": "rgb(255,255,255)",
             "backgroundColor": "rgb(15,23,42)",
             "labelColor": "rgb(166,184,211)",
@@ -487,9 +538,9 @@ class WalletPassService:
                 ],
                 "auxiliaryFields": [
                     {
-                        "key": "open",
-                        "label": "Open",
-                        "value": "Scan or tap to redeem in PerkNation",
+                        "key": "status",
+                        "label": "Status",
+                        "value": status_label,
                     }
                 ],
                 "backFields": [
@@ -506,6 +557,12 @@ class WalletPassService:
                 ],
             },
         }
+        if web_service_url and authentication_token:
+            pass_json["webServiceURL"] = str(web_service_url).rstrip("/")
+            pass_json["authenticationToken"] = str(authentication_token)
+        if expires_at:
+            pass_json["expirationDate"] = str(expires_at)
+        return pass_json
 
     def _build_manifest(self, temp_dir: Path) -> dict[str, str]:
         manifest: dict[str, str] = {}
@@ -562,6 +619,92 @@ class WalletPassService:
                 stderr or "OpenSSL failed while signing the Apple Wallet pass."
             )
 
+    def send_update_notifications(self, push_tokens: list[str], *, template: str = "perknation") -> int:
+        """
+        Best-effort PassKit update push.
+
+        Apple Wallet still falls back to polling the web service endpoints below;
+        this just speeds up updates when a device has registered a push token.
+        """
+        tokens = [str(token or "").strip() for token in push_tokens if str(token or "").strip()]
+        if not tokens:
+            return 0
+
+        resolved = self._resolve_template(template)
+        pass_type_identifier = self._required_template_value(
+            resolved["pass_type_identifier"],
+            resolved["pass_type_env_names"],
+        )
+        cert_path_value, cert_pem_value = self._resolve_template_material(
+            path_value=resolved["cert_path"],
+            pem_value=resolved["cert_pem"],
+            path_env_names=resolved["cert_path_env_names"],
+            pem_env_names=resolved["cert_pem_env_names"],
+        )
+        key_path_value, key_pem_value = self._resolve_template_material(
+            path_value=resolved["key_path"],
+            pem_value=resolved["key_pem"],
+            path_env_names=resolved["key_path_env_names"],
+            pem_env_names=resolved["key_pem_env_names"],
+        )
+
+        if not self._has_material(path_value=cert_path_value, pem_value=cert_pem_value):
+            return 0
+        if not self._has_material(path_value=key_path_value, pem_value=key_pem_value):
+            return 0
+        if not shutil.which("curl"):
+            return 0
+
+        delivered = 0
+        with tempfile.TemporaryDirectory(prefix="perknation-apns-") as temp_dir_raw:
+            temp_dir = Path(temp_dir_raw)
+            cert_path = self._materialize_material(
+                temp_dir=temp_dir,
+                filename="signer.pem",
+                path_value=cert_path_value,
+                pem_value=cert_pem_value,
+                path_env_name=" or ".join(resolved["cert_path_env_names"]),
+                pem_env_name=" or ".join(resolved["cert_pem_env_names"]),
+            )
+            key_path = self._materialize_material(
+                temp_dir=temp_dir,
+                filename="signer.key.pem",
+                path_value=key_path_value,
+                pem_value=key_pem_value,
+                path_env_name=" or ".join(resolved["key_path_env_names"]),
+                pem_env_name=" or ".join(resolved["key_pem_env_names"]),
+            )
+            for token in tokens:
+                completed = subprocess.run(
+                    [
+                        "curl",
+                        "--silent",
+                        "--show-error",
+                        "--http2",
+                        "--max-time",
+                        "8",
+                        "--cert",
+                        str(cert_path),
+                        "--key",
+                        str(key_path),
+                        "-H",
+                        f"apns-topic: {pass_type_identifier}",
+                        "-H",
+                        "apns-push-type: background",
+                        "-H",
+                        "content-type: application/json",
+                        "-d",
+                        "{}",
+                        f"https://api.push.apple.com/3/device/{token}",
+                    ],
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                )
+                if completed.returncode == 0:
+                    delivered += 1
+        return delivered
+
     def _zip_pass(self, temp_dir: Path) -> bytes:
         output_path = temp_dir / "wallet.pkpass"
         with ZipFile(output_path, "w", compression=ZIP_DEFLATED) as archive:
@@ -575,6 +718,13 @@ class WalletPassService:
         fallback_slug = "hq-pass" if normalized_template == "hq" else "perk-pass"
         slug = re.sub(r"[^a-zA-Z0-9_-]+", "-", code).strip("-").lower() or fallback_slug
         return f"{slug}.pkpass"
+
+    @staticmethod
+    def serial_number_for(*, template: str, title: str, code: str, payload: str) -> str:
+        normalized_template = (template or "perknation").strip().lower() or "perknation"
+        return hashlib.sha1(
+            f"{normalized_template}|{title}|{code}|{payload}".encode("utf-8")
+        ).hexdigest()
 
 
 wallet_pass_service = WalletPassService()

@@ -500,13 +500,13 @@
                 <div class="pill">Zelle payment</div>
                 <p class="small hspMuted" style="margin:8px 0 0">Zelle is manual. Send payment first, then submit your request.</p>
               </div>
-              <div class="hspZelleNumber" data-hsp-zelle-number>mc2019llc@gmail.com</div>
+              <div class="hspZelleNumber" data-hsp-zelle-number>cs@perknation.app</div>
             </div>
             <div class="hspZelleBody">
               <img
                 class="hspZelleQr"
-                alt="Zelle QR for mc2019llc@gmail.com"
-                src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=Zelle%20Payment%20to%20mc2019llc%40gmail.com%20for%20PerkNation%20Hollywood%20Sports%20Offer"
+                alt="Zelle QR for cs@perknation.app"
+                src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=Zelle%20Payment%20to%20cs%40perknation.app%20for%20PerkNation%20Hollywood%20Sports%20Offer"
                 loading="lazy"
               />
               <div>
@@ -979,7 +979,7 @@
     const zelleSubmit = form.querySelector("[data-hsp-zelle-submit]");
     const submitButtons = [stripeSubmit, zelleSubmit].filter(Boolean);
     const zelleNumberNode = form.querySelector("[data-hsp-zelle-number]");
-    const zelleNumber = (zelleNumberNode?.textContent || "mc2019llc@gmail.com").trim();
+    const zelleNumber = (zelleNumberNode?.textContent || "cs@perknation.app").trim();
     const copyZelleButton = form.querySelector("[data-hsp-copy-zelle]");
     const toast = form.querySelector("[data-hsp-checkout-toast]");
     const passPanel = form.querySelector("[data-hsp-pass-panel]");
@@ -1308,6 +1308,35 @@
       if (showStripeButton) showStripeButton.hidden = !zelleActive;
     };
 
+    const escapeHtml = (value) => String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+
+    const isIphoneWalletSupported = () => {
+      const ua = navigator.userAgent || "";
+      return /iPhone|iPod/.test(ua) && /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
+    };
+
+    const isAndroidDevice = () => /Android/i.test(navigator.userAgent || "");
+
+    const passDeliveryActionsHtml = ({ walletUrl, googleWalletUrl, pdfUrl }) => {
+      if (isIphoneWalletSupported() && walletUrl) {
+        return `
+          <a class="btn primary" href="${escapeHtml(walletUrl)}">Add to Apple Wallet</a>
+          ${pdfUrl ? `<a class="btn" href="${escapeHtml(pdfUrl)}">Download PDF receipt + ticket</a>` : ""}
+        `;
+      }
+      if (isAndroidDevice() && googleWalletUrl) {
+        return `<a class="btn primary" href="${escapeHtml(googleWalletUrl)}">Add to Google Wallet</a>`;
+      }
+      if (pdfUrl) {
+        return `<a class="btn primary" href="${escapeHtml(pdfUrl)}">Download PDF receipt + ticket</a>`;
+      }
+      return "";
+    };
+
     const renderPassPanel = (receipt) => {
       if (!passPanel) return;
       const passCode = String(receipt.pass_code || "").trim();
@@ -1318,11 +1347,14 @@
         : "N/A";
       const accountUrl = String(receipt.pass_account_url || "/white/login").trim();
       const walletUrl = String(receipt.pass_wallet_url || "").trim();
+      const googleWalletUrl = String(receipt.pass_google_wallet_url || "").trim();
+      const pdfUrl = String(receipt.pass_pdf_url || "").trim();
       const passViewUrl = String(receipt.pass_view_url || "").trim();
       const qrPayload = passViewUrl || "";
       const qrUrl = qrPayload
         ? `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(qrPayload)}`
         : "";
+      const deliveryActions = passDeliveryActionsHtml({ walletUrl, googleWalletUrl, pdfUrl });
 
       passPanel.hidden = false;
       passPanel.innerHTML = `
@@ -1339,9 +1371,9 @@
           <div>
             <p class="hspZelleHint">This pass allows park entry after scanning once by an operator. After scan, it is automatically deactivated.</p>
             <div class="hspSupportActions" style="margin-top:10px">
-              <a class="btn" href="${accountUrl}">Open account</a>
-              ${walletUrl ? `<a class="btn primary" href="${walletUrl}">Add to Apple Wallet</a>` : ""}
-              ${passViewUrl ? `<a class="btn" href="${passViewUrl}" target="_blank" rel="noopener">View pass page</a>` : ""}
+              <a class="btn" href="${escapeHtml(accountUrl)}">Open account</a>
+              ${deliveryActions}
+              ${passViewUrl ? `<a class="btn" href="${escapeHtml(passViewUrl)}" target="_blank" rel="noopener">View pass page</a>` : ""}
             </div>
           </div>
         </div>
@@ -1479,9 +1511,9 @@
       copyZelleButton.addEventListener("click", async () => {
         try {
           await navigator.clipboard.writeText(zelleNumber);
-          setToast("Zelle email copied: mc2019llc@gmail.com", "success");
+          setToast("Zelle email copied: cs@perknation.app", "success");
         } catch (error) {
-          setToast("Copy failed. Please use mc2019llc@gmail.com.", "error");
+          setToast("Copy failed. Please use cs@perknation.app.", "error");
         }
       });
     }
@@ -1575,7 +1607,7 @@
           return;
         }
 
-        const paymentStatus = "Zelle payment selected to mc2019llc@gmail.com.";
+        const paymentStatus = "Zelle payment selected to cs@perknation.app.";
         setToast(`Order received. Reference #${payload.submission_id}. ${paymentStatus}`, "success");
         form.reset();
         prefillAccountFields();
