@@ -1401,47 +1401,82 @@
 
     const renderPassPanel = (receipt) => {
       if (!passPanel) return;
-      const passCode = String(receipt.pass_code || "").trim();
-      const passStatus = String(receipt.pass_status || "").trim() || "pending";
       const paymentStatus = String(receipt.payment_status || "").trim().toLowerCase();
-      const passExpiresAt = receipt.pass_expires_at ? new Date(receipt.pass_expires_at) : null;
+      const tickets = Array.isArray(receipt.pass_tickets) && receipt.pass_tickets.length
+        ? receipt.pass_tickets
+        : [receipt];
+      const primaryTicket = tickets[0] || receipt;
+      const passCode = String(primaryTicket.pass_code || receipt.pass_code || "").trim();
+      const passStatus = String(primaryTicket.pass_status || receipt.pass_status || "").trim() || "pending";
+      const passExpiresAt = primaryTicket.pass_expires_at ? new Date(primaryTicket.pass_expires_at) : null;
       const expiresText = passExpiresAt && !Number.isNaN(passExpiresAt.getTime())
         ? passExpiresAt.toLocaleString()
         : "N/A";
       const accountUrl = String(
+        primaryTicket.pass_account_url ||
         receipt.pass_account_url ||
         (signedInSession && signedInSession.accessToken ? portalPathForRole(signedInSession.role) : "/login")
       ).trim();
-      const walletUrl = String(receipt.pass_wallet_url || "").trim();
-      const googleWalletUrl = String(receipt.pass_google_wallet_url || "").trim();
-      const pdfUrl = String(receipt.pass_pdf_url || "").trim();
-      const passViewUrl = String(receipt.pass_view_url || "").trim();
+      const walletUrl = String(primaryTicket.pass_wallet_url || receipt.pass_wallet_url || "").trim();
+      const googleWalletUrl = String(primaryTicket.pass_google_wallet_url || receipt.pass_google_wallet_url || "").trim();
+      const pdfUrl = String(primaryTicket.pass_pdf_url || receipt.pass_pdf_url || "").trim();
+      const passViewUrl = String(primaryTicket.pass_view_url || receipt.pass_view_url || "").trim();
       const qrPayload = passViewUrl || "";
       const qrUrl = qrPayload
         ? `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(qrPayload)}`
         : "";
       const deliveryActions = passDeliveryActionsHtml({ walletUrl, googleWalletUrl, pdfUrl });
-      const isReady = paymentStatus === "paid" && !!passCode;
+      const isReady = paymentStatus === "paid" && tickets.some((ticket) => String(ticket.pass_code || "").trim());
+      const ticketListHtml = tickets.length > 1
+        ? `
+          <div style="display:grid;gap:10px;margin-top:12px">
+            ${tickets.map((ticket, index) => {
+              const ticketCode = String(ticket.pass_code || "").trim();
+              const ticketLabel = String(ticket.pass_label || `Ticket ${index + 1} of ${tickets.length}`).trim();
+              const ticketWalletUrl = String(ticket.pass_wallet_url || "").trim();
+              const ticketGoogleWalletUrl = String(ticket.pass_google_wallet_url || "").trim();
+              const ticketPdfUrl = String(ticket.pass_pdf_url || "").trim();
+              const ticketViewUrl = String(ticket.pass_view_url || "").trim();
+              const ticketActions = passDeliveryActionsHtml({
+                walletUrl: ticketWalletUrl,
+                googleWalletUrl: ticketGoogleWalletUrl,
+                pdfUrl: ticketPdfUrl,
+              });
+              return `
+                <div class="hspPassMeta" style="padding:12px">
+                  <div class="label">${escapeHtml(ticketLabel)}</div>
+                  <div class="value" style="font-size:15px">${escapeHtml(ticketCode || "Pending")}</div>
+                  <div class="hspSupportActions" style="margin-top:10px">
+                    ${ticketActions}
+                    ${ticketViewUrl ? `<a class="btn" href="${escapeHtml(ticketViewUrl)}" target="_blank" rel="noopener">View pass page</a>` : ""}
+                  </div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+        `
+        : "";
 
       passPanel.hidden = false;
       passPanel.innerHTML = `
         <div class="hspSupportHeading">
-          <h3 class="h3" style="margin:0">${isReady ? "Your park entry pass is ready" : "Payment is still confirming"}</h3>
+          <h3 class="h3" style="margin:0">${isReady ? (tickets.length > 1 ? "Your park entry passes are ready" : "Your park entry pass is ready") : "Payment is still confirming"}</h3>
           <div class="pill">Status: ${passStatus}</div>
         </div>
         <div class="hspPassGrid">
           <div class="hspPassMeta"><div class="label">Pass code</div><div class="value">${passCode || "Pending"}</div></div>
-          <div class="hspPassMeta"><div class="label">Expires</div><div class="value">${expiresText}</div></div>
+          <div class="hspPassMeta"><div class="label">${tickets.length > 1 ? "Tickets" : "Expires"}</div><div class="value">${tickets.length > 1 ? tickets.length : expiresText}</div></div>
         </div>
         <div class="hspZelleBody">
-          ${isReady && qrUrl ? `<img class="hspPassQr" src="${qrUrl}" alt="Entry pass QR" loading="lazy" />` : ""}
+          ${isReady && tickets.length === 1 && qrUrl ? `<img class="hspPassQr" src="${qrUrl}" alt="Entry pass QR" loading="lazy" />` : ""}
           <div>
-            <p class="hspZelleHint">${isReady ? "This pass allows park entry after scanning once by an operator. After scan, it is automatically deactivated." : "Stripe has not returned the paid confirmation yet. Keep this page open or refresh your account in a few moments."}</p>
+            <p class="hspZelleHint">${isReady ? (tickets.length > 1 ? "Each ticket is independent. Add or share tickets one at a time; only the scanned ticket is deactivated." : "This pass allows park entry after scanning once by an operator. After scan, it is automatically deactivated.") : "Stripe has not returned the paid confirmation yet. Keep this page open or refresh your account in a few moments."}</p>
             <div class="hspSupportActions" style="margin-top:10px">
               <a class="btn" href="${escapeHtml(accountUrl)}">Open account</a>
-              ${isReady ? deliveryActions : ""}
-              ${isReady && passViewUrl ? `<a class="btn" href="${escapeHtml(passViewUrl)}" target="_blank" rel="noopener">View pass page</a>` : ""}
+              ${isReady && tickets.length === 1 ? deliveryActions : ""}
+              ${isReady && tickets.length === 1 && passViewUrl ? `<a class="btn" href="${escapeHtml(passViewUrl)}" target="_blank" rel="noopener">View pass page</a>` : ""}
             </div>
+            ${isReady ? ticketListHtml : ""}
           </div>
         </div>
       `;
@@ -1462,7 +1497,9 @@
     };
 
     const checkoutReceiptReady = (receipt) => {
-      return String(receipt?.payment_status || "").toLowerCase() === "paid" && !!String(receipt?.pass_code || "").trim();
+      const tickets = Array.isArray(receipt?.pass_tickets) ? receipt.pass_tickets : [];
+      return String(receipt?.payment_status || "").toLowerCase() === "paid"
+        && (!!String(receipt?.pass_code || "").trim() || tickets.some((ticket) => String(ticket.pass_code || "").trim()));
     };
 
     const waitForCheckoutPassReceipt = async (sessionId) => {

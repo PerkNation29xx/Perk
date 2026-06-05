@@ -452,6 +452,23 @@ class WebFormSubmitResponse(BaseModel):
     sms_acknowledged: bool = False
 
 
+class CheckoutPassTicketOut(BaseModel):
+    ticket_number: Optional[int] = None
+    pass_label: Optional[str] = None
+    pass_code: Optional[str] = None
+    pass_status: Optional[str] = None
+    pass_expires_at: Optional[datetime] = None
+    pass_redeemed_at: Optional[datetime] = None
+    pass_scan_count: Optional[int] = None
+    pass_account_url: Optional[str] = None
+    pass_wallet_url: Optional[str] = None
+    pass_google_wallet_url: Optional[str] = None
+    pass_pdf_url: Optional[str] = None
+    pass_view_url: Optional[str] = None
+    pass_qr_payload: Optional[str] = None
+    pass_qr_image_url: Optional[str] = None
+
+
 class CheckoutPassStatusOut(BaseModel):
     submission_id: int
     payment_status: Optional[str] = None
@@ -470,6 +487,7 @@ class CheckoutPassStatusOut(BaseModel):
     pass_pdf_url: Optional[str] = None
     pass_view_url: Optional[str] = None
     pass_qr_payload: Optional[str] = None
+    pass_tickets: Optional[list[CheckoutPassTicketOut]] = None
     payment_amount_cents: Optional[int] = None
     payment_provider: Optional[str] = None
     payment_card_last4: Optional[str] = None
@@ -493,6 +511,7 @@ class CheckoutUserPassOut(BaseModel):
     pass_pdf_url: Optional[str] = None
     pass_view_url: Optional[str] = None
     pass_qr_payload: Optional[str] = None
+    pass_tickets: Optional[list[CheckoutPassTicketOut]] = None
     payment_amount_cents: Optional[int] = None
     payment_provider: Optional[str] = None
     payment_card_last4: Optional[str] = None
@@ -649,6 +668,8 @@ class AdminOrderRow(BaseModel):
     refund_amount_usd: Optional[Decimal] = None
     refund_reason: Optional[str] = None
     refunded_at: Optional[datetime] = None
+    pass_ticket_count: Optional[int] = None
+    pass_tickets: Optional[list[CheckoutPassTicketOut]] = None
     pass_code: Optional[str] = None
     pass_status: Optional[str] = None
     pass_expires_at: Optional[datetime] = None
@@ -698,6 +719,9 @@ class AdminTicketScanRow(BaseModel):
     offer_choice: Optional[str] = None
     selected_park: Optional[str] = None
     package_quantity: Optional[str] = None
+    ticket_number: Optional[int] = None
+    pass_label: Optional[str] = None
+    pass_ticket_count: Optional[int] = None
     pass_code: str
     pass_status: str
     pass_issued_at: Optional[datetime] = None
@@ -718,6 +742,9 @@ class AdminTicketScanResult(BaseModel):
     offer_choice: Optional[str] = None
     selected_park: Optional[str] = None
     package_quantity: Optional[str] = None
+    ticket_number: Optional[int] = None
+    pass_label: Optional[str] = None
+    pass_ticket_count: Optional[int] = None
     pass_code: Optional[str] = None
     pass_status: Optional[str] = None
     pass_issued_at: Optional[datetime] = None

@@ -1070,7 +1070,26 @@
     if (!host) return;
     host.innerHTML = "";
 
-    const rows = Array.isArray(state.checkoutPasses) ? state.checkoutPasses : [];
+    const orders = Array.isArray(state.checkoutPasses) ? state.checkoutPasses : [];
+    const rows = orders.flatMap((order) => {
+      const tickets = Array.isArray(order.pass_tickets) ? order.pass_tickets : [];
+      if (!tickets.length) return [order];
+      return tickets.map((ticket) => ({
+        ...order,
+        ...ticket,
+        submission_id: order.submission_id,
+        created_at: order.created_at,
+        offer_choice: order.offer_choice,
+        selected_park: order.selected_park,
+        package_quantity: order.package_quantity,
+        payment_status: order.payment_status,
+        payment_amount_cents: order.payment_amount_cents,
+        payment_provider: order.payment_provider,
+        payment_card_last4: order.payment_card_last4,
+        payment_card_brand: order.payment_card_brand,
+        pass_ticket_count: tickets.length,
+      }));
+    });
     if (!rows.length) {
       host.innerHTML = `<div class="list-item muted">No paid campaign passes yet.</div>`;
       return;
@@ -1134,6 +1153,11 @@
       item.className = "list-item";
 
       const offerChoice = safeText(row.offer_choice || "Campaign pass");
+      const ticketLabel = safeText(row.pass_label || (
+        Number(row.pass_ticket_count || 0) > 1 && row.ticket_number
+          ? `Ticket ${row.ticket_number} of ${row.pass_ticket_count}`
+          : ""
+      ));
       const passCode = safeText(row.pass_code || "Pending");
       const passStatus = effectivePassStatus(row);
       const paymentStatus = effectivePaymentStatus(row);
@@ -1148,7 +1172,7 @@
 
       item.innerHTML = `
         <div class="row row-space">
-          <strong>${offerChoice}</strong>
+          <strong>${offerChoice}${ticketLabel ? ` • ${ticketLabel}` : ""}</strong>
           <span class="small muted">${statusLabel(passStatus)}</span>
         </div>
         <div class="small muted">Pass: ${passCode} • Payment: ${statusLabel(paymentStatus)} • Amount: ${amount}</div>
@@ -1239,6 +1263,10 @@
     rows.forEach((row) => {
       const item = document.createElement("div");
       item.className = "list-item";
+      const ticketCount = Array.isArray(row.pass_tickets) && row.pass_tickets.length
+        ? row.pass_tickets.length
+        : Number(row.pass_ticket_count || (row.pass_code ? 1 : 0));
+      const firstTicket = Array.isArray(row.pass_tickets) && row.pass_tickets.length ? row.pass_tickets[0] : row;
       const cardText = row.payment_card_last4
         ? `${safeText(row.payment_card_brand || "card")} ending in ${safeText(row.payment_card_last4)}`
         : "Card details pending";
@@ -1248,25 +1276,25 @@
           <span class="small muted">${fmtCents(row.payment_amount_cents)}</span>
         </div>
         <div class="small muted">${fmtDateTime(row.created_at)} • ${safeText(row.payment_status || "pending")} • ${cardText}</div>
-        <div class="small muted">Order #${safeText(row.submission_id)} • Pass ${safeText(row.pass_code || "pending")}</div>
+        <div class="small muted">Order #${safeText(row.submission_id)} • ${ticketCount > 1 ? `${ticketCount} tickets` : `Pass ${safeText(row.pass_code || "pending")}`}</div>
       `;
       const actions = document.createElement("div");
       actions.className = "row";
       actions.style.marginTop = "8px";
-      if (row.pass_pdf_url) {
+      if (firstTicket.pass_pdf_url) {
         const pdfLink = document.createElement("a");
         pdfLink.className = "btn";
-        pdfLink.href = row.pass_pdf_url;
-        pdfLink.textContent = "Receipt PDF";
+        pdfLink.href = firstTicket.pass_pdf_url;
+        pdfLink.textContent = ticketCount > 1 ? "First ticket PDF" : "Receipt PDF";
         actions.appendChild(pdfLink);
       }
-      if (row.pass_view_url) {
+      if (firstTicket.pass_view_url) {
         const viewLink = document.createElement("a");
         viewLink.className = "btn";
-        viewLink.href = row.pass_view_url;
+        viewLink.href = firstTicket.pass_view_url;
         viewLink.target = "_blank";
         viewLink.rel = "noopener";
-        viewLink.textContent = "Ticket page";
+        viewLink.textContent = ticketCount > 1 ? "First ticket page" : "Ticket page";
         actions.appendChild(viewLink);
       }
       if (actions.children.length) item.appendChild(actions);

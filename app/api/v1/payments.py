@@ -21,8 +21,10 @@ from app.api.deps import get_current_user, get_db, get_optional_current_user
 from app.db.models import User, WebLeadSubmission
 from app.schemas import CheckoutPassStatusOut, CheckoutUserPassOut
 from app.services.campaign_passes import (
+    checkout_pass_tickets_for_payload,
+    checkout_ticket_from_payload,
     ensure_paid_order_pass,
-    find_checkout_by_pass_code,
+    find_checkout_ticket_by_pass_code,
     find_checkout_by_stripe_session_id,
     reconcile_checkout_pass_state,
 )
@@ -675,11 +677,12 @@ def _parse_iso_datetime(raw: str | None) -> Optional[datetime]:
     return parsed.astimezone(timezone.utc)
 
 
-def _pass_pdf_url(payload: dict) -> Optional[str]:
-    explicit = str(payload.get("pass_pdf_url") or "").strip()
+def _pass_pdf_url(payload: dict, pass_data: Optional[dict] = None) -> Optional[str]:
+    source = pass_data if isinstance(pass_data, dict) else payload
+    explicit = str(source.get("pass_pdf_url") or "").strip()
     if explicit:
         return explicit
-    view_url = str(payload.get("pass_view_url") or "").strip()
+    view_url = str(source.get("pass_view_url") or "").strip()
     if view_url:
         return f"{view_url.rstrip('/')}/pdf"
     return None
@@ -855,6 +858,7 @@ def _build_checkout_pass_status(row: WebLeadSubmission, payload: dict) -> Checko
         pass_pdf_url=_pass_pdf_url(payload),
         pass_view_url=(str(payload.get("pass_view_url") or "").strip() or None),
         pass_qr_payload=(str(payload.get("pass_qr_payload") or "").strip() or None),
+        pass_tickets=checkout_pass_tickets_for_payload(payload) or None,
         payment_amount_cents=_amount_cents(payload),
         payment_provider=(str(payload.get("payment_provider") or "").strip() or None),
         payment_card_last4=(str(payload.get("payment_card_last4") or "").strip() or None),
@@ -912,6 +916,7 @@ def _build_user_pass_row(row: WebLeadSubmission, payload: dict) -> CheckoutUserP
         pass_pdf_url=_pass_pdf_url(payload),
         pass_view_url=(str(payload.get("pass_view_url") or "").strip() or None),
         pass_qr_payload=(str(payload.get("pass_qr_payload") or "").strip() or None),
+        pass_tickets=checkout_pass_tickets_for_payload(payload) or None,
         payment_amount_cents=_amount_cents(payload),
         payment_provider=(str(payload.get("payment_provider") or "").strip() or None),
         payment_card_last4=(str(payload.get("payment_card_last4") or "").strip() or None),
@@ -1207,23 +1212,26 @@ def public_pass_pdf(
     pass_code: str,
     db: Session = Depends(get_db),
 ) -> Response:
-    lookup = find_checkout_by_pass_code(db, pass_code)
+    lookup = find_checkout_ticket_by_pass_code(db, pass_code)
     if lookup is None:
         raise HTTPException(status_code=404, detail="Pass not found")
 
-    row, payload, normalized_code = lookup
+    row, payload, normalized_code, _, ticket = lookup
     payment_status = str(payload.get("payment_status") or "").strip().lower()
     if payment_status == "paid":
         payload = ensure_paid_order_pass(db, row, notify_customer=False)
+        _, ticket, normalized_code = checkout_ticket_from_payload(payload, normalized_code)
 
-    expires_at = _parse_iso_datetime(payload.get("pass_expires_at"))
-    redeemed_at = _parse_iso_datetime(payload.get("pass_redeemed_at"))
+    pass_data = ticket if isinstance(ticket, dict) else payload
+
+    expires_at = _parse_iso_datetime(pass_data.get("pass_expires_at"))
+    redeemed_at = _parse_iso_datetime(pass_data.get("pass_redeemed_at"))
     created_at = row.created_at
     card_last4 = str(payload.get("payment_card_last4") or "").strip()
     card_brand = str(payload.get("payment_card_brand") or "card").strip().title()
     card_text = f"{card_brand} ending in {card_last4}" if card_last4 else "Card details pending"
-    pass_view_url = str(payload.get("pass_view_url") or "").strip()
-    qr_payload = str(payload.get("pass_qr_payload") or pass_view_url or normalized_code).strip()
+    pass_view_url = str(pass_data.get("pass_view_url") or "").strip()
+    qr_payload = str(pass_data.get("pass_qr_payload") or pass_view_url or normalized_code).strip()
 
     lines = [
         "PerkNation Receipt and Park Entry Ticket",
@@ -1238,10 +1246,11 @@ def public_pass_pdf(
         "",
         "Ticket",
         f"Pass code: {normalized_code}",
-        f"Status: {str(payload.get('pass_status') or 'unknown').title()}",
+        f"Status: {str(pass_data.get('pass_status') or 'unknown').title()}",
         f"Offer: {str(payload.get('offer_choice') or payload.get('selected_offer') or 'Hollywood Sports campaign')}",
         f"Park: {str(payload.get('selected_park') or payload.get('park') or 'Participating park')}",
         f"Quantity: {str(payload.get('package_quantity') or '1')}",
+        f"Ticket: {str(pass_data.get('pass_label') or pass_data.get('ticket_number') or '1')}",
         f"Expires: {expires_at.strftime('%B %d, %Y %I:%M %p %Z') if expires_at else 'N/A'}",
         f"Redeemed: {redeemed_at.strftime('%B %d, %Y %I:%M %p %Z') if redeemed_at else 'Not scanned yet'}",
         "",
@@ -1268,16 +1277,18 @@ def public_pass_view(
     pass_code: str,
     db: Session = Depends(get_db),
 ) -> HTMLResponse:
-    lookup = find_checkout_by_pass_code(db, pass_code)
+    lookup = find_checkout_ticket_by_pass_code(db, pass_code)
     if lookup is None:
         raise HTTPException(status_code=404, detail="Pass not found")
 
-    row, payload, normalized_code = lookup
+    row, payload, normalized_code, _, ticket = lookup
     payment_status = str(payload.get("payment_status") or "").strip().lower()
     if payment_status == "paid":
         payload = ensure_paid_order_pass(db, row, notify_customer=False)
+        _, ticket, normalized_code = checkout_ticket_from_payload(payload, normalized_code)
 
-    pass_status = str(payload.get("pass_status") or "unknown").strip().lower()
+    pass_data = ticket if isinstance(ticket, dict) else payload
+    pass_status = str(pass_data.get("pass_status") or "unknown").strip().lower()
     status_label = {
         "active": "Active",
         "redeemed": "Redeemed",
@@ -1294,14 +1305,15 @@ def public_pass_view(
     )
     selected_park = str(payload.get("selected_park") or payload.get("park") or "Participating park").strip()
     package_quantity = str(payload.get("package_quantity") or "1").strip()
-    expires_at = _parse_iso_datetime(payload.get("pass_expires_at"))
-    redeemed_at = _parse_iso_datetime(payload.get("pass_redeemed_at"))
-    account_url = str(payload.get("pass_account_url") or f"{_canonical_web_base_url()}/login").strip()
-    wallet_url = str(payload.get("pass_wallet_url") or "").strip()
-    google_wallet_url = str(payload.get("pass_google_wallet_url") or "").strip()
-    pdf_url = _pass_pdf_url(payload) or f"{_canonical_web_base_url()}{settings.api_v1_prefix}/web/payments/pass/{quote(normalized_code, safe='')}/pdf"
-    pass_link = str(payload.get("pass_view_url") or "").strip()
-    qr_payload = str(payload.get("pass_qr_payload") or pass_link or "").strip()
+    ticket_label = str(pass_data.get("pass_label") or pass_data.get("ticket_number") or "").strip()
+    expires_at = _parse_iso_datetime(pass_data.get("pass_expires_at"))
+    redeemed_at = _parse_iso_datetime(pass_data.get("pass_redeemed_at"))
+    account_url = str(pass_data.get("pass_account_url") or payload.get("pass_account_url") or f"{_canonical_web_base_url()}/login").strip()
+    wallet_url = str(pass_data.get("pass_wallet_url") or "").strip()
+    google_wallet_url = str(pass_data.get("pass_google_wallet_url") or "").strip()
+    pdf_url = _pass_pdf_url(payload, pass_data) or f"{_canonical_web_base_url()}{settings.api_v1_prefix}/web/payments/pass/{quote(normalized_code, safe='')}/pdf"
+    pass_link = str(pass_data.get("pass_view_url") or "").strip()
+    qr_payload = str(pass_data.get("pass_qr_payload") or pass_link or "").strip()
     qr_url = (
         "https://api.qrserver.com/v1/create-qr-code/?size=280x280&data="
         + quote(qr_payload, safe="")
@@ -1415,7 +1427,7 @@ def public_pass_view(
       <div class="meta"><div class="label">Pass code</div><div class="value">{escape(normalized_code)}</div></div>
       <div class="meta"><div class="label">Offer</div><div class="value">{escape(offer_choice)}</div></div>
       <div class="meta"><div class="label">Park</div><div class="value">{escape(selected_park)}</div></div>
-      <div class="meta"><div class="label">Quantity</div><div class="value">{escape(package_quantity)}</div></div>
+      <div class="meta"><div class="label">Ticket</div><div class="value">{escape(ticket_label or package_quantity)}</div></div>
       <div class="meta"><div class="label">Expires</div><div class="value">{escape(expires_text)}</div></div>
       <div class="meta"><div class="label">Scanned</div><div class="value">{escape(redeemed_text)}</div></div>
     </div>

@@ -4,7 +4,7 @@ import json
 import logging
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal, InvalidOperation
-from typing import Optional
+from typing import Any, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, or_, select
@@ -60,7 +60,12 @@ from app.schemas import (
     TransactionStatus,
 )
 from app.services.audit import log_action
-from app.services.campaign_passes import list_recent_checkout_passes, reconcile_checkout_pass_state, scan_checkout_pass
+from app.services.campaign_passes import (
+    checkout_pass_tickets_for_payload,
+    list_recent_checkout_passes,
+    reconcile_checkout_pass_state,
+    scan_checkout_pass,
+)
 from app.services.runtime_settings import (
     apply_payment_settings_updates,
     get_effective_payment_setting,
@@ -839,6 +844,18 @@ def admin_contact_inbox(
     ]
 
 
+def _checkout_pass_statuses(payload: dict[str, Any]) -> set[str]:
+    statuses: set[str] = set()
+    top_status = str(payload.get("pass_status") or "").strip().lower()
+    if top_status:
+        statuses.add(top_status)
+    for ticket in checkout_pass_tickets_for_payload(payload):
+        status = str(ticket.get("pass_status") or "").strip().lower()
+        if status:
+            statuses.add(status)
+    return statuses
+
+
 @router.get("/orders", response_model=list[AdminOrderRow])
 def admin_orders(
     q: Optional[str] = None,
@@ -887,7 +904,7 @@ def admin_orders(
         payload = reconcile_checkout_pass_state(db, row, payload)
         if payment_status_filter and str(payload.get("payment_status") or "").strip().lower() != payment_status_filter:
             continue
-        if pass_status_filter and str(payload.get("pass_status") or "").strip().lower() != pass_status_filter:
+        if pass_status_filter and pass_status_filter not in _checkout_pass_statuses(payload):
             continue
         if (payment_status_filter or pass_status_filter) and skipped < offset:
             skipped += 1
@@ -920,6 +937,8 @@ def admin_orders(
         pass_account_url = _first_non_empty(payload.get("pass_account_url"))
         pass_wallet_url = _first_non_empty(payload.get("pass_wallet_url"))
         pass_view_url = _first_non_empty(payload.get("pass_view_url"))
+        pass_tickets = checkout_pass_tickets_for_payload(payload)
+        pass_ticket_count = len(pass_tickets) or None
 
         out.append(
             AdminOrderRow(
@@ -945,6 +964,8 @@ def admin_orders(
                 refund_amount_usd=refund_amount_usd,
                 refund_reason=refund_reason,
                 refunded_at=refunded_at,
+                pass_ticket_count=pass_ticket_count,
+                pass_tickets=pass_tickets or None,
                 pass_code=pass_code,
                 pass_status=pass_status,
                 pass_expires_at=pass_expires_at,

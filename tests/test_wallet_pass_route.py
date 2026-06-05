@@ -60,7 +60,7 @@ def test_wallet_pass_route_redirects_to_configured_service() -> None:
         "wallet_signer_key_pem": settings.wallet_signer_key_pem,
         "wallet_wwdr_certificate_pem": settings.wallet_wwdr_certificate_pem,
     }
-    settings.wallet_pass_service_url = "https://wallet.perknation.net/pass?channel=ios"
+    settings.wallet_pass_service_url = "https://wallet.perknation.app/pass?channel=ios"
     settings.wallet_pass_type_identifier = None
     settings.wallet_team_identifier = None
     settings.wallet_signer_certificate_path = None
@@ -82,7 +82,7 @@ def test_wallet_pass_route_redirects_to_configured_service() -> None:
             )
         assert response.status_code == 307
         location = response.headers["location"]
-        assert location.startswith("https://wallet.perknation.net/pass?")
+        assert location.startswith("https://wallet.perknation.app/pass?")
         assert "channel=ios" in location
         assert "title=PerkNation+referral" in location
         assert "code=PKN-REF" in location
@@ -166,7 +166,7 @@ def test_wallet_pass_route_generates_pkpass_when_local_signing_is_configured(tmp
                 "logo@2x.png",
             }
             pass_json = json.loads(archive.read("pass.json").decode("utf-8"))
-            assert pass_json.get("sharingProhibited") is True
+            assert pass_json.get("sharingProhibited") is False
             manifest = json.loads(archive.read("manifest.json").decode("utf-8"))
             assert set(manifest) == {
                 "pass.json",
@@ -245,7 +245,7 @@ def test_wallet_pass_route_generates_pkpass_when_pem_values_are_configured(tmp_p
         assert response.content[:2] == b"PK"
         with ZipFile(BytesIO(response.content)) as archive:
             pass_json = json.loads(archive.read("pass.json").decode("utf-8"))
-            assert pass_json.get("sharingProhibited") is True
+            assert pass_json.get("sharingProhibited") is False
     finally:
         for key, value in originals.items():
             setattr(settings, key, value)

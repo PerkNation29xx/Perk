@@ -1009,7 +1009,26 @@ async function renderOrdersView(container) {
       key: "payment_card_last4",
       render: (o) => (o.payment_card_last4 ? `${o.payment_card_brand || "card"} •••• ${o.payment_card_last4}` : ""),
     },
-    { label: "Pass code", key: "pass_code", mono: true },
+    {
+      label: "Pass code",
+      key: "pass_code",
+      mono: true,
+      render: (o) => {
+        const count = Number(o.pass_ticket_count || (Array.isArray(o.pass_tickets) ? o.pass_tickets.length : 0));
+        if (count > 1) {
+          const wrap = document.createElement("div");
+          wrap.appendChild(document.createTextNode(`${count} tickets`));
+          if (o.pass_code) {
+            const small = document.createElement("div");
+            small.className = "muted small";
+            small.textContent = o.pass_code;
+            wrap.appendChild(small);
+          }
+          return wrap;
+        }
+        return document.createTextNode(o.pass_code || "");
+      },
+    },
     { label: "Pass status", key: "pass_status", render: (o) => {
         const value = o.pass_status || "";
         let kind = "";

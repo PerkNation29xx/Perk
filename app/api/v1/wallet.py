@@ -11,9 +11,10 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.api.deps import get_db
 from app.services.campaign_passes import (
+    checkout_ticket_from_payload,
     ensure_paid_order_pass,
-    find_checkout_by_pass_code,
-    find_checkout_by_wallet_serial,
+    find_checkout_ticket_by_pass_code,
+    find_checkout_ticket_by_wallet_serial,
     list_wallet_pass_updates_for_device,
     register_wallet_device,
     unregister_wallet_device,
@@ -41,20 +42,23 @@ def _wallet_pass_context(
     if template != "perknation":
         return {}
 
-    lookup = find_checkout_by_pass_code(db, code)
+    lookup = find_checkout_ticket_by_pass_code(db, code)
     if lookup is None:
         return {}
 
-    row, stored_payload, _ = lookup
+    row, stored_payload, resolved_code, _, ticket = lookup
     if str(stored_payload.get("payment_status") or "").strip().lower() == "paid":
         stored_payload = ensure_paid_order_pass(db, row, notify_customer=False)
+        _, ticket, _ = checkout_ticket_from_payload(stored_payload, resolved_code)
+
+    pass_data = ticket if isinstance(ticket, dict) else stored_payload
 
     return {
-        "serial_number": str(stored_payload.get("pass_wallet_serial_number") or "").strip(),
-        "status": str(stored_payload.get("pass_status") or "active").strip(),
-        "expires_at": str(stored_payload.get("pass_expires_at") or "").strip(),
-        "web_service_url": str(stored_payload.get("pass_wallet_web_service_url") or "").strip(),
-        "authentication_token": str(stored_payload.get("pass_wallet_auth_token") or "").strip(),
+        "serial_number": str(pass_data.get("pass_wallet_serial_number") or "").strip(),
+        "status": str(pass_data.get("pass_status") or "active").strip(),
+        "expires_at": str(pass_data.get("pass_expires_at") or "").strip(),
+        "web_service_url": str(pass_data.get("pass_wallet_web_service_url") or "").strip(),
+        "authentication_token": str(pass_data.get("pass_wallet_auth_token") or "").strip(),
     }
 
 
@@ -211,16 +215,16 @@ def _lookup_wallet_row(
     pass_type_identifier: str,
     serial_number: str,
     authorization: str | None,
-) -> tuple[Any, dict[str, Any]]:
+) -> tuple[Any, dict[str, Any], int | None, dict[str, Any]]:
     _assert_pass_type(pass_type_identifier)
-    lookup = find_checkout_by_wallet_serial(db, serial_number)
+    lookup = find_checkout_ticket_by_wallet_serial(db, serial_number)
     if lookup is None:
         raise HTTPException(status_code=404, detail="Pass not found")
 
-    row, payload = lookup
-    if not wallet_pass_authorized(payload, authorization):
+    row, payload, ticket_index, ticket = lookup
+    if not wallet_pass_authorized(payload, authorization, ticket=ticket):
         raise HTTPException(status_code=401, detail="Unauthorized")
-    return row, payload
+    return row, payload, ticket_index, ticket
 
 
 @router.post("/v1/devices/{device_library_identifier}/registrations/{pass_type_identifier}/{serial_number}", include_in_schema=False)
@@ -232,7 +236,7 @@ async def register_pass_device(
     authorization: Optional[str] = Header(default=None),
     db: Session = Depends(get_db),
 ) -> Response:
-    row, payload = _lookup_wallet_row(
+    row, payload, ticket_index, ticket = _lookup_wallet_row(
         db=db,
         pass_type_identifier=pass_type_identifier,
         serial_number=serial_number,
@@ -249,6 +253,8 @@ async def register_pass_device(
         payload,
         device_library_identifier=device_library_identifier,
         push_token=push_token,
+        ticket_index=ticket_index,
+        ticket=ticket,
     )
     return Response(status_code=201 if is_new else 200)
 
@@ -261,7 +267,7 @@ def unregister_pass_device(
     authorization: Optional[str] = Header(default=None),
     db: Session = Depends(get_db),
 ) -> Response:
-    row, payload = _lookup_wallet_row(
+    row, payload, ticket_index, ticket = _lookup_wallet_row(
         db=db,
         pass_type_identifier=pass_type_identifier,
         serial_number=serial_number,
@@ -272,6 +278,8 @@ def unregister_pass_device(
         row,
         payload,
         device_library_identifier=device_library_identifier,
+        ticket_index=ticket_index,
+        ticket=ticket,
     )
     return Response(status_code=200)
 
@@ -301,7 +309,7 @@ def get_updated_pass(
     authorization: Optional[str] = Header(default=None),
     db: Session = Depends(get_db),
 ) -> Response:
-    row, payload = _lookup_wallet_row(
+    row, payload, _, ticket = _lookup_wallet_row(
         db=db,
         pass_type_identifier=pass_type_identifier,
         serial_number=serial_number,
@@ -309,9 +317,11 @@ def get_updated_pass(
     )
     if str(payload.get("payment_status") or "").strip().lower() == "paid":
         payload = ensure_paid_order_pass(db, row, notify_customer=False)
+        _, ticket, _ = checkout_ticket_from_payload(payload, str(ticket.get("pass_code") or serial_number))
 
-    pass_code = str(payload.get("pass_code") or "").strip()
-    pass_view_url = str(payload.get("pass_view_url") or "").strip()
+    pass_data = ticket if isinstance(ticket, dict) else payload
+    pass_code = str(pass_data.get("pass_code") or "").strip()
+    pass_view_url = str(pass_data.get("pass_view_url") or "").strip()
     if not pass_code or not pass_view_url:
         raise HTTPException(status_code=404, detail="Pass payload is incomplete")
 
@@ -321,15 +331,15 @@ def get_updated_pass(
         payload=pass_view_url,
         template="perknation",
         context={
-            "serial_number": str(payload.get("pass_wallet_serial_number") or serial_number).strip(),
-            "status": str(payload.get("pass_status") or "active").strip(),
-            "expires_at": str(payload.get("pass_expires_at") or "").strip(),
-            "web_service_url": str(payload.get("pass_wallet_web_service_url") or "").strip(),
-            "authentication_token": str(payload.get("pass_wallet_auth_token") or "").strip(),
+            "serial_number": str(pass_data.get("pass_wallet_serial_number") or serial_number).strip(),
+            "status": str(pass_data.get("pass_status") or "active").strip(),
+            "expires_at": str(pass_data.get("pass_expires_at") or "").strip(),
+            "web_service_url": str(pass_data.get("pass_wallet_web_service_url") or "").strip(),
+            "authentication_token": str(pass_data.get("pass_wallet_auth_token") or "").strip(),
         },
     )
     response.headers["Last-Modified"] = str(
-        payload.get("pass_wallet_last_updated_at") or payload.get("pass_issued_at") or ""
+        pass_data.get("pass_wallet_last_updated_at") or pass_data.get("pass_issued_at") or ""
     )
     return response
 
