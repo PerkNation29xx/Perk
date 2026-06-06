@@ -873,6 +873,21 @@ def _build_checkout_pass_status(row: WebLeadSubmission, payload: dict) -> Checko
     )
 
 
+def _build_locked_checkout_pass_status(row: WebLeadSubmission, payload: dict) -> CheckoutPassStatusOut:
+    return CheckoutPassStatusOut(
+        submission_id=row.id,
+        payment_status=(str(payload.get("payment_status") or "").strip() or None),
+        pass_details_locked=True,
+        message=(
+            "For security, sign in with the PerkNation account used for this purchase "
+            "to view tickets, wallet links, PDFs, and QR codes."
+        ),
+        pass_account_url=f"{_canonical_web_base_url()}/login",
+        payment_amount_cents=_amount_cents(payload),
+        payment_provider=(str(payload.get("payment_provider") or "").strip() or None),
+    )
+
+
 def _checkout_email(row: WebLeadSubmission, payload: dict) -> str:
     return _safe_lower(
         row.email
@@ -1119,6 +1134,7 @@ def create_apple_pay_checkout_session(
 def checkout_status(
     session_id: str = Query(..., min_length=6, max_length=255),
     db: Session = Depends(get_db),
+    current_user: Optional[User] = Depends(get_optional_current_user),
 ) -> CheckoutPassStatusOut:
     lookup = find_checkout_by_stripe_session_id(db, session_id)
     if lookup is None:
@@ -1141,6 +1157,9 @@ def checkout_status(
         payload = ensure_paid_order_pass(db, row, notify_customer=True)
     else:
         payload = reconcile_checkout_pass_state(db, row, payload)
+
+    if not current_user or not _checkout_matches_user(row, payload, current_user):
+        return _build_locked_checkout_pass_status(row, payload)
 
     return _build_checkout_pass_status(row, payload)
 

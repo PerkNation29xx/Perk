@@ -477,6 +477,8 @@ class CheckoutPassTicketOut(BaseModel):
 class CheckoutPassStatusOut(BaseModel):
     submission_id: int
     payment_status: Optional[str] = None
+    pass_details_locked: bool = False
+    message: Optional[str] = None
     customer_name: Optional[str] = None
     email: Optional[EmailStr] = None
     offer_choice: Optional[str] = None

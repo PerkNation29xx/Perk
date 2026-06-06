@@ -5,7 +5,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from app.db.base import Base
-from app.db.models import WebLeadSubmission
+from app.db.models import User, WebLeadSubmission
+from app.api.v1.payments import checkout_status
 from app.services.campaign_passes import (
     ensure_paid_order_pass,
     find_checkout_ticket_by_pass_code,
@@ -154,3 +155,57 @@ def test_five_dollar_purchase_keeps_single_entry_only_pass_shape():
     assert payload["ticket_type"] == "entry_only"
     assert payload["pass_title"] == "$5 Entry Only Pass"
     assert payload["pass_summary"] == "Entry only"
+
+
+def test_checkout_status_redacts_ticket_details_without_matching_account():
+    db = _db_session()
+    row = _checkout_row(
+        db,
+        {
+            "payment_status": "paid",
+            "payment_amount_cents": 100,
+            "payment_provider": "stripe",
+            "stripe_checkout_session_id": "cs_test_secure_bundle",
+            "account_user_id": "42",
+            "account_email": "buyer@example.com",
+            "offer_choice": "$1 Mini Test Pass (Live QA)",
+            "selected_park": "Hollywood Sports - Bellflower",
+        },
+    )
+
+    body = checkout_status(session_id="cs_test_secure_bundle", db=db, current_user=None)
+
+    assert body.submission_id == row.id
+    assert body.pass_details_locked is True
+    assert body.pass_tickets is None
+    assert body.pass_code is None
+    assert body.pass_wallet_url is None
+    assert body.pass_pdf_url is None
+    assert body.pass_qr_payload is None
+    assert body.email is None
+
+
+def test_checkout_status_returns_ticket_details_for_matching_account():
+    db = _db_session()
+    row = _checkout_row(
+        db,
+        {
+            "payment_status": "paid",
+            "payment_amount_cents": 100,
+            "payment_provider": "stripe",
+            "stripe_checkout_session_id": "cs_test_secure_bundle_owner",
+            "account_user_id": "42",
+            "account_email": "buyer@example.com",
+            "offer_choice": "$1 Mini Test Pass (Live QA)",
+            "selected_park": "Hollywood Sports - Bellflower",
+        },
+    )
+    user = User(id=42, full_name="Buyer", email="buyer@example.com")
+
+    body = checkout_status(session_id="cs_test_secure_bundle_owner", db=db, current_user=user)
+
+    assert body.submission_id == row.id
+    assert body.pass_details_locked is False
+    assert body.pass_tickets is not None
+    assert len(body.pass_tickets) == 12
+    assert body.pass_code

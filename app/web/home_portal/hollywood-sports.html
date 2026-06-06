@@ -1428,6 +1428,7 @@
         : "";
       const deliveryActions = passDeliveryActionsHtml({ walletUrl, googleWalletUrl, pdfUrl });
       const isReady = paymentStatus === "paid" && tickets.some((ticket) => String(ticket.pass_code || "").trim());
+      const isLocked = !!receipt.pass_details_locked;
       const ticketListHtml = tickets.length > 1
         ? `
           <div style="display:grid;gap:10px;margin-top:12px">
@@ -1467,8 +1468,8 @@
       passPanel.hidden = false;
       passPanel.innerHTML = `
         <div class="hspSupportHeading">
-          <h3 class="h3" style="margin:0">${isReady ? (tickets.length > 1 ? "Your park entry passes are ready" : "Your park entry pass is ready") : "Payment is still confirming"}</h3>
-          <div class="pill">Status: ${passStatus}</div>
+          <h3 class="h3" style="margin:0">${isLocked ? "Sign in to view your tickets" : (isReady ? (tickets.length > 1 ? "Your park entry passes are ready" : "Your park entry pass is ready") : "Payment is still confirming")}</h3>
+          <div class="pill">Status: ${isLocked ? "protected" : passStatus}</div>
         </div>
         <div class="hspPassGrid">
           <div class="hspPassMeta"><div class="label">Pass code</div><div class="value">${passCode || "Pending"}</div></div>
@@ -1477,7 +1478,7 @@
         <div class="hspZelleBody">
           ${isReady && tickets.length === 1 && qrUrl ? `<img class="hspPassQr" src="${qrUrl}" alt="Entry pass QR" loading="lazy" />` : ""}
           <div>
-            <p class="hspZelleHint">${isReady ? (tickets.length > 1 ? "Each ticket is independent. Add or share tickets one at a time; only the scanned ticket is deactivated." : "This pass allows park entry after scanning once by an operator. After scan, it is automatically deactivated.") : "Stripe has not returned the paid confirmation yet. Keep this page open or refresh your account in a few moments."}</p>
+            <p class="hspZelleHint">${isLocked ? escapeHtml(receipt.message || "For security, sign in with the PerkNation account used for this purchase to view ticket details.") : (isReady ? (tickets.length > 1 ? "Each ticket is independent. Add or share tickets one at a time; only the scanned ticket is deactivated." : "This pass allows park entry after scanning once by an operator. After scan, it is automatically deactivated.") : "Stripe has not returned the paid confirmation yet. Keep this page open or refresh your account in a few moments.")}</p>
             <div class="hspSupportActions" style="margin-top:10px">
               <a class="btn" href="${escapeHtml(accountUrl)}">Open account</a>
               ${isReady && tickets.length === 1 ? deliveryActions : ""}
@@ -1491,9 +1492,11 @@
     };
 
     const loadCheckoutPassReceipt = async (sessionId) => {
+      const token = String(signedInSession?.accessToken || "").trim();
       const response = await fetch(`/v1/web/payments/checkout-status?session_id=${encodeURIComponent(sessionId)}`, {
         headers: {
-          "Accept": "application/json"
+          "Accept": "application/json",
+          ...(token ? { "Authorization": `Bearer ${token}` } : {})
         }
       });
       const payload = await response.json().catch(() => ({}));
@@ -1505,6 +1508,7 @@
 
     const checkoutReceiptReady = (receipt) => {
       const tickets = Array.isArray(receipt?.pass_tickets) ? receipt.pass_tickets : [];
+      if (receipt?.pass_details_locked) return true;
       return String(receipt?.payment_status || "").toLowerCase() === "paid"
         && (!!String(receipt?.pass_code || "").trim() || tickets.some((ticket) => String(ticket.pass_code || "").trim()));
     };
