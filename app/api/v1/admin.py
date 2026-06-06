@@ -937,6 +937,13 @@ def admin_orders(
         pass_account_url = _first_non_empty(payload.get("pass_account_url"))
         pass_wallet_url = _first_non_empty(payload.get("pass_wallet_url"))
         pass_view_url = _first_non_empty(payload.get("pass_view_url"))
+        ticket_number = payload.get("ticket_number")
+        bundle_ticket_number = payload.get("bundle_ticket_number")
+        ticket_type = _first_non_empty(payload.get("ticket_type"))
+        pass_label_value = _first_non_empty(payload.get("pass_label"))
+        pass_title = _first_non_empty(payload.get("pass_title"))
+        pass_summary = _first_non_empty(payload.get("pass_summary"))
+        pass_terms = payload.get("pass_terms") if isinstance(payload.get("pass_terms"), list) else None
         pass_tickets = checkout_pass_tickets_for_payload(payload)
         pass_ticket_count = len(pass_tickets) or None
 
@@ -966,6 +973,13 @@ def admin_orders(
                 refunded_at=refunded_at,
                 pass_ticket_count=pass_ticket_count,
                 pass_tickets=pass_tickets or None,
+                ticket_number=ticket_number,
+                bundle_ticket_number=bundle_ticket_number,
+                ticket_type=ticket_type,
+                pass_label=pass_label_value,
+                pass_title=pass_title,
+                pass_summary=pass_summary,
+                pass_terms=pass_terms,
                 pass_code=pass_code,
                 pass_status=pass_status,
                 pass_expires_at=pass_expires_at,

@@ -36,7 +36,30 @@ def _checkout_row(db, payload: dict) -> WebLeadSubmission:
     return row
 
 
-def test_live_qa_purchase_mints_twelve_independent_tickets():
+def _assert_hsp_bundle_ticket_mix(payload: dict) -> None:
+    tickets = payload["pass_tickets"]
+    codes = [ticket["pass_code"] for ticket in tickets]
+    assert len(tickets) == 12
+    assert len(set(codes)) == 12
+    assert payload["pass_ticket_count"] == 12
+    assert payload["pass_delivery_mode"] == "multi_ticket"
+    assert payload["pass_code"] == tickets[0]["pass_code"]
+    assert all(ticket["pass_status"] == "active" for ticket in tickets)
+    assert all(ticket["pass_wallet_url"] for ticket in tickets)
+    assert all(ticket["pass_pdf_url"].endswith("/pdf") for ticket in tickets)
+
+    regular = tickets[:11]
+    golden = tickets[11]
+    assert all(ticket["ticket_type"] == "regular_entry" for ticket in regular)
+    assert all(ticket["pass_title"] == "Regular Entry Ticket" for ticket in regular)
+    assert all("paintball marker" in " ".join(ticket["pass_terms"]).lower() for ticket in regular)
+    assert golden["ticket_type"] == "golden_ticket"
+    assert golden["pass_title"] == "Golden Ticket"
+    assert "200 paintballs" in golden["pass_summary"].lower()
+    assert any("walk-ons" in term.lower() for term in golden["pass_terms"])
+
+
+def test_live_qa_purchase_mints_seventy_dollar_package_ticket_mix():
     db = _db_session()
     row = _checkout_row(
         db,
@@ -52,21 +75,31 @@ def test_live_qa_purchase_mints_twelve_independent_tickets():
 
     payload = ensure_paid_order_pass(db, row, notify_customer=False)
 
-    tickets = payload["pass_tickets"]
-    codes = [ticket["pass_code"] for ticket in tickets]
-    assert len(tickets) == 12
-    assert len(set(codes)) == 12
-    assert payload["pass_ticket_count"] == 12
-    assert payload["pass_delivery_mode"] == "multi_ticket"
-    assert payload["pass_code"] == tickets[0]["pass_code"]
-    assert all(ticket["pass_status"] == "active" for ticket in tickets)
-    assert all(ticket["pass_wallet_url"] for ticket in tickets)
-    assert all(ticket["pass_pdf_url"].endswith("/pdf") for ticket in tickets)
+    _assert_hsp_bundle_ticket_mix(payload)
 
-    lookup = find_checkout_ticket_by_pass_code(db, tickets[5]["pass_code"])
+    lookup = find_checkout_ticket_by_pass_code(db, payload["pass_tickets"][5]["pass_code"])
     assert lookup is not None
     assert lookup[3] == 5
-    assert lookup[4]["pass_code"] == tickets[5]["pass_code"]
+    assert lookup[4]["pass_code"] == payload["pass_tickets"][5]["pass_code"]
+
+
+def test_seventy_dollar_package_mints_eleven_regular_and_one_golden_ticket():
+    db = _db_session()
+    row = _checkout_row(
+        db,
+        {
+            "payment_status": "paid",
+            "payment_amount_cents": 7000,
+            "payment_provider": "stripe",
+            "offer_choice": "$70 Bundle (12 park passes, $500+ value)",
+            "selected_park": "Hollywood Sports - Bellflower",
+            "package_quantity": "1",
+        },
+    )
+
+    payload = ensure_paid_order_pass(db, row, notify_customer=False)
+
+    _assert_hsp_bundle_ticket_mix(payload)
 
 
 def test_scanning_one_live_qa_ticket_does_not_deactivate_siblings():
@@ -101,7 +134,7 @@ def test_scanning_one_live_qa_ticket_does_not_deactivate_siblings():
     assert sibling["result_status"] == "redeemed"
 
 
-def test_non_qa_purchase_keeps_single_pass_shape():
+def test_five_dollar_purchase_keeps_single_entry_only_pass_shape():
     db = _db_session()
     row = _checkout_row(
         db,
@@ -118,3 +151,6 @@ def test_non_qa_purchase_keeps_single_pass_shape():
     assert payload["pass_code"].startswith("PKI-HSP-")
     assert "pass_tickets" not in payload
     assert payload["pass_status"] == "active"
+    assert payload["ticket_type"] == "entry_only"
+    assert payload["pass_title"] == "$5 Entry Only Pass"
+    assert payload["pass_summary"] == "Entry only"

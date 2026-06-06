@@ -1158,6 +1158,9 @@
           ? `Ticket ${row.ticket_number} of ${row.pass_ticket_count}`
           : ""
       ));
+      const ticketTitle = safeText(row.pass_title || ticketLabel);
+      const ticketSummary = safeText(row.pass_summary || "");
+      const ticketTerms = Array.isArray(row.pass_terms) ? row.pass_terms.map((term) => safeText(term)).filter(Boolean) : [];
       const passCode = safeText(row.pass_code || "Pending");
       const passStatus = effectivePassStatus(row);
       const paymentStatus = effectivePaymentStatus(row);
@@ -1176,9 +1179,11 @@
           <span class="small muted">${statusLabel(passStatus)}</span>
         </div>
         <div class="small muted">Pass: ${passCode} • Payment: ${statusLabel(paymentStatus)} • Amount: ${amount}</div>
+        ${ticketTitle ? `<div class="small muted">Type: ${ticketTitle}${ticketSummary ? ` • ${ticketSummary}` : ""}</div>` : ""}
         <div class="small muted">${selectedPark} • Expires ${expires}</div>
         ${redeemed ? `<div class="small muted">Deactivated ${redeemed}</div>` : ""}
         <div class="small muted">${paidCard}</div>
+        ${ticketTerms.length ? `<ul class="small muted" style="margin:6px 0 0 18px;padding:0">${ticketTerms.map((term) => `<li>${term}</li>`).join("")}</ul>` : ""}
       `;
 
       const actions = document.createElement("div");

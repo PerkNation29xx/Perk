@@ -54,6 +54,9 @@ def _wallet_pass_context(
     pass_data = ticket if isinstance(ticket, dict) else stored_payload
 
     return {
+        "pass_title": str(pass_data.get("pass_title") or "").strip(),
+        "pass_summary": str(pass_data.get("pass_summary") or "").strip(),
+        "pass_terms": pass_data.get("pass_terms") if isinstance(pass_data.get("pass_terms"), list) else [],
         "serial_number": str(pass_data.get("pass_wallet_serial_number") or "").strip(),
         "status": str(pass_data.get("pass_status") or "active").strip(),
         "expires_at": str(pass_data.get("pass_expires_at") or "").strip(),
@@ -101,6 +104,7 @@ def _issue_wallet_pass(
     context: dict[str, str] | None = None,
 ) -> Response:
     context = context or {}
+    title = str(context.get("pass_title") or title).strip() or title
     service_url = (settings.wallet_pass_service_url or "").strip()
     if wallet_pass_service.configured_for_local_signing(template=template):
         try:
@@ -114,6 +118,8 @@ def _issue_wallet_pass(
                 expires_at=context.get("expires_at") or None,
                 web_service_url=context.get("web_service_url") or None,
                 authentication_token=context.get("authentication_token") or None,
+                summary=context.get("pass_summary") or None,
+                terms=context.get("pass_terms") or None,
             )
         except WalletPassConfigurationError as exc:
             if service_url:
@@ -326,11 +332,14 @@ def get_updated_pass(
         raise HTTPException(status_code=404, detail="Pass payload is incomplete")
 
     response = _issue_wallet_pass(
-        title="PerkNation Park Entry Pass",
+        title=str(pass_data.get("pass_title") or "PerkNation Park Entry Pass").strip() or "PerkNation Park Entry Pass",
         code=pass_code,
         payload=pass_view_url,
         template="perknation",
         context={
+            "pass_title": str(pass_data.get("pass_title") or "").strip(),
+            "pass_summary": str(pass_data.get("pass_summary") or "").strip(),
+            "pass_terms": pass_data.get("pass_terms") if isinstance(pass_data.get("pass_terms"), list) else [],
             "serial_number": str(pass_data.get("pass_wallet_serial_number") or serial_number).strip(),
             "status": str(pass_data.get("pass_status") or "active").strip(),
             "expires_at": str(pass_data.get("pass_expires_at") or "").strip(),

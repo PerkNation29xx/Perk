@@ -454,7 +454,12 @@ class WebFormSubmitResponse(BaseModel):
 
 class CheckoutPassTicketOut(BaseModel):
     ticket_number: Optional[int] = None
+    bundle_ticket_number: Optional[int] = None
+    ticket_type: Optional[str] = None
     pass_label: Optional[str] = None
+    pass_title: Optional[str] = None
+    pass_summary: Optional[str] = None
+    pass_terms: Optional[list[str]] = None
     pass_code: Optional[str] = None
     pass_status: Optional[str] = None
     pass_expires_at: Optional[datetime] = None
@@ -477,6 +482,13 @@ class CheckoutPassStatusOut(BaseModel):
     offer_choice: Optional[str] = None
     selected_park: Optional[str] = None
     package_quantity: Optional[str] = None
+    ticket_number: Optional[int] = None
+    bundle_ticket_number: Optional[int] = None
+    ticket_type: Optional[str] = None
+    pass_label: Optional[str] = None
+    pass_title: Optional[str] = None
+    pass_summary: Optional[str] = None
+    pass_terms: Optional[list[str]] = None
     pass_code: Optional[str] = None
     pass_status: Optional[str] = None
     pass_expires_at: Optional[datetime] = None
@@ -501,6 +513,13 @@ class CheckoutUserPassOut(BaseModel):
     selected_park: Optional[str] = None
     package_quantity: Optional[str] = None
     payment_status: Optional[str] = None
+    ticket_number: Optional[int] = None
+    bundle_ticket_number: Optional[int] = None
+    ticket_type: Optional[str] = None
+    pass_label: Optional[str] = None
+    pass_title: Optional[str] = None
+    pass_summary: Optional[str] = None
+    pass_terms: Optional[list[str]] = None
     pass_code: Optional[str] = None
     pass_status: Optional[str] = None
     pass_expires_at: Optional[datetime] = None
@@ -670,6 +689,13 @@ class AdminOrderRow(BaseModel):
     refunded_at: Optional[datetime] = None
     pass_ticket_count: Optional[int] = None
     pass_tickets: Optional[list[CheckoutPassTicketOut]] = None
+    ticket_number: Optional[int] = None
+    bundle_ticket_number: Optional[int] = None
+    ticket_type: Optional[str] = None
+    pass_label: Optional[str] = None
+    pass_title: Optional[str] = None
+    pass_summary: Optional[str] = None
+    pass_terms: Optional[list[str]] = None
     pass_code: Optional[str] = None
     pass_status: Optional[str] = None
     pass_expires_at: Optional[datetime] = None
@@ -720,7 +746,12 @@ class AdminTicketScanRow(BaseModel):
     selected_park: Optional[str] = None
     package_quantity: Optional[str] = None
     ticket_number: Optional[int] = None
+    bundle_ticket_number: Optional[int] = None
+    ticket_type: Optional[str] = None
     pass_label: Optional[str] = None
+    pass_title: Optional[str] = None
+    pass_summary: Optional[str] = None
+    pass_terms: Optional[list[str]] = None
     pass_ticket_count: Optional[int] = None
     pass_code: str
     pass_status: str
@@ -743,7 +774,12 @@ class AdminTicketScanResult(BaseModel):
     selected_park: Optional[str] = None
     package_quantity: Optional[str] = None
     ticket_number: Optional[int] = None
+    bundle_ticket_number: Optional[int] = None
+    ticket_type: Optional[str] = None
     pass_label: Optional[str] = None
+    pass_title: Optional[str] = None
+    pass_summary: Optional[str] = None
+    pass_terms: Optional[list[str]] = None
     pass_ticket_count: Optional[int] = None
     pass_code: Optional[str] = None
     pass_status: Optional[str] = None

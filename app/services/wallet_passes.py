@@ -87,6 +87,8 @@ class WalletPassService:
         expires_at: str | None = None,
         web_service_url: str | None = None,
         authentication_token: str | None = None,
+        summary: str | None = None,
+        terms: list[str] | str | None = None,
     ) -> bytes:
         resolved = self._resolve_template(template)
         pass_type_identifier, _ = self._resolve_template_value(
@@ -174,6 +176,8 @@ class WalletPassService:
                 expires_at=expires_at,
                 web_service_url=web_service_url,
                 authentication_token=authentication_token,
+                summary=summary,
+                terms=terms,
             )
             (temp_dir / "pass.json").write_text(
                 json.dumps(pass_json, separators=(",", ":"), ensure_ascii=False),
@@ -416,6 +420,8 @@ class WalletPassService:
         expires_at: str | None,
         web_service_url: str | None,
         authentication_token: str | None,
+        summary: str | None,
+        terms: list[str] | str | None,
     ) -> dict[str, object]:
         serial_number = serial_number or self.serial_number_for(
             template=template,
@@ -426,6 +432,11 @@ class WalletPassService:
         support_host = urlparse(payload).netloc or "perknation.app"
         safe_title = title.strip()[:80]
         safe_code = code.strip()[:80]
+        safe_summary = str(summary or "").strip()[:120]
+        if isinstance(terms, list):
+            safe_terms = "\n".join(str(term).strip() for term in terms if str(term).strip())[:1000]
+        else:
+            safe_terms = str(terms or "").strip()[:1000]
         normalized_status = str(status or "active").strip().lower()
         status_label = {
             "active": "Active",
@@ -524,11 +535,22 @@ class WalletPassService:
                 "primaryFields": [
                     {
                         "key": "title",
-                        "label": "Offer",
+                        "label": "Ticket",
                         "value": safe_title,
                     }
                 ],
                 "secondaryFields": [
+                    *(
+                        [
+                            {
+                                "key": "includes",
+                                "label": "Includes",
+                                "value": safe_summary,
+                            }
+                        ]
+                        if safe_summary
+                        else []
+                    ),
                     {
                         "key": "code",
                         "label": "Code",
@@ -553,6 +575,17 @@ class WalletPassService:
                         "label": "Support",
                         "value": f"https://{support_host}",
                     },
+                    *(
+                        [
+                            {
+                                "key": "terms",
+                                "label": "Ticket terms",
+                                "value": safe_terms,
+                            }
+                        ]
+                        if safe_terms
+                        else []
+                    ),
                 ],
             },
         }

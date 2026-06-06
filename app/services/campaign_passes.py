@@ -29,7 +29,11 @@ QA_MINI_TEST_TICKET_COUNT = 12
 PASS_TICKETS_KEY = "pass_tickets"
 PASS_TICKET_FIELD_KEYS = (
     "ticket_number",
+    "ticket_type",
     "pass_label",
+    "pass_title",
+    "pass_summary",
+    "pass_terms",
     "pass_code",
     "pass_status",
     "pass_issued_at",
@@ -51,6 +55,12 @@ PASS_TICKET_FIELD_KEYS = (
     "pass_wallet_registrations",
 )
 PRIMARY_PASS_FIELD_KEYS = (
+    "ticket_number",
+    "ticket_type",
+    "pass_label",
+    "pass_title",
+    "pass_summary",
+    "pass_terms",
     "pass_code",
     "pass_status",
     "pass_issued_at",
@@ -71,6 +81,25 @@ PRIMARY_PASS_FIELD_KEYS = (
     "pass_wallet_last_updated_at",
     "pass_wallet_registrations",
 )
+
+HSP_REGULAR_ENTRY_TERMS = [
+    "Ticket includes paintball marker.",
+    "All day park pass.",
+    "All day air and purchase of 400 paintballs required.",
+    "Bonus 100 rounds when playing .50 caliber.",
+    "Parks are field paint only.",
+]
+HSP_GOLDEN_TICKET_TERMS = [
+    "Admission included.",
+    ".50 caliber gun included.",
+    "200 paintballs included.",
+    "Mask rental included.",
+    "Tickets are for .50 cal paintballsoft play only.",
+    "Good for walk-ons and cannot be used or combined with any other discount.",
+]
+HSP_ENTRY_ONLY_TERMS = [
+    "Entry only pass.",
+]
 
 
 def _utcnow() -> datetime:
@@ -157,15 +186,16 @@ def _generate_pass_code(row_id: int, ticket_number: int | None = None) -> str:
     return f"{PASS_CODE_PREFIX}-{int(row_id):06d}-{token}"
 
 
-def _build_pass_urls(pass_code: str) -> dict[str, str]:
+def _build_pass_urls(pass_code: str, *, pass_title: str | None = None) -> dict[str, str]:
     api_base = _api_base_url()
     pass_view_url = f"{api_base}/web/payments/pass/{quote(pass_code, safe='')}"
     pass_pdf_url = f"{pass_view_url}/pdf"
     pass_qr_payload = pass_view_url
     pass_qr_image_url = _build_qr_image_url(pass_qr_payload)
+    wallet_title = str(pass_title or "PerkNation Park Entry Pass").strip() or "PerkNation Park Entry Pass"
     wallet_query = urlencode(
         {
-            "title": "PerkNation Park Entry Pass",
+            "title": wallet_title,
             "code": pass_code,
             "payload": pass_view_url,
             "template": "perknation",
@@ -183,11 +213,8 @@ def _build_pass_urls(pass_code: str) -> dict[str, str]:
     }
 
 
-def _checkout_wants_multi_ticket_bundle(payload: dict[str, Any]) -> bool:
-    if str(payload.get("pass_delivery_mode") or "").strip().lower() == "multi_ticket":
-        return True
-
-    text = " ".join(
+def _hsp_product_text(payload: dict[str, Any]) -> str:
+    return " ".join(
         str(payload.get(key) or "")
         for key in (
             "offer_choice",
@@ -196,11 +223,80 @@ def _checkout_wants_multi_ticket_bundle(payload: dict[str, Any]) -> bool:
             "package_quantity",
         )
     ).lower()
-    return "mini test pass" in text and ("live qa" in text or "$1" in text or "1 mini" in text)
+
+
+def _hsp_product_key(payload: dict[str, Any]) -> str:
+    text = _hsp_product_text(payload)
+    if "mini test pass" in text and ("live qa" in text or "$1" in text or "1 mini" in text):
+        return "qa_bundle"
+    if "$70" in text or "70 bundle" in text or "golden ticket" in text:
+        return "bundle_70"
+    if "$5" in text or "5 admission" in text or "entry only" in text:
+        return "entry_5"
+    return ""
+
+
+def _regular_entry_ticket_meta(ticket_number: int) -> dict[str, Any]:
+    return {
+        "ticket_number": ticket_number,
+        "bundle_ticket_number": ticket_number,
+        "ticket_type": "regular_entry",
+        "pass_title": "Regular Entry Ticket",
+        "pass_label": f"Regular Entry Ticket {ticket_number} of 11",
+        "pass_summary": "Paintball marker + all day park pass",
+        "pass_terms": list(HSP_REGULAR_ENTRY_TERMS),
+    }
+
+
+def _golden_ticket_meta(ticket_number: int = 12) -> dict[str, Any]:
+    return {
+        "ticket_number": ticket_number,
+        "bundle_ticket_number": 1,
+        "ticket_type": "golden_ticket",
+        "pass_title": "Golden Ticket",
+        "pass_label": "Golden Ticket 1 of 1",
+        "pass_summary": "Admission + .50 caliber gun + 200 paintballs + mask rental",
+        "pass_terms": list(HSP_GOLDEN_TICKET_TERMS),
+    }
+
+
+def _entry_only_ticket_meta() -> dict[str, Any]:
+    return {
+        "ticket_number": 1,
+        "bundle_ticket_number": 1,
+        "ticket_type": "entry_only",
+        "pass_title": "$5 Entry Only Pass",
+        "pass_label": "Entry Only Pass",
+        "pass_summary": "Entry only",
+        "pass_terms": list(HSP_ENTRY_ONLY_TERMS),
+    }
+
+
+def _ticket_manifest_for_payload(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    product_key = _hsp_product_key(payload)
+    if product_key in {"qa_bundle", "bundle_70"}:
+        return [_regular_entry_ticket_meta(number) for number in range(1, 12)] + [_golden_ticket_meta(12)]
+    if product_key == "entry_5":
+        return [_entry_only_ticket_meta()]
+    return []
+
+
+def _checkout_wants_multi_ticket_bundle(payload: dict[str, Any]) -> bool:
+    if str(payload.get("pass_delivery_mode") or "").strip().lower() == "multi_ticket":
+        return True
+    return len(_ticket_manifest_for_payload(payload)) > 1
 
 
 def _pass_ticket_count_for_payload(payload: dict[str, Any]) -> int:
+    manifest = _ticket_manifest_for_payload(payload)
+    if manifest:
+        return len(manifest)
     return QA_MINI_TEST_TICKET_COUNT if _checkout_wants_multi_ticket_bundle(payload) else 1
+
+
+def _single_ticket_meta_for_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    manifest = _ticket_manifest_for_payload(payload)
+    return manifest[0] if len(manifest) == 1 else {}
 
 
 def _ticket_records(payload: dict[str, Any]) -> list[dict[str, Any]]:
@@ -215,7 +311,12 @@ def _public_ticket_record(ticket: dict[str, Any]) -> dict[str, Any]:
         key: ticket.get(key)
         for key in (
             "ticket_number",
+            "bundle_ticket_number",
+            "ticket_type",
             "pass_label",
+            "pass_title",
+            "pass_summary",
+            "pass_terms",
             "pass_code",
             "pass_status",
             "pass_issued_at",
@@ -314,14 +415,20 @@ def _seed_ticket_from_primary_payload(
     total_count: int,
     issued_at: datetime,
     expires_at: datetime,
+    ticket_meta: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    meta = ticket_meta or {}
     ticket: dict[str, Any] = {
         "ticket_number": ticket_number,
-        "pass_label": f"Ticket {ticket_number} of {total_count}",
+        "pass_label": str(meta.get("pass_label") or f"Ticket {ticket_number} of {total_count}"),
     }
+    for key, value in meta.items():
+        ticket[key] = value
     for key in PRIMARY_PASS_FIELD_KEYS:
         if key in payload:
             ticket[key] = payload.get(key)
+    for key, value in meta.items():
+        ticket[key] = value
     if not str(ticket.get("pass_code") or "").strip():
         ticket["pass_code"] = _generate_pass_code(row_id, ticket_number)
     if not str(ticket.get("pass_status") or "").strip():
@@ -344,15 +451,28 @@ def _ensure_ticket_fields(
     issued_at: datetime,
     expires_at: datetime,
     now: datetime,
+    ticket_meta: dict[str, Any] | None = None,
 ) -> bool:
     changed = False
-    if ticket.get("ticket_number") != ticket_number:
-        ticket["ticket_number"] = ticket_number
+    meta = ticket_meta or {}
+    desired_ticket_number = int(meta.get("ticket_number") or ticket_number)
+    if ticket.get("ticket_number") != desired_ticket_number:
+        ticket["ticket_number"] = desired_ticket_number
         changed = True
-    pass_label = f"Ticket {ticket_number} of {total_count}"
-    if str(ticket.get("pass_label") or "").strip() != pass_label:
-        ticket["pass_label"] = pass_label
-        changed = True
+    desired_values = {
+        "bundle_ticket_number": meta.get("bundle_ticket_number"),
+        "ticket_type": meta.get("ticket_type"),
+        "pass_title": meta.get("pass_title"),
+        "pass_label": meta.get("pass_label") or f"Ticket {ticket_number} of {total_count}",
+        "pass_summary": meta.get("pass_summary"),
+        "pass_terms": meta.get("pass_terms"),
+    }
+    for key, value in desired_values.items():
+        if value in (None, ""):
+            continue
+        if ticket.get(key) != value:
+            ticket[key] = value
+            changed = True
 
     pass_code = str(ticket.get("pass_code") or "").strip()
     if not pass_code:
@@ -375,7 +495,7 @@ def _ensure_ticket_fields(
         ticket["pass_status"] = "active"
         changed = True
 
-    pass_urls = _build_pass_urls(pass_code)
+    pass_urls = _build_pass_urls(pass_code, pass_title=str(ticket.get("pass_title") or "").strip() or None)
     for key, value in pass_urls.items():
         if str(ticket.get(key) or "").strip() != value:
             ticket[key] = value
@@ -420,7 +540,8 @@ def _ensure_multi_ticket_payload(
     now: datetime,
 ) -> bool:
     changed = False
-    total_count = _pass_ticket_count_for_payload(payload)
+    ticket_manifest = _ticket_manifest_for_payload(payload)
+    total_count = len(ticket_manifest) or _pass_ticket_count_for_payload(payload)
     issued_at = _parse_iso_datetime(payload.get("pass_issued_at")) or now
     expires_at = _parse_iso_datetime(payload.get("pass_expires_at")) or (issued_at + PASS_VALIDITY)
 
@@ -437,6 +558,7 @@ def _ensure_multi_ticket_payload(
                 total_count=total_count,
                 issued_at=issued_at,
                 expires_at=expires_at,
+                ticket_meta=ticket_manifest[0] if ticket_manifest else None,
             )
         )
 
@@ -445,7 +567,10 @@ def _ensure_multi_ticket_payload(
         tickets.append(
             {
                 "ticket_number": ticket_number,
-                "pass_label": f"Ticket {ticket_number} of {total_count}",
+                "pass_label": str(
+                    (ticket_manifest[ticket_number - 1] if len(ticket_manifest) >= ticket_number else {}).get("pass_label")
+                    or f"Ticket {ticket_number} of {total_count}"
+                ),
                 "pass_code": _generate_pass_code(row_id, ticket_number),
                 "pass_status": "active",
                 "pass_issued_at": _to_iso_utc(issued_at),
@@ -465,6 +590,7 @@ def _ensure_multi_ticket_payload(
             issued_at=issued_at,
             expires_at=expires_at,
             now=now,
+            ticket_meta=ticket_manifest[idx - 1] if len(ticket_manifest) >= idx else None,
         ):
             changed = True
 
@@ -731,6 +857,9 @@ def _send_checkout_pass_email(row: WebLeadSubmission, payload: dict[str, Any]) -
     for idx, ticket in enumerate(ticket_records or [_public_ticket_record(payload)], start=1):
         ticket_code = str(ticket.get("pass_code") or pass_code).strip()
         label = str(ticket.get("pass_label") or f"Ticket {idx} of {ticket_count}").strip()
+        title = str(ticket.get("pass_title") or label).strip()
+        summary = str(ticket.get("pass_summary") or "").strip()
+        terms = ticket.get("pass_terms") if isinstance(ticket.get("pass_terms"), list) else []
         ticket_wallet_url = str(ticket.get("pass_wallet_url") or "").strip()
         ticket_view_url = str(ticket.get("pass_view_url") or "").strip()
         ticket_pdf_url = str(ticket.get("pass_pdf_url") or "").strip()
@@ -742,6 +871,9 @@ def _send_checkout_pass_email(row: WebLeadSubmission, payload: dict[str, Any]) -
         plain_ticket_lines.extend(
             [
                 f"{label}",
+                f"Type: {title}",
+                f"Includes: {summary or 'See ticket details'}",
+                *[f"- {term}" for term in terms],
                 f"Pass code: {ticket_code}",
                 f"Expires: {ticket_expires_text}",
                 f"Wallet pass: {ticket_wallet_url}",
@@ -757,10 +889,13 @@ def _send_checkout_pass_email(row: WebLeadSubmission, payload: dict[str, Any]) -
             f"""
               <div style=\"border:1px solid #e5e7eb;border-radius:14px;padding:14px;margin:0 0 14px;background:#fbfdff;\">
                 <div style=\"font-size:12px;letter-spacing:0.06em;text-transform:uppercase;color:#64748b;margin:0 0 8px;\">{escape(label)}</div>
+                <div style=\"font-size:18px;font-weight:800;color:#111827;margin:0 0 6px;\">{escape(title)}</div>
+                {f'<div style="font-size:13px;color:#334155;margin:0 0 10px;">{escape(summary)}</div>' if summary else ''}
                 <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%;border-collapse:collapse;margin:0 0 12px;\">
                   <tr><td style=\"padding:5px 0;color:#6b7280;width:130px;\">Pass code</td><td style=\"padding:5px 0;font-weight:700;letter-spacing:0.03em;\">{escape(ticket_code)}</td></tr>
                   <tr><td style=\"padding:5px 0;color:#6b7280;\">Expires</td><td style=\"padding:5px 0;font-weight:600;\">{escape(ticket_expires_text)}</td></tr>
                 </table>
+                {f'<ul style="margin:0 0 12px;padding-left:18px;color:#334155;font-size:13px;line-height:1.45;">{"".join(f"<li>{escape(str(term))}</li>" for term in terms)}</ul>' if terms else ''}
                 {f'<img src="{escape(qr_src, quote=True)}" alt="PerkNation entry QR code" style="width:190px;height:190px;border-radius:12px;border:1px solid #e2e8f0;background:#fff;padding:4px;margin:0 0 10px;" />' if qr_src else ''}
                 <p style=\"margin:0 0 8px;\"><a href=\"{escape(ticket_wallet_url, quote=True)}\" style=\"color:#0f5bd8;font-weight:600;\">Add this ticket to Apple Wallet</a></p>
                 <p style=\"margin:0 0 8px;\"><a href=\"{escape(ticket_view_url, quote=True)}\" style=\"color:#0f5bd8;font-weight:600;\">View pass + scan link</a></p>
@@ -925,6 +1060,12 @@ def ensure_paid_order_pass(
 
             return _parse_payload(row.payload_json)
 
+        single_ticket_meta = _single_ticket_meta_for_payload(payload)
+        for key, value in single_ticket_meta.items():
+            if value not in (None, "") and payload.get(key) != value:
+                payload[key] = value
+                changed = True
+
         pass_code = str(payload.get("pass_code") or "").strip()
         if not pass_code:
             pass_code = _generate_pass_code(row.id)
@@ -948,7 +1089,7 @@ def ensure_paid_order_pass(
             payload["pass_status"] = "active"
             changed = True
 
-        pass_urls = _build_pass_urls(pass_code)
+        pass_urls = _build_pass_urls(pass_code, pass_title=str(payload.get("pass_title") or "").strip() or None)
         for key, value in pass_urls.items():
             if str(payload.get(key) or "").strip() != value:
                 payload[key] = value
@@ -1101,7 +1242,12 @@ def _build_pass_record(
         "selected_park": _first_non_empty(payload.get("selected_park"), payload.get("park")),
         "package_quantity": _first_non_empty(payload.get("package_quantity"), "1"),
         "ticket_number": pass_data.get("ticket_number"),
+        "bundle_ticket_number": pass_data.get("bundle_ticket_number"),
+        "ticket_type": _first_non_empty(pass_data.get("ticket_type"), ""),
         "pass_label": _first_non_empty(pass_data.get("pass_label"), ""),
+        "pass_title": _first_non_empty(pass_data.get("pass_title"), ""),
+        "pass_summary": _first_non_empty(pass_data.get("pass_summary"), ""),
+        "pass_terms": pass_data.get("pass_terms") if isinstance(pass_data.get("pass_terms"), list) else [],
         "pass_ticket_count": ticket_count,
         "pass_code": _first_non_empty(pass_data.get("pass_code"), "") or "",
         "pass_status": _first_non_empty(pass_data.get("pass_status"), "unknown") or "unknown",

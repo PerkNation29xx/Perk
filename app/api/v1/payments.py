@@ -848,6 +848,13 @@ def _build_checkout_pass_status(row: WebLeadSubmission, payload: dict) -> Checko
         offer_choice=(str(payload.get("offer_choice") or payload.get("selected_offer") or "").strip() or None),
         selected_park=(str(payload.get("selected_park") or payload.get("park") or "").strip() or None),
         package_quantity=(str(payload.get("package_quantity") or "").strip() or None),
+        ticket_number=payload.get("ticket_number"),
+        bundle_ticket_number=payload.get("bundle_ticket_number"),
+        ticket_type=(str(payload.get("ticket_type") or "").strip() or None),
+        pass_label=(str(payload.get("pass_label") or "").strip() or None),
+        pass_title=(str(payload.get("pass_title") or "").strip() or None),
+        pass_summary=(str(payload.get("pass_summary") or "").strip() or None),
+        pass_terms=payload.get("pass_terms") if isinstance(payload.get("pass_terms"), list) else None,
         pass_code=(str(payload.get("pass_code") or "").strip() or None),
         pass_status=(str(payload.get("pass_status") or "").strip() or None),
         pass_expires_at=_parse_iso_datetime(payload.get("pass_expires_at")),
@@ -906,6 +913,13 @@ def _build_user_pass_row(row: WebLeadSubmission, payload: dict) -> CheckoutUserP
         selected_park=selected_park,
         package_quantity=package_quantity,
         payment_status=payment_status,
+        ticket_number=payload.get("ticket_number"),
+        bundle_ticket_number=payload.get("bundle_ticket_number"),
+        ticket_type=(str(payload.get("ticket_type") or "").strip() or None),
+        pass_label=(str(payload.get("pass_label") or "").strip() or None),
+        pass_title=(str(payload.get("pass_title") or "").strip() or None),
+        pass_summary=(str(payload.get("pass_summary") or "").strip() or None),
+        pass_terms=payload.get("pass_terms") if isinstance(payload.get("pass_terms"), list) else None,
         pass_code=(str(payload.get("pass_code") or "").strip() or None),
         pass_status=(str(payload.get("pass_status") or "").strip() or None),
         pass_expires_at=_parse_iso_datetime(payload.get("pass_expires_at")),
@@ -1232,6 +1246,9 @@ def public_pass_pdf(
     card_text = f"{card_brand} ending in {card_last4}" if card_last4 else "Card details pending"
     pass_view_url = str(pass_data.get("pass_view_url") or "").strip()
     qr_payload = str(pass_data.get("pass_qr_payload") or pass_view_url or normalized_code).strip()
+    ticket_title = str(pass_data.get("pass_title") or pass_data.get("pass_label") or "Park Entry Ticket").strip()
+    ticket_summary = str(pass_data.get("pass_summary") or "").strip()
+    ticket_terms = pass_data.get("pass_terms") if isinstance(pass_data.get("pass_terms"), list) else []
 
     lines = [
         "PerkNation Receipt and Park Entry Ticket",
@@ -1245,6 +1262,8 @@ def public_pass_pdf(
         f"Payment method: {card_text}",
         "",
         "Ticket",
+        f"Type: {ticket_title}",
+        f"Includes: {ticket_summary or 'See ticket details'}",
         f"Pass code: {normalized_code}",
         f"Status: {str(pass_data.get('pass_status') or 'unknown').title()}",
         f"Offer: {str(payload.get('offer_choice') or payload.get('selected_offer') or 'Hollywood Sports campaign')}",
@@ -1253,6 +1272,9 @@ def public_pass_pdf(
         f"Ticket: {str(pass_data.get('pass_label') or pass_data.get('ticket_number') or '1')}",
         f"Expires: {expires_at.strftime('%B %d, %Y %I:%M %p %Z') if expires_at else 'N/A'}",
         f"Redeemed: {redeemed_at.strftime('%B %d, %Y %I:%M %p %Z') if redeemed_at else 'Not scanned yet'}",
+        "",
+        "Terms",
+        *[f"- {term}" for term in ticket_terms],
         "",
         "Show this PDF, the pass page, or the pass code at park check-in.",
         f"Pass page / QR payload: {qr_payload}",
@@ -1306,6 +1328,10 @@ def public_pass_view(
     selected_park = str(payload.get("selected_park") or payload.get("park") or "Participating park").strip()
     package_quantity = str(payload.get("package_quantity") or "1").strip()
     ticket_label = str(pass_data.get("pass_label") or pass_data.get("ticket_number") or "").strip()
+    ticket_title = str(pass_data.get("pass_title") or ticket_label or "Park Entry Ticket").strip()
+    ticket_summary = str(pass_data.get("pass_summary") or "").strip()
+    ticket_terms = pass_data.get("pass_terms") if isinstance(pass_data.get("pass_terms"), list) else []
+    ticket_terms_html = "".join(f"<li>{escape(str(term))}</li>" for term in ticket_terms)
     expires_at = _parse_iso_datetime(pass_data.get("pass_expires_at"))
     redeemed_at = _parse_iso_datetime(pass_data.get("pass_redeemed_at"))
     account_url = str(pass_data.get("pass_account_url") or payload.get("pass_account_url") or f"{_canonical_web_base_url()}/login").strip()
@@ -1428,9 +1454,12 @@ def public_pass_view(
       <div class="meta"><div class="label">Offer</div><div class="value">{escape(offer_choice)}</div></div>
       <div class="meta"><div class="label">Park</div><div class="value">{escape(selected_park)}</div></div>
       <div class="meta"><div class="label">Ticket</div><div class="value">{escape(ticket_label or package_quantity)}</div></div>
+      <div class="meta"><div class="label">Type</div><div class="value">{escape(ticket_title)}</div></div>
+      <div class="meta"><div class="label">Includes</div><div class="value">{escape(ticket_summary or "See ticket terms")}</div></div>
       <div class="meta"><div class="label">Expires</div><div class="value">{escape(expires_text)}</div></div>
       <div class="meta"><div class="label">Scanned</div><div class="value">{escape(redeemed_text)}</div></div>
     </div>
+    {f'<div class="meta" style="margin-top:14px;"><div class="label">Terms</div><ul style="margin:8px 0 0;padding-left:18px;color:#cbd5e1;line-height:1.45;">{ticket_terms_html}</ul></div>' if ticket_terms_html else ''}
     <div class="qr">
       <strong>Entry QR payload</strong>
       {f'<img src="{qr_url}" alt="PerkNation pass QR code" />' if qr_url else '<div>No QR payload available.</div>'}

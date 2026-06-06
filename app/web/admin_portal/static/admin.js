@@ -1018,6 +1018,15 @@ async function renderOrdersView(container) {
         if (count > 1) {
           const wrap = document.createElement("div");
           wrap.appendChild(document.createTextNode(`${count} tickets`));
+          const types = Array.isArray(o.pass_tickets)
+            ? Array.from(new Set(o.pass_tickets.map((ticket) => ticket.pass_title || ticket.pass_label).filter(Boolean)))
+            : [];
+          if (types.length) {
+            const typeLine = document.createElement("div");
+            typeLine.className = "muted small";
+            typeLine.textContent = types.join(" + ");
+            wrap.appendChild(typeLine);
+          }
           if (o.pass_code) {
             const small = document.createElement("div");
             small.className = "muted small";
@@ -1233,6 +1242,7 @@ async function renderTicketScannerView(container) {
       { label: "Created", key: "created_at", mono: true },
       { label: "Customer", key: "customer_name" },
       { label: "Email", key: "email" },
+      { label: "Ticket", key: "pass_title", render: (r) => r.pass_title || r.pass_label || "" },
       { label: "Pass code", key: "pass_code", mono: true },
       { label: "Status", key: "pass_status", render: (r) => ticketStatusTag(r.pass_status) },
       { label: "Expires", key: "pass_expires_at", mono: true },
