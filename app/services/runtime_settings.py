@@ -65,9 +65,9 @@ def get_effective_payment_setting(
     if key not in PAYMENT_SETTING_KEYS:
         raise ValueError(f"Unsupported payment setting key: {key}")
 
-    from_db = get_runtime_setting(db, key)
-    if from_db:
-        return from_db
+    row = db.get(RuntimeSetting, key)
+    if row is not None:
+        return (row.value or "").strip()
 
     env_key = key.upper()
     from_env = os.environ.get(env_key)
@@ -106,4 +106,3 @@ def apply_payment_settings_updates(db: Session, updates: Mapping[str, Optional[s
 
     db.commit()
     return get_payment_settings_snapshot(db)
-
