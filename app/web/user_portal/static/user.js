@@ -265,17 +265,13 @@
   };
 
   const CHECKOUT_OFFER_CHOICES = {
-    mini: "$1 mini test pass (live qa)",
     admission: "$5 admission promo (save $60+)",
-    bundle: "$70 bundle (12 park passes, $500+ value)",
+    bundle: "$60 bundle (12 park passes, $500+ value)",
   };
 
   function inferCheckoutOfferChoice(offer) {
     const haystack = `${safeText(offer && offer.title)} ${safeText(offer && offer.terms_text)}`.toLowerCase();
-    if ((haystack.includes("$1") && haystack.includes("mini")) || haystack.includes("mini test pass")) {
-      return CHECKOUT_OFFER_CHOICES.mini;
-    }
-    if (haystack.includes("$70") || haystack.includes("12 park") || haystack.includes("bundle")) {
+    if (haystack.includes("$60") || haystack.includes("$70") || haystack.includes("12 park") || haystack.includes("bundle")) {
       return CHECKOUT_OFFER_CHOICES.bundle;
     }
     if (haystack.includes("$5") || haystack.includes("admission promo") || haystack.includes("save $60")) {

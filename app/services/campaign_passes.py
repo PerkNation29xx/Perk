@@ -25,7 +25,7 @@ PASS_VALIDITY = timedelta(days=365)
 PASS_CODE_PREFIX = "PKI-HSP"
 PASS_QR_SIZE_PX = 320
 PASS_QR_FETCH_TIMEOUT_SECONDS = 8
-QA_MINI_TEST_TICKET_COUNT = 12
+HSP_BUNDLE_TICKET_COUNT = 12
 PASS_TICKETS_KEY = "pass_tickets"
 PASS_TICKET_FIELD_KEYS = (
     "ticket_number",
@@ -227,9 +227,9 @@ def _hsp_product_text(payload: dict[str, Any]) -> str:
 
 def _hsp_product_key(payload: dict[str, Any]) -> str:
     text = _hsp_product_text(payload)
-    if "mini test pass" in text and ("live qa" in text or "$1" in text or "1 mini" in text):
-        return "qa_bundle"
-    if "$70" in text or "70 bundle" in text or "golden ticket" in text:
+    if "$60" in text or "60 bundle" in text or "golden ticket" in text:
+        return "bundle_60"
+    if "$70" in text or "70 bundle" in text:
         return "bundle_70"
     if "$5" in text or "5 admission" in text or "entry only" in text:
         return "entry_5"
@@ -274,7 +274,7 @@ def _entry_only_ticket_meta() -> dict[str, Any]:
 
 def _ticket_manifest_for_payload(payload: dict[str, Any]) -> list[dict[str, Any]]:
     product_key = _hsp_product_key(payload)
-    if product_key in {"qa_bundle", "bundle_70"}:
+    if product_key in {"bundle_60", "bundle_70"}:
         return [_regular_entry_ticket_meta(number) for number in range(1, 12)] + [_golden_ticket_meta(12)]
     if product_key == "entry_5":
         return [_entry_only_ticket_meta()]
@@ -291,7 +291,7 @@ def _pass_ticket_count_for_payload(payload: dict[str, Any]) -> int:
     manifest = _ticket_manifest_for_payload(payload)
     if manifest:
         return len(manifest)
-    return QA_MINI_TEST_TICKET_COUNT if _checkout_wants_multi_ticket_bundle(payload) else 1
+    return HSP_BUNDLE_TICKET_COUNT if _checkout_wants_multi_ticket_bundle(payload) else 1
 
 
 def _single_ticket_meta_for_payload(payload: dict[str, Any]) -> dict[str, Any]:

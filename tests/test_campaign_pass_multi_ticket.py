@@ -1,12 +1,14 @@
 import json
 from datetime import datetime, timezone
 
+import pytest
+from fastapi import HTTPException
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from app.db.base import Base
 from app.db.models import User, WebLeadSubmission
-from app.api.v1.payments import checkout_status
+from app.api.v1.payments import _offer_pricing, checkout_status
 from app.services.campaign_passes import (
     ensure_paid_order_pass,
     find_checkout_ticket_by_pass_code,
@@ -25,7 +27,7 @@ def _checkout_row(db, payload: dict) -> WebLeadSubmission:
     row = WebLeadSubmission(
         form_type="checkout",
         source_page="/hollywood-sports",
-        name="Live QA Buyer",
+        name="Bundle Buyer",
         email="qa@example.com",
         phone="555-0100",
         payload_json=json.dumps(payload),
@@ -60,15 +62,15 @@ def _assert_hsp_bundle_ticket_mix(payload: dict) -> None:
     assert any("walk-ons" in term.lower() for term in golden["pass_terms"])
 
 
-def test_live_qa_purchase_mints_seventy_dollar_package_ticket_mix():
+def test_sixty_dollar_package_mints_eleven_regular_and_one_golden_ticket():
     db = _db_session()
     row = _checkout_row(
         db,
         {
             "payment_status": "paid",
-            "payment_amount_cents": 100,
+            "payment_amount_cents": 6000,
             "payment_provider": "stripe",
-            "offer_choice": "$1 Mini Test Pass (Live QA)",
+            "offer_choice": "$60 Bundle (12 park passes, $500+ value)",
             "selected_park": "Hollywood Sports - Bellflower",
             "package_quantity": "1",
         },
@@ -84,13 +86,13 @@ def test_live_qa_purchase_mints_seventy_dollar_package_ticket_mix():
     assert lookup[4]["pass_code"] == payload["pass_tickets"][5]["pass_code"]
 
 
-def test_seventy_dollar_package_mints_eleven_regular_and_one_golden_ticket():
+def test_legacy_seventy_dollar_package_label_still_mints_bundle_ticket_mix():
     db = _db_session()
     row = _checkout_row(
         db,
         {
             "payment_status": "paid",
-            "payment_amount_cents": 7000,
+            "payment_amount_cents": 6000,
             "payment_provider": "stripe",
             "offer_choice": "$70 Bundle (12 park passes, $500+ value)",
             "selected_park": "Hollywood Sports - Bellflower",
@@ -103,14 +105,14 @@ def test_seventy_dollar_package_mints_eleven_regular_and_one_golden_ticket():
     _assert_hsp_bundle_ticket_mix(payload)
 
 
-def test_scanning_one_live_qa_ticket_does_not_deactivate_siblings():
+def test_scanning_one_bundle_ticket_does_not_deactivate_siblings():
     db = _db_session()
     row = _checkout_row(
         db,
         {
             "payment_status": "paid",
-            "payment_amount_cents": 100,
-            "offer_choice": "$1 Mini Test Pass (Live QA)",
+            "payment_amount_cents": 6000,
+            "offer_choice": "$60 Bundle (12 park passes, $500+ value)",
             "selected_park": "Hollywood Sports - Bellflower",
         },
     )
@@ -163,12 +165,12 @@ def test_checkout_status_redacts_ticket_details_without_matching_account():
         db,
         {
             "payment_status": "paid",
-            "payment_amount_cents": 100,
+            "payment_amount_cents": 6000,
             "payment_provider": "stripe",
             "stripe_checkout_session_id": "cs_test_secure_bundle",
             "account_user_id": "42",
             "account_email": "buyer@example.com",
-            "offer_choice": "$1 Mini Test Pass (Live QA)",
+            "offer_choice": "$60 Bundle (12 park passes, $500+ value)",
             "selected_park": "Hollywood Sports - Bellflower",
         },
     )
@@ -191,12 +193,12 @@ def test_checkout_status_returns_ticket_details_for_matching_account():
         db,
         {
             "payment_status": "paid",
-            "payment_amount_cents": 100,
+            "payment_amount_cents": 6000,
             "payment_provider": "stripe",
             "stripe_checkout_session_id": "cs_test_secure_bundle_owner",
             "account_user_id": "42",
             "account_email": "buyer@example.com",
-            "offer_choice": "$1 Mini Test Pass (Live QA)",
+            "offer_choice": "$60 Bundle (12 park passes, $500+ value)",
             "selected_park": "Hollywood Sports - Bellflower",
         },
     )
@@ -209,3 +211,22 @@ def test_checkout_status_returns_ticket_details_for_matching_account():
     assert body.pass_tickets is not None
     assert len(body.pass_tickets) == 12
     assert body.pass_code
+
+
+def test_sixty_dollar_bundle_pricing_charges_sixty_dollars():
+    pricing = _offer_pricing("$60 Bundle (12 park passes, $500+ value)")
+
+    assert pricing.label == "$60 Bundle (12 park passes, $500+ value)"
+    assert pricing.unit_amount_cents == 6000
+
+
+def test_legacy_seventy_dollar_bundle_pricing_alias_charges_sixty_dollars():
+    pricing = _offer_pricing("$70 Bundle (12 park passes, $500+ value)")
+
+    assert pricing.label == "$60 Bundle (12 park passes, $500+ value)"
+    assert pricing.unit_amount_cents == 6000
+
+
+def test_one_dollar_live_qa_pricing_is_removed():
+    with pytest.raises(HTTPException):
+        _offer_pricing("$1 Mini Test Pass (Live QA)")
