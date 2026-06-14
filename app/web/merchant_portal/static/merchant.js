@@ -76,6 +76,21 @@ function isExpired(session) {
   return Date.now() > ((session.expires_at * 1000) - 30_000);
 }
 
+function withRedirectParam(url, redirectTo) {
+  if (!redirectTo) return url;
+  try {
+    const parsed = new URL(url, window.location.origin);
+    parsed.searchParams.set("redirect_to", redirectTo);
+    return parsed.toString();
+  } catch {
+    return url;
+  }
+}
+
+function authPasswordResetRedirectUrl() {
+  return String((config && config.auth_password_reset_redirect_url) || `${window.location.origin}/reset-password`);
+}
+
 async function supabaseSignIn(email, password) {
   const url = `${config.supabase_url}/auth/v1/token?grant_type=password`;
   const res = await fetch(url, {
@@ -103,6 +118,38 @@ async function supabaseSignIn(email, password) {
     expires_at: Math.floor(Date.now() / 1000) + (data.expires_in || 3600),
     email,
   };
+}
+
+async function supabaseRequestPasswordReset(email) {
+  const redirectTo = authPasswordResetRedirectUrl();
+  const url = withRedirectParam(`${config.supabase_url}/auth/v1/recover`, redirectTo);
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      apikey: config.supabase_anon_key,
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      redirect_to: redirectTo,
+    },
+    body: JSON.stringify({
+      email,
+      options: {
+        emailRedirectTo: redirectTo,
+        redirectTo,
+      },
+    }),
+  });
+
+  if (!res.ok) {
+    let detail = "";
+    try {
+      const body = await res.json();
+      detail = body.error_description || body.error || body.message || JSON.stringify(body);
+    } catch {
+      detail = await res.text();
+    }
+    throw new Error(detail || `Reset request failed (${res.status})`);
+  }
 }
 
 async function supabaseRefresh(refreshToken) {
@@ -168,8 +215,10 @@ async function apiJson(path, options, allowStatuses) {
 function updateAuthUi() {
   const session = loadSession();
   const signedIn = !!(session && session.access_token);
+  const logoutBtn = qs("#logoutBtn");
   qs("#sessionPill").textContent = signedIn ? `Signed in: ${session.email || "merchant"}` : "Signed out";
-  qs("#logoutBtn").disabled = !signedIn;
+  logoutBtn.disabled = !signedIn;
+  logoutBtn.hidden = !signedIn;
   qs("#loginCard").hidden = signedIn;
   qs("#portalSection").hidden = !signedIn;
   if (!signedIn) {
@@ -260,7 +309,7 @@ function renderOffers() {
     { label: "ID", key: "id", mono: true },
     { label: "Title", key: "title" },
     { label: "Type", key: "offer_type" },
-    { label: "Cash rate", render: (o) => fmtPct(o.reward_rate_cash) },
+    { label: "Offer rate", render: (o) => fmtPct(o.reward_rate_cash) },
     { label: "Status", key: "approval_status" },
     { label: "Start", key: "starts_at", mono: true },
     { label: "End", key: "ends_at", mono: true },
@@ -273,7 +322,7 @@ function renderAiAssistant() {
   const modelPill = qs("#aiModelPill");
   if (!wrap || !modelPill) return;
 
-  modelPill.textContent = `Model: ${state.aiModel || "-"}`;
+  modelPill.textContent = state.aiModel ? `AI model: ${state.aiModel}` : "AI assistant";
   wrap.innerHTML = "";
 
   const rows = Array.isArray(state.aiConversation) ? state.aiConversation : [];
@@ -440,7 +489,7 @@ async function createOffer() {
   const cashRate = Number(qs("#offerCashRateInput").value);
 
   if (!start || !end || !Number.isFinite(cashRate)) {
-    showStatus("Title, terms, cash rate, start, and end are required.");
+    showStatus("Title, terms, offer rate, start, and end are required.");
     return;
   }
 
@@ -452,7 +501,7 @@ async function createOffer() {
     offer_type: qs("#offerTypeInput").value.trim() || "boost",
     terms_text: qs("#offerTermsInput").value.trim(),
     reward_rate_cash: cashRate,
-    reward_rate_stock: cashRate,
+    reward_rate_stock: 0,
     starts_at: start,
     ends_at: end,
     location_id: Number.isFinite(locationId) ? locationId : null,
@@ -506,14 +555,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     showStatus("Signed out.");
   });
 
-  qs("#refreshAllBtn").addEventListener("click", async () => {
-    try {
-      await refreshMerchantData();
-      showStatus("Refreshed.");
-    } catch (err) {
-      showStatus(err.message || String(err));
-    }
-  });
   qs("#reloadMetricsBtn").addEventListener("click", async () => {
     try {
       await refreshMerchantData();
@@ -584,6 +625,21 @@ window.addEventListener("DOMContentLoaded", async () => {
     } finally {
       qs("#loginBtn").disabled = false;
       qs("#loginHint").textContent = "";
+    }
+  });
+
+  qs("#forgotPasswordBtn").addEventListener("click", async () => {
+    const email = qs("#emailInput").value.trim();
+    if (!email) {
+      showStatus("Enter your email, then tap Forgot password.");
+      return;
+    }
+
+    try {
+      await supabaseRequestPasswordReset(email);
+      showStatus("Password reset email sent. Open the link in your inbox.");
+    } catch (err) {
+      showStatus(err.message || String(err));
     }
   });
 

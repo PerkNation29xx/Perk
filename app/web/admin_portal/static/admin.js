@@ -535,13 +535,6 @@ async function resolveDispute(disputeId) {
   return await res.json();
 }
 
-async function loadStockConversions() {
-  const res = await apiFetch(`${config.api_v1_prefix}/admin/stock_conversions?limit=200`);
-  if (res.status === 403) throw new Error("Forbidden (admin only).");
-  if (!res.ok) throw new Error(`Stock conversions failed (${res.status})`);
-  return await res.json();
-}
-
 async function loadAuditLogs() {
   const res = await apiFetch(`${config.api_v1_prefix}/admin/audit?limit=300`);
   if (res.status === 403) throw new Error("Forbidden (admin only).");
@@ -650,7 +643,6 @@ async function renderOverviewView(container) {
     { label: "Offers (active)", value: fmtInt(data.offers_active), hint: `${fmtInt(data.offers_pending)} pending approvals` },
     { label: "Txn volume", value: fmtUsd(data.transactions_volume_window_usd), hint: `${data.days}d window` },
     { label: "Rewards (available)", value: fmtUsd(data.rewards_available_usd), hint: `Pending ${fmtUsd(data.rewards_pending_usd)}` },
-    { label: "Stock converted", value: fmtUsd(data.stock_converted_total_usd), hint: "Stock Vault (demo)" },
     { label: "Tickets (open)", value: fmtInt(data.tickets_open), hint: "Support" },
     { label: "Disputes (open)", value: fmtInt(data.disputes_open), hint: "Risk" },
     { label: "Transactions (total)", value: fmtInt(data.transactions_total), hint: `All-time ${fmtUsd(data.transactions_volume_usd)}` },
@@ -736,7 +728,7 @@ async function renderOffersView(container) {
     { label: "ID", key: "id", mono: true },
     { label: "Merchant", key: "merchant_name" },
     { label: "Title", key: "title" },
-    { label: "Cash rate", key: "reward_rate_cash", render: (o) => `${Math.round((Number(o.reward_rate_cash) || 0) * 100)}%` },
+    { label: "Offer rate", key: "reward_rate_cash", render: (o) => `${Math.round((Number(o.reward_rate_cash) || 0) * 100)}%` },
     { label: "Status", key: "approval_status", render: (o) => tag(o.approval_status, o.approval_status === "approved" ? "ok" : (o.approval_status === "pending" ? "warn" : "danger")) },
     { label: "Starts", key: "starts_at", mono: true },
     { label: "Ends", key: "ends_at", mono: true },
@@ -751,7 +743,7 @@ async function renderApprovalsView(container) {
     { label: "ID", key: "id", mono: true },
     { label: "Merchant", key: "merchant_name" },
     { label: "Title", key: "title" },
-    { label: "Cash rate", key: "reward_rate_cash", render: (o) => `${Math.round((Number(o.reward_rate_cash) || 0) * 100)}%` },
+    { label: "Offer rate", key: "reward_rate_cash", render: (o) => `${Math.round((Number(o.reward_rate_cash) || 0) * 100)}%` },
     { label: "Actions", key: "_actions", render: (o) => {
         const wrap = document.createElement("div");
         wrap.className = "row";
@@ -1635,18 +1627,6 @@ async function renderDisputesView(container) {
   container.appendChild(renderTable(columns, disputes, { emptyText: "No disputes found." }));
 }
 
-async function renderStockView(container) {
-  setViewTitle("Stock Vault", "Cash-to-stocks conversions (MVP demo)");
-  const conversions = await loadStockConversions();
-  const columns = [
-    { label: "ID", key: "id", mono: true },
-    { label: "User", key: "user_email" },
-    { label: "Amount", key: "amount_usd", render: (c) => fmtUsd(c.amount_usd) },
-    { label: "Created", key: "created_at", mono: true },
-  ];
-  container.appendChild(renderTable(columns, conversions, { emptyText: "No conversions yet." }));
-}
-
 async function renderAuditView(container) {
   setViewTitle("Audit", "Administrative and system actions");
   const logs = await loadAuditLogs();
@@ -1989,9 +1969,6 @@ async function renderCurrentView() {
         break;
       case "disputes":
         await renderDisputesView(container);
-        break;
-      case "stock":
-        await renderStockView(container);
         break;
       case "audit":
         await renderAuditView(container);

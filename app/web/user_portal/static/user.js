@@ -247,7 +247,6 @@
     transactions: [],
     rewards: [],
     checkoutPasses: [],
-    investment: null,
     referral: null,
     supportTickets: [],
     currentView: "discover",
@@ -256,7 +255,6 @@
     currentLatitude: null,
     currentLongitude: null,
     lastGeoOffersRefreshAt: 0,
-    convertAmount: 25,
     aiConversation: [],
     aiModel: null,
     reviewsByMerchant: {},
@@ -666,7 +664,6 @@
     state.transactions = [];
     state.rewards = [];
     state.checkoutPasses = [];
-    state.investment = null;
     state.referral = null;
     state.supportTickets = [];
     state.reviewsByMerchant = {};
@@ -872,7 +869,7 @@
 
     const meta = document.createElement("div");
     meta.className = "small muted";
-    meta.textContent = `Reward: ${fmtPct(offer.reward_rate_cash)} cash / ${fmtPct(offer.reward_rate_stock)} stock • Expires ${fmtDateTime(offer.ends_at)}`;
+    meta.textContent = `Offer rate: ${fmtPct(offer.reward_rate_cash)} • Expires ${fmtDateTime(offer.ends_at)}`;
     card.appendChild(meta);
 
     if (merchantId) {
@@ -1314,30 +1311,9 @@
       .filter((r) => String(r.state || "").toLowerCase() === "pending")
       .reduce((sum, r) => sum + Number(r.reward_amount || 0), 0);
 
-    const inv = state.investment || {};
-    const stockBalance = Number(inv.stock_balance_usd || 0);
-    const convertibleNow = Number(inv.convertible_now || 0);
-    const untilNext = Number(inv.until_next_unlock || 25);
-
     qs("#kpiAvailable").textContent = fmtUsd(available);
     qs("#kpiPending").textContent = fmtUsd(pending);
-    qs("#kpiStock").textContent = fmtUsd(stockBalance);
-    qs("#kpiConvertible").textContent = fmtUsd(convertibleNow);
-    qs("#kpiUnlock").textContent = `Until next unlock: ${fmtUsd(untilNext)}`;
-
-    if (!Number.isFinite(state.convertAmount) || state.convertAmount < 25) {
-      state.convertAmount = 25;
-    }
-
-    if (convertibleNow >= 25 && state.convertAmount > convertibleNow) {
-      state.convertAmount = Math.max(25, Math.floor(convertibleNow / 25) * 25);
-    }
-
-    qs("#convertAmountChip").textContent = fmtUsd(state.convertAmount);
-
-    qs("#convertMinusBtn").disabled = state.convertAmount <= 25;
-    qs("#convertPlusBtn").disabled = convertibleNow < state.convertAmount + 25;
-    qs("#convertBtn").disabled = !(convertibleNow >= 25 && state.convertAmount <= convertibleNow);
+    qs("#kpiUnlock").textContent = "Member activity updates after eligible purchases are processed.";
   }
 
   function renderReferral() {
@@ -1547,12 +1523,11 @@
       return;
     }
 
-    const [meRes, offersRes, txRes, rewardsRes, invRes, referralRes, supportRes, reviewsRes, passesRes] = await Promise.all([
+    const [meRes, offersRes, txRes, rewardsRes, referralRes, supportRes, reviewsRes, passesRes] = await Promise.all([
       apiFetch(`${config.api_v1_prefix}/auth/me`),
       apiFetch(offersPath),
       apiFetch(`${config.api_v1_prefix}/consumer/transactions`),
       apiFetch(`${config.api_v1_prefix}/consumer/rewards`),
-      apiFetch(`${config.api_v1_prefix}/consumer/investments/summary`),
       apiFetch(`${config.api_v1_prefix}/consumer/referrals/profile`),
       apiFetch(`${config.api_v1_prefix}/consumer/support/tickets`),
       apiFetch(`${config.api_v1_prefix}/consumer/reviews?mine_only=true`),
@@ -1568,13 +1543,11 @@
     if (!offersRes.ok) throw new Error(`Failed /consumer/offers (${offersRes.status})`);
     if (!txRes.ok) throw new Error(`Failed /consumer/transactions (${txRes.status})`);
     if (!rewardsRes.ok) throw new Error(`Failed /consumer/rewards (${rewardsRes.status})`);
-    if (!invRes.ok) throw new Error(`Failed /consumer/investments/summary (${invRes.status})`);
 
     state.me = me;
     state.offers = await offersRes.json();
     state.transactions = await txRes.json();
     state.rewards = await rewardsRes.json();
-    state.investment = await invRes.json();
 
     state.referral = referralRes.ok ? await referralRes.json() : null;
     state.supportTickets = supportRes.ok ? await supportRes.json() : [];
@@ -1611,7 +1584,7 @@
       .map((r) => r.id);
 
     if (!availableIds.length) {
-      showStatus("No available cash rewards to redeem.", true);
+      showStatus("No available account credits to redeem.", true);
       return;
     }
 
@@ -1620,20 +1593,6 @@
       body: JSON.stringify({ reward_ids: availableIds }),
     });
     showStatus(body.message || "Rewards redeemed.", false);
-  }
-
-  async function convertCashToStocks(amount) {
-    const normalized = Math.round(amount);
-    if (normalized < 25 || normalized % 25 !== 0) {
-      throw new Error("Conversion must be at least $25 and in $25 increments.");
-    }
-
-    const { body } = await apiJson(`${config.api_v1_prefix}/consumer/investments/convert`, {
-      method: "POST",
-      body: JSON.stringify({ amount_usd: normalized }),
-    });
-    state.investment = body;
-    showStatus(`Converted ${fmtUsd(normalized)} to Stock Vault.`, false);
   }
 
   async function updateUserPreferences(payload) {
@@ -1878,7 +1837,7 @@
       <div class="list-item">
         <strong>${merchantName}</strong>
         <div class="small muted">${safeText(offer.terms_text)}</div>
-        <div class="small muted">Reward: ${fmtPct(offer.reward_rate_cash)} cash / ${fmtPct(offer.reward_rate_stock)} stock</div>
+        <div class="small muted">Offer rate: ${fmtPct(offer.reward_rate_cash)}</div>
         <div class="small muted">Expires ${fmtDateTime(offer.ends_at)}</div>
       </div>
     `;
@@ -2298,25 +2257,6 @@
     qs("#redeemBtn").addEventListener("click", async () => {
       try {
         await redeemRewards();
-        await refreshConsumerData();
-      } catch (err) {
-        showStatus(err.message || String(err), true);
-      }
-    });
-
-    qs("#convertMinusBtn").addEventListener("click", () => {
-      state.convertAmount = Math.max(25, state.convertAmount - 25);
-      updateKpis();
-    });
-
-    qs("#convertPlusBtn").addEventListener("click", () => {
-      state.convertAmount += 25;
-      updateKpis();
-    });
-
-    qs("#convertBtn").addEventListener("click", async () => {
-      try {
-        await convertCashToStocks(state.convertAmount);
         await refreshConsumerData();
       } catch (err) {
         showStatus(err.message || String(err), true);

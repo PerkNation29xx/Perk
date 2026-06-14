@@ -39,7 +39,7 @@
             <button class="topMenuItem" type="button" data-top-view="discover">Discover</button>
             <button class="topMenuItem" type="button" data-top-view="wallet">Wallet</button>
             <button class="topMenuItem" type="button" data-top-view="activity">Activity</button>
-            <button class="topMenuItem" type="button" data-top-view="redeem">Redeem</button>
+            <button class="topMenuItem" type="button" data-top-view="redeem">Account review</button>
             <button class="topMenuItem" type="button" data-top-view="more">More</button>
             <button class="topMenuItem" type="button" data-top-more-target="moreAiCard">AI Assistant</button>
             <button class="topMenuItem" type="button" data-top-more-target="moreReferralsCard">Referrals</button>
@@ -179,7 +179,7 @@
           <button class="tab-btn is-active" type="button" data-view="discover">Discover</button>
           <button class="tab-btn" type="button" data-view="wallet">Wallet</button>
           <button class="tab-btn" type="button" data-view="activity">Activity</button>
-          <button class="tab-btn" type="button" data-view="redeem">Redeem</button>
+          <button class="tab-btn" type="button" data-view="redeem">Account review</button>
           <button class="tab-btn" type="button" data-view="more">More</button>
         </div>
 
@@ -192,7 +192,7 @@
                 Map view is temporarily unavailable. Offer locations are still listed below.
               </div>
             </div>
-            <div class="muted small">Use location + reward-rate filters to discover boosted offers.</div>
+            <div class="muted small">Use location and category filters to discover nearby offers.</div>
           </section>
 
           <section class="card">
@@ -206,33 +206,18 @@
 
         <section class="view" data-panel="wallet" hidden>
           <section class="card">
-            <h2>Wallet and rewards</h2>
+            <h2>Wallet and activity</h2>
             <div class="kpi-grid">
               <div class="kpi">
-                <div class="kpi-label">Available cash</div>
+                <div class="kpi-label">Available balance</div>
                 <div id="kpiAvailable" class="kpi-value">$0.00</div>
               </div>
               <div class="kpi">
-                <div class="kpi-label">Pending rewards</div>
+                <div class="kpi-label">Pending activity</div>
                 <div id="kpiPending" class="kpi-value">$0.00</div>
               </div>
-              <div class="kpi">
-                <div class="kpi-label">Stock vault</div>
-                <div id="kpiStock" class="kpi-value">$0.00</div>
-              </div>
-              <div class="kpi">
-                <div class="kpi-label">Convertible now</div>
-                <div id="kpiConvertible" class="kpi-value">$0.00</div>
-              </div>
             </div>
-            <div id="kpiUnlock" class="muted small">Until next unlock: $25.00</div>
-
-            <div class="row wallet-convert-row">
-              <button id="convertMinusBtn" class="btn" type="button">- $25</button>
-              <div id="convertAmountChip" class="pill">$25.00</div>
-              <button id="convertPlusBtn" class="btn" type="button">+ $25</button>
-              <button id="convertBtn" class="btn btn-primary" type="button">Convert cash to stocks</button>
-            </div>
+            <div id="kpiUnlock" class="muted small">Member activity updates after eligible purchases are processed.</div>
           </section>
 
           <section class="card">
@@ -265,11 +250,11 @@
 
         <section class="view" data-panel="redeem" hidden>
           <section class="card">
-            <h2>Redeem actions</h2>
-            <p class="muted">Settle pending rewards, then cash out available rewards.</p>
-            <div class="row">
+            <h2>Account review</h2>
+            <p class="muted">Review account activity and contact support when something looks incorrect.</p>
+            <div class="row" hidden>
               <button id="settleBtn" class="btn" type="button">Settle pending</button>
-              <button id="redeemBtn" class="btn btn-primary" type="button">Cash out available</button>
+              <button id="redeemBtn" class="btn btn-primary" type="button">Review available</button>
             </div>
           </section>
         </section>

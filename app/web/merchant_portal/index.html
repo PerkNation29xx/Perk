@@ -23,7 +23,7 @@
       </div>
       <div class="row">
         <span id="sessionPill" class="pill">Signed out</span>
-        <button id="logoutBtn" class="btn" type="button" disabled>Logout</button>
+        <button id="logoutBtn" class="btn" type="button" disabled hidden>Logout</button>
       </div>
     </header>
 
@@ -52,7 +52,7 @@
           </label>
           <div class="row">
             <button id="loginBtn" class="btn btn-primary" type="submit">Sign in</button>
-            <button id="refreshAllBtn" class="btn btn-ghost" type="button">Refresh</button>
+            <button id="forgotPasswordBtn" class="btn" type="button">Forgot password</button>
           </div>
           <div id="loginHint" class="muted small"></div>
         </form>
@@ -87,7 +87,7 @@
         <section class="card">
           <div class="row row-space">
             <h2>AI Assistant</h2>
-            <div id="aiModelPill" class="pill">Model: -</div>
+            <div id="aiModelPill" class="pill">AI assistant</div>
           </div>
           <div id="aiConversationWrap" class="ai-thread"></div>
           <form id="aiAssistantForm" class="form">
@@ -166,7 +166,7 @@
               <input id="offerTermsInput" type="text" required />
             </label>
             <label>
-              <span>Cash rate (0-1)</span>
+              <span>Offer rate (0-1)</span>
               <input id="offerCashRateInput" type="number" step="0.0001" min="0" max="1" value="0.03" required />
             </label>
             <label>
