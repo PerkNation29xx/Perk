@@ -161,7 +161,7 @@ class Settings(BaseSettings):
     ollama_host_header: Optional[str] = None
 
     # Public Spark gateway fallback/direct path (example: http://47.51.26.74).
-    spark_public_base_url: Optional[str] = "http://47.51.26.74"
+    spark_public_base_url: Optional[str] = "http://chat.neonflux.co"
     # "spark" or "mini" host lane exposed by the Spark dual chat gateway.
     spark_chat_host_id: str = "mini"
     spark_timeout_seconds: int = 90
