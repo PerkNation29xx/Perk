@@ -37,6 +37,8 @@ def ai_chat(
             current_user=current_user,
             user_role=current_user.role if current_user else None,
             requested_context=payload.context,
+            user_latitude=payload.user_latitude,
+            user_longitude=payload.user_longitude,
         )
     except AIServiceError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc

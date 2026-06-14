@@ -908,9 +908,9 @@
         appendHomeAssistantMessage(
           messages,
           "assistant",
-          "Tell me where you are and what you are in the mood for, and I will recommend local places with active Perk Nation offers when available."
+          "Ask about the current Hollywood Sports offer, El Portal World Cup happy hour, or Pasadena restaurant picks."
         );
-        setStatus("Cleared. Ask for local recommendations anytime.");
+        setStatus("Cleared. Ask about current promos or local restaurant picks.");
       });
     }
 
@@ -939,7 +939,7 @@
           },
           body: JSON.stringify({
             message,
-            context: "public",
+            context: "home_local_guide",
             history,
             user_latitude: coords ? coords.latitude : null,
             user_longitude: coords ? coords.longitude : null,

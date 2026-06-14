@@ -27,6 +27,7 @@ from app.db.models import (
 )
 from app.services.audit import log_action
 from app.services.la_restaurant_knowledge import build_ai_restaurant_context, is_restaurant_discovery_query
+from app.services.local_discovery import build_local_discovery_context, is_local_discovery_query
 
 
 class AIServiceError(RuntimeError):
@@ -40,7 +41,7 @@ class AIChatResult:
     role_context: str
 
 
-_ALLOWED_CONTEXTS = {"consumer", "merchant", "admin", "public"}
+_ALLOWED_CONTEXTS = {"consumer", "merchant", "admin", "public", "home_local_guide"}
 _DETERMINISTIC_MODEL_NAME = "perk-deterministic"
 
 
@@ -48,6 +49,9 @@ def resolve_context(user_role: Optional[UserRole], requested_context: Optional[s
     requested = (requested_context or "").strip().lower()
     if requested not in _ALLOWED_CONTEXTS:
         requested = ""
+
+    if requested == "home_local_guide":
+        return "home_local_guide"
 
     if user_role is None:
         return "public"
@@ -92,6 +96,8 @@ def chat_with_assistant(
     current_user: Optional[User] = None,
     user_role: Optional[UserRole] = None,
     requested_context: Optional[str] = None,
+    user_latitude: Optional[float] = None,
+    user_longitude: Optional[float] = None,
 ) -> AIChatResult:
     provider = _select_ai_provider()
     resolved_role = current_user.role if current_user else user_role
@@ -150,9 +156,19 @@ def chat_with_assistant(
         role_context=role_context,
         query_result=query_result,
     )
+    include_home_local_guide = role_context == "home_local_guide"
     include_restaurant_context = db is not None and is_restaurant_discovery_query(message)
+    include_local_discovery_context = db is not None and is_local_discovery_query(message)
 
     messages: list[dict[str, str]] = [{"role": "system", "content": system_prompt}]
+
+    if include_home_local_guide:
+        messages.append(
+            {
+                "role": "system",
+                "content": _home_local_guide_context(),
+            }
+        )
 
     if include_live_context:
         snapshot = _build_live_snapshot(db=db, current_user=current_user, role_context=role_context)
@@ -196,6 +212,26 @@ def chat_with_assistant(
                 }
             )
 
+    if include_local_discovery_context and db is not None:
+        local_discovery_context = build_local_discovery_context(
+            db,
+            message=message,
+            user_latitude=user_latitude,
+            user_longitude=user_longitude,
+            limit=12,
+        )
+        if local_discovery_context:
+            messages.append(
+                {
+                    "role": "system",
+                    "content": (
+                        f"{local_discovery_context}\n\n"
+                        "When user asks for local recommendations, prioritize these ranked local matches. "
+                        "Do not claim there are no local options if ranked matches are present."
+                    ),
+                }
+            )
+
     messages.extend(normalized_history)
     messages.append({"role": "user", "content": message.strip()})
 
@@ -205,6 +241,8 @@ def chat_with_assistant(
         providers_to_try.append("spark")
 
     model = _configured_model_for_provider(provider)
+    model_override = _model_override_for_context(role_context)
+    spark_host_override = _spark_host_override_for_context(role_context)
     answer = ""
     last_error: Optional[AIServiceError] = None
 
@@ -213,9 +251,13 @@ def chat_with_assistant(
             if candidate == "openai":
                 model, answer = _request_openai_chat(messages)
             elif candidate == "spark":
-                model, answer = _request_spark_chat(messages)
+                model, answer = _request_spark_chat(
+                    messages,
+                    model_override=model_override,
+                    host_id_override=spark_host_override,
+                )
             else:
-                model, answer = _request_ollama_chat(messages)
+                model, answer = _request_ollama_chat(messages, model_override=model_override)
             break
         except AIServiceError as exc:
             last_error = exc
@@ -242,9 +284,28 @@ def chat_with_assistant(
     return AIChatResult(answer=answer, model=model, role_context=role_context)
 
 
-def _request_ollama_chat(messages: list[dict[str, str]]) -> tuple[str, str]:
+def _model_override_for_context(role_context: str) -> Optional[str]:
+    if role_context != "home_local_guide":
+        return None
+    configured = (settings.home_local_guide_model or "").strip()
+    return configured or None
+
+
+def _spark_host_override_for_context(role_context: str) -> Optional[str]:
+    if role_context != "home_local_guide":
+        return None
+    configured = (settings.home_local_guide_spark_host_id or "").strip().lower()
+    return configured or None
+
+
+def _request_ollama_chat(
+    messages: list[dict[str, str]],
+    *,
+    model_override: Optional[str] = None,
+) -> tuple[str, str]:
+    model_name = (model_override or settings.ollama_model).strip() or settings.ollama_model
     body = {
-        "model": settings.ollama_model,
+        "model": model_name,
         "stream": False,
         "options": {
             "temperature": max(0.0, min(settings.ollama_temperature, 1.0)),
@@ -293,7 +354,7 @@ def _request_ollama_chat(messages: list[dict[str, str]]) -> tuple[str, str]:
     except json.JSONDecodeError as exc:
         raise AIServiceError("AI service returned invalid JSON.") from exc
 
-    model = str(envelope.get("model") or settings.ollama_model)
+    model = str(envelope.get("model") or model_name)
     answer = ""
     message_obj = envelope.get("message")
     if isinstance(message_obj, dict):
@@ -303,20 +364,26 @@ def _request_ollama_chat(messages: list[dict[str, str]]) -> tuple[str, str]:
     return model, answer
 
 
-def _request_spark_chat(messages: list[dict[str, str]]) -> tuple[str, str]:
+def _request_spark_chat(
+    messages: list[dict[str, str]],
+    *,
+    model_override: Optional[str] = None,
+    host_id_override: Optional[str] = None,
+) -> tuple[str, str]:
     base = (settings.spark_public_base_url or "").strip()
     if not base:
         raise AIServiceError(
             "AI service is unreachable. SPARK_PUBLIC_BASE_URL is not configured on this backend."
         )
 
-    host_id = (settings.spark_chat_host_id or "mini").strip().lower()
+    host_id = (host_id_override or settings.spark_chat_host_id or "mini").strip().lower()
     if host_id not in {"spark", "mini"}:
         host_id = "mini"
+    model_name = (model_override or settings.ollama_model).strip() or settings.ollama_model
 
     body = {
         "hostId": host_id,
-        "model": settings.ollama_model,
+        "model": model_name,
         "messages": messages,
         "temperature": max(0.0, min(settings.ollama_temperature, 1.0)),
         "maxTokens": 900,
@@ -349,7 +416,7 @@ def _request_spark_chat(messages: list[dict[str, str]]) -> tuple[str, str]:
     except json.JSONDecodeError as exc:
         raise AIServiceError("Spark gateway returned invalid JSON.") from exc
 
-    model = str(envelope.get("model") or settings.ollama_model)
+    model = str(envelope.get("model") or model_name)
     answer = str(envelope.get("content") or "").strip()
     if not answer:
         answer = str(envelope.get("rawContent") or "").strip()
@@ -466,6 +533,8 @@ def _system_prompt_for_context(role_context: str) -> str:
         "Never request passwords, one-time codes, or private keys. "
         "If LIVE ACCOUNT DATA is included, use it as source of truth. "
         "If LIVE ACCOUNT DATA or LIVE QUERY RESULT is included, summarize it naturally; do not dump raw key-value blocks unless explicitly asked. "
+        "If LOCAL DISCOVERY CONTEXT is included, use those ranked local matches first and provide concrete recommendations. "
+        "Do not claim there are no local options when LOCAL DISCOVERY CONTEXT contains matches. "
         "If policy/financial/legal advice is requested, provide general guidance and suggest contacting a qualified professional. "
         "You can have natural, open-ended conversations on general topics."
     )
@@ -490,9 +559,50 @@ def _system_prompt_for_context(role_context: str) -> str:
             "If user asks to redeem/settle, require explicit phrase 'confirm redeem' or 'confirm settle'."
         )
 
+    if role_context == "home_local_guide":
+        return (
+            "You are the PerkNation AI Local Guide on the public homepage. "
+            "Use only the HOME LOCAL GUIDE CONTEXT plus any LA RESTAURANT KNOWLEDGE CONTEXT or LOCAL DISCOVERY CONTEXT provided in this request. "
+            "Only answer questions about the current PerkNation public promos, the Hollywood Sports paintball offer, "
+            "El Portal's World Cup viewing promo, and the local/Pasadena restaurant guides in context. "
+            "Do not invent promos, rewards, prices, discounts, venues, hours, dates, or ticket terms. "
+            "If the user asks about anything outside those topics, politely say you can only help with current PerkNation promos "
+            "and local restaurant guides, then offer one or two relevant examples. "
+            "Keep answers concise, practical, and oriented toward what the visitor can do next."
+        )
+
     return (
         f"{shared} Focus on public PerkNation product education and onboarding guidance. "
         "Keep responses in plain language."
+    )
+
+
+def _home_local_guide_context() -> str:
+    return "\n".join(
+        [
+            "HOME LOCAL GUIDE CONTEXT (authoritative public content)",
+            "Scope: current PerkNation public promos and local restaurant guide only.",
+            "",
+            "Current promos:",
+            "- Hollywood Sports paintball campaign: active PerkNation featured campaign. The $60 package includes 11 regular entry tickets plus 1 Golden Ticket. Regular entry tickets include paintball marker and all day park pass; all day air and purchase of 400 paintballs required; bonus 100 rounds when playing .50 caliber; parks are field paint only. The Golden Ticket includes admission, .50 caliber gun, 200 paintballs, and mask rental; .50 cal paintballsoft play only; good for walk-ons and cannot be combined with any other discount. The $5 option is an entry-only pass. Participating parks include Hollywood Sports - Bellflower, SC Village - Chino, Giant Paintball - Lakeside, Combat Paintball - Castaic, and Giant Party Sports - Allen. Primary CTA path: /hollywood-sports#buy-now.",
+            "- El Portal Restaurant World Cup promo: El Portal at 695 E. Green St., Pasadena, CA 91101 is streaming every World Cup game live during restaurant hours. Extended happy hour during games: Tuesday-Friday 12PM-6PM and Saturday-Sunday 12PM-5PM. Website: https://www.elportalrestaurant.com/. Instagram: https://www.instagram.com/elportal.",
+            "",
+            "Local restaurant guide currently surfaced on the homepage:",
+            "- Union | Italian | 37 E Union St, Pasadena | polished date-night dining and handmade pasta.",
+            "- Agnes Restaurant & Cheesery | American/Cheese shop | 40 W Green St, Pasadena | seasonal California menu and cheese counter.",
+            "- Fishwives | Seafood | 88 N Fair Oaks Ave, Pasadena | modern seafood and bright plating.",
+            "- Perle | French | 43 E Union St, Pasadena | Parisian-leaning celebrations and wine.",
+            "- Bone Kettle | Southeast Asian | 67 N Raymond Ave, Pasadena | layered broths and bold flavors.",
+            "- Osawa | Japanese/Sushi | 77 N Raymond Ave, Pasadena | refined sushi and restrained service.",
+            "- Panda Inn | Chinese | 3488 E Foothill Blvd, Pasadena | classic Pasadena Chinese dining.",
+            "- Pez Coastal Kitchen | Seafood | 61 N Raymond Ave, Pasadena | coastal seafood, cocktails, and patio energy.",
+            "",
+            "Answering rules:",
+            "- Prefer Hollywood Sports when the user asks about paintball, packages, tickets, entry, park passes, wallet passes, or current PerkNation campaign purchases.",
+            "- Prefer El Portal when the user asks about World Cup games, happy hour, soccer viewing, or game-day dining.",
+            "- Prefer restaurant guide entries when the user asks where to eat, date night, cuisine, neighborhoods, or Pasadena dining.",
+            "- If the needed detail is not in this context or the retrieved restaurant/local context, say what is known and suggest checking the venue or PerkNation page rather than guessing.",
+        ]
     )
 
 
@@ -891,6 +1001,12 @@ def _capabilities_for_role(role_context: str) -> str:
         return "I can read your live merchant profile, offer metrics, activations, and attributed transaction volume."
     if role_context == "admin":
         return "I can read live admin operations metrics: users, pending approvals, open tickets, and open disputes."
+    if role_context == "home_local_guide":
+        return (
+            "I can help with current PerkNation public promos and local restaurant guides: "
+            "Hollywood Sports paintball packages, El Portal World Cup viewing and happy hour, "
+            "and Pasadena restaurant picks."
+        )
     return "I can answer public product and onboarding questions."
 
 
