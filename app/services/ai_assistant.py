@@ -242,6 +242,7 @@ def chat_with_assistant(
 
     model = _configured_model_for_provider(provider)
     model_override = _model_override_for_context(role_context)
+    spark_base_override = _spark_base_override_for_context(role_context)
     spark_host_override = _spark_host_override_for_context(role_context)
     answer = ""
     last_error: Optional[AIServiceError] = None
@@ -253,6 +254,7 @@ def chat_with_assistant(
             elif candidate == "spark":
                 model, answer = _request_spark_chat(
                     messages,
+                    base_url_override=spark_base_override,
                     model_override=model_override,
                     host_id_override=spark_host_override,
                 )
@@ -295,6 +297,13 @@ def _spark_host_override_for_context(role_context: str) -> Optional[str]:
     if role_context != "home_local_guide":
         return None
     configured = (settings.home_local_guide_spark_host_id or "").strip().lower()
+    return configured or None
+
+
+def _spark_base_override_for_context(role_context: str) -> Optional[str]:
+    if role_context != "home_local_guide":
+        return None
+    configured = (settings.home_local_guide_spark_base_url or "").strip()
     return configured or None
 
 
@@ -367,10 +376,11 @@ def _request_ollama_chat(
 def _request_spark_chat(
     messages: list[dict[str, str]],
     *,
+    base_url_override: Optional[str] = None,
     model_override: Optional[str] = None,
     host_id_override: Optional[str] = None,
 ) -> tuple[str, str]:
-    base = (settings.spark_public_base_url or "").strip()
+    base = (base_url_override or settings.spark_public_base_url or "").strip()
     if not base:
         raise AIServiceError(
             "AI service is unreachable. SPARK_PUBLIC_BASE_URL is not configured on this backend."

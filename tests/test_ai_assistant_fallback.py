@@ -98,9 +98,11 @@ def test_home_local_guide_uses_nemotron_super_spark_lane(monkeypatch) -> None:
     def _fake_spark(
         messages: list[dict[str, str]],
         *,
+        base_url_override=None,
         model_override=None,
         host_id_override=None,
     ) -> tuple[str, str]:
+        captured["base_url_override"] = base_url_override
         captured["model_override"] = model_override
         captured["host_id_override"] = host_id_override
         captured["system_context"] = "\n\n".join(
@@ -111,6 +113,7 @@ def test_home_local_guide_uses_nemotron_super_spark_lane(monkeypatch) -> None:
     monkeypatch.setattr(settings, "ai_enabled", True)
     monkeypatch.setattr(settings, "ai_provider", "spark")
     monkeypatch.setattr(settings, "spark_public_base_url", "http://spark.example")
+    monkeypatch.setattr(settings, "home_local_guide_spark_base_url", "http://chat.neonflux.co")
     monkeypatch.setattr(settings, "home_local_guide_model", "nvidia/nemotron-3-super")
     monkeypatch.setattr(settings, "home_local_guide_spark_host_id", "spark")
     monkeypatch.setattr(ai_assistant, "_request_spark_chat", _fake_spark)
@@ -126,6 +129,7 @@ def test_home_local_guide_uses_nemotron_super_spark_lane(monkeypatch) -> None:
 
     assert result.model == "nvidia/nemotron-3-super"
     assert result.answer == "Scoped Spark response."
+    assert captured["base_url_override"] == "http://chat.neonflux.co"
     assert captured["model_override"] == "nvidia/nemotron-3-super"
     assert captured["host_id_override"] == "spark"
     assert "HOME LOCAL GUIDE CONTEXT" in str(captured["system_context"])

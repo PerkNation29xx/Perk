@@ -167,6 +167,7 @@ class Settings(BaseSettings):
     spark_timeout_seconds: int = 90
     # Public homepage AI Local Guide can target the larger Nemotron lane without
     # changing private admin/member assistants.
+    home_local_guide_spark_base_url: Optional[str] = "http://chat.neonflux.co"
     home_local_guide_model: str = "nvidia/nemotron-3-super"
     home_local_guide_spark_host_id: str = "spark"
 
