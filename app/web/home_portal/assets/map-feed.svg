@@ -17,8 +17,8 @@
 
     <text x="92" y="110" font-family="Rethink Sans, system-ui" font-size="22" fill="#faf7f7" opacity=".88" font-weight="900">Map</text>
     <text x="516" y="120" font-family="Rethink Sans, system-ui" font-size="22" fill="#0d0d0d" font-weight="900">Offers near you</text>
-    <text x="516" y="214" font-family="Rethink Sans, system-ui" font-size="18" fill="#faf7f7" opacity=".82" font-weight="900">Coffee & Tea • 20% back</text>
-    <text x="516" y="314" font-family="Rethink Sans, system-ui" font-size="18" fill="#faf7f7" opacity=".82" font-weight="900">Retail • 15% back</text>
-    <text x="516" y="414" font-family="Rethink Sans, system-ui" font-size="18" fill="#faf7f7" opacity=".82" font-weight="900">Hotels & Travel • 5% back</text>
+    <text x="516" y="214" font-family="Rethink Sans, system-ui" font-size="18" fill="#faf7f7" opacity=".82" font-weight="900">Coffee & Tea offers</text>
+    <text x="516" y="314" font-family="Rethink Sans, system-ui" font-size="18" fill="#faf7f7" opacity=".82" font-weight="900">Retail member deals</text>
+    <text x="516" y="414" font-family="Rethink Sans, system-ui" font-size="18" fill="#faf7f7" opacity=".82" font-weight="900">Hotels & Travel perks</text>
   </g>
 </svg>
