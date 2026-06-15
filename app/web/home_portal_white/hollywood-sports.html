@@ -830,13 +830,20 @@
     const promptButtons = document.querySelectorAll("[data-hsp-prompt]");
     const conversation = [];
 
+    const cleanAssistantText = (text) => String(text || "")
+      .replace(/\*\*([^*]+)\*\*/g, "$1")
+      .replace(/__([^_]+)__/g, "$1")
+      .replace(/\*\*/g, "")
+      .replace(/__/g, "")
+      .trim();
+
     const appendMessage = (role, text) => {
       const bubble = document.createElement("div");
       bubble.className = `hspChatMessage ${role}`;
-      bubble.textContent = text;
+      bubble.textContent = role === "user" ? String(text || "").trim() : cleanAssistantText(text);
       messages.appendChild(bubble);
       messages.scrollTop = messages.scrollHeight;
-      conversation.push({ role, text: String(text || "") });
+      conversation.push({ role, text: String(bubble.textContent || "") });
     };
 
     messages.querySelectorAll(".hspChatMessage").forEach((node) => {

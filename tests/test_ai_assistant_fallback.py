@@ -174,6 +174,35 @@ def test_home_local_guide_blocks_legacy_cashback_stock_claims(monkeypatch) -> No
     assert "el portal" in answer
 
 
+def test_public_ai_answers_strip_visible_markdown_bold(monkeypatch) -> None:
+    def _markdown_spark(
+        messages: list[dict[str, str]],
+        *,
+        base_url_override=None,
+        model_override=None,
+        host_id_override=None,
+    ) -> tuple[str, str]:
+        return ("spark-model", "The **$60 package** includes **11 regular tickets** plus 1 Golden Ticket.")
+
+    monkeypatch.setattr(settings, "ai_enabled", True)
+    monkeypatch.setattr(settings, "ai_provider", "spark")
+    monkeypatch.setattr(settings, "spark_public_base_url", "http://spark.example")
+    monkeypatch.setattr(ai_assistant, "_request_spark_chat", _markdown_spark)
+
+    result = chat_with_assistant(
+        message="what is the paintball package?",
+        history=[],
+        db=None,
+        current_user=None,
+        user_role=None,
+        requested_context="public",
+    )
+
+    assert "**" not in result.answer
+    assert "$60 package" in result.answer
+    assert "11 regular tickets" in result.answer
+
+
 def test_home_local_guide_does_not_inject_local_offer_context(monkeypatch) -> None:
     captured: dict[str, object] = {}
 

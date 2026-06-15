@@ -287,6 +287,9 @@ def chat_with_assistant(
     if role_context == "home_local_guide":
         answer = _guard_home_local_guide_answer(message=message, answer=answer)
 
+    if role_context in {"home_local_guide", "public"}:
+        answer = _strip_visible_markdown_bold(answer)
+
     if len(answer) > 6000:
         answer = answer[:6000].rstrip() + "\n\n[truncated]"
 
@@ -586,12 +589,13 @@ def _system_prompt_for_context(role_context: str) -> str:
             "Do not mention cashback, cash-back, stock rewards, stock conversion, Target offers, reward-rate tables, or cash/stock percentages. "
             "If the user asks about anything outside those topics, politely say you can only help with current PerkNation promos "
             "and local restaurant guides, then offer one or two relevant examples. "
-            "Keep answers concise, practical, and oriented toward what the visitor can do next."
+            "Keep answers concise, practical, and oriented toward what the visitor can do next. "
+            "Use plain text only; do not use Markdown bold markers or surround phrases with double asterisks."
         )
 
     return (
         f"{shared} Focus on public PerkNation product education and onboarding guidance. "
-        "Keep responses in plain language."
+        "Keep responses in plain language. Do not use Markdown bold markers."
     )
 
 
@@ -659,6 +663,10 @@ def _guard_home_local_guide_answer(*, message: str, answer: str) -> str:
         "The confirmed PerkNation deals right now are the Hollywood Sports $60 package, the Hollywood Sports $5 entry-only pass, "
         "and El Portal's World Cup game-day happy hour. Pasadena restaurant guide entries are recommendations unless a specific promo is listed."
     )
+
+
+def _strip_visible_markdown_bold(answer: str) -> str:
+    return answer.replace("**", "").replace("__", "")
 
 
 def _build_live_snapshot(

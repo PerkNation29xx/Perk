@@ -828,11 +828,20 @@
       .slice(-20);
   }
 
+  function cleanAssistantText(text){
+    return String(text || "")
+      .replace(/\*\*([^*]+)\*\*/g, "$1")
+      .replace(/__([^_]+)__/g, "$1")
+      .replace(/\*\*/g, "")
+      .replace(/__/g, "")
+      .trim();
+  }
+
   function appendHomeAssistantMessage(messagesNode, role, text){
     if(!messagesNode) return;
     const bubble = document.createElement("div");
     bubble.className = `aiBubble ${role === "user" ? "user" : "assistant"}`;
-    bubble.textContent = String(text || "").trim();
+    bubble.textContent = role === "user" ? String(text || "").trim() : cleanAssistantText(text);
     messagesNode.appendChild(bubble);
     messagesNode.scrollTop = messagesNode.scrollHeight;
   }
