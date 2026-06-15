@@ -916,9 +916,7 @@
       try {
         const ai = await fetchAiReply(trimmed);
         appendMessage("assistant", ai.answer);
-        status.textContent = ai.model
-          ? `Answered by AI model: ${ai.model}.`
-          : "Answered by the Perk Nation AI assistant.";
+        status.textContent = "Answered by the Perk Nation AI assistant.";
       } catch (err) {
         appendMessage("assistant", fallbackReply(trimmed));
         const reason = (err && err.message) ? String(err.message) : "temporary AI error";

@@ -158,7 +158,11 @@ def chat_with_assistant(
     )
     include_home_local_guide = role_context == "home_local_guide"
     include_restaurant_context = db is not None and is_restaurant_discovery_query(message)
-    include_local_discovery_context = db is not None and is_local_discovery_query(message)
+    include_local_discovery_context = (
+        db is not None
+        and role_context != "home_local_guide"
+        and is_local_discovery_query(message)
+    )
 
     messages: list[dict[str, str]] = [{"role": "system", "content": system_prompt}]
 
@@ -279,6 +283,9 @@ def chat_with_assistant(
 
     if not answer:
         raise AIServiceError("AI assistant returned an empty response.")
+
+    if role_context == "home_local_guide":
+        answer = _guard_home_local_guide_answer(message=message, answer=answer)
 
     if len(answer) > 6000:
         answer = answer[:6000].rstrip() + "\n\n[truncated]"
@@ -572,10 +579,11 @@ def _system_prompt_for_context(role_context: str) -> str:
     if role_context == "home_local_guide":
         return (
             "You are the PerkNation AI Local Guide on the public homepage. "
-            "Use only the HOME LOCAL GUIDE CONTEXT plus any LA RESTAURANT KNOWLEDGE CONTEXT or LOCAL DISCOVERY CONTEXT provided in this request. "
+            "Use only the HOME LOCAL GUIDE CONTEXT plus any LA RESTAURANT KNOWLEDGE CONTEXT provided in this request. "
             "Only answer questions about the current PerkNation public promos, the Hollywood Sports paintball offer, "
             "El Portal's World Cup viewing promo, and the local/Pasadena restaurant guides in context. "
             "Do not invent promos, rewards, prices, discounts, venues, hours, dates, or ticket terms. "
+            "Do not mention cashback, cash-back, stock rewards, stock conversion, Target offers, reward-rate tables, or cash/stock percentages. "
             "If the user asks about anything outside those topics, politely say you can only help with current PerkNation promos "
             "and local restaurant guides, then offer one or two relevant examples. "
             "Keep answers concise, practical, and oriented toward what the visitor can do next."
@@ -592,6 +600,7 @@ def _home_local_guide_context() -> str:
         [
             "HOME LOCAL GUIDE CONTEXT (authoritative public content)",
             "Scope: current PerkNation public promos and local restaurant guide only.",
+            "Important exclusions: PerkNation does not currently list cashback, cash-back, stock reward, stock conversion, Target, reward-rate table, or cash/stock percentage offers on the public homepage guide. Do not claim those are available.",
             "",
             "Current promos:",
             "- Hollywood Sports paintball campaign: active PerkNation featured campaign. The $60 package includes 11 regular entry tickets plus 1 Golden Ticket. Regular entry tickets include paintball marker and all day park pass; all day air and purchase of 400 paintballs required; bonus 100 rounds when playing .50 caliber; parks are field paint only. The Golden Ticket includes admission, .50 caliber gun, 200 paintballs, and mask rental; .50 cal paintballsoft play only; good for walk-ons and cannot be combined with any other discount. The $5 option is an entry-only pass. Participating parks include Hollywood Sports - Bellflower, SC Village - Chino, Giant Paintball - Lakeside, Combat Paintball - Castaic, and Giant Party Sports - Allen. Primary CTA path: /hollywood-sports#buy-now.",
@@ -611,8 +620,44 @@ def _home_local_guide_context() -> str:
             "- Prefer Hollywood Sports when the user asks about paintball, packages, tickets, entry, park passes, wallet passes, or current PerkNation campaign purchases.",
             "- Prefer El Portal when the user asks about World Cup games, happy hour, soccer viewing, or game-day dining.",
             "- Prefer restaurant guide entries when the user asks where to eat, date night, cuisine, neighborhoods, or Pasadena dining.",
+            "- If asked whether there is a discount or deal, answer only with the confirmed current promos: Hollywood Sports $60 package, Hollywood Sports $5 entry-only pass, and El Portal's World Cup game-day happy hour. Restaurant guide entries are recommendations unless a specific promo is listed here.",
             "- If the needed detail is not in this context or the retrieved restaurant/local context, say what is known and suggest checking the venue or PerkNation page rather than guessing.",
         ]
+    )
+
+
+def _guard_home_local_guide_answer(*, message: str, answer: str) -> str:
+    normalized_answer = answer.lower()
+    forbidden_terms = (
+        "cashback",
+        "cash-back",
+        "cash back",
+        "stock reward",
+        "stock rewards",
+        "stock conversion",
+        "reward-rate",
+        "reward rate",
+        "% cash",
+        "cash /",
+        "target",
+    )
+    if not any(term in normalized_answer for term in forbidden_terms):
+        return answer
+
+    normalized_message = message.lower()
+    if any(term in normalized_message for term in ("el portal", "world cup", "happy hour", "soccer", "game")):
+        return (
+            "The confirmed El Portal deal is World Cup game-day happy hour: Tuesday-Friday 12PM-6PM "
+            "and Saturday-Sunday 12PM-5PM during games. The restaurant guide entries are recommendations unless a specific promo is listed."
+        )
+    if any(term in normalized_message for term in ("paintball", "hollywood", "ticket", "package", "park", "entry")):
+        return (
+            "The confirmed Hollywood Sports deals are the $60 package with 11 regular entry tickets plus 1 Golden Ticket, "
+            "and the $5 entry-only pass. Each ticket's terms are shown on the campaign page before purchase."
+        )
+    return (
+        "The confirmed PerkNation deals right now are the Hollywood Sports $60 package, the Hollywood Sports $5 entry-only pass, "
+        "and El Portal's World Cup game-day happy hour. Pasadena restaurant guide entries are recommendations unless a specific promo is listed."
     )
 
 

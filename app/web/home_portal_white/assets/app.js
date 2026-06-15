@@ -936,8 +936,7 @@
         }
 
         appendHomeAssistantMessage(messages, "assistant", answer);
-        const model = String(payload.model || "").trim();
-        setStatus(model ? `Answered by ${model}.` : "Answered by Perk Nation AI.");
+        setStatus("Answered by Perk Nation AI.");
       } catch(err){
         appendHomeAssistantMessage(
           messages,

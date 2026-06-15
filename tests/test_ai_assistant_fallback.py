@@ -133,3 +133,83 @@ def test_home_local_guide_uses_nemotron_super_spark_lane(monkeypatch) -> None:
     assert captured["model_override"] == "nvidia/nemotron-3-super"
     assert captured["host_id_override"] == "spark"
     assert "HOME LOCAL GUIDE CONTEXT" in str(captured["system_context"])
+
+
+def test_home_local_guide_blocks_legacy_cashback_stock_claims(monkeypatch) -> None:
+    def _bad_spark(
+        messages: list[dict[str, str]],
+        *,
+        base_url_override=None,
+        model_override=None,
+        host_id_override=None,
+    ) -> tuple[str, str]:
+        return (
+            str(model_override),
+            "Yes, you can get cashback and stock rewards at El Portal, Target, and Bone Kettle.",
+        )
+
+    monkeypatch.setattr(settings, "ai_enabled", True)
+    monkeypatch.setattr(settings, "ai_provider", "spark")
+    monkeypatch.setattr(settings, "spark_public_base_url", "http://spark.example")
+    monkeypatch.setattr(settings, "home_local_guide_spark_base_url", "http://chat.neonflux.co")
+    monkeypatch.setattr(settings, "home_local_guide_model", "nvidia/nemotron-3-super")
+    monkeypatch.setattr(settings, "home_local_guide_spark_host_id", "spark")
+    monkeypatch.setattr(ai_assistant, "_request_spark_chat", _bad_spark)
+
+    result = chat_with_assistant(
+        message="that is cool. do I get a discount?",
+        history=[],
+        db=None,
+        current_user=None,
+        user_role=None,
+        requested_context="home_local_guide",
+    )
+
+    answer = result.answer.lower()
+    assert "cashback" not in answer
+    assert "cash back" not in answer
+    assert "stock" not in answer
+    assert "target" not in answer
+    assert "hollywood sports" in answer
+    assert "el portal" in answer
+
+
+def test_home_local_guide_does_not_inject_local_offer_context(monkeypatch) -> None:
+    captured: dict[str, object] = {}
+
+    def _fail_local_context(*_args, **_kwargs) -> str:
+        raise AssertionError("home_local_guide must not inject LOCAL DISCOVERY CONTEXT")
+
+    def _fake_spark(
+        messages: list[dict[str, str]],
+        *,
+        base_url_override=None,
+        model_override=None,
+        host_id_override=None,
+    ) -> tuple[str, str]:
+        captured["system_context"] = "\n\n".join(
+            item["content"] for item in messages if item.get("role") == "system"
+        )
+        return str(model_override), "Ask about current PerkNation promos or Pasadena picks."
+
+    monkeypatch.setattr(settings, "ai_enabled", True)
+    monkeypatch.setattr(settings, "ai_provider", "spark")
+    monkeypatch.setattr(settings, "spark_public_base_url", "http://spark.example")
+    monkeypatch.setattr(settings, "home_local_guide_spark_base_url", "http://chat.neonflux.co")
+    monkeypatch.setattr(settings, "home_local_guide_model", "nvidia/nemotron-3-super")
+    monkeypatch.setattr(settings, "home_local_guide_spark_host_id", "spark")
+    monkeypatch.setattr(ai_assistant, "_request_spark_chat", _fake_spark)
+    monkeypatch.setattr(ai_assistant, "build_local_discovery_context", _fail_local_context)
+    monkeypatch.setattr(ai_assistant, "build_ai_restaurant_context", lambda *_args, **_kwargs: "")
+
+    result = chat_with_assistant(
+        message="Any nearby local deals?",
+        history=[],
+        db=object(),
+        current_user=None,
+        user_role=None,
+        requested_context="home_local_guide",
+    )
+
+    assert result.role_context == "home_local_guide"
+    assert "LOCAL DISCOVERY CONTEXT" not in str(captured["system_context"])
