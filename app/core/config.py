@@ -1,6 +1,7 @@
 import os
 import socket
 from typing import Optional
+from urllib.parse import urlsplit, urlunsplit
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy.engine import URL, make_url
@@ -44,8 +45,8 @@ class Settings(BaseSettings):
     supabase_anon_key: Optional[str] = None
     supabase_jwt_secret: Optional[str] = None
     # Public website base URL used for auth email redirects.
-    # Example: https://perknation.net
-    public_web_base_url: str = "https://perknation.net"
+    # Example: https://perknation.app
+    public_web_base_url: str = "https://perknation.app"
     # Paths (or full URLs) for Supabase confirmation and password reset links.
     supabase_email_redirect_path: str = "/login"
     supabase_password_reset_redirect_path: str = "/reset-password"
@@ -109,7 +110,7 @@ class Settings(BaseSettings):
     # Contact form notifications.
     # If SMTP is configured, new contact submissions can be emailed to support.
     contact_email_forwarding_enabled: bool = True
-    contact_form_notify_email: str = "perknation29@icloud.com"
+    contact_form_notify_email: str = "cs@perknation.app"
     smtp_host: Optional[str] = None
     smtp_port: int = 587
     smtp_username: Optional[str] = None
@@ -136,7 +137,7 @@ class Settings(BaseSettings):
     # Webhook verification for inbound/status callbacks.
     sms_validate_webhook_signature: bool = True
     # Optional external base URL used for Twilio signature validation when
-    # running behind reverse proxies (example: https://api.perknation.net).
+    # running behind reverse proxies (example: https://api.perknation.app).
     sms_webhook_base_url: Optional[str] = None
 
     # Feature flags / templates.
@@ -198,8 +199,8 @@ class Settings(BaseSettings):
     rag_ollama_embedding_model: str = "nomic-embed-text"
 
     # Private message-box allowlist (owner/operator channels).
-    owner_admin_message_email: str = "billy@neonflux.net"
-    owner_ios_message_email: str = "billynavidad@icloud.com"
+    owner_admin_message_email: str = "cs@perknation.app"
+    owner_ios_message_email: str = "cs@perknation.app"
     # Additional scanner/operator emails (comma-separated) allowed to use
     # ticket-scan APIs without full admin role.
     operator_scanner_emails: str = ""
@@ -340,12 +341,27 @@ class Settings(BaseSettings):
     def _join_public_url(base_url: str, path_or_url: str) -> str:
         raw = (path_or_url or "").strip()
         if raw.startswith("http://") or raw.startswith("https://"):
-            return raw
+            return Settings._canonical_public_url(raw)
 
-        base = (base_url or "").strip() or "https://perknation.net"
+        base = (base_url or "").strip() or "https://perknation.app"
+        base = Settings._canonical_public_url(base)
         if raw.startswith("/"):
             return f"{base.rstrip('/')}{raw}"
         return f"{base.rstrip('/')}/{raw}"
+
+    @staticmethod
+    def _canonical_public_url(url: str) -> str:
+        value = (url or "").strip() or "https://perknation.app"
+        try:
+            parsed = urlsplit(value)
+        except Exception:
+            return "https://perknation.app"
+
+        host = (parsed.hostname or "").lower()
+        if host in {"perknation.net", "www.perknation.net", "perknation.dev", "www.perknation.dev"}:
+            parsed = parsed._replace(scheme="https", netloc="perknation.app")
+            return urlunsplit(parsed)
+        return value
 
     @property
     def effective_supabase_url(self) -> Optional[str]:
