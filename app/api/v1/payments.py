@@ -62,6 +62,21 @@ class ApplePayCheckoutResponse(BaseModel):
     stripe_mode: str
 
 
+class JewelryCheckoutRequest(BaseModel):
+    product_slug: str = Field(min_length=1, max_length=100)
+    quantity: int = Field(default=1, ge=1, le=5)
+    source_page: Optional[str] = Field(default=None, max_length=255)
+    stripe_mode: Optional[str] = Field(default=None, max_length=8)
+
+
+class JewelryCheckoutResponse(BaseModel):
+    checkout_url: str
+    session_id: str
+    provider: str = "stripe"
+    amount_total_cents: int
+    stripe_mode: str
+
+
 class StripeWebhookResponse(BaseModel):
     received: bool = True
 
@@ -70,6 +85,15 @@ class StripeWebhookResponse(BaseModel):
 class OfferPricing:
     label: str
     unit_amount_cents: int
+
+
+@dataclass(frozen=True)
+class JewelryProduct:
+    slug: str
+    label: str
+    description: str
+    unit_amount_cents: Optional[int]
+    image_path: str
 
 
 _HSP_PRICING: dict[str, OfferPricing] = {
@@ -84,6 +108,37 @@ _HSP_PRICING: dict[str, OfferPricing] = {
     "$70 bundle (12 park passes, $500+ value)": OfferPricing(
         label="$60 Bundle (12 park passes, $500+ value)",
         unit_amount_cents=6000,
+    ),
+}
+
+_JEWELRY_PRODUCTS: dict[str, JewelryProduct] = {
+    "swarovski-annual-snowflake": JewelryProduct(
+        slug="swarovski-annual-snowflake",
+        label="Swarovski Annual Snowflake 10-year period",
+        description="Collector crystal snowflake set with individual annual pieces and display boxes.",
+        unit_amount_cents=187500,
+        image_path="/assets/products/swarovski-annual-snowflake.jpg",
+    ),
+    "swarovski-sorcerer-mickey": JewelryProduct(
+        slug="swarovski-sorcerer-mickey",
+        label="Swarovski Sorcerer Mickey",
+        description="Clear crystal Sorcerer Mickey figure with black and gold accent detail.",
+        unit_amount_cents=18000,
+        image_path="/assets/products/swarovski-sorcerer-mickey.jpg",
+    ),
+    "christian-dior-necklace": JewelryProduct(
+        slug="christian-dior-necklace",
+        label="Christian Dior Necklace",
+        description="Designer necklace with a crystal V pendant and silver-tone chain.",
+        unit_amount_cents=42000,
+        image_path="/assets/products/christian-dior-necklace.jpg",
+    ),
+    "swarovski-swan-pin-set": JewelryProduct(
+        slug="swarovski-swan-pin-set",
+        label="Swarovski Swan Crystal Pin Set",
+        description="Three-piece swan pin set with blue, red, and yellow crystal accents.",
+        unit_amount_cents=None,
+        image_path="/assets/products/swarovski-swan-pin-set.jpg",
     ),
 }
 
@@ -124,6 +179,44 @@ def _offer_pricing(offer_choice: str) -> OfferPricing:
     if pricing:
         return pricing
     raise HTTPException(status_code=400, detail="Unsupported offer for Apple Pay checkout")
+
+
+def _jewelry_product(product_slug: str) -> JewelryProduct:
+    key = str(product_slug or "").strip().lower()
+    product = _JEWELRY_PRODUCTS.get(key)
+    if product:
+        return product
+    raise HTTPException(status_code=400, detail="Unsupported jewelry product")
+
+
+def _normalize_jewelry_source_page_path(source_page: Optional[str], product_slug: str) -> str:
+    default_path = f"/jewelry/{product_slug}"
+    raw = (source_page or "").strip()
+    if not raw:
+        return default_path
+
+    try:
+        parsed = urlsplit(raw)
+        path = (parsed.path or "").strip() or raw
+    except Exception:
+        path = raw
+
+    if not path.startswith("/"):
+        path = f"/{path}"
+    path = path.rstrip("/") or "/"
+
+    allowed = {f"/jewelry/{product_slug}", f"/white/jewelry/{product_slug}"}
+    return path if path in allowed else default_path
+
+
+def _build_jewelry_success_url(source_page: str, *, base_url: Optional[str] = None) -> str:
+    host = (base_url or settings.public_web_base_url or "https://perknation.app").rstrip("/")
+    return f"{host}{source_page}?payment=success&session_id={{CHECKOUT_SESSION_ID}}"
+
+
+def _build_jewelry_cancel_url(source_page: str, *, base_url: Optional[str] = None) -> str:
+    host = (base_url or settings.public_web_base_url or "https://perknation.app").rstrip("/")
+    return f"{host}{source_page}?payment=cancelled"
 
 
 def _normalize_source_page_path(source_page: str, *, default_path: str = "/hollywood-sports") -> str:
@@ -1123,6 +1216,87 @@ def create_apple_pay_checkout_session(
     )
 
     return ApplePayCheckoutResponse(
+        checkout_url=str(checkout_url),
+        session_id=str(session_id),
+        amount_total_cents=total_cents,
+        stripe_mode=stripe_mode,
+    )
+
+
+@router.post("/jewelry/checkout-session", response_model=JewelryCheckoutResponse)
+def create_jewelry_checkout_session(
+    payload: JewelryCheckoutRequest,
+    request: Request,
+    db: Session = Depends(get_db),
+) -> JewelryCheckoutResponse:
+    stripe_mode = _resolve_requested_stripe_mode(payload.stripe_mode, db=db, request=request)
+    product = _jewelry_product(payload.product_slug)
+    if product.unit_amount_cents is None:
+        raise HTTPException(
+            status_code=400,
+            detail="This jewelry item is not available for online purchase until pricing is confirmed.",
+        )
+
+    quantity = int(payload.quantity)
+    total_cents = product.unit_amount_cents * quantity
+    if total_cents <= 0:
+        raise HTTPException(status_code=400, detail="Invalid payment amount")
+
+    stripe = _load_stripe(stripe_mode, db=db)
+    source_page_path = _normalize_jewelry_source_page_path(payload.source_page, product.slug)
+    public_base_url = _resolve_public_base_url(request)
+    canonical_base_url = _canonical_web_base_url()
+    image_url = f"{canonical_base_url}{product.image_path}"
+
+    metadata = {
+        "platform": "perknation_web_jewelry",
+        "order_category": "jewelry",
+        "product_slug": product.slug,
+        "product_name": product.label,
+        "source_page": source_page_path,
+        "stripe_mode": stripe_mode,
+    }
+
+    try:
+        session = stripe.checkout.Session.create(
+            mode="payment",
+            payment_method_types=["card"],
+            line_items=[
+                {
+                    "price_data": {
+                        "currency": "usd",
+                        "unit_amount": product.unit_amount_cents,
+                        "product_data": {
+                            "name": product.label,
+                            "description": product.description,
+                            "images": [image_url],
+                        },
+                    },
+                    "quantity": quantity,
+                }
+            ],
+            phone_number_collection={"enabled": True},
+            shipping_address_collection={"allowed_countries": ["US"]},
+            success_url=_build_jewelry_success_url(source_page_path, base_url=public_base_url),
+            cancel_url=_build_jewelry_cancel_url(source_page_path, base_url=public_base_url),
+            metadata=metadata,
+        )
+    except Exception as exc:
+        logger.exception("Stripe jewelry checkout session creation failed")
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Could not start jewelry checkout right now. Please try again or message Perk Nation.",
+        ) from exc
+
+    checkout_url = getattr(session, "url", None)
+    session_id = getattr(session, "id", None)
+    if not checkout_url or not session_id:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Payment session did not return a checkout URL.",
+        )
+
+    return JewelryCheckoutResponse(
         checkout_url=str(checkout_url),
         session_id=str(session_id),
         amount_total_cents=total_cents,

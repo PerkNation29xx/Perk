@@ -69,6 +69,7 @@ _HOME_HTML_FILES = {
     "reset-password.html",
     "create-account.html",
     "members.html",
+    "jewelry-product.html",
     "hollywood-sports.html",
     "how-it-works.html",
     "merchants.html",
@@ -200,6 +201,11 @@ def home_portal_members() -> str:
     return _read_html_or_missing(_HOME_PORTAL_DIR / "members.html", "Members page")
 
 
+@app.get("/jewelry/{product_slug}", response_class=HTMLResponse)
+def home_portal_jewelry_product(product_slug: str) -> str:
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "jewelry-product.html", "Jewelry product page")
+
+
 @app.get("/hollywood-sports", response_class=HTMLResponse)
 def home_portal_hollywood_sports() -> str:
     return _read_html_or_missing(_HOME_PORTAL_DIR / "hollywood-sports.html", "Hollywood Sports landing page")
@@ -288,6 +294,11 @@ def home_portal_white_create_account() -> str:
 @app.get("/white/members", response_class=HTMLResponse)
 def home_portal_white_members() -> str:
     return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "members.html", "Members page (white)")
+
+
+@app.get("/white/jewelry/{product_slug}", response_class=HTMLResponse)
+def home_portal_white_jewelry_product(product_slug: str) -> str:
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "jewelry-product.html", "Jewelry product page (white)")
 
 
 @app.get("/white/hollywood-sports", response_class=HTMLResponse)

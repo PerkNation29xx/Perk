@@ -608,7 +608,7 @@ def _home_local_guide_context() -> str:
             "",
             "Current promos:",
             "- Hollywood Sports paintball campaign: active PerkNation featured campaign. The $60 package includes 11 regular entry tickets plus 1 Golden Ticket. Regular entry tickets include paintball marker and all day park pass; all day air and purchase of 400 paintballs required; bonus 100 rounds when playing .50 caliber; parks are field paint only. The Golden Ticket includes admission, .50 caliber gun, 200 paintballs, and mask rental; .50 cal paintballsoft play only; good for walk-ons and cannot be combined with any other discount. The $5 option is an entry-only pass. Participating parks include Hollywood Sports - Bellflower, SC Village - Chino, Giant Paintball - Lakeside, Combat Paintball - Castaic, and Giant Party Sports - Allen. Primary CTA path: /hollywood-sports#buy-now.",
-            "- Crystal jewelry drop: active PerkNation homepage promo. Swarovski Annual Snowflake 10-year period retails for $2,499 with 25% off at $1,875. Swarovski Sorcerer Mickey retails for $225 with 20% off at $180. Christian Dior Necklace retails for $525 with 20% off at $420. Swarovski Swan Crystal Pin Set has current product photos live, but retail price and discount are pending confirmation through PerkNation Instagram. PerkNation Instagram: https://www.instagram.com/perk.nation.rewards.",
+            "- Crystal jewelry drop: active PerkNation homepage promo with product detail pages. Swarovski Annual Snowflake 10-year period retails for $2,499 with 25% off at $1,875 and can be purchased at /jewelry/swarovski-annual-snowflake. Swarovski Sorcerer Mickey retails for $225 with 20% off at $180 and can be purchased at /jewelry/swarovski-sorcerer-mickey. Christian Dior Necklace retails for $525 with 20% off at $420 and can be purchased at /jewelry/christian-dior-necklace. Swarovski Swan Crystal Pin Set has current product photos live at /jewelry/swarovski-swan-pin-set, but retail price and discount are pending confirmation through PerkNation Instagram. PerkNation Instagram: https://www.instagram.com/perk.nation.rewards.",
             "- El Portal Restaurant World Cup promo: El Portal at 695 E. Green St., Pasadena, CA 91101 is streaming every World Cup game live during restaurant hours. Extended happy hour during games: Tuesday-Friday 12PM-6PM and Saturday-Sunday 12PM-5PM. Website: https://www.elportalrestaurant.com/. Instagram: https://www.instagram.com/elportal.",
             "",
             "Local restaurant guide currently surfaced on the homepage:",
@@ -665,6 +665,7 @@ def _guard_home_local_guide_answer(*, message: str, answer: str) -> str:
         return (
             "The confirmed jewelry discounts are Swarovski Annual Snowflake 10-year period for $1,875, "
             "Swarovski Sorcerer Mickey for $180, and Christian Dior Necklace for $420. "
+            "Those three items have product pages and online checkout. "
             "The Swarovski Swan Crystal Pin Set is listed with pricing pending confirmation through PerkNation Instagram."
         )
     return (
