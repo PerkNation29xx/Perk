@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 import logging
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
@@ -18,6 +18,17 @@ from app.services.seed import seed_if_empty
 from app.db import models as _models  # noqa: F401
 
 logger = logging.getLogger(__name__)
+
+_GOOGLE_ANALYTICS_ID = "G-VYL0SBGMWL"
+_GOOGLE_ANALYTICS_SNIPPET = f"""<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id={_GOOGLE_ANALYTICS_ID}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){{dataLayer.push(arguments);}}
+  gtag('js', new Date());
+
+  gtag('config', '{_GOOGLE_ANALYTICS_ID}');
+</script>"""
 
 
 @asynccontextmanager
@@ -47,6 +58,51 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title=settings.project_name, lifespan=lifespan)
 app.include_router(api_router, prefix=settings.api_v1_prefix)
+
+
+def _inject_google_analytics(html: str) -> str:
+    if _GOOGLE_ANALYTICS_ID in html:
+        return html
+
+    lower_html = html.lower()
+    head_close_index = lower_html.find("</head>")
+    if head_close_index < 0:
+        return html
+
+    return f"{html[:head_close_index]}\n{_GOOGLE_ANALYTICS_SNIPPET}\n{html[head_close_index:]}"
+
+
+@app.middleware("http")
+async def google_analytics_html_middleware(request: Request, call_next):
+    response = await call_next(request)
+    content_type = response.headers.get("content-type", "")
+    if "text/html" not in content_type.lower():
+        return response
+
+    body = b""
+    async for chunk in response.body_iterator:
+        body += chunk
+
+    charset = "utf-8"
+    for part in content_type.split(";"):
+        part = part.strip()
+        if part.lower().startswith("charset="):
+            charset = part.split("=", 1)[1] or "utf-8"
+            break
+
+    try:
+        html = body.decode(charset)
+    except Exception:
+        return Response(content=body, status_code=response.status_code, headers=dict(response.headers))
+
+    headers = dict(response.headers)
+    headers.pop("content-length", None)
+    return Response(
+        content=_inject_google_analytics(html),
+        status_code=response.status_code,
+        headers=headers,
+        media_type=None,
+    )
 
 _BASE_DIR = Path(__file__).resolve().parent
 _HOME_PORTAL_DIR = _BASE_DIR / "web" / "home_portal"
