@@ -917,9 +917,9 @@
         appendHomeAssistantMessage(
           messages,
           "assistant",
-          "Ask about the current Hollywood Sports offer, El Portal World Cup happy hour, or Pasadena restaurant picks."
+          "Ask about the current Hollywood Sports offer, jewelry drop, El Portal World Cup happy hour, or Pasadena restaurant picks."
         );
-        setStatus("Cleared. Ask about current promos or local restaurant picks.");
+        setStatus("Cleared. Ask about current promos, jewelry, or local restaurant picks.");
       });
     }
 

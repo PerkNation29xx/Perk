@@ -70,6 +70,7 @@ def test_home_local_guide_context_is_scoped_to_current_promos(monkeypatch) -> No
     assert any("Only answer questions about the current PerkNation public promos" in block for block in system_blocks)
     assert any("HOME LOCAL GUIDE CONTEXT" in block for block in system_blocks)
     assert any("Hollywood Sports paintball campaign" in block for block in system_blocks)
+    assert any("Crystal jewelry drop" in block for block in system_blocks)
     assert any("El Portal Restaurant World Cup promo" in block for block in system_blocks)
 
 
@@ -88,6 +89,7 @@ def test_home_local_guide_fallback_names_supported_topics(monkeypatch) -> None:
     assert result.model == "perk-deterministic"
     assert result.role_context == "home_local_guide"
     assert "hollywood sports" in result.answer.lower()
+    assert "jewelry" in result.answer.lower()
     assert "el portal" in result.answer.lower()
     assert "pasadena restaurant" in result.answer.lower()
 
@@ -171,7 +173,47 @@ def test_home_local_guide_blocks_legacy_cashback_stock_claims(monkeypatch) -> No
     assert "stock" not in answer
     assert "target" not in answer
     assert "hollywood sports" in answer
+    assert "jewelry" in answer
     assert "el portal" in answer
+
+
+def test_home_local_guide_blocks_legacy_rewards_for_jewelry(monkeypatch) -> None:
+    def _bad_spark(
+        messages: list[dict[str, str]],
+        *,
+        base_url_override=None,
+        model_override=None,
+        host_id_override=None,
+    ) -> tuple[str, str]:
+        return (
+            str(model_override),
+            "Yes, jewelry earns cashback and stock rewards if you buy through Target.",
+        )
+
+    monkeypatch.setattr(settings, "ai_enabled", True)
+    monkeypatch.setattr(settings, "ai_provider", "spark")
+    monkeypatch.setattr(settings, "spark_public_base_url", "http://spark.example")
+    monkeypatch.setattr(settings, "home_local_guide_spark_base_url", "http://chat.neonflux.co")
+    monkeypatch.setattr(settings, "home_local_guide_model", "nvidia/nemotron-3-super")
+    monkeypatch.setattr(settings, "home_local_guide_spark_host_id", "spark")
+    monkeypatch.setattr(ai_assistant, "_request_spark_chat", _bad_spark)
+
+    result = chat_with_assistant(
+        message="What is the jewelry discount?",
+        history=[],
+        db=None,
+        current_user=None,
+        user_role=None,
+        requested_context="home_local_guide",
+    )
+
+    answer = result.answer.lower()
+    assert "cashback" not in answer
+    assert "stock" not in answer
+    assert "target" not in answer
+    assert "swarovski" in answer
+    assert "dior" in answer
+    assert "swan" in answer
 
 
 def test_public_ai_answers_strip_visible_markdown_bold(monkeypatch) -> None:
