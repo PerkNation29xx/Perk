@@ -1062,7 +1062,7 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   align-items:flex-end;
   gap:18px;
   flex-wrap:wrap;
-  margin-bottom:18px;
+  margin-bottom:14px;
 }
 .jewelryIntro .muted{
   max-width:760px;
@@ -1075,17 +1075,17 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 .jewelryGrid{
   display:grid;
   grid-template-columns:repeat(4, minmax(0, 1fr));
-  gap:14px;
+  gap:10px;
 }
 .jewelryCard{
   display:flex;
   flex-direction:column;
   min-width:0;
   overflow:hidden;
-  border-radius:24px;
+  border-radius:14px;
   border:1px solid rgba(250,247,247,.14);
   background:rgba(250,247,247,.035);
-  box-shadow:var(--shadow-soft);
+  box-shadow:0 14px 34px rgba(0,0,0,.18);
 }
 .jewelryCardLink{
   color:inherit;
@@ -1102,7 +1102,7 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 .jewelryMedia{
   position:relative;
   width:100%;
-  aspect-ratio:4 / 3;
+  height:clamp(112px, 13vw, 164px);
   overflow:hidden;
   background:#080808;
   border-bottom:1px solid rgba(250,247,247,.12);
@@ -1120,9 +1120,9 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 }
 .jewelryContent{
   display:grid;
-  gap:10px;
+  gap:7px;
   flex:1;
-  padding:15px;
+  padding:11px;
 }
 .jewelryMeta{
   color:var(--muted2);
@@ -1131,12 +1131,18 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   letter-spacing:0;
   text-transform:uppercase;
 }
+.jewelrySection .jewelryMeta{
+  display:none;
+}
 .jewelryContent h3{
   margin:0;
   color:var(--ink);
-  font-size:18px;
+  font-size:15px;
   line-height:1.2;
   font-weight:950;
+}
+.jewelrySection .jewelryContent p{
+  display:none;
 }
 .jewelryContent p{
   margin:0;
@@ -1148,12 +1154,12 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   display:flex;
   align-items:center;
   flex-wrap:wrap;
-  gap:8px;
+  gap:6px;
   margin-top:auto;
 }
 .retailPrice{
   color:var(--muted2);
-  font-size:13px;
+  font-size:12px;
   font-weight:850;
   text-decoration:line-through;
 }
@@ -1162,25 +1168,32 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 }
 .discountBadge{
   border-radius:var(--pill);
-  padding:5px 9px;
+  padding:4px 7px;
   color:var(--ink);
   background:rgba(230,184,74,.18);
   border:1px solid rgba(230,184,74,.32);
-  font-size:12px;
+  font-size:11px;
   font-weight:900;
 }
 .dealPrice{
   color:var(--yellow);
-  font-size:28px;
+  font-size:22px;
   line-height:1;
   font-weight:950;
 }
 .dealPriceText{
-  font-size:22px;
+  font-size:15px;
+  line-height:1.15;
 }
 .jewelryCardCta{
   width:max-content;
   margin-top:2px;
+  padding:8px 10px;
+  min-height:32px;
+  font-size:12px;
+}
+.jewelrySection .jewelryCardCta{
+  display:none;
 }
 .jewelryProductHero{
   padding-top:44px;
@@ -1316,11 +1329,20 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 
 @media (max-width: 520px){
   .elPortalPhotoPair{grid-template-columns:1fr}
-  .jewelryGrid{grid-template-columns:1fr}
+  .jewelryGrid{grid-template-columns:repeat(2, minmax(0, 1fr))}
+  .jewelryMedia{height:112px}
+  .jewelryContent{padding:10px}
+  .jewelryContent h3{font-size:14px}
+  .dealPrice{font-size:20px}
+  .dealPriceText{font-size:14px}
   .jewelryIntroActions .btn{
     width:100%;
     justify-content:center;
   }
   .jewelryDetailPanel{padding:18px}
   .jewelryDetailActions .btn{width:100%}
+}
+@media (max-width: 360px){
+  .jewelryGrid{grid-template-columns:1fr}
+  .jewelryMedia{height:150px}
 }
