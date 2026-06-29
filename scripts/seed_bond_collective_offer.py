@@ -35,7 +35,9 @@ MERCHANT_CATEGORY = "coworking"
 OFFER_TITLE = "Bond Collective: 20% initial services discount"
 OFFER_TERMS = (
     "PerkNation members receive a 20% initial discount on eligible Bond Collective services, "
-    "including coworking, private offices, dedicated desks, day passes, and meeting rooms. "
+    "including private office space, dedicated desks, coworking, day passes, and conference rooms. "
+    "Bond public starting prices currently list private offices from $500/month, dedicated desks from $500/month, "
+    "coworking from $300/month, day passes from $25/day, and conference rooms from $50/hour. "
     "New customer offer; availability and final terms are confirmed by Bond Collective."
 )
 
