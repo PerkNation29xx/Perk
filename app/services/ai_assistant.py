@@ -657,9 +657,21 @@ def _guard_current_perk_answer(*, message: str, answer: str) -> str:
         "golden ticket all-inclusive",
         "early access dining perk",
     )
-    if not any(term in normalized_answer for term in forbidden_terms):
+    has_forbidden_terms = any(term in normalized_answer for term in forbidden_terms)
+    if (
+        not has_forbidden_terms
+        and _is_discount_query(message)
+        and not _mentions_confirmed_promo(answer)
+    ):
+        return _confirmed_current_deals_answer(message)
+
+    if not has_forbidden_terms:
         return answer
 
+    return _confirmed_current_deals_answer(message)
+
+
+def _confirmed_current_deals_answer(message: str) -> str:
     normalized_message = message.lower()
     if any(term in normalized_message for term in ("el portal", "world cup", "happy hour", "soccer", "game")):
         return (
@@ -687,6 +699,35 @@ def _guard_current_perk_answer(*, message: str, answer: str) -> str:
         "The confirmed PerkNation deals right now are the Hollywood Sports $60 package, the Hollywood Sports $5 entry-only pass, "
         "the Bond Collective 20% initial services discount, the jewelry discounts on the homepage, and El Portal's World Cup game-day happy hour. "
         "Pasadena restaurant guide entries are recommendations unless a specific promo is listed."
+    )
+
+
+def _is_discount_query(message: str) -> bool:
+    normalized_message = message.lower()
+    return any(
+        term in normalized_message
+        for term in ("discount", "deal", "deals", "promo", "promotion", "offer", "special", "coupon", "save")
+    )
+
+
+def _mentions_confirmed_promo(answer: str) -> bool:
+    normalized_answer = answer.lower()
+    return any(
+        term in normalized_answer
+        for term in (
+            "hollywood sports",
+            "paintball",
+            "$60 package",
+            "$5 entry",
+            "bond collective",
+            "jewelry",
+            "swarovski",
+            "christian dior",
+            "dior",
+            "el portal",
+            "world cup",
+            "happy hour",
+        )
     )
 
 

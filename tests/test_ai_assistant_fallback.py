@@ -167,7 +167,7 @@ def test_consumer_account_uses_nemotron_super_spark_lane(monkeypatch) -> None:
     monkeypatch.setattr(ai_assistant, "_request_spark_chat", _fake_spark)
 
     result = chat_with_assistant(
-        message="Do I have any offers?",
+        message="Hello account assistant.",
         history=[],
         db=None,
         current_user=None,
@@ -262,6 +262,43 @@ def test_public_context_blocks_legacy_cashback_stock_claims(monkeypatch) -> None
     assert "stock" not in answer
     assert "hollywood sports" in answer
     assert "bond collective" in answer
+
+
+def test_public_discount_query_stays_on_confirmed_promos(monkeypatch) -> None:
+    def _restaurant_spark(
+        messages: list[dict[str, str]],
+        *,
+        base_url_override=None,
+        model_override=None,
+        host_id_override=None,
+    ) -> tuple[str, str]:
+        return (
+            "nvidia/nemotron-3-super",
+            "Try Sonoratown, Quarter Sheets, and Langer's for local dining picks.",
+        )
+
+    monkeypatch.setattr(settings, "ai_enabled", True)
+    monkeypatch.setattr(settings, "ai_provider", "spark")
+    monkeypatch.setattr(settings, "spark_public_base_url", "http://spark.example")
+    monkeypatch.setattr(settings, "home_local_guide_spark_base_url", "http://chat.neonflux.co")
+    monkeypatch.setattr(settings, "home_local_guide_model", "nvidia/nemotron-3-super")
+    monkeypatch.setattr(settings, "home_local_guide_spark_host_id", "spark")
+    monkeypatch.setattr(ai_assistant, "_request_spark_chat", _restaurant_spark)
+
+    result = chat_with_assistant(
+        message="Do I get a discount?",
+        history=[],
+        db=None,
+        current_user=None,
+        user_role=None,
+        requested_context="public",
+    )
+
+    answer = result.answer.lower()
+    assert "sonoratown" not in answer
+    assert "hollywood sports" in answer
+    assert "bond collective" in answer
+    assert "el portal" in answer
 
 
 def test_home_local_guide_blocks_legacy_rewards_for_jewelry(monkeypatch) -> None:
