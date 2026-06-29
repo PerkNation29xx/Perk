@@ -1055,30 +1055,33 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 .bondSection{
   scroll-margin-top:86px;
 }
-.bondFeature{
+.bondPreviewHeader{
   display:grid;
-  grid-template-columns:minmax(0, .92fr) minmax(320px, 1.08fr);
-  gap:18px;
-  align-items:stretch;
+  grid-template-columns:minmax(0, 1fr) 240px;
+  gap:16px;
+  align-items:end;
   margin-bottom:14px;
 }
-.bondFeatureCopy{
-  border-radius:22px;
-  border:1px solid rgba(250,247,247,.13);
-  background:rgba(250,247,247,.035);
-  padding:22px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
+.bondIntroCopy{
+  min-width:0;
+}
+.bondIntroCopy .h2{
+  max-width:760px;
+}
+.bondIntroCopy .muted{
+  max-width:780px;
 }
 .bondOfferNote{
-  display:grid;
-  gap:3px;
-  border-radius:18px;
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:6px 10px;
+  border-radius:14px;
   border:1px solid rgba(230,184,74,.32);
   background:rgba(230,184,74,.10);
-  padding:12px;
-  margin:14px 0;
+  padding:10px 12px;
+  margin:12px 0;
+  max-width:780px;
 }
 .bondOfferNote strong{
   color:var(--ink);
@@ -1088,20 +1091,32 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   color:var(--muted);
   font-size:13px;
 }
-.bondMedia{
-  min-height:320px;
-  border-radius:22px;
+.bondPreviewVideo{
+  position:relative;
+  height:138px;
+  min-width:0;
+  border-radius:14px;
   overflow:hidden;
   border:1px solid rgba(250,247,247,.13);
   background:rgba(0,0,0,.28);
   box-shadow:var(--shadow-soft);
 }
-.bondMedia video{
+.bondPreviewVideo video{
   width:100%;
   height:100%;
-  min-height:320px;
   display:block;
   object-fit:cover;
+}
+.bondPreviewVideo span{
+  position:absolute;
+  left:10px;
+  bottom:10px;
+  border-radius:999px;
+  background:rgba(0,0,0,.58);
+  color:#fff;
+  font-size:11px;
+  font-weight:900;
+  padding:5px 8px;
 }
 .bondPackageGrid{
   display:grid;
@@ -1109,21 +1124,36 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   gap:10px;
 }
 .bondPackageCard{
+  color:inherit;
+  display:flex;
+  flex-direction:column;
   min-width:0;
   overflow:hidden;
-  border-radius:14px;
+  text-decoration:none;
+  border-radius:12px;
   border:1px solid rgba(250,247,247,.13);
   background:rgba(250,247,247,.035);
   box-shadow:0 14px 34px rgba(0,0,0,.16);
+  transition:transform .16s ease, border-color .16s ease, background .16s ease;
+}
+.bondPackageCard:hover,
+.bondPackageCard:focus-visible{
+  transform:translateY(-2px);
+  border-color:rgba(230,184,74,.52);
+  background:rgba(250,247,247,.06);
+  outline:none;
 }
 .bondPackageCard img{
   width:100%;
-  height:128px;
+  height:104px;
   display:block;
   object-fit:cover;
 }
 .bondPackageCard > div{
-  padding:12px;
+  display:flex;
+  flex:1;
+  flex-direction:column;
+  padding:10px;
 }
 .bondPackageMeta{
   color:var(--gold);
@@ -1140,17 +1170,16 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 }
 .bondPackageCard p{
   color:var(--muted);
-  font-size:13px;
-  line-height:1.35;
-  margin:0 0 10px;
+  font-size:12px;
+  line-height:1.32;
+  margin:0 0 8px;
 }
 .bondPrice{
   display:grid;
   gap:3px;
   border-top:1px solid rgba(250,247,247,.12);
-  border-bottom:1px solid rgba(250,247,247,.12);
-  padding:8px 0;
-  margin:8px 0;
+  padding-top:8px;
+  margin-top:auto;
 }
 .bondPrice span{
   color:var(--muted2);
@@ -1162,12 +1191,11 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   font-size:13px;
   font-weight:900;
 }
-.bondPackageCard ul{
-  margin:0;
-  padding-left:17px;
-  color:var(--muted);
+.bondCardCta{
+  color:var(--gold);
   font-size:12px;
-  line-height:1.45;
+  font-weight:900;
+  margin-top:8px;
 }
 .bondDisclaimer{
   color:var(--muted2);
@@ -1445,8 +1473,17 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   .photoRail{grid-template-columns: 1fr}
   .photoTile img{height: 240px}
   .elPortalFeature{grid-template-columns:1fr}
-  .bondFeature{grid-template-columns:1fr}
-  .bondPackageGrid{grid-template-columns:repeat(2, minmax(0, 1fr))}
+  .bondPreviewHeader{grid-template-columns:1fr}
+  .bondPreviewVideo{height:132px; max-width:320px}
+  .bondPackageGrid{
+    grid-template-columns:none;
+    grid-auto-flow:column;
+    grid-auto-columns:minmax(190px, 220px);
+    overflow-x:auto;
+    padding-bottom:6px;
+    scroll-snap-type:x proximity;
+  }
+  .bondPackageCard{scroll-snap-align:start}
   .jewelryGrid{grid-template-columns:repeat(2, minmax(0, 1fr))}
   .jewelryDetailGrid{grid-template-columns:1fr}
   .jewelryDetailMedia.isPortrait{aspect-ratio:4 / 3}
@@ -1454,10 +1491,9 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 
 @media (max-width: 520px){
   .elPortalPhotoPair{grid-template-columns:1fr}
-  .bondMedia,
-  .bondMedia video{min-height:240px}
-  .bondPackageGrid{grid-template-columns:1fr}
-  .bondPackageCard img{height:154px}
+  .bondPreviewVideo{height:118px; max-width:none}
+  .bondPackageGrid{grid-auto-columns:minmax(178px, 76%)}
+  .bondPackageCard img{height:96px}
   .jewelryGrid{grid-template-columns:repeat(2, minmax(0, 1fr))}
   .jewelryMedia{height:112px}
   .jewelryContent{padding:10px}

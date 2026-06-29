@@ -43,6 +43,7 @@ class AIChatResult:
 
 _ALLOWED_CONTEXTS = {"consumer", "merchant", "admin", "public", "home_local_guide"}
 _DETERMINISTIC_MODEL_NAME = "perk-deterministic"
+_NEMOTRON_SPARK_CONTEXTS = {"home_local_guide", "public", "consumer", "merchant", "admin"}
 
 
 def resolve_context(user_role: Optional[UserRole], requested_context: Optional[str]) -> str:
@@ -84,7 +85,7 @@ def _configured_model_for_provider(provider: str) -> str:
     if provider == "openai":
         return settings.openai_model
     if provider == "spark":
-        return settings.ollama_model
+        return (settings.home_local_guide_model or settings.ollama_model).strip() or settings.ollama_model
     return settings.ollama_model
 
 
@@ -297,21 +298,21 @@ def chat_with_assistant(
 
 
 def _model_override_for_context(role_context: str) -> Optional[str]:
-    if role_context != "home_local_guide":
+    if role_context not in _NEMOTRON_SPARK_CONTEXTS:
         return None
     configured = (settings.home_local_guide_model or "").strip()
     return configured or None
 
 
 def _spark_host_override_for_context(role_context: str) -> Optional[str]:
-    if role_context != "home_local_guide":
+    if role_context not in _NEMOTRON_SPARK_CONTEXTS:
         return None
     configured = (settings.home_local_guide_spark_host_id or "").strip().lower()
     return configured or None
 
 
 def _spark_base_override_for_context(role_context: str) -> Optional[str]:
-    if role_context != "home_local_guide":
+    if role_context not in _NEMOTRON_SPARK_CONTEXTS:
         return None
     configured = (settings.home_local_guide_spark_base_url or "").strip()
     return configured or None
@@ -555,6 +556,7 @@ def _system_prompt_for_context(role_context: str) -> str:
         "If LIVE ACCOUNT DATA or LIVE QUERY RESULT is included, summarize it naturally; do not dump raw key-value blocks unless explicitly asked. "
         "If LOCAL DISCOVERY CONTEXT is included, use those ranked local matches first and provide concrete recommendations. "
         "Do not claim there are no local options when LOCAL DISCOVERY CONTEXT contains matches. "
+        "Do not claim PerkNation offers cashback, cash-back, stock rewards, stock conversion, Target offers, reward-rate tables, or cash/stock percentages unless LIVE ACCOUNT DATA explicitly proves it. "
         "If policy/financial/legal advice is requested, provide general guidance and suggest contacting a qualified professional. "
         "You can have natural, open-ended conversations on general topics."
     )

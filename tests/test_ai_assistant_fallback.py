@@ -1,4 +1,5 @@
 from app.core.config import settings
+from app.db.models import UserRole
 from app.services import ai_assistant
 from app.services.ai_assistant import chat_with_assistant
 
@@ -137,6 +138,50 @@ def test_home_local_guide_uses_nemotron_super_spark_lane(monkeypatch) -> None:
     assert captured["model_override"] == "nvidia/nemotron-3-super"
     assert captured["host_id_override"] == "spark"
     assert "HOME LOCAL GUIDE CONTEXT" in str(captured["system_context"])
+
+
+def test_consumer_account_uses_nemotron_super_spark_lane(monkeypatch) -> None:
+    captured: dict[str, object] = {}
+
+    def _fake_spark(
+        messages: list[dict[str, str]],
+        *,
+        base_url_override=None,
+        model_override=None,
+        host_id_override=None,
+    ) -> tuple[str, str]:
+        captured["base_url_override"] = base_url_override
+        captured["model_override"] = model_override
+        captured["host_id_override"] = host_id_override
+        captured["system_context"] = "\n\n".join(
+            item["content"] for item in messages if item.get("role") == "system"
+        )
+        return str(model_override), "Consumer Spark response."
+
+    monkeypatch.setattr(settings, "ai_enabled", True)
+    monkeypatch.setattr(settings, "ai_provider", "spark")
+    monkeypatch.setattr(settings, "spark_public_base_url", "http://spark.example")
+    monkeypatch.setattr(settings, "home_local_guide_spark_base_url", "http://chat.neonflux.co")
+    monkeypatch.setattr(settings, "home_local_guide_model", "nvidia/nemotron-3-super")
+    monkeypatch.setattr(settings, "home_local_guide_spark_host_id", "spark")
+    monkeypatch.setattr(ai_assistant, "_request_spark_chat", _fake_spark)
+
+    result = chat_with_assistant(
+        message="Do I have any offers?",
+        history=[],
+        db=None,
+        current_user=None,
+        user_role=UserRole.consumer,
+        requested_context="consumer",
+    )
+
+    assert result.model == "nvidia/nemotron-3-super"
+    assert result.answer == "Consumer Spark response."
+    assert result.role_context == "consumer"
+    assert captured["base_url_override"] == "http://chat.neonflux.co"
+    assert captured["model_override"] == "nvidia/nemotron-3-super"
+    assert captured["host_id_override"] == "spark"
+    assert "cashback" in str(captured["system_context"]).lower()
 
 
 def test_home_local_guide_blocks_legacy_cashback_stock_claims(monkeypatch) -> None:
