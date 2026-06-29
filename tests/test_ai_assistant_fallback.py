@@ -225,6 +225,45 @@ def test_home_local_guide_blocks_legacy_cashback_stock_claims(monkeypatch) -> No
     assert "el portal" in answer
 
 
+def test_public_context_blocks_legacy_cashback_stock_claims(monkeypatch) -> None:
+    def _bad_spark(
+        messages: list[dict[str, str]],
+        *,
+        base_url_override=None,
+        model_override=None,
+        host_id_override=None,
+    ) -> tuple[str, str]:
+        return (
+            "nvidia/nemotron-3-super",
+            "Target offers 3% cash / 4% stock, and Bone Kettle has stock rewards.",
+        )
+
+    monkeypatch.setattr(settings, "ai_enabled", True)
+    monkeypatch.setattr(settings, "ai_provider", "spark")
+    monkeypatch.setattr(settings, "spark_public_base_url", "http://spark.example")
+    monkeypatch.setattr(settings, "home_local_guide_spark_base_url", "http://chat.neonflux.co")
+    monkeypatch.setattr(settings, "home_local_guide_model", "nvidia/nemotron-3-super")
+    monkeypatch.setattr(settings, "home_local_guide_spark_host_id", "spark")
+    monkeypatch.setattr(ai_assistant, "_request_spark_chat", _bad_spark)
+
+    result = chat_with_assistant(
+        message="Do I get a discount?",
+        history=[],
+        db=None,
+        current_user=None,
+        user_role=None,
+        requested_context="public",
+    )
+
+    answer = result.answer.lower()
+    assert result.role_context == "public"
+    assert "target" not in answer
+    assert "cash /" not in answer
+    assert "stock" not in answer
+    assert "hollywood sports" in answer
+    assert "bond collective" in answer
+
+
 def test_home_local_guide_blocks_legacy_rewards_for_jewelry(monkeypatch) -> None:
     def _bad_spark(
         messages: list[dict[str, str]],

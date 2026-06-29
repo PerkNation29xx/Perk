@@ -27,7 +27,11 @@ from app.db.models import (
 )
 from app.services.audit import log_action
 from app.services.la_restaurant_knowledge import build_ai_restaurant_context, is_restaurant_discovery_query
-from app.services.local_discovery import build_local_discovery_context, is_local_discovery_query
+from app.services.local_discovery import (
+    build_local_discovery_context,
+    is_current_confirmed_offer,
+    is_local_discovery_query,
+)
 
 
 class AIServiceError(RuntimeError):
@@ -285,11 +289,8 @@ def chat_with_assistant(
     if not answer:
         raise AIServiceError("AI assistant returned an empty response.")
 
-    if role_context == "home_local_guide":
-        answer = _guard_home_local_guide_answer(message=message, answer=answer)
-
-    if role_context in {"home_local_guide", "public"}:
-        answer = _strip_visible_markdown_bold(answer)
+    answer = _guard_current_perk_answer(message=message, answer=answer)
+    answer = _strip_visible_markdown_bold(answer)
 
     if len(answer) > 6000:
         answer = answer[:6000].rstrip() + "\n\n[truncated]"
@@ -556,7 +557,7 @@ def _system_prompt_for_context(role_context: str) -> str:
         "If LIVE ACCOUNT DATA or LIVE QUERY RESULT is included, summarize it naturally; do not dump raw key-value blocks unless explicitly asked. "
         "If LOCAL DISCOVERY CONTEXT is included, use those ranked local matches first and provide concrete recommendations. "
         "Do not claim there are no local options when LOCAL DISCOVERY CONTEXT contains matches. "
-        "Do not claim PerkNation offers cashback, cash-back, stock rewards, stock conversion, Target offers, reward-rate tables, or cash/stock percentages unless LIVE ACCOUNT DATA explicitly proves it. "
+        "Do not claim PerkNation offers cashback, cash-back, stock rewards, stock conversion, Target offers, reward-rate tables, or cash/stock percentages. "
         "If policy/financial/legal advice is requested, provide general guidance and suggest contacting a qualified professional. "
         "You can have natural, open-ended conversations on general topics."
     )
@@ -575,10 +576,10 @@ def _system_prompt_for_context(role_context: str) -> str:
 
     if role_context == "consumer":
         return (
-            f"{shared} Prioritize consumer experience when asked: nearby offers, wallet, rewards, referrals, and profile preferences. "
+            f"{shared} Prioritize consumer experience when asked: current offers, wallet passes, purchase history, referrals, and profile preferences. "
             "Answer general questions directly when asked, even if unrelated to PerkNation. "
             "Do not refuse or redirect general-topic requests. "
-            "If user asks to redeem/settle, require explicit phrase 'confirm redeem' or 'confirm settle'."
+            "If asked about cashback or stock rewards, state that those programs are not active on PerkNation right now."
         )
 
     if role_context == "home_local_guide":
@@ -636,7 +637,7 @@ def _home_local_guide_context() -> str:
     )
 
 
-def _guard_home_local_guide_answer(*, message: str, answer: str) -> str:
+def _guard_current_perk_answer(*, message: str, answer: str) -> str:
     normalized_answer = answer.lower()
     forbidden_terms = (
         "cashback",
@@ -709,10 +710,6 @@ def _build_live_snapshot(
 def _consumer_snapshot(db: Session, current_user: User) -> str:
     now = datetime.now(timezone.utc)
 
-    available_cash = _sum_rewards(db, current_user.id, RewardState.available, RewardPreference.cash)
-    pending_cash = _sum_rewards(db, current_user.id, RewardState.pending, RewardPreference.cash)
-    stock_balance = _sum_stock_conversions(db, current_user.id)
-
     active_offers = db.scalars(
         select(Offer)
         .options(selectinload(Offer.merchant), selectinload(Offer.location))
@@ -726,6 +723,7 @@ def _consumer_snapshot(db: Session, current_user: User) -> str:
         .order_by(desc(Offer.created_at))
         .limit(12)
     ).all()
+    current_offers = [offer for offer in active_offers if is_current_confirmed_offer(offer)]
 
     activated_offer_ids = set(
         db.scalars(
@@ -746,19 +744,16 @@ def _consumer_snapshot(db: Session, current_user: User) -> str:
     lines.append(f"user_name: {current_user.full_name}")
     lines.append(f"user_email: {current_user.email}")
     lines.append(f"user_role: {current_user.role.value}")
-    lines.append(f"reward_preference: {current_user.reward_preference.value}")
-    lines.append(f"wallet_available_cash: {_fmt_usd(available_cash)}")
-    lines.append(f"wallet_pending_cash: {_fmt_usd(pending_cash)}")
-    lines.append(f"stock_vault_balance: {_fmt_usd(stock_balance)}")
+    lines.append("cashback_stock_rewards: not_active")
 
-    if active_offers:
+    if current_offers:
         lines.append("active_offers:")
-        for offer in active_offers:
+        for offer in current_offers:
             merchant = offer.merchant_name or f"Merchant #{offer.merchant_id}"
             activated = "yes" if offer.id in activated_offer_ids else "no"
             lines.append(
-                f"- offer_id={offer.id}; merchant={merchant}; cash_rate={offer.reward_rate_cash}; "
-                f"stock_rate={offer.reward_rate_stock}; activated={activated}; ends_at={offer.ends_at.isoformat()}"
+                f"- offer_id={offer.id}; title={offer.title}; merchant={merchant}; "
+                f"activated={activated}; ends_at={offer.ends_at.isoformat()}"
             )
     else:
         lines.append("active_offers: none")
@@ -822,7 +817,7 @@ def _merchant_snapshot(db: Session, current_user: User) -> str:
         for offer in recent_offers:
             lines.append(
                 f"- offer_id={offer.id}; title={offer.title}; status={offer.approval_status.value}; "
-                f"cash_rate={offer.reward_rate_cash}; ends_at={offer.ends_at.isoformat()}"
+                f"ends_at={offer.ends_at.isoformat()}"
             )
 
     return "\n".join(lines)
@@ -865,10 +860,10 @@ def _execute_confirmed_action_if_requested(
     lower = message.lower()
 
     if "confirm redeem" in lower:
-        return _redeem_available_cash_rewards(db=db, current_user=current_user)
+        return "Cashback reward redemption is not active on PerkNation right now."
 
     if "confirm settle" in lower:
-        return _settle_pending_rewards(db=db, current_user=current_user)
+        return "Cashback reward settlement is not active on PerkNation right now."
 
     return None
 
@@ -918,10 +913,8 @@ def _consumer_live_query_response(db: Session, current_user: User, text: str) ->
             "balance",
             "available",
             "pending",
-            "reward balance",
-            "cash rewards",
-            "stock balance",
-            "stock vault",
+            "pass",
+            "passes",
         ),
     )
     wants_offers = wants_all or _contains_any(
@@ -947,21 +940,16 @@ def _consumer_live_query_response(db: Session, current_user: User, text: str) ->
                 f"- Name: {current_user.full_name}",
                 f"- Email: {current_user.email}",
                 f"- Role: {current_user.role.value}",
-                f"- Reward preference: {current_user.reward_preference.value}",
             ]
         )
 
     if wants_wallet:
-        available_cash = _sum_rewards(db, current_user.id, RewardState.available, RewardPreference.cash)
-        pending_cash = _sum_rewards(db, current_user.id, RewardState.pending, RewardPreference.cash)
-        stock_balance = _sum_stock_conversions(db, current_user.id)
         lines.extend(
             [
                 "",
                 "Wallet",
-                f"- Available cash rewards: {_fmt_usd(available_cash)}",
-                f"- Pending cash rewards: {_fmt_usd(pending_cash)}",
-                f"- Stock vault balance: {_fmt_usd(stock_balance)}",
+                "- Cashback and stock rewards are not active on PerkNation right now.",
+                "- Current passes and purchase history are shown in the account page when available.",
             ]
         )
 
@@ -979,6 +967,7 @@ def _consumer_live_query_response(db: Session, current_user: User, text: str) ->
             .order_by(desc(Offer.created_at), desc(Offer.id))
             .limit(10)
         ).all()
+        active_offers = [offer for offer in active_offers if is_current_confirmed_offer(offer)]
         activated_offer_ids = set(
             db.scalars(
                 select(OfferActivation.offer_id).where(OfferActivation.user_id == current_user.id)
@@ -992,8 +981,7 @@ def _consumer_live_query_response(db: Session, current_user: User, text: str) ->
                 merchant = offer.merchant_name or f"Merchant #{offer.merchant_id}"
                 status = "activated" if offer.id in activated_offer_ids else "not activated"
                 lines.append(
-                    f"- [{offer.id}] {merchant}: {offer.reward_rate_cash} cash / {offer.reward_rate_stock} stock "
-                    f"({status}, ends {offer.ends_at.isoformat()})"
+                    f"- [{offer.id}] {offer.title} at {merchant} ({status}, ends {offer.ends_at.isoformat()})"
                 )
 
     if wants_transactions:
@@ -1015,14 +1003,6 @@ def _consumer_live_query_response(db: Session, current_user: User, text: str) ->
                     f"{txn.status.value}, {txn.occurred_at.isoformat()}"
                 )
 
-    lines.extend(
-        [
-            "",
-            "Available commands",
-            "- Type `confirm redeem` to redeem all available cash rewards.",
-            "- Type `confirm settle` to move pending rewards to available.",
-        ]
-    )
     return "\n".join(lines)
 
 
@@ -1073,11 +1053,8 @@ def _admin_live_query_response(db: Session, current_user: User, text: str) -> Op
 def _capabilities_for_role(role_context: str) -> str:
     if role_context == "consumer":
         return (
-            "I can read your live consumer account data (profile, wallet, active offers, transactions) "
-            "and perform confirmed reward actions.\n\n"
-            "Commands:\n"
-            "- `confirm settle` -> move pending rewards to available.\n"
-            "- `confirm redeem` -> redeem all available cash rewards."
+            "I can help with your live consumer account data, current offers, wallet passes, purchase history, "
+            "profile settings, and referrals. Cashback and stock rewards are not active on PerkNation right now."
         )
     if role_context == "merchant":
         return "I can read your live merchant profile, offer metrics, activations, and attributed transaction volume."

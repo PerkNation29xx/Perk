@@ -91,6 +91,31 @@ _STOPWORDS = {
     "around me",
 }
 
+_CURRENT_AI_OFFER_KEYWORDS = (
+    "hollywood sports",
+    "paintball",
+    "bond collective",
+    "workspace",
+    "el portal",
+    "world cup",
+    "swarovski",
+    "christian dior",
+    "jewelry",
+    "crystal",
+)
+
+_LEGACY_REWARD_OFFER_KEYWORDS = (
+    "target",
+    "cashback",
+    "cash back",
+    "cash-back",
+    "stock reward",
+    "stock rewards",
+    "reward-rate",
+    "cash /",
+    "% cash",
+)
+
 
 @dataclass(frozen=True)
 class _DiscoveryCandidate:
@@ -111,6 +136,26 @@ def is_local_discovery_query(message: str) -> bool:
 
     # Broad fallback: short discovery-like prompts should still trigger retrieval.
     return text.endswith("?") and any(token in text for token in ("eat", "go", "do", "near"))
+
+
+def is_current_confirmed_offer(offer: Offer) -> bool:
+    text = _normalize(
+        " ".join(
+            str(part or "")
+            for part in (
+                offer.title,
+                offer.merchant_name,
+                offer.terms_text,
+                getattr(getattr(offer, "merchant", None), "dba_name", ""),
+                getattr(getattr(offer, "merchant", None), "category", ""),
+            )
+        )
+    )
+    if not text:
+        return False
+    if any(keyword in text for keyword in _LEGACY_REWARD_OFFER_KEYWORDS):
+        return False
+    return any(keyword in text for keyword in _CURRENT_AI_OFFER_KEYWORDS)
 
 
 def build_local_discovery_context(
@@ -257,6 +302,9 @@ def _offer_discovery_candidates(
     items: list[_DiscoveryCandidate] = []
     normalized_message = _normalize(message)
     for offer in offers:
+        if not is_current_confirmed_offer(offer):
+            continue
+
         merchant_name = offer.merchant_name or f"Merchant #{offer.merchant_id}"
         category = ""
         try:
@@ -327,10 +375,9 @@ def _offer_discovery_candidates(
 
         score = (text_score * 1.45) + popularity_score + review_score + proximity_score
 
-        boost_text = f"{float(offer.reward_rate_cash) * 100:.1f}% cash / {float(offer.reward_rate_stock) * 100:.1f}% stock"
         subtitle_parts = [part for part in [merchant_name, category or None, location_name or None] if part]
         subtitle = " | ".join(subtitle_parts[:3]) if subtitle_parts else merchant_name
-        details = f"offer='{offer.title}'; boost='{boost_text}'; activations={direct_accepts}; area_activations={cluster_accepts}"
+        details = f"offer='{offer.title}'; current_confirmed_promo=true; activations={direct_accepts}; area_activations={cluster_accepts}"
         items.append(
             _DiscoveryCandidate(
                 source="offer",
