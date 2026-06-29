@@ -114,6 +114,10 @@ _LEGACY_REWARD_OFFER_KEYWORDS = (
     "reward-rate",
     "cash /",
     "% cash",
+    "admission & rental",
+    "save $60",
+    "golden ticket all-inclusive",
+    "early access dining perk",
 )
 
 
@@ -173,15 +177,10 @@ def build_local_discovery_context(
     limit = max(4, min(int(limit), 20))
     tokens = _tokenize(message)
 
-    offer_candidates = _offer_discovery_candidates(
-        db,
-        message=message,
-        tokens=tokens,
-        now_utc=now_utc,
-        user_latitude=user_latitude,
-        user_longitude=user_longitude,
-        limit=max(limit, 12),
-    )
+    # Offer rows still include legacy reward-rate experiments. Keep AI discovery
+    # grounded in restaurant knowledge here; current promos are injected by the
+    # assistant service as an explicit authoritative context.
+    offer_candidates: list[_DiscoveryCandidate] = []
 
     restaurant_rows = search_restaurants(
         db,

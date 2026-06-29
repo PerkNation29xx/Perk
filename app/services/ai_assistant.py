@@ -558,6 +558,7 @@ def _system_prompt_for_context(role_context: str) -> str:
         "If LOCAL DISCOVERY CONTEXT is included, use those ranked local matches first and provide concrete recommendations. "
         "Do not claim there are no local options when LOCAL DISCOVERY CONTEXT contains matches. "
         "Do not claim PerkNation offers cashback, cash-back, stock rewards, stock conversion, Target offers, reward-rate tables, or cash/stock percentages. "
+        "Confirmed current PerkNation promos are limited to: Hollywood Sports $60 paintball package with 11 regular tickets plus 1 Golden Ticket; Hollywood Sports $5 entry-only pass; Bond Collective 20% initial services discount; the listed Swarovski/Dior jewelry discounts; and El Portal World Cup game-day happy hour. Do not list any other discount as active. "
         "If policy/financial/legal advice is requested, provide general guidance and suggest contacting a qualified professional. "
         "You can have natural, open-ended conversations on general topics."
     )
@@ -651,6 +652,10 @@ def _guard_current_perk_answer(*, message: str, answer: str) -> str:
         "% cash",
         "cash /",
         "target",
+        "admission & rental",
+        "save $60",
+        "golden ticket all-inclusive",
+        "early access dining perk",
     )
     if not any(term in normalized_answer for term in forbidden_terms):
         return answer
