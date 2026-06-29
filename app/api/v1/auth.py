@@ -8,7 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user, get_db
+from app.api.deps import get_current_user, get_db, oauth2_scheme
 from app.db.models import RewardPreference, User, UserRole
 from app.schemas import (
     APIMessage,
@@ -16,6 +16,7 @@ from app.schemas import (
     EmailVerificationRequestResponse,
     EmailVerificationVerify,
     LoginRequest,
+    PasswordChangeRequest,
     RegisterResponse,
     TokenResponse,
     UserOut,
@@ -26,6 +27,7 @@ from app.core.config import settings
 from app.services.audit import log_action
 from app.services.referrals import ensure_referral_profile
 from app.services.security import create_access_token, hash_password, verify_password
+from app.services.supabase_auth import SupabaseAuthError, update_supabase_password, verify_supabase_password
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -191,6 +193,72 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)) -> TokenResponse
 @router.get("/me", response_model=UserOut)
 def me(current_user: User = Depends(get_current_user)) -> UserOut:
     return UserOut.model_validate(current_user)
+
+
+@router.post("/me/password", response_model=APIMessage)
+def change_my_password(
+    payload: PasswordChangeRequest,
+    db: Session = Depends(get_db),
+    token: str = Depends(oauth2_scheme),
+    current_user: User = Depends(get_current_user),
+) -> APIMessage:
+    if payload.confirm_password is not None and payload.confirm_password != payload.new_password:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="New passwords do not match")
+    if payload.current_password == payload.new_password:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="New password must be different from the current password",
+        )
+
+    uses_supabase = bool(
+        current_user.supabase_user_id
+        and settings.effective_supabase_url
+        and settings.effective_supabase_anon_key
+    )
+
+    if uses_supabase:
+        try:
+            verified_token = verify_supabase_password(current_user.email, payload.current_password)
+            update_supabase_password(verified_token or token, payload.new_password)
+        except SupabaseAuthError as exc:
+            if exc.status_code in {400, 401, 422}:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Current password is incorrect",
+                ) from exc
+            logger.warning(
+                "Supabase password change failed for user %s: status=%s body=%s",
+                current_user.id,
+                exc.status_code,
+                exc.body,
+            )
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail="Password could not be changed right now",
+            ) from exc
+
+        if current_user.password_hash:
+            current_user.password_hash = hash_password(payload.new_password)
+    else:
+        if not current_user.password_hash:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="This account password is managed by Supabase. Sign in again and try changing it.",
+            )
+        if not verify_password(payload.current_password, current_user.password_hash):
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Current password is incorrect")
+        current_user.password_hash = hash_password(payload.new_password)
+
+    log_action(
+        db,
+        actor=current_user,
+        action="user.password.change",
+        object_type="user",
+        object_id=str(current_user.id),
+        after_snapshot=f"role={current_user.role.value}",
+    )
+    db.commit()
+    return APIMessage(message="Password updated")
 
 
 @router.patch("/me", response_model=UserOut)

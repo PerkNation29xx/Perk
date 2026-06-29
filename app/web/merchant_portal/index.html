@@ -123,6 +123,26 @@
         </section>
 
         <section class="card">
+          <h2>Account security</h2>
+          <form id="changePasswordForm" class="form form-inline">
+            <label>
+              <span>Current password</span>
+              <input id="currentPasswordInput" type="password" autocomplete="current-password" required />
+            </label>
+            <label>
+              <span>New password</span>
+              <input id="newPasswordInput" type="password" autocomplete="new-password" minlength="8" required />
+            </label>
+            <label>
+              <span>Confirm new password</span>
+              <input id="confirmPasswordInput" type="password" autocomplete="new-password" minlength="8" required />
+            </label>
+            <button id="changePasswordBtn" class="btn btn-primary" type="submit">Change password</button>
+            <span id="changePasswordHint" class="muted small"></span>
+          </form>
+        </section>
+
+        <section class="card">
           <h2>Locations</h2>
           <form id="locationForm" class="form form-inline">
             <label>

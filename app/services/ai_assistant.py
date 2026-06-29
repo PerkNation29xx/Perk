@@ -584,7 +584,7 @@ def _system_prompt_for_context(role_context: str) -> str:
             "You are the PerkNation AI Local Guide on the public homepage. "
             "Use only the HOME LOCAL GUIDE CONTEXT plus any LA RESTAURANT KNOWLEDGE CONTEXT provided in this request. "
             "Only answer questions about the current PerkNation public promos, the Hollywood Sports paintball offer, "
-            "the crystal jewelry drop, El Portal's World Cup viewing promo, and the local/Pasadena restaurant guides in context. "
+            "the Bond Collective workspace promo, the crystal jewelry drop, El Portal's World Cup viewing promo, and the local/Pasadena restaurant guides in context. "
             "Do not invent promos, rewards, prices, discounts, venues, hours, dates, or ticket terms. "
             "Do not mention cashback, cash-back, stock rewards, stock conversion, Target offers, reward-rate tables, or cash/stock percentages. "
             "If the user asks about anything outside those topics, politely say you can only help with current PerkNation promos "
@@ -608,6 +608,7 @@ def _home_local_guide_context() -> str:
             "",
             "Current promos:",
             "- Hollywood Sports paintball campaign: active PerkNation featured campaign. The $60 package includes 11 regular entry tickets plus 1 Golden Ticket. Regular entry tickets include paintball marker and all day park pass; all day air and purchase of 400 paintballs required; bonus 100 rounds when playing .50 caliber; parks are field paint only. The Golden Ticket includes admission, .50 caliber gun, 200 paintballs, and mask rental; .50 cal paintballsoft play only; good for walk-ons and cannot be combined with any other discount. The $5 option is an entry-only pass. Participating parks include Hollywood Sports - Bellflower, SC Village - Chino, Giant Paintball - Lakeside, Combat Paintball - Castaic, and Giant Party Sports - Allen. Primary CTA path: /hollywood-sports#buy-now.",
+            "- Bond Collective workspace promo: active PerkNation homepage promo. Members can start with 20% off Bond Collective services, including coworking, private offices, dedicated desks, day passes, and meeting rooms. Website: https://bondcollective.com.",
             "- Crystal jewelry drop: active PerkNation homepage promo with product detail pages. Swarovski Annual Snowflake 10-year period retails for $2,499 with 25% off at $1,875 and can be purchased at /jewelry/swarovski-annual-snowflake. Swarovski Sorcerer Mickey retails for $225 with 20% off at $180 and can be purchased at /jewelry/swarovski-sorcerer-mickey. Christian Dior Necklace retails for $525 with 20% off at $420 and can be purchased at /jewelry/christian-dior-necklace. Swarovski Swan Crystal Pin Set has current product photos live at /jewelry/swarovski-swan-pin-set, but retail price and discount are pending confirmation through PerkNation Instagram. PerkNation Instagram: https://www.instagram.com/perk.nation.rewards.",
             "- El Portal Restaurant World Cup promo: El Portal at 695 E. Green St., Pasadena, CA 91101 is streaming every World Cup game live during restaurant hours. Extended happy hour during games: Tuesday-Friday 12PM-6PM and Saturday-Sunday 12PM-5PM. Website: https://www.elportalrestaurant.com/. Instagram: https://www.instagram.com/elportal.",
             "",
@@ -623,10 +624,11 @@ def _home_local_guide_context() -> str:
             "",
             "Answering rules:",
             "- Prefer Hollywood Sports when the user asks about paintball, packages, tickets, entry, park passes, wallet passes, or current PerkNation campaign purchases.",
+            "- Prefer Bond Collective when the user asks about coworking, workspace, private offices, dedicated desks, day passes, meeting rooms, office space, or workplace services.",
             "- Prefer the jewelry drop when the user asks about Swarovski, Sorcerer Mickey, Dior, necklace, swan pins, crystal, jewelry, collectible, retail price, or jewelry discounts.",
             "- Prefer El Portal when the user asks about World Cup games, happy hour, soccer viewing, or game-day dining.",
             "- Prefer restaurant guide entries when the user asks where to eat, date night, cuisine, neighborhoods, or Pasadena dining.",
-            "- If asked whether there is a discount or deal, answer only with the confirmed current promos: Hollywood Sports $60 package, Hollywood Sports $5 entry-only pass, the jewelry prices listed above, and El Portal's World Cup game-day happy hour. Restaurant guide entries are recommendations unless a specific promo is listed here.",
+            "- If asked whether there is a discount or deal, answer only with the confirmed current promos: Hollywood Sports $60 package, Hollywood Sports $5 entry-only pass, Bond Collective 20% initial services discount, the jewelry prices listed above, and El Portal's World Cup game-day happy hour. Restaurant guide entries are recommendations unless a specific promo is listed here.",
             "- If the needed detail is not in this context or the retrieved restaurant/local context, say what is known and suggest checking the venue or PerkNation page rather than guessing.",
         ]
     )
@@ -661,6 +663,11 @@ def _guard_home_local_guide_answer(*, message: str, answer: str) -> str:
             "The confirmed Hollywood Sports deals are the $60 package with 11 regular entry tickets plus 1 Golden Ticket, "
             "and the $5 entry-only pass. Each ticket's terms are shown on the campaign page before purchase."
         )
+    if any(term in normalized_message for term in ("bond", "cowork", "workspace", "office", "desk", "meeting room", "day pass")):
+        return (
+            "The confirmed Bond Collective deal is a 20% initial discount on services including coworking, private offices, "
+            "dedicated desks, day passes, and meeting rooms. Final availability and terms are confirmed through Bond Collective."
+        )
     if any(term in normalized_message for term in ("jewelry", "jewellery", "crystal", "swarovski", "sorcerer", "mickey", "dior", "necklace", "swan")):
         return (
             "The confirmed jewelry discounts are Swarovski Annual Snowflake 10-year period for $1,875, "
@@ -670,7 +677,7 @@ def _guard_home_local_guide_answer(*, message: str, answer: str) -> str:
         )
     return (
         "The confirmed PerkNation deals right now are the Hollywood Sports $60 package, the Hollywood Sports $5 entry-only pass, "
-        "the jewelry discounts on the homepage, and El Portal's World Cup game-day happy hour. "
+        "the Bond Collective 20% initial services discount, the jewelry discounts on the homepage, and El Portal's World Cup game-day happy hour. "
         "Pasadena restaurant guide entries are recommendations unless a specific promo is listed."
     )
 
@@ -1077,7 +1084,7 @@ def _capabilities_for_role(role_context: str) -> str:
     if role_context == "home_local_guide":
         return (
             "I can help with current PerkNation public promos and local restaurant guides: "
-            "Hollywood Sports paintball packages, the crystal jewelry drop, El Portal World Cup viewing and happy hour, "
+            "Hollywood Sports paintball packages, the Bond Collective workspace discount, the crystal jewelry drop, El Portal World Cup viewing and happy hour, "
             "and Pasadena restaurant picks."
         )
     return "I can answer public product and onboarding questions."

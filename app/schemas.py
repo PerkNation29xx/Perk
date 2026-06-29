@@ -46,6 +46,12 @@ class LoginRequest(BaseModel):
     password: str
 
 
+class PasswordChangeRequest(BaseModel):
+    current_password: str = Field(min_length=1)
+    new_password: str = Field(min_length=8)
+    confirm_password: Optional[str] = Field(default=None, min_length=8)
+
+
 class UserOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

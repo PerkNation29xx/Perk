@@ -262,6 +262,22 @@ async function apiFetch(path, opts) {
   return res;
 }
 
+async function apiJson(path, opts) {
+  const res = await apiFetch(path, opts);
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(body.detail || body.message || `${path} failed (${res.status})`);
+  }
+  return body;
+}
+
+async function changeMyPassword(payload) {
+  return await apiJson(`${config.api_v1_prefix}/auth/me/password`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
 function setActiveNav(view) {
   qsa(".navitem").forEach((btn) => {
     const isActive = btn.dataset.view === view;
@@ -608,8 +624,15 @@ function applyAccessToNavigation() {
   navButtons.forEach((btn) => {
     const view = btn.dataset.view;
     const isScanner = view === "ticketScanner";
+    const isAccount = view === "account";
 
     if (isAdmin) {
+      btn.hidden = false;
+      btn.disabled = false;
+      return;
+    }
+
+    if (isAccount) {
       btn.hidden = false;
       btn.disabled = false;
       return;
@@ -629,6 +652,80 @@ function applyAccessToNavigation() {
     scannerBtn.hidden = !canScan;
     scannerBtn.disabled = !canScan;
   }
+}
+
+async function renderAccountView(container) {
+  setViewTitle("Account", "Profile and password");
+  if (!currentUserProfile) {
+    currentUserProfile = await loadMe();
+  }
+
+  const card = document.createElement("section");
+  card.className = "card";
+  card.innerHTML = `
+    <div class="row row--space">
+      <div>
+        <div class="h2">Account security</div>
+        <div class="muted">${currentUserProfile.email || ""} (${currentUserProfile.role || "account"})</div>
+      </div>
+    </div>
+    <form id="adminChangePasswordForm" class="form">
+      <label class="field">
+        <span>Current password</span>
+        <input id="adminCurrentPasswordInput" type="password" autocomplete="current-password" required />
+      </label>
+      <label class="field">
+        <span>New password</span>
+        <input id="adminNewPasswordInput" type="password" autocomplete="new-password" minlength="8" required />
+      </label>
+      <label class="field">
+        <span>Confirm new password</span>
+        <input id="adminConfirmPasswordInput" type="password" autocomplete="new-password" minlength="8" required />
+      </label>
+      <div class="row row--space">
+        <button class="btn btn--primary" id="adminChangePasswordBtn" type="submit">Change password</button>
+        <span class="muted small" id="adminChangePasswordHint"></span>
+      </div>
+    </form>
+  `;
+  container.appendChild(card);
+
+  const form = card.querySelector("#adminChangePasswordForm");
+  const btn = card.querySelector("#adminChangePasswordBtn");
+  const hint = card.querySelector("#adminChangePasswordHint");
+
+  form.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const currentPassword = card.querySelector("#adminCurrentPasswordInput").value;
+    const newPassword = card.querySelector("#adminNewPasswordInput").value;
+    const confirmPassword = card.querySelector("#adminConfirmPasswordInput").value;
+
+    if (newPassword.length < 8) {
+      setStatus("New password must be at least 8 characters.");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setStatus("New passwords do not match.");
+      return;
+    }
+
+    btn.disabled = true;
+    hint.textContent = "Updating...";
+    try {
+      const body = await changeMyPassword({
+        current_password: currentPassword,
+        new_password: newPassword,
+        confirm_password: confirmPassword,
+      });
+      form.reset();
+      setStatus(body.message || "Password updated.");
+    } catch (e) {
+      setStatus(e.message || String(e));
+    } finally {
+      btn.disabled = false;
+      hint.textContent = "";
+    }
+  });
 }
 
 async function renderOverviewView(container) {
@@ -1934,6 +2031,9 @@ async function renderCurrentView() {
 
   try {
     switch (currentView) {
+      case "account":
+        await renderAccountView(container);
+        break;
       case "users":
         await renderUsersView(container);
         break;

@@ -348,8 +348,8 @@ function renderAiAssistant() {
 async function refreshMerchantData() {
   const me = await apiJson(`${config.api_v1_prefix}/auth/me`);
   const role = String(me.body.role || "").toLowerCase();
-  if (role !== "merchant") {
-    throw new Error(`Signed in as ${me.body.role}. Use a merchant account for /merchant portal.`);
+  if (!["merchant", "admin"].includes(role)) {
+    throw new Error(`Signed in as ${me.body.role}. Use a merchant or admin account for /merchant portal.`);
   }
   state.me = me.body;
   qs("#sessionPill").textContent = `Signed in: ${state.me.email}`;
@@ -443,6 +443,29 @@ async function saveProfile() {
   });
   showStatus(body.message || "Merchant profile saved.");
   await refreshMerchantData();
+}
+
+async function changePassword() {
+  const currentPassword = qs("#currentPasswordInput").value;
+  const newPassword = qs("#newPasswordInput").value;
+  const confirmPassword = qs("#confirmPasswordInput").value;
+  if (newPassword.length < 8) {
+    throw new Error("New password must be at least 8 characters.");
+  }
+  if (newPassword !== confirmPassword) {
+    throw new Error("New passwords do not match.");
+  }
+
+  const { body } = await apiJson(`${config.api_v1_prefix}/auth/me/password`, {
+    method: "POST",
+    body: JSON.stringify({
+      current_password: currentPassword,
+      new_password: newPassword,
+      confirm_password: confirmPassword,
+    }),
+  });
+  qs("#changePasswordForm").reset();
+  showStatus(body.message || "Password updated.");
 }
 
 async function addLocation() {
@@ -570,6 +593,21 @@ window.addEventListener("DOMContentLoaded", async () => {
       await saveProfile();
     } catch (err) {
       showStatus(err.message || String(err));
+    }
+  });
+  qs("#changePasswordForm").addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    const btn = qs("#changePasswordBtn");
+    const hint = qs("#changePasswordHint");
+    btn.disabled = true;
+    hint.textContent = "Updating...";
+    try {
+      await changePassword();
+    } catch (err) {
+      showStatus(err.message || String(err));
+    } finally {
+      btn.disabled = false;
+      hint.textContent = "";
     }
   });
   qs("#locationForm").addEventListener("submit", async (ev) => {

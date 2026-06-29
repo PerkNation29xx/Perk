@@ -70,6 +70,7 @@ def test_home_local_guide_context_is_scoped_to_current_promos(monkeypatch) -> No
     assert any("Only answer questions about the current PerkNation public promos" in block for block in system_blocks)
     assert any("HOME LOCAL GUIDE CONTEXT" in block for block in system_blocks)
     assert any("Hollywood Sports paintball campaign" in block for block in system_blocks)
+    assert any("Bond Collective workspace promo" in block for block in system_blocks)
     assert any("Crystal jewelry drop" in block for block in system_blocks)
     assert any("El Portal Restaurant World Cup promo" in block for block in system_blocks)
 
@@ -89,6 +90,7 @@ def test_home_local_guide_fallback_names_supported_topics(monkeypatch) -> None:
     assert result.model == "perk-deterministic"
     assert result.role_context == "home_local_guide"
     assert "hollywood sports" in result.answer.lower()
+    assert "bond collective" in result.answer.lower()
     assert "jewelry" in result.answer.lower()
     assert "el portal" in result.answer.lower()
     assert "pasadena restaurant" in result.answer.lower()
@@ -173,6 +175,7 @@ def test_home_local_guide_blocks_legacy_cashback_stock_claims(monkeypatch) -> No
     assert "stock" not in answer
     assert "target" not in answer
     assert "hollywood sports" in answer
+    assert "bond collective" in answer
     assert "jewelry" in answer
     assert "el portal" in answer
 

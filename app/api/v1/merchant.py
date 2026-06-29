@@ -23,7 +23,7 @@ def _get_merchant_profile_or_404(db: Session, user_id: int) -> MerchantProfile:
 def create_or_update_profile(
     payload: MerchantProfileCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles(UserRole.merchant)),
+    current_user: User = Depends(require_roles(UserRole.merchant, UserRole.admin)),
 ) -> APIMessage:
     profile = db.scalar(select(MerchantProfile).where(MerchantProfile.owner_user_id == current_user.id))
 
@@ -53,7 +53,7 @@ def create_or_update_profile(
 def add_location(
     payload: LocationCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles(UserRole.merchant)),
+    current_user: User = Depends(require_roles(UserRole.merchant, UserRole.admin)),
 ) -> LocationOut:
     profile = _get_merchant_profile_or_404(db, current_user.id)
 
@@ -84,7 +84,7 @@ def add_location(
 @router.get("/locations", response_model=list[LocationOut])
 def list_locations(
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles(UserRole.merchant)),
+    current_user: User = Depends(require_roles(UserRole.merchant, UserRole.admin)),
 ) -> list[LocationOut]:
     profile = _get_merchant_profile_or_404(db, current_user.id)
     locations = db.scalars(
@@ -99,7 +99,7 @@ def list_locations(
 def create_offer(
     payload: OfferCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles(UserRole.merchant)),
+    current_user: User = Depends(require_roles(UserRole.merchant, UserRole.admin)),
 ) -> OfferOut:
     profile = _get_merchant_profile_or_404(db, current_user.id)
 
@@ -136,7 +136,7 @@ def create_offer(
 @router.get("/offers", response_model=list[OfferOut])
 def list_merchant_offers(
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles(UserRole.merchant)),
+    current_user: User = Depends(require_roles(UserRole.merchant, UserRole.admin)),
 ) -> list[OfferOut]:
     profile = _get_merchant_profile_or_404(db, current_user.id)
     offers = db.scalars(
@@ -151,7 +151,7 @@ def list_merchant_offers(
 @router.get("/metrics")
 def metrics(
     db: Session = Depends(get_db),
-    current_user: User = Depends(require_roles(UserRole.merchant)),
+    current_user: User = Depends(require_roles(UserRole.merchant, UserRole.admin)),
 ) -> dict[str, str]:
     profile = _get_merchant_profile_or_404(db, current_user.id)
 

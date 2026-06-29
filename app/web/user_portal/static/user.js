@@ -1606,6 +1606,14 @@
     return body;
   }
 
+  async function changeMyPassword(payload) {
+    const { body } = await apiJson(`${config.api_v1_prefix}/auth/me/password`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    return body;
+  }
+
   async function trackReferralShare(channel) {
     const { body } = await apiJson(`${config.api_v1_prefix}/consumer/referrals/share`, {
       method: "POST",
@@ -2422,6 +2430,44 @@
         }
       });
     });
+
+    const changePasswordForm = qs("#userChangePasswordForm");
+    if (changePasswordForm) {
+      changePasswordForm.addEventListener("submit", async (ev) => {
+        ev.preventDefault();
+        const currentPassword = qs("#userCurrentPasswordInput").value;
+        const newPassword = qs("#userNewPasswordInput").value;
+        const confirmPassword = qs("#userConfirmPasswordInput").value;
+        const btn = qs("#userChangePasswordBtn");
+        const hint = qs("#userChangePasswordHint");
+
+        if (newPassword.length < 8) {
+          showStatus("New password must be at least 8 characters.", true);
+          return;
+        }
+        if (newPassword !== confirmPassword) {
+          showStatus("New passwords do not match.", true);
+          return;
+        }
+
+        btn.disabled = true;
+        hint.textContent = "Updating...";
+        try {
+          const body = await changeMyPassword({
+            current_password: currentPassword,
+            new_password: newPassword,
+            confirm_password: confirmPassword,
+          });
+          changePasswordForm.reset();
+          showStatus(body.message || "Password updated.", false);
+        } catch (err) {
+          showStatus(err.message || String(err), true);
+        } finally {
+          btn.disabled = false;
+          hint.textContent = "";
+        }
+      });
+    }
 
     qs("#offerCodeCloseBtn").addEventListener("click", closeOfferCodeModal);
     qsa("[data-modal-close]").forEach((el) => {

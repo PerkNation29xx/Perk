@@ -194,6 +194,12 @@ code {
   gap: 5px;
 }
 
+.profileDivider {
+  height: 1px;
+  background: var(--border);
+  margin: 18px 0;
+}
+
 input,
 select,
 textarea {

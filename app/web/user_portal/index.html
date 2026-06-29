@@ -378,6 +378,26 @@
               <button class="chip" type="button" data-category="travel">Travel</button>
               <button class="chip" type="button" data-category="coffee">Coffee</button>
             </div>
+            <div class="profileDivider"></div>
+            <h3>Account security</h3>
+            <form id="userChangePasswordForm" class="form">
+              <label>
+                <span>Current password</span>
+                <input id="userCurrentPasswordInput" type="password" autocomplete="current-password" required />
+              </label>
+              <label>
+                <span>New password</span>
+                <input id="userNewPasswordInput" type="password" autocomplete="new-password" minlength="8" required />
+              </label>
+              <label>
+                <span>Confirm new password</span>
+                <input id="userConfirmPasswordInput" type="password" autocomplete="new-password" minlength="8" required />
+              </label>
+              <div class="row">
+                <button id="userChangePasswordBtn" class="btn btn-primary" type="submit">Change password</button>
+                <span id="userChangePasswordHint" class="muted small"></span>
+              </div>
+            </form>
             <div class="muted small">Saved to your consumer profile.</div>
           </section>
         </section>
