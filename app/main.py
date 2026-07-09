@@ -32,6 +32,8 @@ from app.db import models as _models  # noqa: F401
 logger = logging.getLogger(__name__)
 
 _GOOGLE_ANALYTICS_ID = "G-VYL0SBGMWL"
+_INDEXNOW_KEY = "7a937e1db6b8272beca3c7860157d6112a7301b5832fd8a01590e17803adb3f3"
+_INDEXNOW_KEY_PATH = f"/{_INDEXNOW_KEY}.txt"
 _GOOGLE_ANALYTICS_SNIPPET = f"""<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id={_GOOGLE_ANALYTICS_ID}"></script>
 <script>
@@ -1275,6 +1277,11 @@ def home_portal_sitemap() -> Response:
 @app.get("/business-directory-sitemap.xml")
 def home_portal_business_directory_sitemap() -> Response:
     return Response(content=_directory_sitemap_xml(), media_type="application/xml")
+
+
+@app.get(_INDEXNOW_KEY_PATH, response_class=PlainTextResponse, include_in_schema=False)
+def home_portal_indexnow_key() -> str:
+    return _INDEXNOW_KEY
 
 
 @app.get("/white/robots.txt", response_class=PlainTextResponse)

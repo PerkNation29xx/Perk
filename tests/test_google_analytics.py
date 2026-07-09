@@ -2,6 +2,8 @@ from fastapi.testclient import TestClient
 
 from app.main import (
     _GOOGLE_ANALYTICS_ID,
+    _INDEXNOW_KEY,
+    _INDEXNOW_KEY_PATH,
     _append_directory_sitemap,
     _inject_google_analytics,
     _inject_social_meta,
@@ -98,3 +100,12 @@ def test_robots_points_to_live_sitemaps():
     assert "Disallow: /white/" in robots
     assert "Sitemap: https://perknation.app/sitemap.xml" in robots
     assert "Sitemap: https://perknation.app/business-directory-sitemap.xml" in robots
+
+
+def test_indexnow_key_file_is_served_from_root():
+    with TestClient(app) as client:
+        response = client.get(_INDEXNOW_KEY_PATH)
+
+    assert response.status_code == 200
+    assert response.text == _INDEXNOW_KEY
+    assert response.headers["content-type"].startswith("text/plain")
