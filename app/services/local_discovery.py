@@ -301,6 +301,7 @@ def build_local_discovery_context(
     lines.append(
         "Use these ranked local matches when answering discovery questions. "
         "Business directory rows are factual listings, not active PerkNation promos or discounts unless the confirmed promo context says otherwise. "
+        "If a business directory field says not listed, say it is not listed and do not infer that value. "
         "Lead with the top 3 and ask one follow-up preference question "
         "(neighborhood, budget, cuisine/category, or vibe)."
     )
@@ -380,8 +381,8 @@ def _business_directory_discovery_candidates(
         description = _clean_detail(row.description, max_length=260)
         detail_parts = [
             f"category='{_clean_detail(row.business_type)}'" if row.business_type else "",
-            f"city='{_clean_detail(row.search_city)}'" if row.search_city else "",
-            f"address='{address}'" if address else "",
+            f"city='{_clean_detail(row.search_city) if row.search_city else 'not listed in imported directory'}'",
+            f"address='{address if address else 'not listed in imported directory'}'",
             f"phone='{phone}'" if phone else "",
             f"website='{website}'" if website else "",
             f"description='{description}'" if description else "",

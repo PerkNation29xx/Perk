@@ -129,6 +129,26 @@ def test_local_discovery_context_includes_business_directory_name_match() -> Non
     assert "https://perknation.app/business/acorn-creative-llc-pasadena-advertising-marketing-public-relations" in context
 
 
+def test_local_discovery_context_marks_missing_directory_city_and_address() -> None:
+    with _db_session() as db:
+        row = _add_business_directory_entry(db)
+        row.search_city = None
+        row.search_city_slug = None
+        row.city = None
+        row.address = None
+        db.flush()
+        context = build_local_discovery_context(
+            db,
+            message="Tell me about Acorn Creative LLC",
+            limit=8,
+        )
+
+    assert "source=business_directory" in context
+    assert "city='not listed in imported directory'" in context
+    assert "address='not listed in imported directory'" in context
+    assert "do not infer that value" in context
+
+
 def test_ai_chat_includes_directory_context_for_home_local_guide(monkeypatch) -> None:
     captured: dict[str, list[dict[str, str]]] = {}
 

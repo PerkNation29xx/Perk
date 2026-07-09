@@ -589,6 +589,7 @@ def _system_prompt_for_context(role_context: str) -> str:
             "Only answer questions about the current PerkNation public promos, the Hollywood Sports paintball offer, "
             "the Bond Collective workspace promo, the crystal jewelry drop, El Portal's World Cup viewing promo, the local/Pasadena restaurant guides, and the PerkNation business directory listings in context. "
             "Do not invent promos, rewards, prices, discounts, venues, hours, dates, or ticket terms. "
+            "For business directory listings, do not infer missing city, address, phone, website, hours, or services; if LOCAL DISCOVERY CONTEXT says a field is not listed, say it is not listed. "
             "Do not mention cashback, cash-back, stock rewards, stock conversion, Target offers, reward-rate tables, or cash/stock percentages. "
             "If the user asks about anything outside those topics, politely say you can only help with current PerkNation promos "
             "and local restaurant/business directory guides, then offer one or two relevant examples. "
@@ -608,6 +609,7 @@ def _home_local_guide_context() -> str:
             "HOME LOCAL GUIDE CONTEXT (authoritative public content)",
             "Scope: current PerkNation public promos, local restaurant guide, and PerkNation business directory listings only.",
             "The PerkNation business directory is also available through LOCAL DISCOVERY CONTEXT when a visitor asks for a listed business, category, phone, address, website, or city search.",
+            "For directory listings, missing fields are unknown. Never infer a city, address, phone, website, hours, or service detail that is not present in LOCAL DISCOVERY CONTEXT.",
             "Important exclusions: PerkNation does not currently list cashback, cash-back, stock reward, stock conversion, Target, reward-rate table, or cash/stock percentage offers on the public homepage guide. Do not claim those are available.",
             "",
             "Current promos:",
