@@ -1,6 +1,13 @@
 from fastapi.testclient import TestClient
 
-from app.main import _GOOGLE_ANALYTICS_ID, _inject_google_analytics, app
+from app.main import (
+    _GOOGLE_ANALYTICS_ID,
+    _append_directory_sitemap,
+    _inject_google_analytics,
+    _public_url,
+    _robots_txt,
+    app,
+)
 
 
 def test_google_analytics_injects_before_head_close_once():
@@ -28,3 +35,44 @@ def test_json_health_response_does_not_get_google_analytics_tag():
 
     assert response.status_code == 200
     assert _GOOGLE_ANALYTICS_ID not in response.text
+
+
+def test_public_url_canonicalizes_legacy_domains(monkeypatch):
+    from app.core.config import settings
+
+    monkeypatch.setattr(settings, "public_web_base_url", "https://perknation.net")
+
+    assert _public_url("/business/example") == "https://perknation.app/business/example"
+
+
+def test_sitemap_output_uses_absolute_perknation_app_urls(monkeypatch):
+    from app import main
+
+    monkeypatch.setattr(main, "_directory_sitemap_xml", lambda *, white=False: "")
+    content = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>index.html</loc></url>
+  <url><loc>how-it-works.html</loc></url>
+  <url><loc>/jewelry/christian-dior-necklace</loc></url>
+  <url><loc>https://perknation.net/business/example</loc></url>
+  <url><loc>login.html</loc></url>
+</urlset>"""
+
+    sitemap = _append_directory_sitemap(content)
+
+    assert "<loc>https://perknation.app/</loc>" in sitemap
+    assert "<loc>https://perknation.app/how-it-works</loc>" in sitemap
+    assert "<loc>https://perknation.app/jewelry/christian-dior-necklace</loc>" in sitemap
+    assert "<loc>https://perknation.app/business/example</loc>" in sitemap
+    assert "perknation.net" not in sitemap
+    assert "index.html" not in sitemap
+    assert "login" not in sitemap
+
+
+def test_robots_points_to_live_sitemaps():
+    robots = _robots_txt()
+
+    assert "Allow: /" in robots
+    assert "Disallow: /white/" in robots
+    assert "Sitemap: https://perknation.app/sitemap.xml" in robots
+    assert "Sitemap: https://perknation.app/business-directory-sitemap.xml" in robots

@@ -2,7 +2,8 @@ from contextlib import asynccontextmanager
 import html
 import json
 import logging
-from urllib.parse import quote, quote_plus
+import re
+from urllib.parse import quote, quote_plus, urlsplit
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse, Response
@@ -213,9 +214,8 @@ def _escape(value: object) -> str:
 
 
 def _public_url(path: str) -> str:
-    base_url = settings.public_web_base_url.rstrip("/") or "https://perknation.app"
     normalized = path if path.startswith("/") else f"/{path}"
-    return f"{base_url}{normalized}"
+    return settings._join_public_url(settings.public_web_base_url, normalized)
 
 
 def _theme_path(path: str, *, white: bool) -> str:
@@ -821,12 +821,95 @@ def _directory_sitemap_xml(*, white: bool = False) -> str:
     return f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{body}\n</urlset>\n'
 
 
+_SITEMAP_SKIP_PATHS = {
+    "/admin",
+    "/api",
+    "/guests",
+    "/home",
+    "/invite",
+    "/login",
+    "/merchant",
+    "/redeem",
+    "/reset-password",
+    "/user",
+    "/web/config",
+}
+
+
+def _canonical_sitemap_url(raw_loc: str, *, white: bool) -> str:
+    raw = html.unescape(str(raw_loc or "").strip())
+    if not raw:
+        return ""
+
+    if raw.startswith(("http://", "https://")):
+        canonical = settings._canonical_public_url(raw)
+        path = urlsplit(canonical).path or "/"
+    else:
+        path = raw
+
+    if not path.startswith("/"):
+        path = f"/{path}"
+
+    if path == "/index.html":
+        path = "/"
+    elif path.endswith(".html"):
+        path = path[:-5]
+
+    if path != "/" and path.endswith("/"):
+        path = path.rstrip("/")
+
+    if path in _SITEMAP_SKIP_PATHS:
+        return ""
+    if path.startswith("/white/") or path == "/white":
+        if not white:
+            return ""
+    elif white:
+        path = _theme_path(path, white=True)
+
+    return _public_url(path)
+
+
+def _sitemap_urls_from_xml(content: str, *, white: bool) -> set[str]:
+    urls: set[str] = set()
+    for match in re.finditer(r"<loc>\s*(.*?)\s*</loc>", content or "", flags=re.IGNORECASE | re.DOTALL):
+        url = _canonical_sitemap_url(match.group(1), white=white)
+        if url:
+            urls.add(url)
+    return urls
+
+
+def _sitemap_xml_from_urls(urls: set[str]) -> str:
+    body = "\n".join(f"  <url><loc>{_escape(url)}</loc></url>" for url in sorted(urls))
+    return f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{body}\n</urlset>\n'
+
+
 def _append_directory_sitemap(content: str, *, white: bool = False) -> str:
+    urls = _sitemap_urls_from_xml(content, white=white)
     directory_xml = _directory_sitemap_xml(white=white)
-    dynamic_urls = "\n".join(line for line in directory_xml.splitlines() if line.strip().startswith("<url>"))
-    if not dynamic_urls or "</urlset>" not in content:
-        return content
-    return content.replace("</urlset>", f"{dynamic_urls}\n</urlset>")
+    urls.update(_sitemap_urls_from_xml(directory_xml, white=white))
+    return _sitemap_xml_from_urls(urls)
+
+
+def _robots_txt(*, white: bool = False) -> str:
+    sitemap_path = "/white/sitemap.xml" if white else "/sitemap.xml"
+    lines = [
+        "User-agent: *",
+        "Allow: /",
+        "Disallow: /admin",
+        "Disallow: /api",
+        "Disallow: /invite",
+        "Disallow: /login",
+        "Disallow: /merchant",
+        "Disallow: /redeem",
+        "Disallow: /reset-password",
+        "Disallow: /user",
+        "Disallow: /web/config",
+    ]
+    if not white:
+        lines.append("Disallow: /white/")
+        lines.append("Sitemap: https://perknation.app/business-directory-sitemap.xml")
+    lines.append(f"Sitemap: {_public_url(sitemap_path)}")
+    return "\n".join(lines) + "\n"
 
 
 @app.get("/admin", response_class=HTMLResponse)
@@ -1130,10 +1213,7 @@ def home_portal_page(page_name: str) -> Response:
 
 @app.get("/robots.txt", response_class=PlainTextResponse)
 def home_portal_robots() -> str:
-    robots = _read_text_or_missing(_HOME_PORTAL_DIR / "robots.txt", fallback="User-agent: *\nAllow: /\n")
-    if "business-directory-sitemap.xml" not in robots:
-        robots = robots.rstrip() + "\nSitemap: https://perknation.app/business-directory-sitemap.xml\n"
-    return robots
+    return _robots_txt()
 
 
 @app.get("/sitemap.xml")
@@ -1149,7 +1229,7 @@ def home_portal_business_directory_sitemap() -> Response:
 
 @app.get("/white/robots.txt", response_class=PlainTextResponse)
 def home_portal_white_robots() -> str:
-    return _read_text_or_missing(_HOME_PORTAL_WHITE_DIR / "robots.txt", fallback="User-agent: *\nAllow: /\n")
+    return _robots_txt(white=True)
 
 
 @app.get("/white/sitemap.xml")
