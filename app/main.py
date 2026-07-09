@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 import html
 import json
 import logging
+from urllib.parse import quote, quote_plus
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, PlainTextResponse, RedirectResponse, Response
@@ -245,8 +246,8 @@ def _directory_page_path(*, white: bool, city_slug: Optional[str] = None, busine
 
 def _directory_shell(*, title: str, description: str, canonical_path: str, body: str, white: bool, json_ld: Optional[dict] = None) -> str:
     brand_href = "/white/" if white else "/"
-    style_href = f"{_asset_path('styles.css', white=white)}?v=directory20260708"
-    script_href = f"{_asset_path('app.js', white=white)}?v=directory20260708"
+    style_href = f"{_asset_path('styles.css', white=white)}?v=directory20260709-map"
+    script_href = f"{_asset_path('app.js', white=white)}?v=directory20260709-map"
     json_ld_html = ""
     if json_ld:
         json_ld_payload = json.dumps(json_ld, ensure_ascii=False).replace("</", "<\\/")
@@ -317,6 +318,71 @@ def _facet_by_slug(items: list[dict[str, object]], slug: Optional[str]) -> Optio
 def _contact_href_phone(phone: Optional[str]) -> str:
     cleaned = "".join(ch for ch in str(phone or "") if ch.isdigit() or ch == "+")
     return f"tel:{cleaned}" if cleaned else ""
+
+
+def _business_city_line(row) -> str:
+    return ", ".join(part for part in (row.search_city or row.city, row.state, row.zip_code) if part)
+
+
+def _business_location_label(row) -> str:
+    address = str(row.address or "").strip()
+    city_line = _business_city_line(row)
+    if address and city_line:
+        address_lower = address.lower()
+        city = str(row.search_city or row.city or "").lower()
+        zip_code = str(row.zip_code or "")
+        if (city and city in address_lower) or (zip_code and zip_code in address):
+            return address
+    return " ".join(part for part in (address, city_line) if part).strip()
+
+
+def _business_map_query(row) -> str:
+    location = _business_location_label(row)
+    if not location:
+        return ""
+    return normalize_spaces(f"{row.business_name} {location}")
+
+
+def _business_google_maps_url(row) -> str:
+    query = _business_map_query(row)
+    return f"https://www.google.com/maps/search/?api=1&query={quote_plus(query)}" if query else ""
+
+
+def _business_google_directions_url(row) -> str:
+    query = _business_map_query(row)
+    return f"https://www.google.com/maps/dir/?api=1&destination={quote_plus(query)}" if query else ""
+
+
+def _business_apple_maps_url(row) -> str:
+    query = _business_map_query(row)
+    return f"https://maps.apple.com/?daddr={quote_plus(query)}" if query else ""
+
+
+def _business_geo_uri(row) -> str:
+    query = _business_map_query(row)
+    return f"geo:0,0?q={quote(query)}" if query else ""
+
+
+def _business_map_embed_url(row) -> str:
+    query = _business_map_query(row)
+    return f"https://www.google.com/maps?q={quote_plus(query)}&output=embed" if query else ""
+
+
+def _directory_map_links(row, *, include_search: bool = False) -> str:
+    directions_url = _business_google_directions_url(row)
+    if not directions_url:
+        return ""
+    links = [f'<a href="{_escape(directions_url)}" target="_blank" rel="noopener">Directions</a>']
+    apple_url = _business_apple_maps_url(row)
+    geo_uri = _business_geo_uri(row)
+    search_url = _business_google_maps_url(row)
+    if apple_url:
+        links.append(f'<a href="{_escape(apple_url)}" target="_blank" rel="noopener">Apple Maps</a>')
+    if geo_uri:
+        links.append(f'<a href="{_escape(geo_uri)}">GPS</a>')
+    if include_search and search_url:
+        links.append(f'<a href="{_escape(search_url)}" target="_blank" rel="noopener">Map</a>')
+    return "".join(links)
 
 
 def _directory_search_controls(
@@ -418,6 +484,8 @@ def _directory_result_card(row, *, white: bool) -> str:
     ]
     meta_html = "".join(f"<span>{bit}</span>" for bit in meta_bits if bit)
     contact_html = "".join(f"<span>{bit}</span>" for bit in contact_bits)
+    map_links = _directory_map_links(row)
+    actions_html = f'<div class="directoryResultActions">{map_links}</div>' if map_links else ""
     description = _escape(row.description or "")
     return f"""
       <article class="directoryResultCard">
@@ -431,8 +499,51 @@ def _directory_result_card(row, *, white: bool) -> str:
           <p>{description}</p>
           <div class="directoryResultMeta">{meta_html}</div>
           <div class="directoryResultContact">{contact_html}</div>
+          {actions_html}
         </div>
       </article>
+    """
+
+
+def _directory_map_panel(rows) -> str:
+    mappable_rows = [row for row in rows if _business_map_query(row)][:8]
+    if not mappable_rows:
+        return ""
+
+    first = mappable_rows[0]
+    item_html = []
+    for row in mappable_rows:
+        location = _business_location_label(row)
+        links = _directory_map_links(row, include_search=True)
+        item_html.append(
+            f"""
+              <div class="directoryMapItem">
+                <div>
+                  <strong>{_escape(row.business_name)}</strong>
+                  <span>{_escape(location)}</span>
+                </div>
+                <div class="directoryMapActions">{links}</div>
+              </div>
+            """
+        )
+
+    return f"""
+      <div class="directoryMapPanel" aria-label="Business result map">
+        <div class="directoryMapFrame">
+          <iframe
+            title="Map for {_escape(first.business_name)}"
+            src="{_escape(_business_map_embed_url(first))}"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <div class="directoryMapList">
+          <div>
+            <div class="badge">Map-ready listings</div>
+            <p class="muted">Open directions, Apple Maps, or mobile GPS for businesses with imported address data.</p>
+          </div>
+          {"".join(item_html)}
+        </div>
+      </div>
     """
 
 
@@ -528,6 +639,7 @@ def _render_directory_page(
             <h2 class="h2">Business results</h2>
             <p class="muted">Listings are sourced from the imported chamber and city directory spreadsheets, with website metadata added when available.</p>
           </div>
+          {_directory_map_panel(rows)}
           <div class="directoryResultsGrid" data-directory-results>{cards_html}</div>
           {empty_html}
         </div>
@@ -565,6 +677,9 @@ def _business_json_ld(row) -> dict:
     }
     if row.image_url:
         payload["image"] = row.image_url
+    map_url = _business_google_maps_url(row)
+    if map_url:
+        payload["hasMap"] = map_url
     return {key: value for key, value in payload.items() if value}
 
 
@@ -602,6 +717,27 @@ def _render_business_page(*, slug: str, white: bool = False) -> str:
     if row.website:
         website_href = row.website if row.website.startswith(("http://", "https://")) else f"https://{row.website}"
         website_html = f'<a class="btn primary" href="{_escape(website_href)}" target="_blank" rel="noopener nofollow">Visit website</a>'
+    map_links = _directory_map_links(row, include_search=True)
+    map_actions_html = f'<div class="directoryMapActions">{map_links}</div>' if map_links else ""
+    directions_button = ""
+    directions_url = _business_google_directions_url(row)
+    if directions_url:
+        directions_button = f'<a class="btn" href="{_escape(directions_url)}" target="_blank" rel="noopener">Get directions</a>'
+    map_html = ""
+    map_embed_url = _business_map_embed_url(row)
+    if map_embed_url:
+        map_html = f"""
+          <div class="directoryDetailMap">
+            <iframe
+              title="Map for {_escape(row.business_name)}"
+              src="{_escape(map_embed_url)}"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"></iframe>
+            {map_actions_html}
+          </div>
+        """
+    else:
+        map_html = '<div class="directoryMapUnavailable">No imported address or city was available for map directions.</div>'
 
     phone_href = _contact_href_phone(row.phone_number)
     phone_html = f'<a href="{_escape(phone_href)}">{_escape(row.phone_number)}</a>' if phone_href else _escape(row.phone_number)
@@ -630,12 +766,14 @@ def _render_business_page(*, slug: str, white: bool = False) -> str:
               <p class="p">{_escape(row.description or '')}</p>
               <div class="directoryDetailActions">
                 {website_html}
+                {directions_button}
                 <a class="btn" href="{_escape(_directory_page_path(white=white, city_slug=row.search_city_slug))}">More in {_escape(row.search_city or 'this city')}</a>
               </div>
               <dl class="directoryDetailFacts">{detail_html}</dl>
             </div>
             <aside class="directoryDetailAside">
               {media_html}
+              {map_html}
               <div class="directorySourceBox">
                 <strong>Directory source</strong>
                 <p>Imported from {_escape(row.source_file)} / {_escape(row.source_sheet)} row {_escape(row.source_row)}.</p>

@@ -333,6 +333,46 @@
     return `https://${value}`;
   }
 
+  function businessLocationText(item){
+    const cityLine = [item.search_city || item.city, item.state, item.zip_code].filter(Boolean).join(", ");
+    return [item.address, cityLine].filter(Boolean).join(" ").trim();
+  }
+
+  function businessMapQuery(item){
+    const location = businessLocationText(item);
+    if(!location) return "";
+    return [item.business_name, location].filter(Boolean).join(" ").replace(/\s+/g, " ").trim();
+  }
+
+  function googleDirectionsHref(item){
+    const query = businessMapQuery(item);
+    return query ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(query)}` : "";
+  }
+
+  function appleMapsHref(item){
+    const query = businessMapQuery(item);
+    return query ? `https://maps.apple.com/?daddr=${encodeURIComponent(query)}` : "";
+  }
+
+  function geoHref(item){
+    const query = businessMapQuery(item);
+    return query ? `geo:0,0?q=${encodeURIComponent(query)}` : "";
+  }
+
+  function directoryMapLinks(item){
+    const directions = googleDirectionsHref(item);
+    if(!directions) return "";
+    const apple = appleMapsHref(item);
+    const geo = geoHref(item);
+    return `
+      <div class="directoryResultActions">
+        <a href="${escapeHtml(directions)}" target="_blank" rel="noopener">Directions</a>
+        ${apple ? `<a href="${escapeHtml(apple)}" target="_blank" rel="noopener">Apple Maps</a>` : ""}
+        ${geo ? `<a href="${escapeHtml(geo)}">GPS</a>` : ""}
+      </div>
+    `;
+  }
+
   function wireBusinessDirectorySearch(){
     const homePanel = document.querySelector("[data-directory-home]");
     if(!homePanel){
@@ -389,6 +429,7 @@
         const typePath = item.business_type_slug ? themedDirectoryPath(`/directory/type/${encodeURIComponent(item.business_type_slug)}`) : themedDirectoryPath("/directory");
         const cityText = [item.search_city, item.state, item.zip_code].filter(Boolean).join(", ");
         const website = externalHref(item.website);
+        const mapLinks = directoryMapLinks(item);
         return `
           <article class="directoryMiniCard">
             ${item.image_url ? `<img src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.business_name)}" loading="lazy" />` : ""}
@@ -407,6 +448,7 @@
                 ${item.phone_number ? `<span>${escapeHtml(item.phone_number)}</span>` : ""}
                 ${website ? `<span><a href="${escapeHtml(website)}" target="_blank" rel="noopener nofollow">Website</a></span>` : ""}
               </div>
+              ${mapLinks}
             </div>
           </article>
         `;
