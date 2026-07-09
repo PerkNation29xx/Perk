@@ -400,6 +400,8 @@ def _business_directory_discovery_candidates(
         )
 
     items.sort(key=lambda item: item.score, reverse=True)
+    if items and items[0].score >= 60.0:
+        return items[:1]
     return items[: max(1, min(limit, 20))]
 
 

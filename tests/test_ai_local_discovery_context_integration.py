@@ -132,6 +132,27 @@ def test_local_discovery_context_includes_business_directory_name_match() -> Non
 def test_local_discovery_context_marks_missing_directory_city_and_address() -> None:
     with _db_session() as db:
         row = _add_business_directory_entry(db)
+        db.add(
+            BusinessDirectoryEntry(
+                slug="dce-creative-group-llc-burbank-professional-misc",
+                source_file="test-directory",
+                source_sheet="Directory",
+                source_row=3,
+                business_name="DCE CREATIVE GROUP LLC",
+                business_name_normalized="dce creative group llc",
+                business_type="Professional-Misc.",
+                business_type_slug="professional-misc",
+                business_type_icon="•",
+                search_city="Burbank",
+                search_city_slug="burbank",
+                city="Burbank",
+                state="CA",
+                zip_code="91505",
+                address="100 S California St, Burbank, CA 91505",
+                description="DCE CREATIVE GROUP LLC is listed as a professional services business in Burbank.",
+                data_source="Imported test directory",
+            )
+        )
         row.search_city = None
         row.search_city_slug = None
         row.city = None
@@ -144,8 +165,10 @@ def test_local_discovery_context_marks_missing_directory_city_and_address() -> N
         )
 
     assert "source=business_directory" in context
+    assert "ranked_matches: 1" in context
     assert "city='not listed in imported directory'" in context
     assert "address='not listed in imported directory'" in context
+    assert "DCE CREATIVE GROUP LLC" not in context
     assert "do not infer that value" in context
 
 

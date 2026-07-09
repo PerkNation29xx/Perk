@@ -221,12 +221,13 @@ def chat_with_assistant(
             )
 
     if include_local_discovery_context and db is not None:
+        local_discovery_limit = 6 if role_context == "home_local_guide" else 12
         local_discovery_context = build_local_discovery_context(
             db,
             message=message,
             user_latitude=user_latitude,
             user_longitude=user_longitude,
-            limit=12,
+            limit=local_discovery_limit,
         )
         if local_discovery_context:
             messages.append(
@@ -613,20 +614,13 @@ def _home_local_guide_context() -> str:
             "Important exclusions: PerkNation does not currently list cashback, cash-back, stock reward, stock conversion, Target, reward-rate table, or cash/stock percentage offers on the public homepage guide. Do not claim those are available.",
             "",
             "Current promos:",
-            "- Hollywood Sports paintball campaign: active PerkNation featured campaign. The $60 package includes 11 regular entry tickets plus 1 Golden Ticket. Regular entry tickets include paintball marker and all day park pass; all day air and purchase of 400 paintballs required; bonus 100 rounds when playing .50 caliber; parks are field paint only. The Golden Ticket includes admission, .50 caliber gun, 200 paintballs, and mask rental; .50 cal paintballsoft play only; good for walk-ons and cannot be combined with any other discount. The $5 option is an entry-only pass. Participating parks include Hollywood Sports - Bellflower, SC Village - Chino, Giant Paintball - Lakeside, Combat Paintball - Castaic, and Giant Party Sports - Allen. Primary CTA path: /hollywood-sports#buy-now.",
-            "- Bond Collective workspace promo: active PerkNation homepage promo. Members can start with 20% off eligible Bond Collective services. Bond's public membership packages list Private Office Space from $500 per month, Dedicated Desks from $500 per month, Coworking from $300 per month, Day Passes from $25 per day, and Conference Rooms from $50 per hour. Estimated Perk intro prices after 20% off are $400/month, $400/month, $240/month, $20/day, and $40/hour respectively, before location-specific pricing, taxes, fees, and final approval. Website: https://bondcollective.com/memberships/.",
-            "- Crystal jewelry drop: active PerkNation homepage promo with product detail pages. Swarovski Annual Snowflake 10-year period retails for $2,499 with 25% off at $1,875 and can be purchased at /jewelry/swarovski-annual-snowflake. Swarovski Sorcerer Mickey retails for $225 with 20% off at $180 and can be purchased at /jewelry/swarovski-sorcerer-mickey. Christian Dior Necklace retails for $525 with 20% off at $420 and can be purchased at /jewelry/christian-dior-necklace. Swarovski Swan Crystal Pin Set has current product photos live at /jewelry/swarovski-swan-pin-set, but retail price and discount are pending confirmation through PerkNation Instagram. PerkNation Instagram: https://www.instagram.com/perk.nation.rewards.",
-            "- El Portal Restaurant World Cup promo: El Portal at 695 E. Green St., Pasadena, CA 91101 is streaming every World Cup game live during restaurant hours. Extended happy hour during games: Tuesday-Friday 12PM-6PM and Saturday-Sunday 12PM-5PM. Website: https://www.elportalrestaurant.com/. Instagram: https://www.instagram.com/elportal.",
+            "- Hollywood Sports paintball campaign: $60 package has 11 regular entry tickets plus 1 Golden Ticket. Regular tickets include marker and all-day park pass; all-day air plus 400 paintballs required; 100 bonus rounds for .50 caliber; field paint only. Golden Ticket includes admission, .50 caliber gun, 200 paintballs, and mask rental; walk-ons only and cannot combine with other discounts. $5 option is entry only. CTA: /hollywood-sports#buy-now.",
+            "- Bond Collective workspace promo: 20% initial discount on eligible services. Public base prices: private office $500/month, dedicated desk $500/month, coworking $300/month, day pass $25/day, conference room $50/hour. Estimated 20% off prices: $400, $400, $240, $20, $40 before location-specific terms. Website: https://bondcollective.com/memberships/.",
+            "- Crystal jewelry drop: Swarovski Annual Snowflake 10-year period $1,875 after 25% off; Swarovski Sorcerer Mickey $180 after 20% off; Christian Dior Necklace $420 after 20% off. Swan Crystal Pin Set photos are live but price/discount are pending. Instagram: https://www.instagram.com/perk.nation.rewards.",
+            "- El Portal Restaurant World Cup promo: 695 E. Green St., Pasadena. Every World Cup game live during restaurant hours. Game-day happy hour Tuesday-Friday 12PM-6PM and Saturday-Sunday 12PM-5PM. Website: https://www.elportalrestaurant.com/. Instagram: https://www.instagram.com/elportal.",
             "",
             "Local restaurant guide currently surfaced on the homepage:",
-            "- Union | Italian | 37 E Union St, Pasadena | polished date-night dining and handmade pasta.",
-            "- Agnes Restaurant & Cheesery | American/Cheese shop | 40 W Green St, Pasadena | seasonal California menu and cheese counter.",
-            "- Fishwives | Seafood | 88 N Fair Oaks Ave, Pasadena | modern seafood and bright plating.",
-            "- Perle | French | 43 E Union St, Pasadena | Parisian-leaning celebrations and wine.",
-            "- Bone Kettle | Southeast Asian | 67 N Raymond Ave, Pasadena | layered broths and bold flavors.",
-            "- Osawa | Japanese/Sushi | 77 N Raymond Ave, Pasadena | refined sushi and restrained service.",
-            "- Panda Inn | Chinese | 3488 E Foothill Blvd, Pasadena | classic Pasadena Chinese dining.",
-            "- Pez Coastal Kitchen | Seafood | 61 N Raymond Ave, Pasadena | coastal seafood, cocktails, and patio energy.",
+            "- Union, Agnes, Fishwives, Perle, Bone Kettle, Osawa, Panda Inn, and Pez Coastal Kitchen are Pasadena restaurant recommendations, not discount offers unless another promo says so.",
             "",
             "Answering rules:",
             "- Prefer Hollywood Sports when the user asks about paintball, packages, tickets, entry, park passes, wallet passes, or current PerkNation campaign purchases.",
