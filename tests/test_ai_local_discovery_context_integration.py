@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.config import settings
 from app.db.base import Base
-from app.db.models import RestaurantKnowledge
+from app.db.models import BusinessDirectoryEntry, RestaurantKnowledge
 from app.services import ai_assistant
 from app.services.la_restaurant_knowledge import seed_la_restaurant_knowledge
 from app.services.local_discovery import build_local_discovery_context, is_local_discovery_query
@@ -15,6 +15,33 @@ def _db_session() -> Session:
     Base.metadata.create_all(bind=engine)
     factory = sessionmaker(bind=engine, future=True)
     return factory()
+
+
+def _add_business_directory_entry(db: Session) -> BusinessDirectoryEntry:
+    row = BusinessDirectoryEntry(
+        slug="acorn-creative-llc-pasadena-advertising-marketing-public-relations",
+        source_file="test-directory",
+        source_sheet="Directory",
+        source_row=2,
+        business_name="Acorn Creative LLC",
+        business_name_normalized="acorn creative llc",
+        business_type="Advertising, Marketing & Public Relations",
+        business_type_slug="advertising-marketing-public-relations",
+        business_type_icon="◆",
+        search_city="Pasadena",
+        search_city_slug="pasadena",
+        city="Pasadena",
+        state="CA",
+        zip_code="91101",
+        address="123 Green St, Pasadena, CA 91101",
+        phone_number="(626) 555-0100",
+        website="https://acorn.example",
+        description="Acorn Creative LLC is listed as an advertising and marketing business in Pasadena.",
+        data_source="Imported test directory",
+    )
+    db.add(row)
+    db.flush()
+    return row
 
 
 def test_is_local_discovery_query_detects_general_local_prompt() -> None:
@@ -83,3 +110,56 @@ def test_local_discovery_context_includes_semantic_similarity(monkeypatch) -> No
     assert "LOCAL DISCOVERY CONTEXT" in context
     assert "Langer's Delicatessen" in context
     assert "semantic_similarity=0.930" in context
+
+
+def test_local_discovery_context_includes_business_directory_name_match() -> None:
+    with _db_session() as db:
+        _add_business_directory_entry(db)
+        context = build_local_discovery_context(
+            db,
+            message="Tell me about Acorn Creative LLC",
+            limit=8,
+        )
+
+    assert "LOCAL DISCOVERY CONTEXT" in context
+    assert "source=business_directory" in context
+    assert "Acorn Creative LLC" in context
+    assert "Advertising, Marketing & Public Relations" in context
+    assert "(626) 555-0100" in context
+    assert "https://perknation.app/business/acorn-creative-llc-pasadena-advertising-marketing-public-relations" in context
+
+
+def test_ai_chat_includes_directory_context_for_home_local_guide(monkeypatch) -> None:
+    captured: dict[str, list[dict[str, str]]] = {}
+
+    def _fake_spark(
+        messages: list[dict[str, str]],
+        *,
+        base_url_override=None,
+        model_override=None,
+        host_id_override=None,
+    ) -> tuple[str, str]:
+        captured["messages"] = messages
+        return "spark-model", "Acorn Creative LLC is in the PerkNation directory."
+
+    monkeypatch.setattr(settings, "ai_enabled", True)
+    monkeypatch.setattr(settings, "ai_provider", "spark")
+    monkeypatch.setattr(settings, "spark_public_base_url", "http://spark.example")
+    monkeypatch.setattr(ai_assistant, "_request_spark_chat", _fake_spark)
+    monkeypatch.setattr(ai_assistant, "build_ai_restaurant_context", lambda *_args, **_kwargs: "")
+
+    with _db_session() as db:
+        _add_business_directory_entry(db)
+        result = ai_assistant.chat_with_assistant(
+            message="Acorn Creative LLC",
+            history=[],
+            db=db,
+            current_user=None,
+            user_role=None,
+            requested_context="home_local_guide",
+        )
+
+    assert result.answer == "Acorn Creative LLC is in the PerkNation directory."
+    system_blocks = [item["content"] for item in captured["messages"] if item.get("role") == "system"]
+    assert any("LOCAL DISCOVERY CONTEXT" in block for block in system_blocks)
+    assert any("source=business_directory" in block and "Acorn Creative LLC" in block for block in system_blocks)

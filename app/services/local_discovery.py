@@ -6,11 +6,12 @@ from decimal import Decimal
 import math
 from typing import Optional
 
-from sqlalchemy import and_, desc, func, select
+from sqlalchemy import and_, desc, func, or_, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.core.config import settings
 from app.db.models import (
+    BusinessDirectoryEntry,
     Offer,
     OfferActivation,
     OfferStatus,
@@ -42,8 +43,30 @@ _LOCAL_DISCOVERY_KEYWORDS = {
     "date night",
     "activity",
     "activities",
+    "business",
+    "businesses",
+    "directory",
+    "company",
+    "companies",
+    "contractor",
+    "contractors",
+    "service",
+    "services",
+    "shop",
+    "shops",
+    "retail",
+    "salon",
+    "legal",
+    "lawyer",
+    "attorney",
+    "phone",
+    "address",
+    "website",
     "fun",
     "pasadena",
+    "arcadia",
+    "burbank",
+    "glendale",
     "los angeles",
     "hollywood",
     "santa monica",
@@ -74,7 +97,21 @@ _STOPWORDS = {
     "would",
     "please",
     "show",
+    "tell",
+    "about",
+    "info",
+    "information",
     "find",
+    "search",
+    "look",
+    "looking",
+    "know",
+    "need",
+    "want",
+    "does",
+    "have",
+    "has",
+    "can",
     "give",
     "best",
     "good",
@@ -142,6 +179,15 @@ def is_local_discovery_query(message: str) -> bool:
     return text.endswith("?") and any(token in text for token in ("eat", "go", "do", "near"))
 
 
+def should_attempt_local_discovery_context(message: str) -> bool:
+    text = _normalize(message)
+    if not text:
+        return False
+    if is_local_discovery_query(text):
+        return True
+    return _should_try_business_directory(text, _tokenize(text))
+
+
 def is_current_confirmed_offer(offer: Offer) -> bool:
     text = _normalize(
         " ".join(
@@ -170,48 +216,61 @@ def build_local_discovery_context(
     user_longitude: Optional[float] = None,
     limit: int = 12,
 ) -> str:
-    if not is_local_discovery_query(message):
-        return ""
-
     now_utc = datetime.now(timezone.utc)
     limit = max(4, min(int(limit), 20))
     tokens = _tokenize(message)
+    include_restaurant_discovery = is_local_discovery_query(message)
+    directory_candidates = (
+        _business_directory_discovery_candidates(
+            db,
+            message=message,
+            tokens=tokens,
+            limit=max(limit, 12),
+        )
+        if _should_try_business_directory(message, tokens)
+        else []
+    )
+
+    if not include_restaurant_discovery and not directory_candidates:
+        return ""
 
     # Offer rows still include legacy reward-rate experiments. Keep AI discovery
     # grounded in restaurant knowledge here; current promos are injected by the
     # assistant service as an explicit authoritative context.
     offer_candidates: list[_DiscoveryCandidate] = []
 
-    restaurant_rows = search_restaurants(
-        db,
-        query=message,
-        limit=max(limit, 12),
-    )
-    try:
-        semantic_matches = semantic_search_restaurants(
+    restaurant_candidates: list[_DiscoveryCandidate] = []
+    if include_restaurant_discovery:
+        restaurant_rows = search_restaurants(
             db,
             query=message,
             limit=max(limit, 12),
         )
-    except Exception:
-        semantic_matches = []
-    merged_restaurants, semantic_similarity_by_id = _merge_restaurant_candidates(
-        lexical_rows=restaurant_rows,
-        semantic_rows=semantic_matches,
-        limit=max(limit, 16),
-    )
-    restaurant_candidates = _restaurant_discovery_candidates(
-        merged_restaurants,
-        message=message,
-        tokens=tokens,
-        user_latitude=user_latitude,
-        user_longitude=user_longitude,
-        semantic_similarity_by_id=semantic_similarity_by_id,
-        limit=max(limit, 12),
-    )
+        try:
+            semantic_matches = semantic_search_restaurants(
+                db,
+                query=message,
+                limit=max(limit, 12),
+            )
+        except Exception:
+            semantic_matches = []
+        merged_restaurants, semantic_similarity_by_id = _merge_restaurant_candidates(
+            lexical_rows=restaurant_rows,
+            semantic_rows=semantic_matches,
+            limit=max(limit, 16),
+        )
+        restaurant_candidates = _restaurant_discovery_candidates(
+            merged_restaurants,
+            message=message,
+            tokens=tokens,
+            user_latitude=user_latitude,
+            user_longitude=user_longitude,
+            semantic_similarity_by_id=semantic_similarity_by_id,
+            limit=max(limit, 12),
+        )
 
     merged = sorted(
-        offer_candidates + restaurant_candidates,
+        offer_candidates + directory_candidates + restaurant_candidates,
         key=lambda item: item.score,
         reverse=True,
     )[:limit]
@@ -241,10 +300,186 @@ def build_local_discovery_context(
 
     lines.append(
         "Use these ranked local matches when answering discovery questions. "
+        "Business directory rows are factual listings, not active PerkNation promos or discounts unless the confirmed promo context says otherwise. "
         "Lead with the top 3 and ask one follow-up preference question "
         "(neighborhood, budget, cuisine/category, or vibe)."
     )
     return "\n".join(lines)
+
+
+def _should_try_business_directory(message: str, tokens: list[str]) -> bool:
+    normalized = _normalize(message)
+    if len(normalized) < 3 or len(normalized) > 240:
+        return False
+    if tokens:
+        return True
+    digits = "".join(ch for ch in normalized if ch.isdigit())
+    return len(digits) >= 7
+
+
+def _business_directory_discovery_candidates(
+    db: Session,
+    *,
+    message: str,
+    tokens: list[str],
+    limit: int,
+) -> list[_DiscoveryCandidate]:
+    terms = _business_directory_search_terms(message, tokens)
+    if not terms:
+        return []
+
+    fields = (
+        BusinessDirectoryEntry.business_name,
+        BusinessDirectoryEntry.business_type,
+        BusinessDirectoryEntry.search_city,
+        BusinessDirectoryEntry.address,
+        BusinessDirectoryEntry.description,
+        BusinessDirectoryEntry.phone_number,
+        BusinessDirectoryEntry.website,
+        BusinessDirectoryEntry.contact_person,
+    )
+    clauses = [
+        func.lower(field).like(f"%{term}%")
+        for term in terms
+        for field in fields
+    ]
+    rows = list(
+        db.scalars(
+            select(BusinessDirectoryEntry)
+            .where(
+                BusinessDirectoryEntry.is_active.is_(True),
+                or_(*clauses),
+            )
+            .order_by(BusinessDirectoryEntry.business_name.asc())
+            .limit(160)
+        )
+    )
+    if not rows:
+        return []
+
+    normalized_message = _normalize(message)
+    message_digits = "".join(ch for ch in normalized_message if ch.isdigit())
+    items: list[_DiscoveryCandidate] = []
+    for row in rows:
+        score = _score_business_directory_row(row, normalized_message, tokens, message_digits)
+        if score <= 0.0:
+            continue
+
+        subtitle = " | ".join(
+            part
+            for part in (
+                row.business_type,
+                row.search_city,
+                row.address,
+            )
+            if part
+        )
+        website = _clean_detail(row.website)
+        phone = _clean_detail(row.phone_number)
+        address = _clean_detail(row.address)
+        description = _clean_detail(row.description, max_length=260)
+        detail_parts = [
+            f"category='{_clean_detail(row.business_type)}'" if row.business_type else "",
+            f"city='{_clean_detail(row.search_city)}'" if row.search_city else "",
+            f"address='{address}'" if address else "",
+            f"phone='{phone}'" if phone else "",
+            f"website='{website}'" if website else "",
+            f"description='{description}'" if description else "",
+            f"directory_url='{_business_directory_url(row.slug)}'",
+        ]
+        items.append(
+            _DiscoveryCandidate(
+                source="business_directory",
+                title=row.business_name,
+                subtitle=subtitle or "PerkNation business directory",
+                details="; ".join(part for part in detail_parts if part),
+                score=score,
+                distance_miles=None,
+            )
+        )
+
+    items.sort(key=lambda item: item.score, reverse=True)
+    return items[: max(1, min(limit, 20))]
+
+
+def _business_directory_search_terms(message: str, tokens: list[str]) -> list[str]:
+    normalized = _normalize(message)
+    terms: list[str] = []
+    if 3 <= len(normalized) <= 80:
+        terms.append(normalized)
+    terms.extend(token for token in tokens if len(token) >= 3)
+
+    unique_terms: list[str] = []
+    seen: set[str] = set()
+    for term in terms:
+        if term in seen:
+            continue
+        seen.add(term)
+        unique_terms.append(term)
+    return unique_terms[:12]
+
+
+def _score_business_directory_row(
+    row: BusinessDirectoryEntry,
+    normalized_message: str,
+    tokens: list[str],
+    message_digits: str,
+) -> float:
+    name_norm = _normalize(row.business_name)
+    type_norm = _normalize(row.business_type or "")
+    city_norm = _normalize(row.search_city or row.city or "")
+    address_norm = _normalize(row.address or "")
+    description_norm = _normalize(row.description or "")
+    contact_norm = _normalize(row.contact_person or "")
+    website_norm = _normalize(row.website or "")
+    phone_digits = "".join(ch for ch in str(row.phone_number or "") if ch.isdigit())
+
+    score = 0.0
+    if name_norm and name_norm == normalized_message:
+        score += 42.0
+    elif name_norm and (name_norm in normalized_message or normalized_message in name_norm):
+        score += 28.0
+
+    if phone_digits and message_digits and (phone_digits in message_digits or message_digits in phone_digits):
+        score += 30.0
+    if website_norm and website_norm in normalized_message:
+        score += 24.0
+
+    if tokens and name_norm and all(token in name_norm for token in tokens[:5]):
+        score += 18.0
+
+    for token in tokens:
+        if token in name_norm:
+            score += 6.0
+        elif token in type_norm:
+            score += 4.0
+        elif token in city_norm:
+            score += 2.5
+        elif token in address_norm:
+            score += 2.0
+        elif token in website_norm or token in contact_norm:
+            score += 2.0
+        elif token in description_norm:
+            score += 1.0
+
+    # A category/city-only query is still useful, but exact name and contact
+    # matches should outrank broad local browsing terms.
+    if name_norm and any(token in name_norm for token in tokens):
+        score += 4.0
+    return score
+
+
+def _business_directory_url(slug: str) -> str:
+    base_url = (settings.public_web_base_url or "https://perknation.app").rstrip("/")
+    return f"{base_url}/business/{slug}"
+
+
+def _clean_detail(value: Optional[str], *, max_length: int = 180) -> str:
+    cleaned = " ".join(str(value or "").replace("\xa0", " ").strip().split())
+    cleaned = cleaned.replace("'", "")
+    if len(cleaned) <= max_length:
+        return cleaned
+    return cleaned[: max(0, max_length - 3)].rstrip(" ,.;") + "..."
 
 
 def _offer_discovery_candidates(

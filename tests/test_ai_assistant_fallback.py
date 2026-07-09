@@ -369,11 +369,8 @@ def test_public_ai_answers_strip_visible_markdown_bold(monkeypatch) -> None:
     assert "11 regular tickets" in result.answer
 
 
-def test_home_local_guide_does_not_inject_local_offer_context(monkeypatch) -> None:
+def test_home_local_guide_allows_business_directory_context(monkeypatch) -> None:
     captured: dict[str, object] = {}
-
-    def _fail_local_context(*_args, **_kwargs) -> str:
-        raise AssertionError("home_local_guide must not inject LOCAL DISCOVERY CONTEXT")
 
     def _fake_spark(
         messages: list[dict[str, str]],
@@ -394,11 +391,20 @@ def test_home_local_guide_does_not_inject_local_offer_context(monkeypatch) -> No
     monkeypatch.setattr(settings, "home_local_guide_model", "nvidia/nemotron-3-super")
     monkeypatch.setattr(settings, "home_local_guide_spark_host_id", "spark")
     monkeypatch.setattr(ai_assistant, "_request_spark_chat", _fake_spark)
-    monkeypatch.setattr(ai_assistant, "build_local_discovery_context", _fail_local_context)
+    monkeypatch.setattr(
+        ai_assistant,
+        "build_local_discovery_context",
+        lambda *_args, **_kwargs: (
+            "LOCAL DISCOVERY CONTEXT\n"
+            "query: Acorn Creative LLC\n"
+            "ranked_matches: 1\n"
+            "- source=business_directory; title=Acorn Creative LLC; subtitle=Advertising, Marketing & Public Relations | Pasadena; directory_url='https://perknation.app/business/acorn-creative-llc'"
+        ),
+    )
     monkeypatch.setattr(ai_assistant, "build_ai_restaurant_context", lambda *_args, **_kwargs: "")
 
     result = chat_with_assistant(
-        message="Any nearby local deals?",
+        message="Acorn Creative LLC",
         history=[],
         db=object(),
         current_user=None,
@@ -407,4 +413,5 @@ def test_home_local_guide_does_not_inject_local_offer_context(monkeypatch) -> No
     )
 
     assert result.role_context == "home_local_guide"
-    assert "LOCAL DISCOVERY CONTEXT" not in str(captured["system_context"])
+    assert "LOCAL DISCOVERY CONTEXT" in str(captured["system_context"])
+    assert "source=business_directory" in str(captured["system_context"])

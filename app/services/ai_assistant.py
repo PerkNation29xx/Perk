@@ -30,7 +30,7 @@ from app.services.la_restaurant_knowledge import build_ai_restaurant_context, is
 from app.services.local_discovery import (
     build_local_discovery_context,
     is_current_confirmed_offer,
-    is_local_discovery_query,
+    should_attempt_local_discovery_context,
 )
 
 
@@ -165,8 +165,7 @@ def chat_with_assistant(
     include_restaurant_context = db is not None and is_restaurant_discovery_query(message)
     include_local_discovery_context = (
         db is not None
-        and role_context != "home_local_guide"
-        and is_local_discovery_query(message)
+        and should_attempt_local_discovery_context(message)
     )
 
     messages: list[dict[str, str]] = [{"role": "system", "content": system_prompt}]
@@ -586,13 +585,13 @@ def _system_prompt_for_context(role_context: str) -> str:
     if role_context == "home_local_guide":
         return (
             "You are the PerkNation AI Local Guide on the public homepage. "
-            "Use only the HOME LOCAL GUIDE CONTEXT plus any LA RESTAURANT KNOWLEDGE CONTEXT provided in this request. "
+            "Use only the HOME LOCAL GUIDE CONTEXT plus any LA RESTAURANT KNOWLEDGE CONTEXT or LOCAL DISCOVERY CONTEXT provided in this request. "
             "Only answer questions about the current PerkNation public promos, the Hollywood Sports paintball offer, "
-            "the Bond Collective workspace promo, the crystal jewelry drop, El Portal's World Cup viewing promo, and the local/Pasadena restaurant guides in context. "
+            "the Bond Collective workspace promo, the crystal jewelry drop, El Portal's World Cup viewing promo, the local/Pasadena restaurant guides, and the PerkNation business directory listings in context. "
             "Do not invent promos, rewards, prices, discounts, venues, hours, dates, or ticket terms. "
             "Do not mention cashback, cash-back, stock rewards, stock conversion, Target offers, reward-rate tables, or cash/stock percentages. "
             "If the user asks about anything outside those topics, politely say you can only help with current PerkNation promos "
-            "and local restaurant guides, then offer one or two relevant examples. "
+            "and local restaurant/business directory guides, then offer one or two relevant examples. "
             "Keep answers concise, practical, and oriented toward what the visitor can do next. "
             "Use plain text only; do not use Markdown bold markers or surround phrases with double asterisks."
         )
@@ -607,7 +606,8 @@ def _home_local_guide_context() -> str:
     return "\n".join(
         [
             "HOME LOCAL GUIDE CONTEXT (authoritative public content)",
-            "Scope: current PerkNation public promos and local restaurant guide only.",
+            "Scope: current PerkNation public promos, local restaurant guide, and PerkNation business directory listings only.",
+            "The PerkNation business directory is also available through LOCAL DISCOVERY CONTEXT when a visitor asks for a listed business, category, phone, address, website, or city search.",
             "Important exclusions: PerkNation does not currently list cashback, cash-back, stock reward, stock conversion, Target, reward-rate table, or cash/stock percentage offers on the public homepage guide. Do not claim those are available.",
             "",
             "Current promos:",
