@@ -4,6 +4,7 @@ from app.main import (
     _GOOGLE_ANALYTICS_ID,
     _append_directory_sitemap,
     _inject_google_analytics,
+    _inject_social_meta,
     _public_url,
     _robots_txt,
     app,
@@ -21,12 +22,33 @@ def test_google_analytics_injects_before_head_close_once():
     assert reinjected.count(_GOOGLE_ANALYTICS_ID) == injected.count(_GOOGLE_ANALYTICS_ID)
 
 
+def test_social_meta_injects_before_head_close_once():
+    html = (
+        '<html><head><title>Perk Nation Test</title>'
+        '<meta name="description" content="Local perks." />'
+        '<link rel="canonical" href="/directory" />'
+        "</head><body>Hi</body></html>"
+    )
+
+    injected = _inject_social_meta(html)
+    reinjected = _inject_social_meta(injected)
+
+    assert 'property="og:title" content="Perk Nation Test"' in injected
+    assert 'property="og:description" content="Local perks."' in injected
+    assert 'property="og:url" content="https://perknation.app/directory"' in injected
+    assert 'name="twitter:card" content="summary_large_image"' in injected
+    assert injected.index('property="og:title"') < injected.lower().index("</head>")
+    assert reinjected.count('property="og:title"') == 1
+
+
 def test_rendered_homepage_includes_google_analytics_tag():
     with TestClient(app) as client:
         response = client.get("/")
 
     assert response.status_code == 200
     assert _GOOGLE_ANALYTICS_ID in response.text
+    assert 'property="og:title"' in response.text
+    assert 'name="twitter:card"' in response.text
 
 
 def test_json_health_response_does_not_get_google_analytics_tag():

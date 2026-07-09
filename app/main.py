@@ -41,6 +41,7 @@ _GOOGLE_ANALYTICS_SNIPPET = f"""<!-- Google tag (gtag.js) -->
 
   gtag('config', '{_GOOGLE_ANALYTICS_ID}');
 </script>"""
+_DEFAULT_SOCIAL_IMAGE_PATH = "/assets/photos/hero-dining-room.jpg"
 
 
 @asynccontextmanager
@@ -84,6 +85,53 @@ def _inject_google_analytics(html: str) -> str:
     return f"{html[:head_close_index]}\n{_GOOGLE_ANALYTICS_SNIPPET}\n{html[head_close_index:]}"
 
 
+def _regex_group(pattern: str, text: str) -> str:
+    match = re.search(pattern, text or "", flags=re.IGNORECASE | re.DOTALL)
+    return html.unescape(match.group(1).strip()) if match else ""
+
+
+def _canonical_href(href: str) -> str:
+    raw = html.unescape(str(href or "").strip())
+    if not raw:
+        return _public_url("/")
+    if raw.startswith(("http://", "https://")):
+        return settings._canonical_public_url(raw)
+    return _public_url(raw)
+
+
+def _inject_social_meta(html: str) -> str:
+    if 'property="og:title"' in html or "property='og:title'" in html:
+        return html
+
+    lower_html = html.lower()
+    head_close_index = lower_html.find("</head>")
+    if head_close_index < 0:
+        return html
+
+    title = _regex_group(r"<title[^>]*>(.*?)</title>", html) or "Perk Nation"
+    description = _regex_group(
+        r'<meta\s+name=["\']description["\']\s+content=["\'](.*?)["\']',
+        html,
+    )
+    if not description:
+        description = "Perk Nation connects local offers, business discovery, and community rewards."
+    canonical = _regex_group(r'<link\s+rel=["\']canonical["\']\s+href=["\'](.*?)["\']', html)
+    canonical_url = _canonical_href(canonical)
+    image_url = _public_url(_DEFAULT_SOCIAL_IMAGE_PATH)
+    snippet = f"""
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Perk Nation" />
+<meta property="og:title" content="{_escape(title)}" />
+<meta property="og:description" content="{_escape(description)}" />
+<meta property="og:url" content="{_escape(canonical_url)}" />
+<meta property="og:image" content="{_escape(image_url)}" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="{_escape(title)}" />
+<meta name="twitter:description" content="{_escape(description)}" />
+<meta name="twitter:image" content="{_escape(image_url)}" />"""
+    return f"{html[:head_close_index]}\n{snippet}\n{html[head_close_index:]}"
+
+
 @app.middleware("http")
 async def google_analytics_html_middleware(request: Request, call_next):
     response = await call_next(request)
@@ -109,8 +157,10 @@ async def google_analytics_html_middleware(request: Request, call_next):
 
     headers = dict(response.headers)
     headers.pop("content-length", None)
+    html = _inject_social_meta(html)
+    html = _inject_google_analytics(html)
     return Response(
-        content=_inject_google_analytics(html),
+        content=html,
         status_code=response.status_code,
         headers=headers,
         media_type=None,
