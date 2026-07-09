@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/styles.css" />
+  <link rel="stylesheet" href="assets/styles.css?v=20260708-directory-compact" />
 </head>
 <body>
 
@@ -313,35 +313,30 @@
 
   <section class="section businessDirectorySection" id="business-directory">
     <div class="container">
-      <div class="directoryHomeHeader">
-        <div>
+      <div class="directoryHomeCompact" data-directory-home data-directory-preview-only="true">
+        <div class="directoryHomeCopy">
           <div class="badge">Local business directory</div>
-          <h2 class="h2">Find Pasadena-area businesses by category, city, and contact details.</h2>
-          <p class="muted">
-            Search imported chamber and city directory listings with source-safe descriptions, websites,
-            phone numbers, addresses, and Perk Nation business pages built for local discovery.
-          </p>
+          <h2 class="h2">Search 1,900+ local business listings.</h2>
+          <p class="muted">Find restaurants, contractors, services, shops, and professional offices by city or category.</p>
         </div>
-        <a class="btn" href="/directory">Open full directory</a>
-      </div>
 
-      <div class="directorySearchPanel" data-directory-home>
-        <form class="directorySearchForm" method="get" action="/directory" data-directory-search-form>
+        <form class="directoryCompactSearch" method="get" action="/directory" data-directory-search-form>
           <label class="srOnly" for="directory-home-query">Search businesses</label>
-          <input id="directory-home-query" name="q" type="search" placeholder="Search pizza, contractors, salons, accountants..." data-directory-search-input />
+          <input id="directory-home-query" name="q" type="search" placeholder="What are you looking for?" data-directory-search-input />
           <label class="srOnly" for="directory-home-city">Filter by city</label>
           <select id="directory-home-city" name="city" data-directory-city-select>
             <option value="">All cities</option>
           </select>
-          <label class="srOnly" for="directory-home-type">Filter by business type</label>
-          <select id="directory-home-type" name="business_type" data-directory-type-select>
-            <option value="">All business types</option>
-          </select>
-          <button class="btn primary" type="submit">Search</button>
+          <button class="btn primary" type="submit">Search directory</button>
         </form>
-        <div class="directoryCategoryRail" data-directory-category-chips aria-label="Business type shortcuts"></div>
-        <div class="directoryHomeStatus small" data-directory-status>Loading directory...</div>
-        <div class="directoryMiniResults" data-directory-results></div>
+
+        <div class="directoryQuickLinks" aria-label="Popular directory categories">
+          <a href="/directory/pasadena/restaurants-catering"><span class="directoryIcon" aria-hidden="true">🍽</span>Restaurants</a>
+          <a href="/directory/type/building-contractor-const-related"><span class="directoryIcon" aria-hidden="true">🔧</span>Contractors</a>
+          <a href="/directory/type/attorneys-legal-services"><span class="directoryIcon" aria-hidden="true">⚖</span>Legal</a>
+          <a href="/directory/type/shopping-retail"><span class="directoryIcon" aria-hidden="true">🛍</span>Retail</a>
+          <a href="/directory">View all</a>
+        </div>
       </div>
     </div>
   </section>
@@ -736,7 +731,7 @@
   </div>
 </div>
 
-<script src="assets/app.js?v=20260708-directory"></script>
+<script src="assets/app.js?v=20260708-directory-compact"></script>
 
 </body>
 </html>

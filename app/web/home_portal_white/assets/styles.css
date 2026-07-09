@@ -1473,6 +1473,84 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 .directoryDetailSection{
   background:rgba(15,23,42,.025);
 }
+.businessDirectorySection{
+  padding:34px 0;
+}
+.directoryHomeCompact{
+  display:grid;
+  grid-template-columns:minmax(260px, .72fr) minmax(420px, 1.1fr);
+  gap:16px 18px;
+  align-items:center;
+  padding:18px;
+  border:1px solid rgba(15,23,42,.13);
+  border-radius:8px;
+  background:linear-gradient(135deg, rgba(255,255,255,.90), rgba(255,255,255,.62));
+  box-shadow:var(--shadow-soft);
+}
+.directoryHomeCopy{
+  display:grid;
+  gap:8px;
+}
+.directoryHomeCopy .h2{
+  margin:0;
+  font-size:clamp(24px, 3vw, 34px);
+  line-height:1.04;
+}
+.directoryHomeCopy p{
+  margin:0;
+  max-width:540px;
+}
+.directoryCompactSearch{
+  display:grid;
+  grid-template-columns:minmax(220px, 1fr) minmax(150px, .42fr) auto;
+  gap:8px;
+  align-items:center;
+}
+.directoryCompactSearch input,
+.directoryCompactSearch select{
+  width:100%;
+  min-height:44px;
+  border-radius:8px;
+  border:1px solid rgba(15,23,42,.16);
+  background:rgba(255,255,255,.86);
+  color:var(--ink);
+  padding:0 12px;
+  font:inherit;
+  font-weight:800;
+}
+.directoryCompactSearch input::placeholder{
+  color:var(--muted2);
+}
+.directoryCompactSearch .btn{
+  min-height:44px;
+  white-space:nowrap;
+}
+.directoryQuickLinks{
+  grid-column:1 / -1;
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+  padding-top:14px;
+  border-top:1px solid rgba(15,23,42,.10);
+}
+.directoryQuickLinks a{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  min-height:34px;
+  padding:7px 10px;
+  border-radius:var(--pill);
+  border:1px solid rgba(15,23,42,.12);
+  background:rgba(255,255,255,.72);
+  color:var(--ink);
+  font-size:13px;
+  font-weight:850;
+}
+.directoryQuickLinks a:hover{
+  border-color:rgba(230,184,74,.42);
+  background:rgba(230,184,74,.16);
+}
 .directoryHomeHeader,
 .directoryResultsHeader{
   display:flex;
@@ -1806,6 +1884,9 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   .directoryResultsHeader{align-items:flex-start; flex-direction:column}
   .directorySearchForm{grid-template-columns:1fr 1fr}
   .directorySearchForm .btn{grid-column:1 / -1}
+  .directoryHomeCompact{grid-template-columns:1fr}
+  .directoryCompactSearch{grid-template-columns:1fr 1fr}
+  .directoryCompactSearch .btn{grid-column:1 / -1}
   .directoryMiniResults{grid-template-columns:1fr}
   .directoryHeroLayout,
   .directoryDetailGrid{grid-template-columns:1fr}
@@ -1831,6 +1912,10 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   .jewelryDetailActions .btn{width:100%}
   .directorySearchPanel{padding:14px}
   .directorySearchForm{grid-template-columns:1fr}
+  .businessDirectorySection{padding:26px 0}
+  .directoryHomeCompact{padding:14px}
+  .directoryCompactSearch{grid-template-columns:1fr}
+  .directoryQuickLinks{gap:6px}
   .directoryMiniCard,
   .directoryResultCard{grid-template-columns:1fr}
   .directoryMiniCard > img,

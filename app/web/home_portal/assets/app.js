@@ -345,6 +345,7 @@
     const status = homePanel.querySelector("[data-directory-status]");
     const chips = homePanel.querySelector("[data-directory-category-chips]");
     const results = homePanel.querySelector("[data-directory-results]");
+    const previewOnly = homePanel.hasAttribute("data-directory-preview-only");
     let facetsLoaded = false;
     let searchTimer = null;
 
@@ -454,6 +455,11 @@
     }
 
     if(form){
+      if(previewOnly){
+        loadFacets().catch(()=> null);
+        return;
+      }
+
       form.addEventListener("submit", (event)=>{
         event.preventDefault();
         runSearch().catch(()=> setStatus("Directory search is temporarily unavailable."));
