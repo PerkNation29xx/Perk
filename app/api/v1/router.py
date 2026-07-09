@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.v1 import admin, ai, auth, consumer, health, merchant, payments, restaurants, wallet, web_forms
+from app.api.v1 import admin, ai, auth, business_directory, consumer, health, merchant, payments, restaurants, wallet, web_forms
 
 api_router = APIRouter()
 api_router.include_router(health.router)
@@ -13,3 +13,4 @@ api_router.include_router(wallet.router)
 api_router.include_router(web_forms.router)
 api_router.include_router(payments.router)
 api_router.include_router(restaurants.router)
+api_router.include_router(business_directory.router)

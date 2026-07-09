@@ -160,6 +160,58 @@ class RestaurantKnowledgeSearchResponse(BaseModel):
     results: list[RestaurantKnowledgeOut]
 
 
+class BusinessDirectoryEntryOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    slug: str
+    business_name: str
+    business_type: Optional[str] = None
+    business_type_slug: Optional[str] = None
+    business_type_icon: Optional[str] = None
+    requested_city: Optional[str] = None
+    search_city: Optional[str] = None
+    search_city_slug: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    zip_code: Optional[str] = None
+    address: Optional[str] = None
+    phone_number: Optional[str] = None
+    fax: Optional[str] = None
+    contact_person: Optional[str] = None
+    email: Optional[str] = None
+    website: Optional[str] = None
+    data_source: Optional[str] = None
+    source_url: Optional[str] = None
+    description: Optional[str] = None
+    seo_title: Optional[str] = None
+    seo_description: Optional[str] = None
+    image_url: Optional[str] = None
+    video_url: Optional[str] = None
+    enrichment_source_url: Optional[str] = None
+
+
+class BusinessDirectoryFacetOut(BaseModel):
+    label: str
+    slug: str
+    count: int
+    icon: Optional[str] = None
+
+
+class BusinessDirectoryFacetsResponse(BaseModel):
+    cities: list[BusinessDirectoryFacetOut]
+    business_types: list[BusinessDirectoryFacetOut]
+
+
+class BusinessDirectorySearchResponse(BaseModel):
+    query: str
+    count: int
+    limit: int
+    offset: int
+    results: list[BusinessDirectoryEntryOut]
+    facets: BusinessDirectoryFacetsResponse
+
+
 class OfferCreate(BaseModel):
     title: str
     offer_type: str = "boost"

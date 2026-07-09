@@ -266,6 +266,66 @@ class RestaurantKnowledge(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
 
 
+class BusinessDirectoryEntry(Base):
+    __tablename__ = "business_directory_entries"
+    __table_args__ = (
+        UniqueConstraint(
+            "source_file",
+            "source_sheet",
+            "source_row",
+            name="uq_business_directory_source_row",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    slug: Mapped[str] = mapped_column(String(220), unique=True, index=True)
+
+    source_file: Mapped[str] = mapped_column(String(160), index=True)
+    source_sheet: Mapped[str] = mapped_column(String(120), index=True)
+    source_row: Mapped[int] = mapped_column(index=True)
+
+    business_name: Mapped[str] = mapped_column(String(240), index=True)
+    business_name_normalized: Mapped[str] = mapped_column(String(260), index=True)
+    business_type: Mapped[Optional[str]] = mapped_column(String(180), nullable=True, index=True)
+    business_type_slug: Mapped[Optional[str]] = mapped_column(String(200), nullable=True, index=True)
+    business_type_icon: Mapped[Optional[str]] = mapped_column(String(16), nullable=True)
+
+    requested_city: Mapped[Optional[str]] = mapped_column(String(100), nullable=True, index=True)
+    search_city: Mapped[Optional[str]] = mapped_column(String(100), nullable=True, index=True)
+    search_city_slug: Mapped[Optional[str]] = mapped_column(String(120), nullable=True, index=True)
+    city: Mapped[Optional[str]] = mapped_column(String(100), nullable=True, index=True)
+    state: Mapped[Optional[str]] = mapped_column(String(40), nullable=True)
+    zip_code: Mapped[Optional[str]] = mapped_column(String(24), nullable=True)
+    address: Mapped[Optional[str]] = mapped_column(String(300), nullable=True)
+
+    phone_number: Mapped[Optional[str]] = mapped_column(String(80), nullable=True)
+    fax: Mapped[Optional[str]] = mapped_column(String(80), nullable=True)
+    contact_person: Mapped[Optional[str]] = mapped_column(String(180), nullable=True)
+    email: Mapped[Optional[str]] = mapped_column(String(260), nullable=True)
+    website: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+
+    source_month_page: Mapped[Optional[str]] = mapped_column(String(120), nullable=True)
+    pdf_page: Mapped[Optional[str]] = mapped_column(String(80), nullable=True)
+    printed_page: Mapped[Optional[str]] = mapped_column(String(80), nullable=True)
+    data_source: Mapped[Optional[str]] = mapped_column(String(180), nullable=True)
+    source_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    city_match: Mapped[Optional[str]] = mapped_column(String(80), nullable=True)
+    coverage_notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    seo_title: Mapped[Optional[str]] = mapped_column(String(260), nullable=True)
+    seo_description: Mapped[Optional[str]] = mapped_column(String(320), nullable=True)
+    image_url: Mapped[Optional[str]] = mapped_column(String(600), nullable=True)
+    video_url: Mapped[Optional[str]] = mapped_column(String(600), nullable=True)
+    enrichment_source_url: Mapped[Optional[str]] = mapped_column(String(600), nullable=True)
+    raw_json: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+
 class Offer(Base):
     __tablename__ = "offers"
 

@@ -312,6 +312,165 @@
 
   wirePublicAuthState();
 
+  function escapeHtml(value){
+    const div = document.createElement("div");
+    div.textContent = String(value || "");
+    return div.innerHTML;
+  }
+
+  function themedDirectoryPath(path){
+    const normalized = String(path || "/directory").startsWith("/") ? String(path || "/directory") : `/${path}`;
+    if(isWhitePath(window.location.pathname)){
+      return normalized.startsWith("/white/") ? normalized : `/white${normalized}`;
+    }
+    return normalized.replace(/^\/white/, "") || "/directory";
+  }
+
+  function externalHref(url){
+    const value = String(url || "").trim();
+    if(!value) return "";
+    if(value.startsWith("http://") || value.startsWith("https://")) return value;
+    return `https://${value}`;
+  }
+
+  function wireBusinessDirectorySearch(){
+    const homePanel = document.querySelector("[data-directory-home]");
+    if(!homePanel){
+      return;
+    }
+    const form = homePanel.querySelector("[data-directory-search-form]");
+    const input = homePanel.querySelector("[data-directory-search-input]");
+    const citySelect = homePanel.querySelector("[data-directory-city-select]");
+    const typeSelect = homePanel.querySelector("[data-directory-type-select]");
+    const status = homePanel.querySelector("[data-directory-status]");
+    const chips = homePanel.querySelector("[data-directory-category-chips]");
+    const results = homePanel.querySelector("[data-directory-results]");
+    let facetsLoaded = false;
+    let searchTimer = null;
+
+    function setStatus(message){
+      if(status) status.textContent = message;
+    }
+
+    function populateSelect(select, items, emptyLabel){
+      if(!select) return;
+      const current = select.value;
+      select.innerHTML = `<option value="">${escapeHtml(emptyLabel)}</option>`;
+      items.forEach((item)=>{
+        const option = document.createElement("option");
+        option.value = item.label || "";
+        option.textContent = `${item.icon ? `${item.icon} ` : ""}${item.label || ""} (${item.count || 0})`;
+        if(option.value === current) option.selected = true;
+        select.appendChild(option);
+      });
+    }
+
+    function renderChips(items){
+      if(!chips) return;
+      chips.innerHTML = "";
+      items.slice(0, 18).forEach((item)=>{
+        const link = document.createElement("a");
+        link.className = "directoryCategoryChip";
+        link.href = themedDirectoryPath(`/directory/type/${encodeURIComponent(item.slug || "")}`);
+        link.innerHTML = `<span class="directoryIcon" aria-hidden="true">${escapeHtml(item.icon || "•")}</span><span>${escapeHtml(item.label || "")}</span><em>${Number(item.count || 0)}</em>`;
+        chips.appendChild(link);
+      });
+    }
+
+    function renderResults(items, count){
+      if(!results) return;
+      if(!items.length){
+        results.innerHTML = '<div class="directoryEmpty">No matching businesses yet. Try another search or city.</div>';
+        return;
+      }
+      results.innerHTML = items.map((item)=>{
+        const businessPath = themedDirectoryPath(`/business/${encodeURIComponent(item.slug || "")}`);
+        const typePath = item.business_type_slug ? themedDirectoryPath(`/directory/type/${encodeURIComponent(item.business_type_slug)}`) : themedDirectoryPath("/directory");
+        const cityText = [item.search_city, item.state, item.zip_code].filter(Boolean).join(", ");
+        const website = externalHref(item.website);
+        return `
+          <article class="directoryMiniCard">
+            ${item.image_url ? `<img src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.business_name)}" loading="lazy" />` : ""}
+            <div>
+              <div class="directoryResultType">
+                <span class="directoryIcon" aria-hidden="true">${escapeHtml(item.business_type_icon || "•")}</span>
+                <a href="${escapeHtml(typePath)}">${escapeHtml(item.business_type || "Local business")}</a>
+              </div>
+              <h3><a href="${escapeHtml(businessPath)}">${escapeHtml(item.business_name || "")}</a></h3>
+              <p>${escapeHtml(item.description || "")}</p>
+              <div class="directoryResultMeta">
+                ${item.address ? `<span>${escapeHtml(item.address)}</span>` : ""}
+                ${cityText ? `<span>${escapeHtml(cityText)}</span>` : ""}
+              </div>
+              <div class="directoryResultContact">
+                ${item.phone_number ? `<span>${escapeHtml(item.phone_number)}</span>` : ""}
+                ${website ? `<span><a href="${escapeHtml(website)}" target="_blank" rel="noopener nofollow">Website</a></span>` : ""}
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+      setStatus(`${Number(count || items.length)} businesses found. Showing ${items.length}.`);
+    }
+
+    async function loadFacets(){
+      const response = await fetch("/v1/business-directory/facets", { cache: "no-store" });
+      if(!response.ok){
+        throw new Error(`Directory facets failed (${response.status})`);
+      }
+      const body = await response.json();
+      populateSelect(citySelect, body.cities || [], "All cities");
+      populateSelect(typeSelect, body.business_types || [], "All business types");
+      renderChips(body.business_types || []);
+      facetsLoaded = true;
+    }
+
+    async function runSearch(){
+      const params = new URLSearchParams();
+      params.set("limit", "6");
+      params.set("q", input ? input.value.trim() : "");
+      if(citySelect && citySelect.value) params.set("city", citySelect.value);
+      if(typeSelect && typeSelect.value) params.set("business_type", typeSelect.value);
+      setStatus("Searching directory...");
+      const response = await fetch(`/v1/business-directory/search?${params.toString()}`, { cache: "no-store" });
+      if(!response.ok){
+        throw new Error(`Directory search failed (${response.status})`);
+      }
+      const body = await response.json();
+      if(!facetsLoaded && body.facets){
+        populateSelect(citySelect, body.facets.cities || [], "All cities");
+        populateSelect(typeSelect, body.facets.business_types || [], "All business types");
+        renderChips(body.facets.business_types || []);
+        facetsLoaded = true;
+      }
+      renderResults(body.results || [], body.count || 0);
+    }
+
+    function scheduleSearch(){
+      window.clearTimeout(searchTimer);
+      searchTimer = window.setTimeout(()=>{
+        runSearch().catch(()=> setStatus("Directory search is temporarily unavailable."));
+      }, 250);
+    }
+
+    if(form){
+      form.addEventListener("submit", (event)=>{
+        event.preventDefault();
+        runSearch().catch(()=> setStatus("Directory search is temporarily unavailable."));
+      });
+    }
+    if(input) input.addEventListener("input", scheduleSearch);
+    if(citySelect) citySelect.addEventListener("change", scheduleSearch);
+    if(typeSelect) typeSelect.addEventListener("change", scheduleSearch);
+
+    loadFacets()
+      .catch(()=> null)
+      .then(()=> runSearch())
+      .catch(()=> setStatus("Directory search is temporarily unavailable."));
+  }
+
+  wireBusinessDirectorySearch();
+
   // Cookie banner consent (localStorage)
   const cookie = document.querySelector('[data-cookie]');
   const accept = document.querySelector('[data-cookie-accept]');
