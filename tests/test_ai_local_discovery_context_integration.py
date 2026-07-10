@@ -47,6 +47,8 @@ def _add_business_directory_entry(db: Session) -> BusinessDirectoryEntry:
 def test_is_local_discovery_query_detects_general_local_prompt() -> None:
     assert is_local_discovery_query("What are local things to do in Pasadena tonight?")
     assert is_local_discovery_query("Any nearby restaurants?")
+    assert is_local_discovery_query("What is in Glendora?")
+    assert is_local_discovery_query("Show me SGV options")
     assert not is_local_discovery_query("Explain JWT expiration behavior")
 
 
