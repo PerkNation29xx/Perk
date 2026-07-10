@@ -49,6 +49,8 @@ def test_is_local_discovery_query_detects_general_local_prompt() -> None:
     assert is_local_discovery_query("Any nearby restaurants?")
     assert is_local_discovery_query("What is in Glendora?")
     assert is_local_discovery_query("Show me SGV options")
+    assert is_local_discovery_query("What is in Long Beach?")
+    assert is_local_discovery_query("Show me DTLA corridor options")
     assert not is_local_discovery_query("Explain JWT expiration behavior")
 
 

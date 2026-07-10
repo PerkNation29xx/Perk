@@ -216,6 +216,7 @@ def upsert_business_directory_entry(
     source_row: int,
     raw_record: dict[str, Any],
     metadata: Optional[WebsiteMetadata] = None,
+    dedupe_natural: bool = False,
 ) -> tuple[BusinessDirectoryEntry, bool]:
     business_name = normalize_spaces(raw_record.get("business_name"))
     if not business_name:
@@ -240,6 +241,17 @@ def upsert_business_directory_entry(
             BusinessDirectoryEntry.source_row == source_row,
         )
     )
+    if dedupe_natural:
+        row_name_matches = row is not None and normalize_spaces(row.business_name).lower() == normalize_spaces(business_name).lower()
+        if row is None or not row_name_matches:
+            natural_row = find_natural_business_directory_duplicate(
+                db,
+                business_name=business_name,
+                raw_record=raw_record,
+            )
+            if natural_row is not None:
+                row = natural_row
+
     created = row is None
     if row is None:
         row = BusinessDirectoryEntry(
@@ -288,6 +300,82 @@ def upsert_business_directory_entry(
     row.is_active = True
     row.slug = ensure_unique_business_slug(db, base_slug=base_slug, existing_id=row.id)
     return row, created
+
+
+def find_natural_business_directory_duplicate(
+    db: Session,
+    *,
+    business_name: str,
+    raw_record: dict[str, Any],
+) -> Optional[BusinessDirectoryEntry]:
+    name_norm = normalize_spaces(business_name).lower()
+    if not name_norm:
+        return None
+
+    city_norm = normalize_city(raw_record.get("city") or raw_record.get("requested_city")).lower()
+    address_key = _address_key(raw_record.get("address"))
+    phone_digits = _digits_only(raw_record.get("phone_number"))
+    website_key = _website_key(raw_record.get("website"))
+    type_norm = normalize_spaces(raw_record.get("business_type")).lower()
+
+    candidates = list(
+        db.scalars(
+            select(BusinessDirectoryEntry)
+            .where(
+                BusinessDirectoryEntry.is_active.is_(True),
+                func.lower(BusinessDirectoryEntry.business_name) == name_norm,
+            )
+            .limit(80)
+        )
+    )
+    if not candidates:
+        return None
+
+    scored: list[tuple[int, BusinessDirectoryEntry]] = []
+    for candidate in candidates:
+        score = 0
+        candidate_city = normalize_city(candidate.city or candidate.search_city or candidate.requested_city).lower()
+        candidate_address = _address_key(candidate.address)
+        candidate_phone = _digits_only(candidate.phone_number)
+        candidate_website = _website_key(candidate.website)
+        candidate_type = normalize_spaces(candidate.business_type).lower()
+
+        if phone_digits and candidate_phone and phone_digits == candidate_phone:
+            score += 12
+        if address_key and candidate_address and address_key == candidate_address:
+            score += 10
+        if website_key and candidate_website and website_key == candidate_website:
+            score += 8
+        if city_norm and candidate_city and city_norm == candidate_city:
+            score += 6
+        if type_norm and candidate_type and type_norm == candidate_type:
+            score += 3
+
+        if score >= 8 or (score >= 6 and (phone_digits or address_key or website_key or type_norm)):
+            scored.append((score, candidate))
+
+    if not scored:
+        return None
+    scored.sort(key=lambda item: item[0], reverse=True)
+    return scored[0][1]
+
+
+def _digits_only(value: Any) -> str:
+    return "".join(ch for ch in str(value or "") if ch.isdigit())
+
+
+def _address_key(value: Any) -> str:
+    text = normalize_spaces(value).lower()
+    return re.sub(r"[^a-z0-9]+", "", text)
+
+
+def _website_key(value: Any) -> str:
+    text = normalize_spaces(value).lower()
+    if not text:
+        return ""
+    text = re.sub(r"^https?://", "", text)
+    text = re.sub(r"^www\.", "", text)
+    return text.rstrip("/")
 
 
 def build_seo_title(*, business_name: str, business_type: Optional[str], city: Optional[str]) -> str:

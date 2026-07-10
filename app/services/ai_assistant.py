@@ -1106,7 +1106,7 @@ def _capabilities_for_role(role_context: str) -> str:
         return (
             "I can help with current PerkNation public promos and local restaurant guides: "
             "Hollywood Sports paintball packages, the Bond Collective workspace discount, the crystal jewelry drop, El Portal World Cup viewing and happy hour, "
-            "Pasadena restaurant picks, and PerkNation business directory listings across Pasadena, SGV, Burbank, Glendale, and Arcadia."
+            "Pasadena restaurant picks, and PerkNation business directory listings across Pasadena, SGV, Burbank, Glendale, Arcadia, and the DTLA-to-Long Beach corridor."
         )
     return "I can answer public product and onboarding questions."
 

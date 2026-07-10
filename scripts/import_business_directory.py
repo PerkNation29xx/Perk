@@ -69,6 +69,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--enrich-limit", type=int, default=0, help="Max website metadata fetches. 0 means no limit.")
     parser.add_argument("--enrich-timeout", type=float, default=4.0, help="Seconds to wait for each website metadata fetch.")
     parser.add_argument("--commit-every", type=int, default=200, help="Commit interval for live imports.")
+    parser.add_argument(
+        "--dedupe-natural",
+        action="store_true",
+        help="Update matching active listings by business name plus city/address/phone/website when source rows moved.",
+    )
     return parser.parse_args()
 
 
@@ -204,6 +209,7 @@ def main() -> int:
                     source_row=row_index,
                     raw_record=record,
                     metadata=metadata,
+                    dedupe_natural=args.dedupe_natural,
                 )
                 counters["created" if created else "updated"] += 1
                 if (counters["created"] + counters["updated"]) % max(1, args.commit_every) == 0:
