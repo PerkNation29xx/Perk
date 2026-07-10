@@ -384,13 +384,55 @@
     const typeSelect = homePanel.querySelector("[data-directory-type-select]");
     const status = homePanel.querySelector("[data-directory-status]");
     const chips = homePanel.querySelector("[data-directory-category-chips]");
+    const categoryPanel = homePanel.querySelector("[data-directory-category-panel]");
+    const categoryToggle = homePanel.querySelector("[data-directory-category-toggle]");
+    const categoryCount = homePanel.querySelector("[data-directory-category-count]");
+    const locationButton = homePanel.querySelector("[data-directory-location-button]");
+    const locationStatus = homePanel.querySelector("[data-directory-location-status]");
     const results = homePanel.querySelector("[data-directory-results]");
     const previewOnly = homePanel.hasAttribute("data-directory-preview-only");
     let facetsLoaded = false;
     let searchTimer = null;
+    let lastDirectoryCoords = null;
+
+    const serviceCities = [
+      ["Pasadena", 34.1478, -118.1445],
+      ["South Pasadena", 34.1161, -118.1503],
+      ["Alhambra", 34.0953, -118.1270],
+      ["San Gabriel", 34.0961, -118.1058],
+      ["Monterey Park", 34.0625, -118.1228],
+      ["Glendora", 34.1361, -117.8653],
+      ["Azusa", 34.1336, -117.9076],
+      ["La Verne", 34.1008, -117.7678],
+      ["El Monte", 34.0686, -118.0276],
+      ["South El Monte", 34.0519, -118.0467],
+      ["Montebello", 34.0165, -118.1138],
+      ["Arcadia", 34.1397, -118.0353],
+      ["Glendale", 34.1425, -118.2551],
+      ["Burbank", 34.1808, -118.3090],
+      ["Los Angeles", 34.0522, -118.2437],
+      ["Long Beach", 33.7701, -118.1937],
+      ["Vernon", 34.0039, -118.2301],
+      ["Commerce", 34.0006, -118.1598],
+      ["Huntington Park", 33.9817, -118.2251],
+      ["Maywood", 33.9867, -118.1853],
+      ["Bell", 33.9775, -118.1870],
+      ["Bell Gardens", 33.9653, -118.1515],
+      ["Cudahy", 33.9606, -118.1854],
+      ["South Gate", 33.9547, -118.2120],
+      ["Lynwood", 33.9303, -118.2115],
+      ["Compton", 33.8958, -118.2201],
+      ["Paramount", 33.8895, -118.1598],
+      ["Carson", 33.8314, -118.2820],
+      ["Signal Hill", 33.8045, -118.1678],
+    ];
 
     function setStatus(message){
       if(status) status.textContent = message;
+    }
+
+    function setLocationStatus(message){
+      if(locationStatus) locationStatus.textContent = String(message || "").trim();
     }
 
     function populateSelect(select, items, emptyLabel){
@@ -410,6 +452,10 @@
       if(!chips) return;
       const requestedLimit = Number(chips.getAttribute("data-directory-category-limit") || 18);
       const limit = Number.isFinite(requestedLimit) && requestedLimit > 0 ? requestedLimit : 18;
+      const visibleCount = Math.min(limit, items.length);
+      if(categoryCount){
+        categoryCount.textContent = `${visibleCount} categories`;
+      }
       chips.innerHTML = "";
       items.slice(0, limit).forEach((item)=>{
         const link = document.createElement("a");
@@ -418,6 +464,97 @@
         link.innerHTML = `<span class="directoryIcon" aria-hidden="true">${escapeHtml(item.icon || "•")}</span><span>${escapeHtml(item.label || "")}</span><em>${Number(item.count || 0)}</em>`;
         chips.appendChild(link);
       });
+    }
+
+    function toRadians(value){
+      return Number(value || 0) * Math.PI / 180;
+    }
+
+    function distanceMiles(lat1, lon1, lat2, lon2){
+      const radiusMiles = 3958.8;
+      const dLat = toRadians(lat2 - lat1);
+      const dLon = toRadians(lon2 - lon1);
+      const a = Math.sin(dLat / 2) ** 2
+        + Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLon / 2) ** 2;
+      return radiusMiles * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    function selectNearestDirectoryCity(coords){
+      if(!citySelect || !coords) return false;
+      const available = new Set(Array.from(citySelect.options).map((option)=> option.value).filter(Boolean));
+      const ranked = serviceCities
+        .filter(([name])=> available.has(name))
+        .map(([name, lat, lon])=> ({
+          name,
+          distance: distanceMiles(coords.latitude, coords.longitude, lat, lon),
+        }))
+        .sort((a, b)=> a.distance - b.distance);
+      const nearest = ranked[0];
+      if(!nearest || nearest.distance > 85){
+        setLocationStatus("Location on");
+        return false;
+      }
+      citySelect.value = nearest.name;
+      locationButton?.setAttribute("aria-pressed", "true");
+      setLocationStatus(`Near ${nearest.name}`);
+      return true;
+    }
+
+    function requestDirectoryLocation({ silent = false } = {}){
+      if(!("geolocation" in navigator)){
+        if(!silent) setLocationStatus("Location unavailable");
+        return;
+      }
+      if(!silent) setLocationStatus("Checking location...");
+      navigator.geolocation.getCurrentPosition(
+        (position)=>{
+          lastDirectoryCoords = {
+            latitude: Number(position.coords.latitude),
+            longitude: Number(position.coords.longitude),
+          };
+          if(!selectNearestDirectoryCity(lastDirectoryCoords)){
+            setLocationStatus("Location on");
+          }
+        },
+        ()=>{
+          if(!silent) setLocationStatus("Location off");
+        },
+        {
+          enableHighAccuracy: false,
+          timeout: 4500,
+          maximumAge: 300000,
+        }
+      );
+    }
+
+    function checkDirectoryLocationPermission(){
+      if(!locationButton) return;
+      if(!("geolocation" in navigator)){
+        locationButton.disabled = true;
+        setLocationStatus("Location unavailable");
+        return;
+      }
+      if(navigator.permissions && navigator.permissions.query){
+        navigator.permissions.query({ name: "geolocation" })
+          .then((permission)=>{
+            if(permission.state === "granted"){
+              requestDirectoryLocation({ silent: true });
+            } else if(permission.state === "denied"){
+              setLocationStatus("Location off");
+            }
+            permission.onchange = ()=>{
+              if(permission.state === "granted"){
+                requestDirectoryLocation({ silent: true });
+              } else if(permission.state === "denied"){
+                setLocationStatus("Location off");
+                locationButton.setAttribute("aria-pressed", "false");
+              } else {
+                setLocationStatus("");
+              }
+            };
+          })
+          .catch(()=> null);
+      }
     }
 
     function renderResults(items, count){
@@ -467,6 +604,9 @@
       populateSelect(citySelect, body.cities || [], "All cities");
       populateSelect(typeSelect, body.business_types || [], "All business types");
       renderChips(body.business_types || []);
+      if(lastDirectoryCoords){
+        selectNearestDirectoryCity(lastDirectoryCoords);
+      }
       facetsLoaded = true;
     }
 
@@ -512,6 +652,23 @@
     if(input) input.addEventListener("input", scheduleSearch);
     if(citySelect) citySelect.addEventListener("change", scheduleSearch);
     if(typeSelect) typeSelect.addEventListener("change", scheduleSearch);
+    if(locationButton){
+      locationButton.addEventListener("click", ()=> requestDirectoryLocation());
+      checkDirectoryLocationPermission();
+    }
+    if(categoryToggle && categoryPanel){
+      categoryToggle.addEventListener("click", ()=>{
+        const isOpen = !categoryPanel.classList.contains("isOpen");
+        categoryPanel.classList.toggle("isOpen", isOpen);
+        categoryToggle.setAttribute("aria-expanded", String(isOpen));
+      });
+      document.addEventListener("click", (event)=>{
+        if(!categoryPanel.contains(event.target)){
+          categoryPanel.classList.remove("isOpen");
+          categoryToggle.setAttribute("aria-expanded", "false");
+        }
+      });
+    }
 
     loadFacets()
       .catch(()=> null)

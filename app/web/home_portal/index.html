@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/styles.css?v=20260710-directory-home" />
+  <link rel="stylesheet" href="assets/styles.css?v=20260710-directory-geo" />
 </head>
 <body>
 
@@ -58,9 +58,15 @@
     <div class="container">
       <div class="directoryHomeCompact" data-directory-home data-directory-preview-only="true">
         <div class="directoryHomeCopy">
-          <div class="badge">Local business directory</div>
           <h2 class="h2">Search local businesses.</h2>
           <p class="muted">Find restaurants, contractors, services, shops, and professional offices by city or category.</p>
+          <div class="directoryHomeTools">
+            <button class="directoryLocationBtn" type="button" data-directory-location-button aria-pressed="false">
+              <span class="directoryIcon" aria-hidden="true">⌖</span>
+              <span>Near me</span>
+            </button>
+            <span class="directoryLocationStatus" data-directory-location-status aria-live="polite"></span>
+          </div>
         </div>
 
         <form class="directoryCompactSearch" method="get" action="/directory" data-directory-search-form>
@@ -73,11 +79,17 @@
           <button class="btn primary" type="submit">Search directory</button>
         </form>
 
-        <div class="directoryCategoryRail directoryHomeCategoryRail" aria-label="Business type directory" data-directory-category-chips data-directory-category-limit="36">
-          <a class="directoryCategoryChip" href="/directory/type/restaurants-catering"><span class="directoryIcon" aria-hidden="true">🍽</span><span>Restaurants</span></a>
-          <a class="directoryCategoryChip" href="/directory/type/building-contractor-const-related"><span class="directoryIcon" aria-hidden="true">🔧</span><span>Contractors</span></a>
-          <a class="directoryCategoryChip" href="/directory/type/attorneys-legal-services"><span class="directoryIcon" aria-hidden="true">⚖</span><span>Legal</span></a>
-          <a class="directoryCategoryChip" href="/directory/type/retail"><span class="directoryIcon" aria-hidden="true">🛍</span><span>Retail</span></a>
+        <div class="directoryCategoryPanel" data-directory-category-panel>
+          <button class="directoryCategoryToggle" type="button" data-directory-category-toggle aria-expanded="false">
+            <span>Browse categories</span>
+            <em data-directory-category-count>Categories</em>
+          </button>
+          <div class="directoryCategoryRail directoryHomeCategoryRail" aria-label="Business type directory" data-directory-category-chips data-directory-category-limit="120">
+            <a class="directoryCategoryChip" href="/directory/type/restaurants-catering"><span class="directoryIcon" aria-hidden="true">🍽</span><span>Restaurants</span></a>
+            <a class="directoryCategoryChip" href="/directory/type/building-contractor-const-related"><span class="directoryIcon" aria-hidden="true">🔧</span><span>Contractors</span></a>
+            <a class="directoryCategoryChip" href="/directory/type/attorneys-legal-services"><span class="directoryIcon" aria-hidden="true">⚖</span><span>Legal</span></a>
+            <a class="directoryCategoryChip" href="/directory/type/retail"><span class="directoryIcon" aria-hidden="true">🛍</span><span>Retail</span></a>
+          </div>
         </div>
       </div>
     </div>
@@ -730,7 +742,7 @@
   </div>
 </div>
 
-<script src="assets/app.js?v=20260710-directory-home"></script>
+<script src="assets/app.js?v=20260710-directory-geo"></script>
 
 </body>
 </html>

@@ -1478,8 +1478,11 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 }
 .businessDirectorySectionTop{
   padding:24px 0 18px;
+  position:relative;
+  z-index:4;
 }
 .directoryHomeCompact{
+  position:relative;
   display:grid;
   grid-template-columns:minmax(260px, .72fr) minmax(420px, 1.1fr);
   gap:16px 18px;
@@ -1502,6 +1505,45 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 .directoryHomeCopy p{
   margin:0;
   max-width:540px;
+}
+.directoryHomeTools{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:4px;
+}
+.directoryLocationBtn,
+.directoryCategoryToggle{
+  appearance:none;
+  border:1px solid rgba(15,23,42,.12);
+  background:rgba(255,255,255,.76);
+  color:var(--ink);
+  font:inherit;
+  font-weight:850;
+  cursor:pointer;
+}
+.directoryLocationBtn{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  min-height:36px;
+  padding:7px 11px;
+  border-radius:var(--pill);
+}
+.directoryLocationBtn[aria-pressed="true"]{
+  border-color:rgba(230,184,74,.48);
+  background:rgba(230,184,74,.18);
+}
+.directoryLocationBtn:disabled{
+  cursor:not-allowed;
+  opacity:.62;
+}
+.directoryLocationStatus{
+  min-height:18px;
+  color:var(--muted2);
+  font-size:12px;
+  font-weight:800;
 }
 .directoryCompactSearch{
   display:grid;
@@ -1642,12 +1684,53 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   border-color:rgba(230,184,74,.42);
   background:rgba(230,184,74,.16);
 }
-.directoryHomeCategoryRail{
+.directoryCategoryPanel{
   grid-column:1 / -1;
-  flex-wrap:wrap;
-  overflow:visible;
+  position:relative;
   padding-top:14px;
   border-top:1px solid rgba(15,23,42,.10);
+}
+.directoryCategoryToggle{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  width:100%;
+  min-height:40px;
+  padding:8px 12px;
+  border-radius:8px;
+}
+.directoryCategoryToggle em{
+  color:#9b6f00;
+  font-style:normal;
+  font-size:12px;
+}
+.directoryHomeCategoryRail{
+  position:absolute;
+  left:0;
+  right:0;
+  top:calc(100% + 8px);
+  z-index:20;
+  max-height:0;
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(-4px);
+  flex-wrap:wrap;
+  overflow:auto;
+  padding:0;
+  border:1px solid rgba(15,23,42,.12);
+  border-radius:8px;
+  background:rgba(255,255,255,.98);
+  box-shadow:var(--shadow);
+  transition:max-height .18s ease, opacity .18s ease, transform .18s ease, padding .18s ease;
+}
+.directoryCategoryPanel:hover .directoryHomeCategoryRail,
+.directoryCategoryPanel.isOpen .directoryHomeCategoryRail{
+  max-height:310px;
+  opacity:1;
+  pointer-events:auto;
+  transform:translateY(0);
+  padding:12px;
 }
 .directoryHomeCategoryRail .directoryCategoryChip{
   max-width:300px;
