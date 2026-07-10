@@ -1772,12 +1772,27 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   min-height:166px;
   object-fit:cover;
 }
-.directoryMiniCard > div,
-.directoryResultBody{
+.directoryMiniCard > div{
   display:grid;
   align-content:start;
   gap:8px;
   padding:12px;
+}
+.directoryResultBody{
+  display:grid;
+  gap:5px;
+  padding:12px 14px;
+}
+.directoryResultHeaderLine,
+.directoryResultInfoLine{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px 12px;
+  min-width:0;
+}
+.directoryResultHeaderLine{
+  justify-content:space-between;
 }
 .directoryMiniCard h3,
 .directoryResultCard h2{
@@ -1789,7 +1804,13 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   font-size:16px;
 }
 .directoryResultCard h2{
-  font-size:22px;
+  min-width:220px;
+  flex:1 1 280px;
+  font-size:17px;
+  line-height:1.2;
+}
+.directoryResultCard h2 a{
+  color:var(--ink);
 }
 .directoryMiniCard p,
 .directoryResultCard p{
@@ -1804,6 +1825,12 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   -webkit-box-orient:vertical;
   overflow:hidden;
 }
+.directoryResultDescription{
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
 .directoryResultType,
 .directoryResultMeta,
 .directoryResultContact{
@@ -1815,7 +1842,13 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   font-size:12px;
   font-weight:850;
 }
-.directoryResultType a,
+.directoryResultType{
+  max-width:320px;
+  text-decoration:none;
+}
+.directoryResultInfoLine{
+  color:var(--muted2);
+}
 .directoryResultContact a{
   color:var(--yellow);
 }
@@ -1936,18 +1969,12 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 }
 .directoryResultsGrid{
   display:grid;
-  grid-template-columns:repeat(2, minmax(0, 1fr));
-  gap:14px;
+  grid-template-columns:1fr;
+  gap:8px;
 }
 .directoryResultCard{
-  display:grid;
-  grid-template-columns:132px minmax(0, 1fr);
-}
-.directoryResultImage{
-  width:132px;
-  height:100%;
-  min-height:210px;
-  object-fit:cover;
+  display:block;
+  border-radius:8px;
 }
 .directoryEmpty{
   padding:16px;
@@ -2110,10 +2137,8 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   .directoryHomeCompact{padding:14px}
   .directoryCompactSearch{grid-template-columns:1fr}
   .directoryQuickLinks{gap:6px}
-  .directoryMiniCard,
-  .directoryResultCard{grid-template-columns:1fr}
-  .directoryMiniCard > img,
-  .directoryResultImage{width:100%; height:150px; min-height:0}
+  .directoryMiniCard{grid-template-columns:1fr}
+  .directoryMiniCard > img{width:100%; height:150px; min-height:0}
   .directoryMapPanel{padding:10px}
   .directoryMapFrame,
   .directoryMapFrame iframe{min-height:240px}

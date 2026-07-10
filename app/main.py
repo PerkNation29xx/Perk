@@ -298,8 +298,8 @@ def _directory_page_path(*, white: bool, city_slug: Optional[str] = None, busine
 
 def _directory_shell(*, title: str, description: str, canonical_path: str, body: str, white: bool, json_ld: Optional[dict] = None) -> str:
     brand_href = "/white/" if white else "/"
-    style_href = f"{_asset_path('styles.css', white=white)}?v=directory20260709-map"
-    script_href = f"{_asset_path('app.js', white=white)}?v=directory20260709-map"
+    style_href = f"{_asset_path('styles.css', white=white)}?v=directory20260710-results-row"
+    script_href = f"{_asset_path('app.js', white=white)}?v=directory20260710-results-row"
     json_ld_html = ""
     if json_ld:
         json_ld_payload = json.dumps(json_ld, ensure_ascii=False).replace("</", "<\\/")
@@ -518,9 +518,6 @@ def _directory_city_links(*, facets: dict[str, list[dict[str, object]]], white: 
 
 def _directory_result_card(row, *, white: bool) -> str:
     business_url = _business_page_path(row.slug, white=white)
-    image_html = ""
-    if row.image_url:
-        image_html = f'<img class="directoryResultImage" src="{_escape(row.image_url)}" alt="{_escape(row.business_name)}" loading="lazy" />'
     website_html = ""
     if row.website:
         website = str(row.website)
@@ -541,17 +538,20 @@ def _directory_result_card(row, *, white: bool) -> str:
     description = _escape(row.description or "")
     return f"""
       <article class="directoryResultCard">
-        {image_html}
         <div class="directoryResultBody">
-          <div class="directoryResultType">
-            <span class="directoryIcon" aria-hidden="true">{_escape(row.business_type_icon or "•")}</span>
-            <a href="{_escape(_directory_page_path(white=white, business_type_slug=row.business_type_slug))}">{_escape(row.business_type or "Local business")}</a>
+          <div class="directoryResultHeaderLine">
+            <h2><a href="{_escape(business_url)}">{_escape(row.business_name)}</a></h2>
+            <a class="directoryResultType" href="{_escape(_directory_page_path(white=white, business_type_slug=row.business_type_slug))}">
+              <span class="directoryIcon" aria-hidden="true">{_escape(row.business_type_icon or "•")}</span>
+              <span>{_escape(row.business_type or "Local business")}</span>
+            </a>
           </div>
-          <h2><a href="{_escape(business_url)}">{_escape(row.business_name)}</a></h2>
-          <p>{description}</p>
-          <div class="directoryResultMeta">{meta_html}</div>
-          <div class="directoryResultContact">{contact_html}</div>
-          {actions_html}
+          <p class="directoryResultDescription">{description}</p>
+          <div class="directoryResultInfoLine">
+            <div class="directoryResultMeta">{meta_html}</div>
+            <div class="directoryResultContact">{contact_html}</div>
+            {actions_html}
+          </div>
         </div>
       </article>
     """
