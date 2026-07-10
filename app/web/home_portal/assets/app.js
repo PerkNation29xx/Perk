@@ -408,8 +408,10 @@
 
     function renderChips(items){
       if(!chips) return;
+      const requestedLimit = Number(chips.getAttribute("data-directory-category-limit") || 18);
+      const limit = Number.isFinite(requestedLimit) && requestedLimit > 0 ? requestedLimit : 18;
       chips.innerHTML = "";
-      items.slice(0, 18).forEach((item)=>{
+      items.slice(0, limit).forEach((item)=>{
         const link = document.createElement("a");
         link.className = "directoryCategoryChip";
         link.href = themedDirectoryPath(`/directory/type/${encodeURIComponent(item.slug || "")}`);

@@ -1476,6 +1476,9 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 .businessDirectorySection{
   padding:34px 0;
 }
+.businessDirectorySectionTop{
+  padding:24px 0 18px;
+}
 .directoryHomeCompact{
   display:grid;
   grid-template-columns:minmax(260px, .72fr) minmax(420px, 1.1fr);
@@ -1637,6 +1640,16 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 .directoryCityLink.active{
   border-color:rgba(230,184,74,.42);
   background:rgba(230,184,74,.12);
+}
+.directoryHomeCategoryRail{
+  grid-column:1 / -1;
+  flex-wrap:wrap;
+  overflow:visible;
+  padding-top:14px;
+  border-top:1px solid rgba(250,247,247,.10);
+}
+.directoryHomeCategoryRail .directoryCategoryChip{
+  max-width:300px;
 }
 .directoryIcon{
   display:inline-grid;

@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/styles.css?v=20260709-directory-map" />
+  <link rel="stylesheet" href="assets/styles.css?v=20260710-directory-home" />
 </head>
 <body>
 
@@ -54,6 +54,35 @@
 </header>
 
 <main>
+  <section class="section businessDirectorySection businessDirectorySectionTop" id="business-directory">
+    <div class="container">
+      <div class="directoryHomeCompact" data-directory-home data-directory-preview-only="true">
+        <div class="directoryHomeCopy">
+          <div class="badge">Local business directory</div>
+          <h2 class="h2">Search local businesses.</h2>
+          <p class="muted">Find restaurants, contractors, services, shops, and professional offices by city or category.</p>
+        </div>
+
+        <form class="directoryCompactSearch" method="get" action="/directory" data-directory-search-form>
+          <label class="srOnly" for="directory-home-query">Search businesses</label>
+          <input id="directory-home-query" name="q" type="search" placeholder="What are you looking for?" data-directory-search-input />
+          <label class="srOnly" for="directory-home-city">Filter by city</label>
+          <select id="directory-home-city" name="city" data-directory-city-select>
+            <option value="">All cities</option>
+          </select>
+          <button class="btn primary" type="submit">Search directory</button>
+        </form>
+
+        <div class="directoryCategoryRail directoryHomeCategoryRail" aria-label="Business type directory" data-directory-category-chips data-directory-category-limit="36">
+          <a class="directoryCategoryChip" href="/directory/type/restaurants-catering"><span class="directoryIcon" aria-hidden="true">🍽</span><span>Restaurants</span></a>
+          <a class="directoryCategoryChip" href="/directory/type/building-contractor-const-related"><span class="directoryIcon" aria-hidden="true">🔧</span><span>Contractors</span></a>
+          <a class="directoryCategoryChip" href="/directory/type/attorneys-legal-services"><span class="directoryIcon" aria-hidden="true">⚖</span><span>Legal</span></a>
+          <a class="directoryCategoryChip" href="/directory/type/retail"><span class="directoryIcon" aria-hidden="true">🛍</span><span>Retail</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="hero campaignHero" id="featured-campaign">
     <div class="container campaignHeroGrid">
       <div class="campaignHeroCopy">
@@ -307,36 +336,6 @@
             <span class="btn small jewelryCardCta">View item</span>
           </div>
         </a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section businessDirectorySection" id="business-directory">
-    <div class="container">
-      <div class="directoryHomeCompact" data-directory-home data-directory-preview-only="true">
-        <div class="directoryHomeCopy">
-          <div class="badge">Local business directory</div>
-          <h2 class="h2">Search local businesses.</h2>
-          <p class="muted">Find restaurants, contractors, services, shops, and professional offices by city or category.</p>
-        </div>
-
-        <form class="directoryCompactSearch" method="get" action="/directory" data-directory-search-form>
-          <label class="srOnly" for="directory-home-query">Search businesses</label>
-          <input id="directory-home-query" name="q" type="search" placeholder="What are you looking for?" data-directory-search-input />
-          <label class="srOnly" for="directory-home-city">Filter by city</label>
-          <select id="directory-home-city" name="city" data-directory-city-select>
-            <option value="">All cities</option>
-          </select>
-          <button class="btn primary" type="submit">Search directory</button>
-        </form>
-
-        <div class="directoryQuickLinks" aria-label="Popular directory categories">
-          <a href="/directory/pasadena/restaurants-catering"><span class="directoryIcon" aria-hidden="true">🍽</span>Restaurants</a>
-          <a href="/directory/type/building-contractor-const-related"><span class="directoryIcon" aria-hidden="true">🔧</span>Contractors</a>
-          <a href="/directory/type/attorneys-legal-services"><span class="directoryIcon" aria-hidden="true">⚖</span>Legal</a>
-          <a href="/directory/type/shopping-retail"><span class="directoryIcon" aria-hidden="true">🛍</span>Retail</a>
-          <a href="/directory">View all</a>
-        </div>
       </div>
     </div>
   </section>
@@ -731,7 +730,7 @@
   </div>
 </div>
 
-<script src="assets/app.js?v=20260709-directory-map"></script>
+<script src="assets/app.js?v=20260710-directory-home"></script>
 
 </body>
 </html>
