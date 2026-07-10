@@ -131,6 +131,21 @@ def test_local_discovery_context_includes_business_directory_name_match() -> Non
     assert "https://perknation.app/business/acorn-creative-llc-pasadena-advertising-marketing-public-relations" in context
 
 
+def test_local_discovery_directory_links_canonicalize_legacy_domain(monkeypatch) -> None:
+    monkeypatch.setattr(settings, "public_web_base_url", "https://perknation.net")
+
+    with _db_session() as db:
+        _add_business_directory_entry(db)
+        context = build_local_discovery_context(
+            db,
+            message="Tell me about Acorn Creative LLC",
+            limit=8,
+        )
+
+    assert "https://perknation.app/business/acorn-creative-llc-pasadena-advertising-marketing-public-relations" in context
+    assert "perknation.net" not in context
+
+
 def test_local_discovery_context_marks_missing_directory_city_and_address() -> None:
     with _db_session() as db:
         row = _add_business_directory_entry(db)

@@ -485,8 +485,7 @@ def _score_business_directory_row(
 
 
 def _business_directory_url(slug: str) -> str:
-    base_url = (settings.public_web_base_url or "https://perknation.app").rstrip("/")
-    return f"{base_url}/business/{slug}"
+    return settings._join_public_url(settings.public_web_base_url, f"/business/{slug}")
 
 
 def _clean_detail(value: Optional[str], *, max_length: int = 180) -> str:
