@@ -4,10 +4,11 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from decimal import Decimal
 import json
+import re
 from typing import Optional
 from urllib import error, request
 
-from sqlalchemy import and_, desc, func, select
+from sqlalchemy import and_, desc, func, select, text as sql_text
 from sqlalchemy.orm import Session, selectinload
 
 from app.core.config import settings
@@ -135,7 +136,7 @@ def chat_with_assistant(
         role_context=role_context,
         message=message,
     )
-    if query_result and not settings.ai_enabled:
+    if query_result and (not settings.ai_enabled or _should_return_live_query_directly(message, role_context)):
         return AIChatResult(
             answer=query_result,
             model=_configured_model_for_provider(provider),
@@ -163,6 +164,11 @@ def chat_with_assistant(
     )
     include_home_local_guide = role_context == "home_local_guide"
     include_restaurant_context = db is not None and is_restaurant_discovery_query(message)
+    include_public_directory_context = (
+        db is not None
+        and role_context in {"public", "home_local_guide"}
+        and _is_public_directory_search_query(message)
+    )
     include_local_discovery_context = (
         db is not None
         and should_attempt_local_discovery_context(message)
@@ -174,7 +180,7 @@ def chat_with_assistant(
         messages.append(
             {
                 "role": "system",
-                "content": _home_local_guide_context(),
+                "content": _home_local_guide_context(db=db),
             }
         )
 
@@ -216,6 +222,20 @@ def chat_with_assistant(
                         "Use this context to answer restaurant discovery questions naturally. "
                         "If user asks for recommendations, suggest top matches and ask one focused "
                         "follow-up question (neighborhood, cuisine, budget, or vibe)."
+                    ),
+                }
+            )
+
+    if include_public_directory_context and db is not None:
+        directory_context = _build_public_directory_context(db, message=message, limit=12)
+        if directory_context:
+            messages.append(
+                {
+                    "role": "system",
+                    "content": (
+                        f"{directory_context}\n\n"
+                        "Use public business-directory matches for listing/category/ZIP questions. "
+                        "A directory listing is not automatically a PerkNation promotion."
                     ),
                 }
             )
@@ -557,8 +577,7 @@ def _system_prompt_for_context(role_context: str) -> str:
         "If LIVE ACCOUNT DATA or LIVE QUERY RESULT is included, summarize it naturally; do not dump raw key-value blocks unless explicitly asked. "
         "If LOCAL DISCOVERY CONTEXT is included, use those ranked local matches first and provide concrete recommendations. "
         "Do not claim there are no local options when LOCAL DISCOVERY CONTEXT contains matches. "
-        "Do not claim PerkNation offers cashback, cash-back, stock rewards, stock conversion, Target offers, reward-rate tables, or cash/stock percentages. "
-        "Confirmed current PerkNation promos are limited to: Hollywood Sports $60 paintball package with 11 regular tickets plus 1 Golden Ticket; Hollywood Sports $5 entry-only pass; Bond Collective 20% initial services discount; the listed Swarovski/Dior jewelry discounts; and El Portal World Cup game-day happy hour. Do not list any other discount as active. "
+        "Do not claim PerkNation offers cashback, cash-back, stock rewards, stock conversion, Target offers, reward-rate tables, or cash/stock percentages unless live account context explicitly provides them. "
         "If policy/financial/legal advice is requested, provide general guidance and suggest contacting a qualified professional. "
         "You can have natural, open-ended conversations on general topics."
     )
@@ -586,14 +605,13 @@ def _system_prompt_for_context(role_context: str) -> str:
     if role_context == "home_local_guide":
         return (
             "You are the PerkNation AI Local Guide on the public homepage. "
-            "Use only the HOME LOCAL GUIDE CONTEXT plus any LA RESTAURANT KNOWLEDGE CONTEXT or LOCAL DISCOVERY CONTEXT provided in this request. "
-            "Only answer questions about the current PerkNation public promos, the Hollywood Sports paintball offer, "
-            "the Bond Collective workspace promo, the crystal jewelry drop, El Portal's World Cup viewing promo, the local/Pasadena restaurant guides, and the PerkNation business directory listings in context. "
+            "Use HOME LOCAL GUIDE CONTEXT, LIVE QUERY RESULT, PUBLIC BUSINESS DIRECTORY CONTEXT, LOCAL DISCOVERY CONTEXT, and LA RESTAURANT KNOWLEDGE CONTEXT as authoritative. "
+            "Keep three concepts separate: active PerkNation promotions/offers, public business-directory listings, and local restaurant or discovery recommendations. "
+            "For counts, use the live count in context and never infer totals from a shortlist. "
             "Do not invent promos, rewards, prices, discounts, venues, hours, dates, or ticket terms. "
             "For business directory listings, do not infer missing city, address, phone, website, hours, or services; if LOCAL DISCOVERY CONTEXT says a field is not listed, say it is not listed. "
             "Do not mention cashback, cash-back, stock rewards, stock conversion, Target offers, reward-rate tables, or cash/stock percentages. "
-            "If the user asks about anything outside those topics, politely say you can only help with current PerkNation promos "
-            "and local restaurant/business directory guides, then offer one or two relevant examples. "
+            "If the user asks beyond the available context, say what is known and offer to narrow by category, city, ZIP, or promotion type. "
             "Keep answers concise, practical, and oriented toward what the visitor can do next. "
             "Use plain text only; do not use Markdown bold markers or surround phrases with double asterisks."
         )
@@ -604,34 +622,290 @@ def _system_prompt_for_context(role_context: str) -> str:
     )
 
 
-def _home_local_guide_context() -> str:
-    return "\n".join(
+def _home_local_guide_context(*, db: Optional[Session]) -> str:
+    lines = [
+        "HOME LOCAL GUIDE CONTEXT (authoritative public content)",
+        "Scope: current PerkNation promotions, public business-directory listings, and local recommendations.",
+        "Important distinction: promotions/offers are active PerkNation deals. Business-directory listings are broader local business records and are not automatically promotions.",
+        "For directory listings, missing fields are unknown. Never infer a city, address, phone, website, hours, or service detail that is not present in directory context.",
+    ]
+    if db is not None:
+        marketplace_context = _public_marketplace_context(db)
+        if marketplace_context:
+            lines.extend(["", marketplace_context])
+
+    lines.extend(
         [
-            "HOME LOCAL GUIDE CONTEXT (authoritative public content)",
-            "Scope: current PerkNation public promos, local restaurant guide, and PerkNation business directory listings only.",
-            "The PerkNation business directory is also available through LOCAL DISCOVERY CONTEXT when a visitor asks for a listed business, category, phone, address, website, or city search.",
-            "For directory listings, missing fields are unknown. Never infer a city, address, phone, website, hours, or service detail that is not present in LOCAL DISCOVERY CONTEXT.",
-            "Important exclusions: PerkNation does not currently list cashback, cash-back, stock reward, stock conversion, Target, reward-rate table, or cash/stock percentage offers on the public homepage guide. Do not claim those are available.",
             "",
-            "Current promos:",
-            "- Hollywood Sports paintball campaign: $60 package has 11 regular entry tickets plus 1 Golden Ticket. Regular tickets include marker and all-day park pass; all-day air plus 400 paintballs required; 100 bonus rounds for .50 caliber; field paint only. Golden Ticket includes admission, .50 caliber gun, 200 paintballs, and mask rental; walk-ons only and cannot combine with other discounts. $5 option is entry only. CTA: /hollywood-sports#buy-now.",
-            "- Bond Collective workspace promo: 20% initial discount on eligible services. Public base prices: private office $500/month, dedicated desk $500/month, coworking $300/month, day pass $25/day, conference room $50/hour. Estimated 20% off prices: $400, $400, $240, $20, $40 before location-specific terms. Website: https://bondcollective.com/memberships/.",
-            "- Crystal jewelry drop: Swarovski Annual Snowflake 10-year period $1,875 after 25% off; Swarovski Sorcerer Mickey $180 after 20% off; Christian Dior Necklace $420 after 20% off. Swan Crystal Pin Set photos are live but price/discount are pending. Instagram: https://www.instagram.com/perk.nation.rewards.",
-            "- El Portal Restaurant World Cup promo: 695 E. Green St., Pasadena. Every World Cup game live during restaurant hours. Game-day happy hour Tuesday-Friday 12PM-6PM and Saturday-Sunday 12PM-5PM. Website: https://www.elportalrestaurant.com/. Instagram: https://www.instagram.com/elportal.",
-            "",
-            "Local restaurant guide currently surfaced on the homepage:",
+            "Restaurant guide examples currently surfaced on the homepage:",
             "- Union, Agnes, Fishwives, Perle, Bone Kettle, Osawa, Panda Inn, and Pez Coastal Kitchen are Pasadena restaurant recommendations, not discount offers unless another promo says so.",
             "",
             "Answering rules:",
-            "- Prefer Hollywood Sports when the user asks about paintball, packages, tickets, entry, park passes, wallet passes, or current PerkNation campaign purchases.",
-            "- Prefer Bond Collective when the user asks about coworking, workspace, private offices, dedicated desks, day passes, meeting rooms, office space, or workplace services.",
-            "- Prefer the jewelry drop when the user asks about Swarovski, Sorcerer Mickey, Dior, necklace, swan pins, crystal, jewelry, collectible, retail price, or jewelry discounts.",
-            "- Prefer El Portal when the user asks about World Cup games, happy hour, soccer viewing, or game-day dining.",
-            "- Prefer restaurant guide entries when the user asks where to eat, date night, cuisine, neighborhoods, or Pasadena dining.",
-            "- If asked whether there is a discount or deal, answer only with the confirmed current promos: Hollywood Sports $60 package, Hollywood Sports $5 entry-only pass, Bond Collective 20% initial services discount, the jewelry prices listed above, and El Portal's World Cup game-day happy hour. Restaurant guide entries are recommendations unless a specific promo is listed here.",
-            "- If the needed detail is not in this context or the retrieved restaurant/local context, say what is known and suggest checking the venue or PerkNation page rather than guessing.",
+            "- Keep offer counts separate from business-directory listing counts.",
+            "- If asked for all promotions, summarize active PerkNation offers from live data and offer to narrow by merchant, city, ZIP, or category.",
+            "- If asked for business listings, answer from the public directory count or directory search context, not the offer count.",
+            "- If asked for recommendations, use local discovery or restaurant context and make clear it is a shortlist, not the total directory.",
         ]
     )
+    return "\n".join(lines)
+
+
+def _public_marketplace_context(db: Session) -> str:
+    now = datetime.now(timezone.utc)
+    lines: list[str] = ["LIVE PERKNATION MARKETPLACE SNAPSHOT"]
+
+    try:
+        active_directory_count = int(
+            db.execute(
+                sql_text(
+                    "SELECT COUNT(*) FROM business_directory_entries "
+                    "WHERE is_active IS TRUE"
+                )
+            ).scalar()
+            or 0
+        )
+        total_directory_count = int(db.execute(sql_text("SELECT COUNT(*) FROM business_directory_entries")).scalar() or 0)
+        lines.append(f"business_directory_active_listings: {active_directory_count}")
+        lines.append(f"business_directory_total_records: {total_directory_count}")
+    except Exception:
+        lines.append("business_directory_counts: unavailable")
+
+    active_offers = db.scalars(
+        select(Offer)
+        .options(selectinload(Offer.merchant), selectinload(Offer.location))
+        .where(
+            and_(
+                Offer.approval_status == OfferStatus.approved,
+                Offer.starts_at <= now,
+                Offer.ends_at >= now,
+            )
+        )
+        .order_by(desc(Offer.created_at), desc(Offer.id))
+        .limit(30)
+    ).all()
+    active_offer_count = db.scalar(
+        select(func.count()).select_from(Offer).where(
+            and_(
+                Offer.approval_status == OfferStatus.approved,
+                Offer.starts_at <= now,
+                Offer.ends_at >= now,
+            )
+        )
+    ) or 0
+
+    lines.append(f"active_promotion_count: {int(active_offer_count)}")
+    if active_offers:
+        lines.append("active_promotion_examples:")
+        for offer in active_offers:
+            merchant = offer.merchant_name or f"Merchant #{offer.merchant_id}"
+            location = f"; location={offer.location.name}" if offer.location else ""
+            lines.append(
+                f"- offer_id={offer.id}; merchant={merchant}; title={offer.title}{location}; "
+                f"ends_at={offer.ends_at.isoformat()}"
+            )
+    else:
+        lines.append("active_promotion_examples: none")
+
+    return "\n".join(lines)
+
+
+_DIRECTORY_SEARCH_HINTS = {
+    "business",
+    "businesses",
+    "listing",
+    "listings",
+    "directory",
+    "near",
+    "nearby",
+    "zip",
+    "category",
+    "categories",
+    "restaurant",
+    "restaurants",
+    "gas",
+    "fuel",
+    "station",
+    "stations",
+    "grocery",
+    "coffee",
+    "retail",
+    "medical",
+    "dental",
+    "auto",
+    "bank",
+    "hotel",
+    "law",
+    "attorney",
+    "salon",
+    "beauty",
+    "fitness",
+}
+
+
+def _is_public_directory_search_query(message: str) -> bool:
+    text = _normalize_user_text(message)
+    if not text:
+        return False
+    if re.search(r"\b9\d{4}(?:-\d{4})?\b", text):
+        return True
+    return any(hint in text for hint in _DIRECTORY_SEARCH_HINTS)
+
+
+def _build_public_directory_context(db: Session, *, message: str, limit: int = 12) -> str:
+    text = _normalize_user_text(message)
+    if not text:
+        return ""
+
+    zip_match = re.search(r"\b(9\d{4})(?:-\d{4})?\b", text)
+    zip_code = zip_match.group(1) if zip_match else ""
+    excluded_tokens = {
+        "how",
+        "many",
+        "near",
+        "nearby",
+        "the",
+        "are",
+        "available",
+        "business",
+        "businesses",
+        "listing",
+        "listings",
+        "directory",
+        "local",
+        "total",
+        "california",
+    }
+    tokens = []
+    for token in re.findall(r"[a-z0-9]+", text):
+        if len(token) < 3 or token in excluded_tokens:
+            continue
+        tokens.append(token[:-1] if len(token) > 4 and token.endswith("s") else token)
+    if zip_code:
+        tokens = [token for token in tokens if token != zip_code]
+
+    where_parts = ["is_active IS TRUE"]
+    params: dict[str, object] = {"limit": max(1, min(int(limit), 50))}
+    if zip_code:
+        where_parts.append("zip_code LIKE :zip_code")
+        params["zip_code"] = f"{zip_code}%"
+
+    searchable_terms = tokens[:6]
+    if searchable_terms:
+        term_clauses: list[str] = []
+        for idx, token in enumerate(searchable_terms):
+            key = f"term_{idx}"
+            params[key] = f"%{token}%"
+            term_clauses.append(
+                "("
+                f"LOWER(COALESCE(business_name, '')) LIKE :{key} OR "
+                f"LOWER(COALESCE(business_type, '')) LIKE :{key} OR "
+                f"LOWER(COALESCE(description, '')) LIKE :{key} OR "
+                f"LOWER(COALESCE(address, '')) LIKE :{key} OR "
+                f"LOWER(COALESCE(city, '')) LIKE :{key}"
+                ")"
+            )
+        where_parts.append("(" + " AND ".join(term_clauses) + ")")
+
+    where_sql = " AND ".join(where_parts)
+    try:
+        total = int(
+            db.execute(
+                sql_text(f"SELECT COUNT(*) FROM business_directory_entries WHERE {where_sql}"),
+                params,
+            ).scalar()
+            or 0
+        )
+        rows = db.execute(
+            sql_text(
+                "SELECT business_name, business_type, address, city, zip_code, phone_number, website, source_url "
+                f"FROM business_directory_entries WHERE {where_sql} "
+                "ORDER BY COALESCE(city, ''), COALESCE(business_name, '') LIMIT :limit"
+            ),
+            params,
+        ).mappings().all()
+
+        broader_total = 0
+        broader_rows = []
+        if total == 0 and zip_code and searchable_terms:
+            broader_params = {"limit": params["limit"]}
+            broader_term_clauses: list[str] = []
+            for idx, token in enumerate(searchable_terms):
+                key = f"term_{idx}"
+                broader_params[key] = f"%{token}%"
+                broader_term_clauses.append(
+                    "("
+                    f"LOWER(COALESCE(business_name, '')) LIKE :{key} OR "
+                    f"LOWER(COALESCE(business_type, '')) LIKE :{key} OR "
+                    f"LOWER(COALESCE(description, '')) LIKE :{key} OR "
+                    f"LOWER(COALESCE(address, '')) LIKE :{key} OR "
+                    f"LOWER(COALESCE(city, '')) LIKE :{key}"
+                    ")"
+                )
+            broader_where_sql = "is_active IS TRUE AND (" + " AND ".join(broader_term_clauses) + ")"
+            broader_total = int(
+                db.execute(
+                    sql_text(f"SELECT COUNT(*) FROM business_directory_entries WHERE {broader_where_sql}"),
+                    broader_params,
+                ).scalar()
+                or 0
+            )
+            broader_rows = db.execute(
+                sql_text(
+                    "SELECT business_name, business_type, address, city, zip_code, phone_number, website, source_url "
+                    f"FROM business_directory_entries WHERE {broader_where_sql} "
+                    "ORDER BY COALESCE(city, ''), COALESCE(business_name, '') LIMIT :limit"
+                ),
+                broader_params,
+            ).mappings().all()
+    except Exception:
+        return ""
+
+    lines = [
+        "PUBLIC BUSINESS DIRECTORY CONTEXT",
+        f"query: {message.strip()}",
+        f"matched_listings_total: {total}",
+    ]
+    if zip_code:
+        lines.append(f"zip_filter: {zip_code}")
+    if searchable_terms:
+        lines.append("search_terms: " + ", ".join(searchable_terms))
+    if rows:
+        lines.append("matched_listing_examples:")
+        for row in rows:
+            lines.append("- " + _format_directory_row(row))
+    else:
+        lines.append("matched_listing_examples: none")
+    if total == 0 and zip_code and searchable_terms:
+        lines.append(
+            "nearby_note: no exact ZIP matches were found in the directory for this category; broader statewide category matches are listed when available."
+        )
+        lines.append(f"broader_category_matches_total: {broader_total}")
+        if broader_rows:
+            lines.append("broader_category_examples:")
+            for row in broader_rows:
+                lines.append("- " + _format_directory_row(row))
+        else:
+            lines.append("broader_category_examples: none")
+    return "\n".join(lines)
+
+
+def _format_directory_row(row: object) -> str:
+    parts = [
+        str(row.get("business_name") or "").strip(),
+        str(row.get("business_type") or "").strip(),
+        str(row.get("address") or "").strip(),
+        " ".join(
+            part
+            for part in [
+                str(row.get("city") or "").strip(),
+                str(row.get("zip_code") or "").strip(),
+            ]
+            if part
+        ),
+        str(row.get("phone_number") or "").strip(),
+        str(row.get("website") or "").strip(),
+    ]
+    return " | ".join(part for part in parts if part)
 
 
 def _guard_current_perk_answer(*, message: str, answer: str) -> str:
@@ -654,13 +928,6 @@ def _guard_current_perk_answer(*, message: str, answer: str) -> str:
         "early access dining perk",
     )
     has_forbidden_terms = any(term in normalized_answer for term in forbidden_terms)
-    if (
-        not has_forbidden_terms
-        and _is_discount_query(message)
-        and not _mentions_confirmed_promo(answer)
-    ):
-        return _confirmed_current_deals_answer(message)
-
     if not has_forbidden_terms:
         return answer
 
@@ -917,11 +1184,22 @@ def _execute_live_query_if_requested(
     role_context: str,
     message: str,
 ) -> Optional[str]:
-    if db is None or current_user is None:
+    if db is None:
         return None
 
     text = _normalize_user_text(message)
     if not text:
+        return None
+
+    public_directory_response = _public_directory_live_query_response(db, text)
+    if public_directory_response:
+        return public_directory_response
+
+    public_marketplace_response = _public_promotions_live_query_response(db, text)
+    if public_marketplace_response:
+        return public_marketplace_response
+
+    if current_user is None:
         return None
 
     if _contains_any(text, ("what can you do", "help", "capabilities", "supported actions")):
@@ -937,6 +1215,178 @@ def _execute_live_query_if_requested(
         return _admin_live_query_response(db, current_user, text)
 
     return None
+
+
+def _should_return_live_query_directly(message: str, role_context: str) -> bool:
+    if role_context not in {"public", "home_local_guide"}:
+        return False
+    text = _normalize_user_text(message)
+    if not text:
+        return False
+    return _contains_any(
+        text,
+        (
+            "how many",
+            "count",
+            "total",
+            "all promotions",
+            "all promos",
+            "all offers",
+            "all deals",
+            "what promotions",
+            "what promos",
+            "what offers",
+            "what deals",
+            "available promotions",
+            "available promos",
+            "available offers",
+            "available deals",
+        ),
+    )
+
+
+def _public_promotions_live_query_response(db: Session, text: str) -> Optional[str]:
+    mentions_offer_context = _contains_any(
+        text,
+        (
+            "offer",
+            "offers",
+            "promo",
+            "promos",
+            "promotion",
+            "promotions",
+            "deal",
+            "deals",
+            "discount",
+            "discounts",
+            "perk",
+            "perks",
+        ),
+    )
+    if not mentions_offer_context:
+        return None
+
+    asks_available = _contains_any(
+        text,
+        (
+            "how many",
+            "count",
+            "total",
+            "all",
+            "available",
+            "current",
+            "active",
+            "what",
+            "list",
+            "show",
+        ),
+    )
+    if not asks_available:
+        return None
+
+    now = datetime.now(timezone.utc)
+    active_filter = and_(
+        Offer.approval_status == OfferStatus.approved,
+        Offer.starts_at <= now,
+        Offer.ends_at >= now,
+    )
+    total = int(db.scalar(select(func.count()).select_from(Offer).where(active_filter)) or 0)
+    offers = db.scalars(
+        select(Offer)
+        .options(selectinload(Offer.merchant), selectinload(Offer.location))
+        .where(active_filter)
+        .order_by(desc(Offer.created_at), desc(Offer.id))
+        .limit(20)
+    ).all()
+
+    lines = [f"There are {total:,} active PerkNation promotions/offers right now."]
+    if offers:
+        lines.append("Here are current examples:")
+        for offer in offers:
+            merchant = offer.merchant_name or f"Merchant #{offer.merchant_id}"
+            location = f" at {offer.location.name}" if offer.location else ""
+            lines.append(f"- {merchant}{location}: {offer.title}")
+        if total > len(offers):
+            lines.append("Ask for a city, ZIP, merchant, or category to narrow the full active offer list.")
+    return "\n".join(lines)
+
+
+def _public_directory_live_query_response(db: Session, text: str) -> Optional[str]:
+    wants_count = _contains_any(
+        text,
+        (
+            "how many",
+            "number of",
+            "count",
+            "total",
+            "total number",
+        ),
+    )
+    mentions_offer_context = _contains_any(
+        text,
+        (
+            "offer",
+            "offers",
+            "promo",
+            "promos",
+            "promotion",
+            "promotions",
+            "deal",
+            "deals",
+            "discount",
+            "discounts",
+        ),
+    )
+    mentions_directory = _contains_any(
+        text,
+        (
+            "business directory",
+            "local business directory",
+            "business listing",
+            "business listings",
+            "local business listing",
+            "local business listings",
+            "local businesses",
+            "businesses on",
+            "businesses in the directory",
+            "listings available",
+            "directory",
+        ),
+    )
+    mentions_california_total = _contains_any(text, ("california", "ca")) and _contains_any(
+        text,
+        (
+            "in total",
+            "total in",
+            "total across",
+            "statewide",
+            "state wide",
+        ),
+    )
+    if not (wants_count and (mentions_directory or mentions_california_total)) or mentions_offer_context:
+        return None
+
+    try:
+        active_count = int(
+            db.execute(
+                sql_text(
+                    "SELECT COUNT(*) FROM business_directory_entries "
+                    "WHERE is_active IS TRUE"
+                )
+            ).scalar()
+            or 0
+        )
+        total_count = int(db.execute(sql_text("SELECT COUNT(*) FROM business_directory_entries")).scalar() or 0)
+    except Exception:
+        return None
+
+    inactive_count = max(total_count - active_count, 0)
+    if inactive_count:
+        return (
+            f"There are {active_count:,} active businesses in the PerkNation local business directory "
+            f"({total_count:,} total records, including {inactive_count:,} inactive)."
+        )
+    return f"There are {active_count:,} active businesses in the PerkNation local business directory."
 
 
 def _consumer_live_query_response(db: Session, current_user: User, text: str) -> Optional[str]:
@@ -1104,9 +1554,8 @@ def _capabilities_for_role(role_context: str) -> str:
         return "I can read live admin operations metrics: users, pending approvals, open tickets, and open disputes."
     if role_context == "home_local_guide":
         return (
-            "I can help with current PerkNation public promos and local restaurant guides: "
-            "Hollywood Sports paintball packages, the Bond Collective workspace discount, the crystal jewelry drop, El Portal World Cup viewing and happy hour, "
-            "Pasadena restaurant picks, and PerkNation business directory listings across Pasadena, SGV, Burbank, Glendale, Arcadia, and the DTLA-to-Long Beach corridor."
+            "I can help with current PerkNation promotions, business-directory listings, nearby categories, "
+            "and local restaurant or discovery recommendations. I keep promotions separate from broader business listings."
         )
     return "I can answer public product and onboarding questions."
 

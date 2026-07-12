@@ -1261,9 +1261,9 @@
         appendHomeAssistantMessage(
           messages,
           "assistant",
-          "Ask about the current Hollywood Sports offer, jewelry drop, El Portal World Cup happy hour, or Pasadena restaurant picks."
+          "Ask about current PerkNation promotions, business listings, nearby categories, or local restaurant picks."
         );
-        setStatus("Cleared. Ask about current promos, jewelry, or local restaurant picks.");
+        setStatus("Cleared. Ask about current promotions, business listings, or local picks.");
       });
     }
 
@@ -1277,7 +1277,7 @@
       input.focus();
       sendBtn.disabled = true;
       if(clearBtn) clearBtn.disabled = true;
-      setStatus("Finding local recommendations...");
+      setStatus("Checking current PerkNation data...");
 
       try {
         const includeGeo = shouldIncludeGeoHint(message);
