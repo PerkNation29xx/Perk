@@ -171,6 +171,7 @@ def chat_with_assistant(
     )
     include_local_discovery_context = (
         db is not None
+        and not include_public_directory_context
         and should_attempt_local_discovery_context(message)
     )
 
