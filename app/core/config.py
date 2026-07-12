@@ -44,6 +44,7 @@ class Settings(BaseSettings):
     supabase_url: Optional[str] = None
     supabase_anon_key: Optional[str] = None
     supabase_jwt_secret: Optional[str] = None
+    supabase_service_role_key: Optional[str] = None
     # Public website base URL used for auth email redirects.
     # Example: https://perknation.app
     public_web_base_url: str = "https://perknation.app"
@@ -382,6 +383,14 @@ class Settings(BaseSettings):
             or os.environ.get("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY")
             or ""
         ).strip()
+        return fallback or None
+
+    @property
+    def effective_supabase_service_role_key(self) -> Optional[str]:
+        candidate = (self.supabase_service_role_key or "").strip()
+        if candidate:
+            return candidate
+        fallback = (os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or "").strip()
         return fallback or None
 
     @property

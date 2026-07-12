@@ -9,7 +9,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_db, oauth2_scheme
-from app.db.models import RewardPreference, User, UserRole
+from app.db.models import RewardPreference, User, UserRole, UserStatus
 from app.schemas import (
     APIMessage,
     EmailVerificationRequest,
@@ -27,7 +27,12 @@ from app.core.config import settings
 from app.services.audit import log_action
 from app.services.referrals import ensure_referral_profile
 from app.services.security import create_access_token, hash_password, verify_password
-from app.services.supabase_auth import SupabaseAuthError, update_supabase_password, verify_supabase_password
+from app.services.supabase_auth import (
+    SupabaseAuthError,
+    delete_supabase_auth_user,
+    update_supabase_password,
+    verify_supabase_password,
+)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -330,3 +335,55 @@ def update_me(
         db.refresh(current_user)
 
     return UserOut.model_validate(current_user)
+
+
+@router.delete("/me", response_model=APIMessage)
+def delete_me(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> APIMessage:
+    """
+    Permanently remove the sign-in identity and anonymize retained local records.
+
+    The local row is suspended instead of hard-deleted so historical rewards,
+    referrals, and audit rows do not lose their foreign-key target.
+    """
+
+    if current_user.supabase_user_id:
+        try:
+            delete_supabase_auth_user(current_user.supabase_user_id)
+        except SupabaseAuthError as exc:
+            logger.warning(
+                "Supabase account deletion failed for user %s: status=%s body=%s",
+                current_user.id,
+                exc.status_code,
+                exc.body,
+            )
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="Account deletion is temporarily unavailable. Please try again shortly.",
+            ) from exc
+
+    log_action(
+        db,
+        actor=current_user,
+        action="user.delete",
+        object_type="user",
+        object_id=str(current_user.id),
+        after_snapshot=f"role={current_user.role.value}",
+    )
+
+    current_user.full_name = "Deleted User"
+    current_user.email = f"deleted-user-{current_user.id}-{secrets.token_hex(8)}@deleted.local"
+    current_user.phone = None
+    current_user.password_hash = None
+    current_user.supabase_user_id = None
+    current_user.status = UserStatus.suspended
+    current_user.notifications_enabled = False
+    current_user.location_consent = False
+    current_user.email_verified = False
+    current_user.email_verification_code_hash = None
+    current_user.email_verification_expires_at = None
+
+    db.commit()
+    return APIMessage(message="Account deleted")

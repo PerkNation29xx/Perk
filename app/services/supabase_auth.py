@@ -135,3 +135,33 @@ def update_supabase_password(access_token: str, new_password: str) -> None:
         access_token=access_token,
         body={"password": new_password},
     )
+
+
+def delete_supabase_auth_user(user_id: str) -> None:
+    supabase_url = settings.effective_supabase_url
+    service_role_key = settings.effective_supabase_service_role_key
+    if not supabase_url or not service_role_key:
+        raise SupabaseAuthError(
+            "Supabase Admin Auth is not configured (missing SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY)"
+        )
+
+    req = urllib.request.Request(
+        supabase_url.rstrip("/") + f"/auth/v1/admin/users/{user_id}",
+        method="DELETE",
+        headers={
+            "Authorization": f"Bearer {service_role_key}",
+            "apikey": service_role_key,
+            "Accept": "application/json",
+        },
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            resp.read()
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="ignore")
+        if exc.code == 404:
+            return
+        raise SupabaseAuthError("Supabase Admin Auth delete failed", status_code=exc.code, body=body) from exc
+    except Exception as exc:
+        raise SupabaseAuthError("Failed to reach Supabase Admin Auth", body=str(exc)) from exc
