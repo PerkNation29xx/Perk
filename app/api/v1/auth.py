@@ -30,6 +30,7 @@ from app.services.security import create_access_token, hash_password, verify_pas
 from app.services.supabase_auth import (
     SupabaseAuthError,
     delete_supabase_auth_user,
+    delete_supabase_auth_user_from_database,
     update_supabase_password,
     verify_supabase_password,
 )
@@ -353,16 +354,31 @@ def delete_me(
         try:
             delete_supabase_auth_user(current_user.supabase_user_id)
         except SupabaseAuthError as exc:
-            logger.warning(
-                "Supabase account deletion failed for user %s: status=%s body=%s",
-                current_user.id,
-                exc.status_code,
-                exc.body,
-            )
-            raise HTTPException(
-                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                detail="Account deletion is temporarily unavailable. Please try again shortly.",
-            ) from exc
+            if settings.effective_supabase_service_role_key:
+                logger.warning(
+                    "Supabase account deletion failed for user %s: status=%s body=%s",
+                    current_user.id,
+                    exc.status_code,
+                    exc.body,
+                )
+                raise HTTPException(
+                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                    detail="Account deletion is temporarily unavailable. Please try again shortly.",
+                ) from exc
+
+            try:
+                delete_supabase_auth_user_from_database(db, current_user.supabase_user_id)
+            except SupabaseAuthError as db_exc:
+                logger.warning(
+                    "Supabase database account deletion failed for user %s: status=%s body=%s",
+                    current_user.id,
+                    db_exc.status_code,
+                    db_exc.body,
+                )
+                raise HTTPException(
+                    status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                    detail="Account deletion is temporarily unavailable. Please try again shortly.",
+                ) from db_exc
 
     log_action(
         db,

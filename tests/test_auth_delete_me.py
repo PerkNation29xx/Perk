@@ -80,3 +80,30 @@ def test_delete_me_calls_supabase_admin_delete_before_anonymizing(monkeypatch) -
 
     assert response.status_code == 200
     assert deleted_ids == [supabase_user_id]
+
+
+def test_delete_me_uses_database_fallback_when_service_role_key_missing(monkeypatch) -> None:
+    supabase_user_id = f"sb-{uuid.uuid4()}"
+    user_id = _new_user(supabase_user_id=supabase_user_id)
+    fallback_ids: list[str] = []
+
+    def _fake_delete_supabase_auth_user(value: str) -> None:
+        from app.services.supabase_auth import SupabaseAuthError
+
+        raise SupabaseAuthError("missing service role")
+
+    def _fake_delete_supabase_auth_user_from_database(_db, value: str) -> None:
+        fallback_ids.append(value)
+
+    monkeypatch.setattr("app.api.v1.auth.delete_supabase_auth_user", _fake_delete_supabase_auth_user)
+    monkeypatch.setattr(
+        "app.api.v1.auth.delete_supabase_auth_user_from_database",
+        _fake_delete_supabase_auth_user_from_database,
+    )
+    monkeypatch.setattr("app.api.v1.auth.settings.supabase_service_role_key", None)
+
+    with TestClient(app) as client:
+        response = client.delete("/v1/auth/me", headers=_auth_headers(user_id))
+
+    assert response.status_code == 200
+    assert fallback_ids == [supabase_user_id]

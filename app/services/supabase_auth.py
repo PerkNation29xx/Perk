@@ -6,6 +6,10 @@ import urllib.request
 from dataclasses import dataclass
 from typing import Any
 
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
+
 from app.core.config import settings
 
 
@@ -165,3 +169,10 @@ def delete_supabase_auth_user(user_id: str) -> None:
         raise SupabaseAuthError("Supabase Admin Auth delete failed", status_code=exc.code, body=body) from exc
     except Exception as exc:
         raise SupabaseAuthError("Failed to reach Supabase Admin Auth", body=str(exc)) from exc
+
+
+def delete_supabase_auth_user_from_database(db: Session, user_id: str) -> None:
+    try:
+        db.execute(text("DELETE FROM auth.users WHERE id = :user_id"), {"user_id": user_id})
+    except SQLAlchemyError as exc:
+        raise SupabaseAuthError("Supabase Auth database delete failed", body=str(exc)) from exc
