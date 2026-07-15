@@ -298,8 +298,8 @@ def _directory_page_path(*, white: bool, city_slug: Optional[str] = None, busine
 
 def _directory_shell(*, title: str, description: str, canonical_path: str, body: str, white: bool, json_ld: Optional[dict] = None) -> str:
     brand_href = "/white/" if white else "/"
-    style_href = f"{_asset_path('styles.css', white=white)}?v=directory20260710-results-row"
-    script_href = f"{_asset_path('app.js', white=white)}?v=directory20260710-results-row"
+    style_href = f"{_asset_path('styles.css', white=white)}?v=directory20260715-category-hierarchy"
+    script_href = f"{_asset_path('app.js', white=white)}?v=directory20260715-category-hierarchy"
     json_ld_html = ""
     if json_ld:
         json_ld_payload = json.dumps(json_ld, ensure_ascii=False).replace("</", "<\\/")
@@ -473,6 +473,110 @@ def _directory_search_controls(
     """
 
 
+_DIRECTORY_CATEGORY_HIERARCHY = (
+    (
+        "Food, Dining & Hospitality",
+        "🍽",
+        (
+            ("Restaurants & Dining", ("restaurant", "cafe", "eating place", "dining", "bar", "catering", "brew", "wine")),
+            ("Food, Grocery & Supply", ("food", "grocery", "bakery", "beverage", "ingredient")),
+            ("Hotels, Travel & Events", ("hotel", "motel", "lodging", "travel", "tourism", "event", "banquet", "wedding")),
+        ),
+    ),
+    (
+        "Home, Construction & Property",
+        "🔧",
+        (
+            ("Construction & Trades", ("building", "contractor", "construction", "plumbing", "electrical", "roof", "floor", "handyman", "hvac", "landscape", "repair")),
+            ("Real Estate & Housing", ("real estate", "apartment", "property", "mortgage", "title", "leasing", "housing")),
+            ("Home Services", ("cleaning", "pest", "moving", "storage", "interior", "furniture", "home service")),
+        ),
+    ),
+    (
+        "Health, Wellness & Personal Care",
+        "✚",
+        (
+            ("Medical & Dental", ("medical", "health care", "healthcare", "hospital", "doctor", "dentist", "dental", "physician", "optometry", "pharmacy")),
+            ("Wellness & Fitness", ("wellness", "fitness", "chiropr", "massage", "therapy", "mental health", "senior care")),
+            ("Beauty & Personal Care", ("beauty", "barber", "salon", "nail", "spa", "cosmetic")),
+        ),
+    ),
+    (
+        "Shopping, Automotive & Consumer",
+        "🛍",
+        (
+            ("Retail & Shopping", ("retail", "shopping", "store", "jewelry", "apparel", "florist")),
+            ("Automotive & Transportation", ("auto", "vehicle", "transport", "shuttle", "airport", "towing", " car ")),
+            ("Consumer Services", ("laundry", "pet", "recreation", "photo booth")),
+        ),
+    ),
+    (
+        "Business, Finance & Legal",
+        "$",
+        (
+            ("Finance & Insurance", ("bank", "credit union", "financial", "account", "bookkeep", "tax", "insurance", "wealth", "lending", "merchant service")),
+            ("Legal & Public Services", ("attorney", "legal", "law", "government", "municipal", "utilities", "water district")),
+            ("Consulting & Professional", ("consultant", "professional", "employment", "human resources", "business service", "broker")),
+        ),
+    ),
+    (
+        "Technology, Media & Creative",
+        "⌘",
+        (
+            ("Technology & Online", ("technology", "software", "computer", "e-commerce", "internet", "telecom", "app development")),
+            ("Marketing & Media", ("marketing", "advertising", "media", "printing", "publishing", "magazine", "graphic", "photography")),
+            ("Arts & Entertainment", ("entertainment", "artist", "performing", "music", "sports", "screen printing")),
+        ),
+    ),
+    (
+        "Education, Community & Nonprofit",
+        "🎓",
+        (
+            ("Education & Training", ("education", "school", "college", "university", "training", "teacher")),
+            ("Nonprofits & Associations", ("non-profit", "nonprofit", "association", "chamber", "foundation", "church")),
+            ("Community Services", ("community", "youth", "social service")),
+        ),
+    ),
+    (
+        "Manufacturing & Other Services",
+        "◆",
+        (
+            ("Manufacturing & Distribution", ("manufacturing", "mfg", "wholesale", "warehouse", "distributor", "supplier", "scientific")),
+            ("Industrial & Environmental", ("industrial", "environment", "energy", "solar", "engineering")),
+            ("Other Local Businesses", ()),
+        ),
+    ),
+)
+
+
+def _directory_category_groups(items: list[dict[str, object]]) -> list[dict[str, object]]:
+    groups = [
+        {
+            "label": top_label,
+            "icon": top_icon,
+            "levels": [{"label": level_label, "keywords": keywords, "items": []} for level_label, keywords in levels],
+        }
+        for top_label, top_icon, levels in _DIRECTORY_CATEGORY_HIERARCHY
+    ]
+    fallback = groups[-1]["levels"][-1]["items"]
+    for item in items:
+        label = str(item.get("label") or "").strip()
+        if not label:
+            continue
+        normalized = f" {label.lower()} "
+        destination = None
+        for group in groups:
+            for level in group["levels"]:
+                keywords = level["keywords"]
+                if keywords and any(keyword in normalized for keyword in keywords):
+                    destination = level["items"]
+                    break
+            if destination is not None:
+                break
+        (destination if destination is not None else fallback).append(item)
+    return groups
+
+
 def _directory_category_menu(
     *,
     facets: dict[str, list[dict[str, object]]],
@@ -480,24 +584,53 @@ def _directory_category_menu(
     selected_city_slug: Optional[str],
     selected_type_slug: Optional[str],
 ) -> str:
-    links = []
-    for item in facets["business_types"][:36]:
-        slug = str(item.get("slug") or "")
-        label = str(item.get("label") or "")
-        icon = str(item.get("icon") or "•")
-        count = int(item.get("count") or 0)
-        if not slug or not label:
+    group_html = []
+    for group in _directory_category_groups(facets["business_types"]):
+        level_html = []
+        group_count = 0
+        for level in group["levels"]:
+            items = level["items"]
+            if not items:
+                continue
+            links = []
+            level_count = 0
+            level_active = False
+            for item in items:
+                slug = str(item.get("slug") or "")
+                label = str(item.get("label") or "")
+                count = int(item.get("count") or 0)
+                if not slug or not label:
+                    continue
+                href = _directory_page_path(white=white, city_slug=selected_city_slug, business_type_slug=slug)
+                if not selected_city_slug:
+                    href = _directory_page_path(white=white, business_type_slug=slug)
+                active = " active" if slug == selected_type_slug else ""
+                level_active = level_active or bool(active)
+                level_count += count
+                links.append(
+                    f'<a class="directorySubcategoryLink{active}" href="{_escape(href)}">'
+                    f'<span>{_escape(label)}</span><em>{count}</em></a>'
+                )
+            group_count += level_count
+            open_attr = " open" if level_active else ""
+            level_html.append(
+                f'<details class="directoryCategoryLevel"{open_attr}>'
+                f'<summary><span>{_escape(level["label"])}</span><em>{level_count}</em></summary>'
+                f'<div class="directorySubcategoryGrid">{"".join(links)}</div></details>'
+            )
+        if not level_html:
             continue
-        href = _directory_page_path(white=white, city_slug=selected_city_slug, business_type_slug=slug)
-        if not selected_city_slug:
-            href = _directory_page_path(white=white, business_type_slug=slug)
-        active = " active" if slug == selected_type_slug else ""
-        links.append(
-            f'<a class="directoryCategoryChip{active}" href="{_escape(href)}">'
-            f'<span class="directoryIcon" aria-hidden="true">{_escape(icon)}</span>'
-            f'<span>{_escape(label)}</span><em>{count}</em></a>'
+        group_html.append(
+            '<section class="directoryCategoryGroup">'
+            f'<div class="directoryCategoryGroupHeading"><span class="directoryIcon" aria-hidden="true">{_escape(group["icon"])}</span>'
+            f'<strong>{_escape(group["label"])}</strong><em>{group_count}</em></div>'
+            f'<div class="directoryCategoryLevels">{"".join(level_html)}</div></section>'
         )
-    return f'<div class="directoryCategoryRail" aria-label="Business type directory">{"".join(links)}</div>'
+    return (
+        '<div class="directoryCategoryHierarchy" aria-label="Business category hierarchy">'
+        '<div class="directoryHierarchyHeader"><strong>Browse categories</strong><span>Choose a top-level group, then expand a category.</span></div>'
+        f'<div class="directoryCategoryGroupGrid">{"".join(group_html)}</div></div>'
+    )
 
 
 def _directory_city_links(*, facets: dict[str, list[dict[str, object]]], white: bool, selected_city_slug: Optional[str]) -> str:
@@ -513,7 +646,12 @@ def _directory_city_links(*, facets: dict[str, list[dict[str, object]]], white: 
             f'<a class="directoryCityLink{active}" href="{_escape(_directory_page_path(white=white, city_slug=slug))}">'
             f'{_escape(label)} <span>{count}</span></a>'
         )
-    return f'<div class="directoryCityRail" aria-label="City directory">{"".join(links)}</div>'
+    open_attr = " open" if selected_city_slug else ""
+    return (
+        f'<details class="directoryCityPanel"{open_attr}>'
+        f'<summary><span>Browse cities</span><em>{len(links)} popular cities</em></summary>'
+        f'<div class="directoryCityGrid" aria-label="City directory">{"".join(links)}</div></details>'
+    )
 
 
 def _directory_result_card(row, *, white: bool) -> str:

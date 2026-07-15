@@ -1642,11 +1642,11 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 }
 .directoryCategoryRail,
 .directoryCityRail{
-  display:flex;
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));
   gap:8px;
-  overflow-x:auto;
+  overflow:visible;
   padding-bottom:4px;
-  scrollbar-width:thin;
 }
 .directoryCategoryChip,
 .directoryCityLink{
@@ -1733,6 +1733,161 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 }
 .directoryHomeCategoryRail .directoryCategoryChip{
   max-width:300px;
+}
+.directoryCategoryHierarchy,
+.directoryCityPanel{
+  min-width:0;
+  overflow-x:clip;
+  margin-top:16px;
+  padding:14px;
+  border:1px solid rgba(250,247,247,.14);
+  border-radius:10px;
+  background:rgba(250,247,247,.035);
+}
+.directoryHomeCategoryHierarchy{
+  grid-column:1 / -1;
+  margin-top:0;
+  padding-top:14px;
+  border-width:1px 0 0;
+  border-radius:0;
+  background:transparent;
+}
+.directoryHierarchyHeader,
+.directoryCategoryGroupHeading,
+.directoryCategoryLevel summary,
+.directoryCityPanel > summary,
+.directorySubcategoryLink,
+.directoryCityLink{
+  min-width:0;
+}
+.directoryHierarchyHeader{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:6px 14px;
+  margin-bottom:10px;
+}
+.directoryHierarchyHeader strong{
+  font-size:15px;
+}
+.directoryHierarchyHeader span{
+  color:var(--muted2);
+  font-size:12px;
+  font-weight:800;
+}
+.directoryCategoryGroupGrid{
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0, 1fr));
+  gap:10px;
+}
+.directoryCategoryGroup{
+  min-width:0;
+  padding:10px;
+  border:1px solid rgba(250,247,247,.12);
+  border-radius:9px;
+  background:rgba(0,0,0,.16);
+}
+.directoryCategoryGroupHeading{
+  display:grid;
+  grid-template-columns:22px minmax(0, 1fr) auto;
+  align-items:center;
+  gap:8px;
+  min-height:38px;
+}
+.directoryCategoryGroupHeading strong,
+.directoryCategoryLevel summary span,
+.directorySubcategoryLink span{
+  overflow-wrap:anywhere;
+}
+.directoryCategoryGroupHeading strong{
+  font-size:13px;
+  line-height:1.25;
+}
+.directoryCategoryGroupHeading em,
+.directoryCategoryLevel summary em,
+.directorySubcategoryLink em,
+.directoryCityPanel > summary em{
+  color:var(--yellow);
+  font-style:normal;
+  font-size:11px;
+  white-space:nowrap;
+}
+.directoryCategoryLevels{
+  display:grid;
+  gap:6px;
+  margin-top:8px;
+}
+.directoryCategoryLevel,
+.directoryCityPanel{
+  min-width:0;
+}
+.directoryCategoryLevel summary,
+.directoryCityPanel > summary{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  cursor:pointer;
+  list-style:none;
+  font-size:12px;
+  font-weight:850;
+}
+.directoryCategoryLevel summary::-webkit-details-marker,
+.directoryCityPanel > summary::-webkit-details-marker{
+  display:none;
+}
+.directoryCategoryLevel summary::after,
+.directoryCityPanel > summary::after{
+  content:"+";
+  flex:0 0 auto;
+  color:var(--yellow);
+  font-weight:900;
+}
+.directoryCategoryLevel[open] summary::after,
+.directoryCityPanel[open] > summary::after{
+  content:"−";
+}
+.directorySubcategoryGrid,
+.directoryCityGrid{
+  display:grid;
+  gap:6px;
+  min-width:0;
+  margin-top:8px;
+}
+.directorySubcategoryLink,
+.directoryCityLink{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:8px;
+  width:100%;
+  max-width:none;
+  padding:7px 8px;
+  border:1px solid rgba(250,247,247,.10);
+  border-radius:7px;
+  background:rgba(250,247,247,.035);
+  color:var(--ink);
+  font-size:11px;
+  font-weight:780;
+  white-space:normal;
+}
+.directorySubcategoryLink:hover,
+.directorySubcategoryLink.active,
+.directoryCityLink:hover,
+.directoryCityLink.active{
+  border-color:rgba(230,184,74,.42);
+  background:rgba(230,184,74,.12);
+}
+.directoryCityGrid{
+  grid-template-columns:repeat(auto-fit, minmax(145px, 1fr));
+  max-height:320px;
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding-right:4px;
+}
+.directoryCityLink span{
+  flex:0 0 auto;
 }
 .directoryIcon{
   display:inline-grid;
@@ -2112,6 +2267,7 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   .directoryDetailGrid{grid-template-columns:1fr}
   .directoryMapPanel{grid-template-columns:1fr}
   .directoryResultsGrid{grid-template-columns:1fr}
+  .directoryCategoryGroupGrid{grid-template-columns:repeat(2, minmax(0, 1fr))}
 }
 
 @media (max-width: 520px){
@@ -2145,6 +2301,8 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   .directoryHeroStats{grid-template-columns:1fr}
   .directoryDetailFacts{grid-template-columns:1fr}
   .directoryDetailActions .btn{width:100%}
+  .directoryCategoryGroupGrid{grid-template-columns:1fr}
+  .directoryCityGrid{grid-template-columns:repeat(2, minmax(0, 1fr))}
 }
 @media (max-width: 360px){
   .jewelryGrid{grid-template-columns:1fr}

@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/styles.css?v=20260710-directory-geo" />
+  <link rel="stylesheet" href="assets/styles.css?v=20260715-category-hierarchy" />
 </head>
 <body>
 
@@ -79,16 +79,20 @@
           <button class="btn primary" type="submit">Search directory</button>
         </form>
 
-        <div class="directoryCategoryPanel" data-directory-category-panel>
-          <button class="directoryCategoryToggle" type="button" data-directory-category-toggle aria-expanded="false">
-            <span>Browse categories</span>
-            <em data-directory-category-count>Categories</em>
-          </button>
-          <div class="directoryCategoryRail directoryHomeCategoryRail" aria-label="Business type directory" data-directory-category-chips data-directory-category-limit="120">
-            <a class="directoryCategoryChip" href="/white/directory/type/restaurants-catering"><span class="directoryIcon" aria-hidden="true">🍽</span><span>Restaurants</span></a>
-            <a class="directoryCategoryChip" href="/white/directory/type/building-contractor-const-related"><span class="directoryIcon" aria-hidden="true">🔧</span><span>Contractors</span></a>
-            <a class="directoryCategoryChip" href="/white/directory/type/attorneys-legal-services"><span class="directoryIcon" aria-hidden="true">⚖</span><span>Legal</span></a>
-            <a class="directoryCategoryChip" href="/white/directory/type/retail"><span class="directoryIcon" aria-hidden="true">🛍</span><span>Retail</span></a>
+        <div class="directoryCategoryHierarchy directoryHomeCategoryHierarchy" aria-label="Business category hierarchy">
+          <div class="directoryHierarchyHeader">
+            <strong>Browse categories</strong>
+            <span data-directory-category-count>Business types</span>
+          </div>
+          <div class="directoryCategoryGroupGrid" data-directory-category-hierarchy>
+            <section class="directoryCategoryGroup"><div class="directoryCategoryGroupHeading"><span class="directoryIcon" aria-hidden="true">🍽</span><strong>Food, Dining &amp; Hospitality</strong></div><details class="directoryCategoryLevel"><summary><span>Restaurants &amp; Dining</span></summary><div class="directorySubcategoryGrid"><a class="directorySubcategoryLink" href="/white/directory/type/restaurants-catering"><span>Restaurants &amp; Catering</span></a></div></details></section>
+            <section class="directoryCategoryGroup"><div class="directoryCategoryGroupHeading"><span class="directoryIcon" aria-hidden="true">🔧</span><strong>Home, Construction &amp; Property</strong></div><details class="directoryCategoryLevel"><summary><span>Construction &amp; Trades</span></summary><div class="directorySubcategoryGrid"><a class="directorySubcategoryLink" href="/white/directory/type/building-contractor-const-related"><span>Contractors</span></a></div></details></section>
+            <section class="directoryCategoryGroup"><div class="directoryCategoryGroupHeading"><span class="directoryIcon" aria-hidden="true">✚</span><strong>Health, Wellness &amp; Personal Care</strong></div></section>
+            <section class="directoryCategoryGroup"><div class="directoryCategoryGroupHeading"><span class="directoryIcon" aria-hidden="true">🛍</span><strong>Shopping, Automotive &amp; Consumer</strong></div></section>
+            <section class="directoryCategoryGroup"><div class="directoryCategoryGroupHeading"><span class="directoryIcon" aria-hidden="true">$</span><strong>Business, Finance &amp; Legal</strong></div><details class="directoryCategoryLevel"><summary><span>Legal &amp; Public Services</span></summary><div class="directorySubcategoryGrid"><a class="directorySubcategoryLink" href="/white/directory/type/attorneys-legal-services"><span>Attorneys &amp; Legal Services</span></a></div></details></section>
+            <section class="directoryCategoryGroup"><div class="directoryCategoryGroupHeading"><span class="directoryIcon" aria-hidden="true">⌘</span><strong>Technology, Media &amp; Creative</strong></div></section>
+            <section class="directoryCategoryGroup"><div class="directoryCategoryGroupHeading"><span class="directoryIcon" aria-hidden="true">🎓</span><strong>Education, Community &amp; Nonprofit</strong></div></section>
+            <section class="directoryCategoryGroup"><div class="directoryCategoryGroupHeading"><span class="directoryIcon" aria-hidden="true">◆</span><strong>Manufacturing &amp; Other Services</strong></div></section>
           </div>
         </div>
       </div>
@@ -742,7 +746,7 @@
   </div>
 </div>
 
-<script src="assets/app.js?v=20260710-directory-geo"></script>
+<script src="assets/app.js?v=20260715-category-hierarchy"></script>
 
 </body>
 </html>

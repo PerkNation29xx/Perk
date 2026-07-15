@@ -383,9 +383,7 @@
     const citySelect = homePanel.querySelector("[data-directory-city-select]");
     const typeSelect = homePanel.querySelector("[data-directory-type-select]");
     const status = homePanel.querySelector("[data-directory-status]");
-    const chips = homePanel.querySelector("[data-directory-category-chips]");
-    const categoryPanel = homePanel.querySelector("[data-directory-category-panel]");
-    const categoryToggle = homePanel.querySelector("[data-directory-category-toggle]");
+    const categoryHierarchy = homePanel.querySelector("[data-directory-category-hierarchy]");
     const categoryCount = homePanel.querySelector("[data-directory-category-count]");
     const locationButton = homePanel.querySelector("[data-directory-location-button]");
     const locationStatus = homePanel.querySelector("[data-directory-location-status]");
@@ -448,22 +446,54 @@
       });
     }
 
-    function renderChips(items){
-      if(!chips) return;
-      const requestedLimit = Number(chips.getAttribute("data-directory-category-limit") || 18);
-      const limit = Number.isFinite(requestedLimit) && requestedLimit > 0 ? requestedLimit : 18;
-      const visibleCount = Math.min(limit, items.length);
-      if(categoryCount){
-        categoryCount.textContent = `${visibleCount} categories`;
-      }
-      chips.innerHTML = "";
-      items.slice(0, limit).forEach((item)=>{
-        const link = document.createElement("a");
-        link.className = "directoryCategoryChip";
-        link.href = themedDirectoryPath(`/directory/type/${encodeURIComponent(item.slug || "")}`);
-        link.innerHTML = `<span class="directoryIcon" aria-hidden="true">${escapeHtml(item.icon || "•")}</span><span>${escapeHtml(item.label || "")}</span><em>${Number(item.count || 0)}</em>`;
-        chips.appendChild(link);
+    const directoryCategoryTaxonomy = [
+      ["Food, Dining & Hospitality", "🍽", [["Restaurants & Dining", ["restaurant", "cafe", "eating place", "dining", "bar", "catering", "brew", "wine"]], ["Food, Grocery & Supply", ["food", "grocery", "bakery", "beverage", "ingredient"]], ["Hotels, Travel & Events", ["hotel", "motel", "lodging", "travel", "tourism", "event", "banquet", "wedding"]]]],
+      ["Home, Construction & Property", "🔧", [["Construction & Trades", ["building", "contractor", "construction", "plumbing", "electrical", "roof", "floor", "handyman", "hvac", "landscape", "repair"]], ["Real Estate & Housing", ["real estate", "apartment", "property", "mortgage", "title", "leasing", "housing"]], ["Home Services", ["cleaning", "pest", "moving", "storage", "interior", "furniture", "home service"]]]],
+      ["Health, Wellness & Personal Care", "✚", [["Medical & Dental", ["medical", "health care", "healthcare", "hospital", "doctor", "dentist", "dental", "physician", "optometry", "pharmacy"]], ["Wellness & Fitness", ["wellness", "fitness", "chiropr", "massage", "therapy", "mental health", "senior care"]], ["Beauty & Personal Care", ["beauty", "barber", "salon", "nail", "spa", "cosmetic"]]]],
+      ["Shopping, Automotive & Consumer", "🛍", [["Retail & Shopping", ["retail", "shopping", "store", "jewelry", "apparel", "florist"]], ["Automotive & Transportation", ["auto", "vehicle", "transport", "shuttle", "airport", "towing", " car "]], ["Consumer Services", ["laundry", "pet", "recreation", "photo booth"]]]],
+      ["Business, Finance & Legal", "$", [["Finance & Insurance", ["bank", "credit union", "financial", "account", "bookkeep", "tax", "insurance", "wealth", "lending", "merchant service"]], ["Legal & Public Services", ["attorney", "legal", "law", "government", "municipal", "utilities", "water district"]], ["Consulting & Professional", ["consultant", "professional", "employment", "human resources", "business service", "broker"]]]],
+      ["Technology, Media & Creative", "⌘", [["Technology & Online", ["technology", "software", "computer", "e-commerce", "internet", "telecom", "app development"]], ["Marketing & Media", ["marketing", "advertising", "media", "printing", "publishing", "magazine", "graphic", "photography"]], ["Arts & Entertainment", ["entertainment", "artist", "performing", "music", "sports", "screen printing"]]]],
+      ["Education, Community & Nonprofit", "🎓", [["Education & Training", ["education", "school", "college", "university", "training", "teacher"]], ["Nonprofits & Associations", ["non-profit", "nonprofit", "association", "chamber", "foundation", "church"]], ["Community Services", ["community", "youth", "social service"]]]],
+      ["Manufacturing & Other Services", "◆", [["Manufacturing & Distribution", ["manufacturing", "mfg", "wholesale", "warehouse", "distributor", "supplier", "scientific"]], ["Industrial & Environmental", ["industrial", "environment", "energy", "solar", "engineering"]], ["Other Local Businesses", []]]],
+    ];
+
+    function groupDirectoryCategories(items){
+      const groups = directoryCategoryTaxonomy.map(([label, icon, levels])=> ({
+        label,
+        icon,
+        levels: levels.map(([levelLabel, keywords])=> ({ label: levelLabel, keywords, items: [] })),
+      }));
+      const fallbackLevels = groups[groups.length - 1].levels;
+      const fallback = fallbackLevels[fallbackLevels.length - 1].items;
+      items.forEach((item)=>{
+        const normalized = ` ${String(item.label || "").toLowerCase()} `;
+        let destination = null;
+        groups.some((group)=> group.levels.some((level)=>{
+          if(level.keywords.length && level.keywords.some((keyword)=> normalized.includes(keyword))){
+            destination = level.items;
+            return true;
+          }
+          return false;
+        }));
+        (destination || fallback).push(item);
       });
+      return groups;
+    }
+
+    function renderCategoryHierarchy(items){
+      if(!categoryHierarchy) return;
+      if(categoryCount){
+        categoryCount.textContent = `${items.length} business types`;
+      }
+      categoryHierarchy.innerHTML = groupDirectoryCategories(items).map((group)=>{
+        const levels = group.levels.filter((level)=> level.items.length).map((level)=>{
+          const levelCount = level.items.reduce((sum, item)=> sum + Number(item.count || 0), 0);
+          const links = level.items.map((item)=> `<a class="directorySubcategoryLink" href="${themedDirectoryPath(`/directory/type/${encodeURIComponent(item.slug || "")}`)}"><span>${escapeHtml(item.label || "")}</span><em>${Number(item.count || 0)}</em></a>`).join("");
+          return `<details class="directoryCategoryLevel"><summary><span>${escapeHtml(level.label)}</span><em>${levelCount}</em></summary><div class="directorySubcategoryGrid">${links}</div></details>`;
+        }).join("");
+        const groupCount = group.levels.flatMap((level)=> level.items).reduce((sum, item)=> sum + Number(item.count || 0), 0);
+        return `<section class="directoryCategoryGroup"><div class="directoryCategoryGroupHeading"><span class="directoryIcon" aria-hidden="true">${escapeHtml(group.icon)}</span><strong>${escapeHtml(group.label)}</strong><em>${groupCount}</em></div><div class="directoryCategoryLevels">${levels}</div></section>`;
+      }).join("");
     }
 
     function toRadians(value){
@@ -603,7 +633,7 @@
       const body = await response.json();
       populateSelect(citySelect, body.cities || [], "All cities");
       populateSelect(typeSelect, body.business_types || [], "All business types");
-      renderChips(body.business_types || []);
+      renderCategoryHierarchy(body.business_types || []);
       if(lastDirectoryCoords){
         selectNearestDirectoryCity(lastDirectoryCoords);
       }
@@ -625,7 +655,7 @@
       if(!facetsLoaded && body.facets){
         populateSelect(citySelect, body.facets.cities || [], "All cities");
         populateSelect(typeSelect, body.facets.business_types || [], "All business types");
-        renderChips(body.facets.business_types || []);
+        renderCategoryHierarchy(body.facets.business_types || []);
         facetsLoaded = true;
       }
       renderResults(body.results || [], body.count || 0);
@@ -656,20 +686,6 @@
       locationButton.addEventListener("click", ()=> requestDirectoryLocation());
       checkDirectoryLocationPermission();
     }
-    if(categoryToggle && categoryPanel){
-      categoryToggle.addEventListener("click", ()=>{
-        const isOpen = !categoryPanel.classList.contains("isOpen");
-        categoryPanel.classList.toggle("isOpen", isOpen);
-        categoryToggle.setAttribute("aria-expanded", String(isOpen));
-      });
-      document.addEventListener("click", (event)=>{
-        if(!categoryPanel.contains(event.target)){
-          categoryPanel.classList.remove("isOpen");
-          categoryToggle.setAttribute("aria-expanded", "false");
-        }
-      });
-    }
-
     loadFacets()
       .catch(()=> null)
       .then(()=> runSearch())
