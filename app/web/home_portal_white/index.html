@@ -3,16 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Perk Nation is a rewards platform for diners and merchants in Pasadena." />
+  <meta name="description" content="Discover the best local food, events, lifestyle, fashion, wellness, and businesses across Los Angeles and Southern California with Perk Nation." />
   <meta name="theme-color" content="#0d0d0d" />
-  <title>Perk Nation - Pasadena Dining Rewards</title>
+  <title>Perk Nation - Discover Los Angeles Food, Events &amp; Local Life</title>
   <link rel="canonical" href="/white/" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/styles.css?v=20260715-category-hierarchy" />
+  <link rel="stylesheet" href="assets/styles.css?v=20260718-discovery-home" />
 </head>
 <body>
 
@@ -54,6 +54,60 @@
 </header>
 
 <main>
+  <section class="discoveryHero" aria-labelledby="discovery-title">
+    <div class="container discoveryHeroGrid">
+      <div class="discoveryHeroCopy">
+        <div class="discoveryEyebrow">Your guide to what is worth discovering now</div>
+        <h1 id="discovery-title">Find your next favorite place, experience, or local story.</h1>
+        <p>Explore food, events, lifestyle, fashion, wellness, and standout businesses across Los Angeles, Anaheim, and Southern California.</p>
+        <div class="discoveryHeroActions">
+          <a class="btn primary" href="/white/directory">Explore the local directory</a>
+          <a class="btn" href="#trending-now">See what is trending</a>
+        </div>
+        <div class="discoveryCityLinks" aria-label="Explore popular cities">
+          <span>Start with</span>
+          <a href="/white/directory?city=Los%20Angeles">Los Angeles</a>
+          <a href="/white/directory?city=Anaheim">Anaheim</a>
+          <a href="/white/directory?city=Pasadena">Pasadena</a>
+          <a href="/white/directory?city=Long%20Beach">Long Beach</a>
+        </div>
+      </div>
+
+      <aside class="discoveryPulse" id="trending-now" aria-label="Trending on Perk Nation">
+        <div class="discoveryPulseHeader">
+          <span>Trending now</span>
+          <strong>Southern California</strong>
+        </div>
+        <div class="discoveryTrendGrid">
+          <a href="/white/directory?q=restaurants&amp;city=Los%20Angeles"><span aria-hidden="true">🍽</span><strong>LA food &amp; dining</strong><small>Restaurants and neighborhood favorites</small></a>
+          <a href="/white/directory?q=events&amp;city=Los%20Angeles"><span aria-hidden="true">✦</span><strong>Things to do</strong><small>Events, entertainment, and local experiences</small></a>
+          <a href="/white/directory?q=wellness&amp;city=Los%20Angeles"><span aria-hidden="true">＋</span><strong>Wellness &amp; self-care</strong><small>Fitness, beauty, and healthy living</small></a>
+          <a href="/white/directory?q=fashion&amp;city=Los%20Angeles"><span aria-hidden="true">◆</span><strong>Fashion &amp; shopping</strong><small>Boutiques, designers, and local style</small></a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="discoveryTopics" aria-labelledby="topics-title">
+    <div class="container">
+      <div class="discoverySectionHeading">
+        <div>
+          <div class="badge">Explore by interest</div>
+          <h2 id="topics-title">Local life, curated for how you actually spend your time.</h2>
+        </div>
+        <a href="/white/directory">View every category <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="discoveryTopicGrid">
+        <a href="/white/directory?q=restaurants"><span aria-hidden="true">🍴</span><strong>Food &amp; Drink</strong><small>Restaurants, cafés, markets, and nightlife</small></a>
+        <a href="/white/directory?q=events"><span aria-hidden="true">✦</span><strong>Events</strong><small>Weekend plans, music, culture, and family fun</small></a>
+        <a href="/white/directory?q=lifestyle"><span aria-hidden="true">☀</span><strong>Lifestyle</strong><small>People, places, and ideas shaping local life</small></a>
+        <a href="/white/directory?q=fashion"><span aria-hidden="true">◇</span><strong>Fashion &amp; Beauty</strong><small>Local style, boutiques, designers, and beauty</small></a>
+        <a href="/white/directory?q=wellness"><span aria-hidden="true">＋</span><strong>Wellness</strong><small>Fitness, self-care, healthy dining, and outdoors</small></a>
+        <a href="/white/directory?q=family"><span aria-hidden="true">⌂</span><strong>Family &amp; Community</strong><small>Activities, resources, and neighborhood stories</small></a>
+      </div>
+    </div>
+  </section>
+
   <section class="section businessDirectorySection businessDirectorySectionTop" id="business-directory">
     <div class="container">
       <div class="directoryHomeCompact" data-directory-home data-directory-preview-only="true">
