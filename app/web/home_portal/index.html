@@ -3,31 +3,37 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Discover the best local food, events, lifestyle, fashion, wellness, and businesses across Los Angeles and Southern California with Perk Nation." />
+  <meta name="description" content="Perk Nation is a rewards platform for diners and merchants in Pasadena." />
   <meta name="theme-color" content="#0d0d0d" />
-  <title>Perk Nation - Discover Los Angeles Food, Events &amp; Local Life</title>
+  <title>Perk Nation - Pasadena Dining Rewards</title>
   <link rel="canonical" href="/" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/styles.css?v=20260718-discovery-home" />
+  <link rel="stylesheet" href="assets/styles.css" />
 </head>
 <body>
 
 <header class="header">
   <div class="container">
     <div class="nav">
-      <a class="brand" href="/" aria-label="Perk Nation home">
-        <span class="brandMark" aria-hidden="true">
-          <img src="assets/mark.svg" alt="" width="24" height="24" />
-        </span>
-        <span>Perk Nation</span>
-      </a>
+      <div class="brandStack">
+        <a class="brand" href="/" aria-label="Perk Nation home">
+          <span class="brandMark" aria-hidden="true">
+            <img src="assets/mark.svg" alt="" width="24" height="24" />
+          </span>
+          <span>Perk Nation</span>
+        </a>
+        <button class="brandMenuBtn" data-menu-btn aria-expanded="false" aria-controls="home-category-menu">
+          <span aria-hidden="true">☰</span>
+          <span>Explore categories</span>
+        </button>
+      </div>
 
       <nav class="navlinks" aria-label="Primary navigation">
-        <a href="/directory">Directory</a>
+        <a href="/events">Events</a>
         <a href="/members">Members</a>
         <a href="/merchants">Merchants</a>
         <a href="/how-it-works">How it Works</a>
@@ -36,123 +42,48 @@
       </nav>
 
       <div class="navcta">
-        <button class="btn menuBtn" data-menu-btn aria-label="Open menu">☰</button>
-                <a class="btn ghost" href="/login">Login</a>
+        <a class="btn ghost" href="/login">Login</a>
       </div>
     </div>
 
-    <div class="mobileMenu" data-mobile-menu>
-      <a href="/directory">Directory</a>
-      <a href="/members">Members</a>
-      <a href="/merchants">Merchants</a>
-      <a href="/how-it-works">How it Works</a>
-      <a href="/contact-us">Contact Us</a>
-      <a href="/faq">FAQ</a>
-      <a href="/login">Login</a>
+    <div class="mobileMenu" data-mobile-menu id="home-category-menu">
+      <div class="mobileMenuGrid">
+        <div class="mobileMenuGroup">
+          <div class="mobileMenuTitle">Lifestyle</div>
+          <a href="#upcoming-events">Events</a>
+          <a href="#upcoming-events">Nightlife</a>
+          <a href="/events">Entertainment</a>
+          <a href="#local-ai-assistant">Community</a>
+        </div>
+        <div class="mobileMenuGroup">
+          <div class="mobileMenuTitle">Food & style</div>
+          <a href="#el-portal-world-cup">Food</a>
+          <a href="#pasadena-reviews">Dining</a>
+          <a href="#crystal-jewelry">Fashion</a>
+          <a href="#crystal-jewelry">Shopping</a>
+        </div>
+        <div class="mobileMenuGroup">
+          <div class="mobileMenuTitle">More categories</div>
+          <a href="#local-ai-assistant">Travel</a>
+          <a href="#local-ai-assistant">Wellness</a>
+          <a href="#bond-collective">Workspace</a>
+          <a href="#featured-campaign">Sports</a>
+        </div>
+        <div class="mobileMenuGroup">
+          <div class="mobileMenuTitle">Perk Nation</div>
+          <a href="/members">Members</a>
+          <a href="/merchants">Merchants</a>
+          <a href="/how-it-works">How it Works</a>
+          <a href="/contact-us">Contact Us</a>
+          <a href="/faq">FAQ</a>
+          <a href="/login">Login</a>
+        </div>
+      </div>
     </div>
   </div>
 </header>
 
 <main>
-  <section class="discoveryHero" aria-labelledby="discovery-title">
-    <div class="container discoveryHeroGrid">
-      <div class="discoveryHeroCopy">
-        <div class="discoveryEyebrow">Your guide to what is worth discovering now</div>
-        <h1 id="discovery-title">Find your next favorite place, experience, or local story.</h1>
-        <p>Explore food, events, lifestyle, fashion, wellness, and standout businesses across Los Angeles, Anaheim, and Southern California.</p>
-        <div class="discoveryHeroActions">
-          <a class="btn primary" href="/directory">Explore the local directory</a>
-          <a class="btn" href="#trending-now">See what is trending</a>
-        </div>
-        <div class="discoveryCityLinks" aria-label="Explore popular cities">
-          <span>Start with</span>
-          <a href="/directory?city=Los%20Angeles">Los Angeles</a>
-          <a href="/directory?city=Anaheim">Anaheim</a>
-          <a href="/directory?city=Pasadena">Pasadena</a>
-          <a href="/directory?city=Long%20Beach">Long Beach</a>
-        </div>
-      </div>
-
-      <aside class="discoveryPulse" id="trending-now" aria-label="Trending on Perk Nation">
-        <div class="discoveryPulseHeader">
-          <span>Trending now</span>
-          <strong>Southern California</strong>
-        </div>
-        <div class="discoveryTrendGrid">
-          <a href="/directory?q=restaurants&amp;city=Los%20Angeles"><span aria-hidden="true">🍽</span><strong>LA food &amp; dining</strong><small>Restaurants and neighborhood favorites</small></a>
-          <a href="/directory?q=events&amp;city=Los%20Angeles"><span aria-hidden="true">✦</span><strong>Things to do</strong><small>Events, entertainment, and local experiences</small></a>
-          <a href="/directory?q=wellness&amp;city=Los%20Angeles"><span aria-hidden="true">＋</span><strong>Wellness &amp; self-care</strong><small>Fitness, beauty, and healthy living</small></a>
-          <a href="/directory?q=fashion&amp;city=Los%20Angeles"><span aria-hidden="true">◆</span><strong>Fashion &amp; shopping</strong><small>Boutiques, designers, and local style</small></a>
-        </div>
-      </aside>
-    </div>
-  </section>
-
-  <section class="discoveryTopics" aria-labelledby="topics-title">
-    <div class="container">
-      <div class="discoverySectionHeading">
-        <div>
-          <div class="badge">Explore by interest</div>
-          <h2 id="topics-title">Local life, curated for how you actually spend your time.</h2>
-        </div>
-        <a href="/directory">View every category <span aria-hidden="true">→</span></a>
-      </div>
-      <div class="discoveryTopicGrid">
-        <a href="/directory?q=restaurants"><span aria-hidden="true">🍴</span><strong>Food &amp; Drink</strong><small>Restaurants, cafés, markets, and nightlife</small></a>
-        <a href="/directory?q=events"><span aria-hidden="true">✦</span><strong>Events</strong><small>Weekend plans, music, culture, and family fun</small></a>
-        <a href="/directory?q=lifestyle"><span aria-hidden="true">☀</span><strong>Lifestyle</strong><small>People, places, and ideas shaping local life</small></a>
-        <a href="/directory?q=fashion"><span aria-hidden="true">◇</span><strong>Fashion &amp; Beauty</strong><small>Local style, boutiques, designers, and beauty</small></a>
-        <a href="/directory?q=wellness"><span aria-hidden="true">＋</span><strong>Wellness</strong><small>Fitness, self-care, healthy dining, and outdoors</small></a>
-        <a href="/directory?q=family"><span aria-hidden="true">⌂</span><strong>Family &amp; Community</strong><small>Activities, resources, and neighborhood stories</small></a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section businessDirectorySection businessDirectorySectionTop" id="business-directory">
-    <div class="container">
-      <div class="directoryHomeCompact" data-directory-home data-directory-preview-only="true">
-        <div class="directoryHomeCopy">
-          <h2 class="h2">Search local businesses.</h2>
-          <p class="muted">Find restaurants, contractors, services, shops, and professional offices by city or category.</p>
-          <div class="directoryHomeTools">
-            <button class="directoryLocationBtn" type="button" data-directory-location-button aria-pressed="false">
-              <span class="directoryIcon" aria-hidden="true">⌖</span>
-              <span>Near me</span>
-            </button>
-            <span class="directoryLocationStatus" data-directory-location-status aria-live="polite"></span>
-          </div>
-        </div>
-
-        <form class="directoryCompactSearch" method="get" action="/directory" data-directory-search-form>
-          <label class="srOnly" for="directory-home-query">Search businesses</label>
-          <input id="directory-home-query" name="q" type="search" placeholder="What are you looking for?" data-directory-search-input />
-          <label class="srOnly" for="directory-home-city">Filter by city</label>
-          <select id="directory-home-city" name="city" data-directory-city-select>
-            <option value="">All cities</option>
-          </select>
-          <button class="btn primary" type="submit">Search directory</button>
-        </form>
-
-        <div class="directoryCategoryHierarchy directoryHomeCategoryHierarchy" aria-label="Business category hierarchy">
-          <div class="directoryHierarchyHeader">
-            <strong>Browse categories</strong>
-            <span data-directory-category-count>Business types</span>
-          </div>
-          <div class="directoryCategoryGroupGrid" data-directory-category-hierarchy>
-            <section class="directoryCategoryGroup"><div class="directoryCategoryGroupHeading"><span class="directoryIcon" aria-hidden="true">🍽</span><strong>Food, Dining &amp; Hospitality</strong></div><details class="directoryCategoryLevel"><summary><span>Restaurants &amp; Dining</span></summary><div class="directorySubcategoryGrid"><a class="directorySubcategoryLink" href="/directory/type/restaurants-catering"><span>Restaurants &amp; Catering</span></a></div></details></section>
-            <section class="directoryCategoryGroup"><div class="directoryCategoryGroupHeading"><span class="directoryIcon" aria-hidden="true">🔧</span><strong>Home, Construction &amp; Property</strong></div><details class="directoryCategoryLevel"><summary><span>Construction &amp; Trades</span></summary><div class="directorySubcategoryGrid"><a class="directorySubcategoryLink" href="/directory/type/building-contractor-const-related"><span>Contractors</span></a></div></details></section>
-            <section class="directoryCategoryGroup"><div class="directoryCategoryGroupHeading"><span class="directoryIcon" aria-hidden="true">✚</span><strong>Health, Wellness &amp; Personal Care</strong></div></section>
-            <section class="directoryCategoryGroup"><div class="directoryCategoryGroupHeading"><span class="directoryIcon" aria-hidden="true">🛍</span><strong>Shopping, Automotive &amp; Consumer</strong></div></section>
-            <section class="directoryCategoryGroup"><div class="directoryCategoryGroupHeading"><span class="directoryIcon" aria-hidden="true">$</span><strong>Business, Finance &amp; Legal</strong></div><details class="directoryCategoryLevel"><summary><span>Legal &amp; Public Services</span></summary><div class="directorySubcategoryGrid"><a class="directorySubcategoryLink" href="/directory/type/attorneys-legal-services"><span>Attorneys &amp; Legal Services</span></a></div></details></section>
-            <section class="directoryCategoryGroup"><div class="directoryCategoryGroupHeading"><span class="directoryIcon" aria-hidden="true">⌘</span><strong>Technology, Media &amp; Creative</strong></div></section>
-            <section class="directoryCategoryGroup"><div class="directoryCategoryGroupHeading"><span class="directoryIcon" aria-hidden="true">🎓</span><strong>Education, Community &amp; Nonprofit</strong></div></section>
-            <section class="directoryCategoryGroup"><div class="directoryCategoryGroupHeading"><span class="directoryIcon" aria-hidden="true">◆</span><strong>Manufacturing &amp; Other Services</strong></div></section>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <section class="hero campaignHero" id="featured-campaign">
     <div class="container campaignHeroGrid">
       <div class="campaignHeroCopy">
@@ -171,6 +102,17 @@
           <div><strong>$5</strong><span>admission promo</span></div>
           <div><strong>$60</strong><span>bundle option</span></div>
         </div>
+
+        <div class="visualBannerRail visualBannerRailCompact" aria-label="Sports and nightlife campaign examples">
+          <figure class="visualBanner">
+            <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&amp;fit=crop&amp;w=1400&amp;q=80" alt="Night concert crowd with bright stage lights" loading="lazy" referrerpolicy="no-referrer" />
+            <figcaption><span>Entertainment</span><strong>Event-night energy before and after the offer.</strong></figcaption>
+          </figure>
+          <figure class="visualBanner">
+            <img src="/assets/campaigns/hsp-location-strip.jpg" alt="Hollywood Sports location strip for park offers" loading="lazy" />
+            <figcaption><span>Action</span><strong>Paintball packages, park days, and group plans.</strong></figcaption>
+          </figure>
+        </div>
       </div>
 
       <div class="campaignHeroMedia">
@@ -179,6 +121,47 @@
           <span>Start here</span>
           <strong>Purchase your package before browsing Pasadena dining.</strong>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section homeEventsSection" id="upcoming-events">
+    <div class="container">
+      <div class="homeEventsHeading">
+        <div>
+          <div class="badge">New event guide</div>
+          <h2 class="h2">Major events across California.</h2>
+          <p class="muted">Concerts, live experiences, sports and season openers—with official links and city-by-city context.</p>
+        </div>
+        <a class="btn primary" href="/events">Explore all events</a>
+      </div>
+      <div class="visualBannerRail" aria-label="Event, nightlife, and local culture visuals">
+        <figure class="visualBanner visualBannerWide">
+          <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&amp;fit=crop&amp;w=1600&amp;q=80" alt="Live music crowd under nightclub lighting" loading="lazy" referrerpolicy="no-referrer" />
+          <figcaption><span>Nightlife</span><strong>Concerts, late dinners, and after-show plans.</strong></figcaption>
+        </figure>
+        <figure class="visualBanner">
+          <img src="https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Outdoor festival crowd at sunset" loading="lazy" referrerpolicy="no-referrer" />
+          <figcaption><span>Festivals</span><strong>Weekend guides for culture, music, and food.</strong></figcaption>
+        </figure>
+        <figure class="visualBanner">
+          <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="People gathered at an evening social event" loading="lazy" referrerpolicy="no-referrer" />
+          <figcaption><span>Community</span><strong>Neighborhood gatherings and local celebrations.</strong></figcaption>
+        </figure>
+      </div>
+      <div class="homeEventsGrid">
+        <a class="homeEventFeature" href="/events/kcon-la-2026">
+          <img src="https://www.cryptoarena.com/assets/img/KCONLA2026_Crypto.com-Arena-Web-Banner_1130x665-42621624e4.png" alt="KCON LA 2026 lineup artwork" loading="lazy" referrerpolicy="no-referrer" />
+          <span><small>Live events · Aug 14–16</small><strong>KCON LA takes over downtown Los Angeles</strong></span>
+        </a>
+        <a class="homeEventFeature" href="/events/ufc-sacramento-2026">
+          <img src="https://www.golden1center.com/wp-content/uploads/2026/06/12317395024_08-22_CityAnnouncement_1920x1080.jpg" alt="UFC Sacramento Hernandez versus Rodrigues fight announcement" loading="lazy" referrerpolicy="no-referrer" />
+          <span><small>Sports · Aug 22</small><strong>UFC returns to Sacramento</strong></span>
+        </a>
+        <a class="homeEventFeature" href="/events/chargers-home-opener-2026">
+          <img src="https://static.clubs.nfl.com/image/upload/t_editorial_landscape_12_desktop/chargers/r5aw49chjba4pq2m4nvg" alt="Los Angeles Chargers 2026 schedule announcement" loading="lazy" referrerpolicy="no-referrer" />
+          <span><small>Season openers · Sep 13</small><strong>Chargers open the season at SoFi</strong></span>
+        </a>
       </div>
     </div>
   </section>
@@ -232,92 +215,62 @@
           </div>
         </div>
       </article>
+
+      <div class="visualBannerRail" aria-label="Food, cocktails, and watch party visuals">
+        <figure class="visualBanner">
+          <img src="assets/photos/frame-cocktails.jpg" alt="Cocktails at an upscale bar" loading="lazy" />
+          <figcaption><span>Nightlife</span><strong>Cocktail-forward places to meet before the next stop.</strong></figcaption>
+        </figure>
+        <figure class="visualBanner visualBannerWide">
+          <img src="assets/photos/el-portal-dining.jpg" alt="Mexican food and cocktails at El Portal" loading="lazy" />
+          <figcaption><span>Food</span><strong>Match-day tables, dinner groups, and shared plates.</strong></figcaption>
+        </figure>
+        <figure class="visualBanner">
+          <img src="assets/photos/el-portal-patio.jpg" alt="El Portal Pasadena patio and arcade entrance" loading="lazy" />
+          <figcaption><span>Local</span><strong>Pasadena patios that turn games into plans.</strong></figcaption>
+        </figure>
+      </div>
     </div>
   </section>
 
-  <section class="section bondSection" id="bond-collective">
+  <section class="section" id="bond-collective">
+    <div class="container split">
+      <div class="card pad">
+        <div class="badge">Workspace partner</div>
+        <h2 class="h2">Bond Collective workspace services now have an introductory Perk Nation offer.</h2>
+        <p class="muted">
+          Members can start with 20% off Bond Collective services, including coworking, private offices,
+          dedicated desks, day passes, and meeting rooms.
+        </p>
+        <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap">
+          <a class="btn primary" href="/members#join">Join to claim interest</a>
+          <a class="btn" href="https://bondcollective.com" target="_blank" rel="noopener">Visit Bond Collective</a>
+        </div>
+      </div>
+      <div class="card pad">
+        <div style="display:flex; align-items:center; gap:16px; margin-bottom:14px">
+          <img src="https://www.google.com/s2/favicons?domain=bondcollective.com&amp;sz=128" alt="Bond Collective logo" width="64" height="64" style="border-radius:16px" />
+          <div>
+            <div class="badge">20% initial discount</div>
+            <h3 class="h3" style="margin:8px 0 0">Boutique coworking, offices, desks, day passes, and meeting rooms.</h3>
+          </div>
+        </div>
+        <p class="muted">
+          Availability and final terms are confirmed through Perk Nation and Bond Collective.
+        </p>
+      </div>
+    </div>
     <div class="container">
-      <div class="bondPreviewHeader">
-        <div class="bondIntroCopy">
-          <div class="badge">Workspace partner</div>
-          <h2 class="h2">Bond Collective workspace packages now have a Perk Nation intro offer.</h2>
-          <p class="muted">
-            Members can start with 20% off eligible Bond Collective workspace services, including private offices,
-            dedicated desks, coworking, day passes, and conference rooms.
-          </p>
-          <div class="bondOfferNote">
-            <strong>20% intro discount</strong>
-            <span>Eligible first-service purchases; final terms confirmed through Bond Collective.</span>
-          </div>
-          <div class="reviewLinks">
-            <a class="btn small" href="/members#join">Join to claim interest</a>
-            <a class="btn small ghost" href="https://bondcollective.com/memberships/" target="_blank" rel="noopener">View Bond packages</a>
-          </div>
-        </div>
-        <div class="bondPreviewVideo" aria-label="Bond Collective workspace video preview">
-          <video autoplay muted loop playsinline preload="metadata" poster="https://bondcollective.com/memberships/coworking.jpg">
-            <source src="https://bondcollective.com/hero.mp4" type="video/mp4" />
-          </video>
-          <span>Workspace preview</span>
-        </div>
+      <div class="visualBannerRail" aria-label="Workspace, business, and merchant lifestyle visuals">
+        <figure class="visualBanner visualBannerWide">
+          <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&amp;fit=crop&amp;w=1600&amp;q=80" alt="Modern coworking lounge with desks and seating" loading="lazy" referrerpolicy="no-referrer" />
+          <figcaption><span>Workspace</span><strong>Boutique offices, day passes, and meeting rooms.</strong></figcaption>
+        </figure>
+        <figure class="visualBanner">
+          <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Small business team meeting at a table" loading="lazy" referrerpolicy="no-referrer" />
+          <figcaption><span>Business</span><strong>Merchant planning, partnerships, and local growth.</strong></figcaption>
+        </figure>
       </div>
-
-      <div class="bondPackageGrid" aria-label="Bond Collective package options">
-        <a class="bondPackageCard" href="https://bondcollective.com/memberships/" target="_blank" rel="noopener">
-          <img src="https://bondcollective.com/memberships/private-office.jpg" alt="Bond Collective private office workspace" loading="lazy" />
-          <div>
-            <div class="bondPackageMeta">Private Office Space</div>
-            <h3>Private, lockable office.</h3>
-            <p>Furnished offices for teams that need privacy plus shared amenities.</p>
-            <div class="bondPrice"><span>From $500/month</span><strong>Perk from $400/month</strong></div>
-            <span class="bondCardCta">View package</span>
-          </div>
-        </a>
-        <a class="bondPackageCard" href="https://bondcollective.com/memberships/" target="_blank" rel="noopener">
-          <img src="https://bondcollective.com/memberships/dedicated-desk.jpg" alt="Bond Collective dedicated desk workspace" loading="lazy" />
-          <div>
-            <div class="bondPackageMeta">Dedicated Desks</div>
-            <h3>A desk to call your own.</h3>
-            <p>Reserved shared-space desks with a consistent member setup.</p>
-            <div class="bondPrice"><span>From $500/month</span><strong>Perk from $400/month</strong></div>
-            <span class="bondCardCta">View package</span>
-          </div>
-        </a>
-        <a class="bondPackageCard" href="https://bondcollective.com/memberships/" target="_blank" rel="noopener">
-          <img src="https://bondcollective.com/memberships/coworking.jpg" alt="Bond Collective coworking lounge" loading="lazy" />
-          <div>
-            <div class="bondPackageMeta">Coworking</div>
-            <h3>Flexible, open workspace.</h3>
-            <p>Open-seat access across designed lounges and common areas.</p>
-            <div class="bondPrice"><span>From $300/month</span><strong>Perk from $240/month</strong></div>
-            <span class="bondCardCta">View package</span>
-          </div>
-        </a>
-        <a class="bondPackageCard" href="https://bondcollective.com/memberships/" target="_blank" rel="noopener">
-          <img src="https://bondcollective.com/memberships/day-pass.jpg" alt="Bond Collective day pass lounge" loading="lazy" />
-          <div>
-            <div class="bondPackageMeta">Day Passes</div>
-            <h3>A workspace for the day.</h3>
-            <p>Drop-in workspace access for one-off productive work days.</p>
-            <div class="bondPrice"><span>From $25/day</span><strong>Perk from $20/day</strong></div>
-            <span class="bondCardCta">View package</span>
-          </div>
-        </a>
-        <a class="bondPackageCard" href="https://bondcollective.com/memberships/" target="_blank" rel="noopener">
-          <img src="https://bondcollective.com/memberships/conference-room.jpg" alt="Bond Collective conference room" loading="lazy" />
-          <div>
-            <div class="bondPackageMeta">Conference Rooms</div>
-            <h3>Meet, pitch, and present.</h3>
-            <p>Meeting rooms for client sessions, team days, and presentations.</p>
-            <div class="bondPrice"><span>From $50/hour</span><strong>Perk from $40/hour</strong></div>
-            <span class="bondCardCta">View package</span>
-          </div>
-        </a>
-      </div>
-      <p class="bondDisclaimer">
-        Source package names, starting prices, images, and video are from Bond Collective's public membership pages.
-        Perk intro prices show the 20% initial discount estimate before location-specific pricing, taxes, fees, and final approval.
-      </p>
     </div>
   </section>
 
@@ -328,8 +281,8 @@
           <div class="badge">Crystal jewelry drop</div>
           <h2 class="h2">Custom crystal collectibles and designer jewelry.</h2>
           <p class="muted">
-            Limited Perk Nation jewelry offers with current product photos, pricing, and member discounts.
-            Message us on Instagram to confirm availability, pickup, or delivery details.
+            Limited Perk Nation jewelry offers with current pricing and member discounts. Message us on
+            Instagram to confirm availability, product photos, and pickup or delivery details.
           </p>
         </div>
         <div class="jewelryIntroActions">
@@ -338,27 +291,45 @@
         </div>
       </div>
 
+      <div class="visualBannerRail" aria-label="Fashion, jewelry, and shopping visuals">
+        <figure class="visualBanner visualBannerWide">
+          <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&amp;fit=crop&amp;w=1600&amp;q=80" alt="Fashion shopper carrying colorful bags in a city shopping district" loading="lazy" referrerpolicy="no-referrer" />
+          <figcaption><span>Fashion</span><strong>Style-led drops, gifting, and shopping guides.</strong></figcaption>
+        </figure>
+        <figure class="visualBanner">
+          <img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Gold jewelry and accessories arranged on a display" loading="lazy" referrerpolicy="no-referrer" />
+          <figcaption><span>Jewelry</span><strong>Crystal collectibles and designer accessories.</strong></figcaption>
+        </figure>
+        <figure class="visualBanner">
+          <img src="https://images.unsplash.com/photo-1472851294608-062f824d29cc?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Boutique retail shelves with clothing and shopping displays" loading="lazy" referrerpolicy="no-referrer" />
+          <figcaption><span>Shopping</span><strong>Local retail offers and seasonal gift edits.</strong></figcaption>
+        </figure>
+      </div>
+
       <div class="jewelryGrid">
-        <a class="jewelryCard jewelryCardLink" href="/jewelry/swarovski-annual-snowflake" aria-label="View Swarovski Annual Snowflake 10-year period">
+        <article class="jewelryCard jewelryCardFeature">
           <div class="jewelryMedia">
-            <img src="assets/products/swarovski-annual-snowflake.jpg" alt="Swarovski Annual Snowflake 10-year crystal ornament collection" loading="lazy" />
+            <video autoplay muted loop playsinline preload="metadata" poster="assets/products/swarovski-annual-snowflake.jpg">
+              <source src="assets/products/swarovski-annual-snowflake.mp4" type="video/mp4" />
+            </video>
           </div>
           <div class="jewelryContent">
             <div class="jewelryMeta">Swarovski Annual Snowflake</div>
             <h3>Swarovski Annual Snowflake 10-year period</h3>
-            <p>Collector crystal snowflake set with individual annual pieces and display boxes.</p>
+            <p>Collector crystal snowflake set with individual annual pieces shown in the product video.</p>
             <div class="priceRow">
               <span class="retailPrice">Retail $2,499</span>
               <span class="discountBadge">25% off</span>
             </div>
             <div class="dealPrice">$1,875</div>
-            <span class="btn small jewelryCardCta">View item</span>
           </div>
-        </a>
+        </article>
 
-        <a class="jewelryCard jewelryCardLink" href="/jewelry/swarovski-sorcerer-mickey" aria-label="View Swarovski Sorcerer Mickey">
-          <div class="jewelryMedia">
-            <img src="assets/products/swarovski-sorcerer-mickey.jpg" alt="Swarovski Sorcerer Mickey crystal figure" loading="lazy" />
+        <article class="jewelryCard">
+          <div class="jewelryMedia jewelryMediaPortrait">
+            <video autoplay muted loop playsinline preload="metadata" poster="assets/products/swarovski-sorcerer-mickey.jpg">
+              <source src="assets/products/swarovski-sorcerer-mickey.mp4" type="video/mp4" />
+            </video>
           </div>
           <div class="jewelryContent">
             <div class="jewelryMeta">Swarovski collectible</div>
@@ -369,43 +340,42 @@
               <span class="discountBadge">20% off</span>
             </div>
             <div class="dealPrice">$180</div>
-            <span class="btn small jewelryCardCta">View item</span>
           </div>
-        </a>
+        </article>
 
-        <a class="jewelryCard jewelryCardLink" href="/jewelry/christian-dior-necklace" aria-label="View Christian Dior Necklace">
-          <div class="jewelryMedia">
-            <img src="assets/products/christian-dior-necklace.jpg" alt="Christian Dior necklace with crystal V pendant" loading="lazy" />
+        <article class="jewelryCard">
+          <div class="jewelryMedia jewelryMediaPlaceholder">
+            <div class="jewelryMonogram">Dior</div>
+            <span>Confirm current product photo on Instagram</span>
           </div>
           <div class="jewelryContent">
             <div class="jewelryMeta">Designer necklace</div>
             <h3>Christian Dior Necklace</h3>
-            <p>Designer necklace with a crystal V pendant and silver-tone chain.</p>
+            <p>Designer necklace offer with current availability confirmed through Perk Nation.</p>
             <div class="priceRow">
               <span class="retailPrice">Retail $525</span>
               <span class="discountBadge">20% off</span>
             </div>
             <div class="dealPrice">$420</div>
-            <span class="btn small jewelryCardCta">View item</span>
           </div>
-        </a>
+        </article>
 
-        <a class="jewelryCard jewelryCardLink" href="/jewelry/swarovski-swan-pin-set" aria-label="View Swarovski Swan Crystal Pin Set">
-          <div class="jewelryMedia">
-            <img src="assets/products/swarovski-swan-pin-set.jpg" alt="Swarovski swan crystal pin set with blue red and yellow stones" loading="lazy" />
+        <article class="jewelryCard jewelryCardInquiry">
+          <div class="jewelryMedia jewelryMediaPlaceholder">
+            <div class="jewelryMonogram">New</div>
+            <span>More crystal pieces available by request</span>
           </div>
           <div class="jewelryContent">
-            <div class="jewelryMeta">Swarovski crystal pins</div>
-            <h3>Swarovski Swan Crystal Pin Set</h3>
-            <p>Three-piece swan pin set with blue, red, and yellow crystal accents.</p>
+            <div class="jewelryMeta">Custom jewelry</div>
+            <h3>Ask about the next jewelry drop</h3>
+            <p>Perk Nation is adding another crystal or designer piece. Message us for photos, item details, and pricing.</p>
             <div class="priceRow">
-              <span class="retailPrice noStrike">Retail price pending</span>
+              <span class="retailPrice">Limited availability</span>
               <span class="discountBadge">DM to confirm</span>
             </div>
-            <div class="dealPrice dealPriceText">Price by request</div>
-            <span class="btn small jewelryCardCta">View item</span>
+            <a class="btn small" href="https://www.instagram.com/perk.nation.rewards" target="_blank" rel="noopener">View Instagram</a>
           </div>
-        </a>
+        </article>
       </div>
     </div>
   </section>
@@ -437,6 +407,23 @@
           <div class="pill">Old Pasadena nightlife</div>
           <div class="small">Candlelit dining, chef-driven menus, and date-night friendly neighborhoods.</div>
         </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="visualBannerRail" aria-label="Dining, date night, and nightlife examples">
+        <figure class="visualBanner visualBannerWide">
+          <img src="assets/photos/frame-fine-dining.jpg" alt="Fine dining table setting" loading="lazy" />
+          <figcaption><span>Dining</span><strong>Polished rooms for date nights and celebrations.</strong></figcaption>
+        </figure>
+        <figure class="visualBanner">
+          <img src="assets/photos/frame-cocktails.jpg" alt="Cocktails at an upscale bar" loading="lazy" />
+          <figcaption><span>Nightlife</span><strong>Bar-first plans, happy hours, and after-dinner stops.</strong></figcaption>
+        </figure>
+        <figure class="visualBanner">
+          <img src="assets/photos/frame-chef-plating.jpg" alt="Chef plating a dish in a contemporary kitchen" loading="lazy" />
+          <figcaption><span>Food</span><strong>Chef-driven menus and restaurant story angles.</strong></figcaption>
+        </figure>
       </div>
     </div>
   </section>
@@ -474,6 +461,20 @@
           </div>
         </form>
       </div>
+      <div class="visualBannerRail" aria-label="Lifestyle, travel, and wellness discovery visuals">
+        <figure class="visualBanner">
+          <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Sunny travel destination with water and hillside homes" loading="lazy" referrerpolicy="no-referrer" />
+          <figcaption><span>Travel</span><strong>Weekend itineraries and city-by-city discovery.</strong></figcaption>
+        </figure>
+        <figure class="visualBanner visualBannerWide">
+          <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&amp;fit=crop&amp;w=1600&amp;q=80" alt="Outdoor yoga and wellness class" loading="lazy" referrerpolicy="no-referrer" />
+          <figcaption><span>Wellness</span><strong>Recovery, movement, spa days, and healthy routines.</strong></figcaption>
+        </figure>
+        <figure class="visualBanner">
+          <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Friends smiling together at a community gathering" loading="lazy" referrerpolicy="no-referrer" />
+          <figcaption><span>Community</span><strong>Local groups, families, and neighborhood plans.</strong></figcaption>
+        </figure>
+      </div>
     </div>
   </section>
 
@@ -493,6 +494,20 @@
         <figure class="photoTile">
           <img src="assets/photos/frame-chef-plating.jpg" alt="Chef plating a dish in a contemporary kitchen" loading="lazy" />
           <figcaption>Chef-driven plates with neighborhood personality.</figcaption>
+        </figure>
+      </div>
+      <div class="visualBannerRail" aria-label="Pasadena visual examples for food, fashion, and nightlife">
+        <figure class="visualBanner">
+          <img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Editorial fashion portrait in warm light" loading="lazy" referrerpolicy="no-referrer" />
+          <figcaption><span>Fashion</span><strong>Style cues for shopping and beauty roundups.</strong></figcaption>
+        </figure>
+        <figure class="visualBanner visualBannerWide">
+          <img src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&amp;fit=crop&amp;w=1600&amp;q=80" alt="Warm restaurant bar with bottles and seating" loading="lazy" referrerpolicy="no-referrer" />
+          <figcaption><span>Nightlife</span><strong>Low-light bars, lounges, and late-night dining.</strong></figcaption>
+        </figure>
+        <figure class="visualBanner">
+          <img src="assets/photos/review-pez.jpg" alt="Coastal seafood and cocktails" loading="lazy" />
+          <figcaption><span>Food</span><strong>Seafood, patios, and weekend dining choices.</strong></figcaption>
         </figure>
       </div>
     </div>
@@ -517,6 +532,16 @@
           <figcaption>Hollywood Sports campaign art and the $5 admission promos now live together.</figcaption>
         </article>
       </div>
+      <div class="visualBannerRail" aria-label="Sports, entertainment, and group outing visuals">
+        <figure class="visualBanner visualBannerWide">
+          <img src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&amp;fit=crop&amp;w=1600&amp;q=80" alt="Stadium crowd during a live sporting event" loading="lazy" referrerpolicy="no-referrer" />
+          <figcaption><span>Sports</span><strong>Game days, openers, and group packages.</strong></figcaption>
+        </figure>
+        <figure class="visualBanner">
+          <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Friends gathered at a lively event" loading="lazy" referrerpolicy="no-referrer" />
+          <figcaption><span>Groups</span><strong>Outings that pair activities with dinner nearby.</strong></figcaption>
+        </figure>
+      </div>
     </div>
   </section>
 
@@ -524,6 +549,21 @@
     <div class="container">
       <h2 class="h2">Pasadena restaurant reviews</h2>
       <p class="muted">Local recommendations based on notable Pasadena restaurants.</p>
+
+      <div class="visualBannerRail" aria-label="Restaurant, cocktail, and date-night review visuals">
+        <figure class="visualBanner">
+          <img src="assets/photos/review-union.jpg" alt="Italian pasta in a refined dining room" loading="lazy" />
+          <figcaption><span>Italian</span><strong>Handmade pasta and polished dinner rooms.</strong></figcaption>
+        </figure>
+        <figure class="visualBanner visualBannerWide">
+          <img src="assets/photos/review-fishwives.jpg" alt="Seafood dishes on an upscale table" loading="lazy" />
+          <figcaption><span>Seafood</span><strong>Cocktail-forward tables for social nights out.</strong></figcaption>
+        </figure>
+        <figure class="visualBanner">
+          <img src="assets/photos/review-osawa.jpg" alt="Sushi bar in an upscale restaurant" loading="lazy" />
+          <figcaption><span>Date night</span><strong>Quiet luxury and high-intent dining picks.</strong></figcaption>
+        </figure>
+      </div>
 
       <div class="reviewGrid">
         <article class="reviewCard">
@@ -729,6 +769,18 @@
         </div>
       </div>
     </div>
+    <div class="container">
+      <div class="visualBannerRail" aria-label="Member rewards and merchant growth visuals">
+        <figure class="visualBanner">
+          <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="Small team collaborating in a bright office" loading="lazy" referrerpolicy="no-referrer" />
+          <figcaption><span>Merchants</span><strong>Campaigns, partnerships, and measurable local lift.</strong></figcaption>
+        </figure>
+        <figure class="visualBanner visualBannerWide">
+          <img src="https://images.unsplash.com/photo-1528605248644-14dd04022da1?auto=format&amp;fit=crop&amp;w=1600&amp;q=80" alt="Friends sharing food and drinks at a restaurant table" loading="lazy" referrerpolicy="no-referrer" />
+          <figcaption><span>Members</span><strong>Rewards that turn discovery into repeat visits.</strong></figcaption>
+        </figure>
+      </div>
+    </div>
   </section>
 </main>
 
@@ -800,7 +852,7 @@
   </div>
 </div>
 
-<script src="assets/app.js?v=20260715-category-hierarchy"></script>
+<script src="assets/app.js?v=20260525a"></script>
 
 </body>
 </html>
