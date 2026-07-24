@@ -1510,3 +1510,76 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   .jewelryCardFeature{grid-column:auto}
   .jewelryIntroActions .btn{width:100%; justify-content:center}
 }
+
+/* Editorial article feature */
+.homeArticleSection{
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(135deg,rgba(250,247,247,.06),rgba(230,184,74,.06) 48%,rgba(195,63,22,.05));
+}
+.homeArticleFeature{
+  display:grid;
+  grid-template-columns:minmax(320px,.92fr) minmax(0,1fr);
+  gap:34px;
+  align-items:center;
+}
+.homeArticleMedia{
+  display:block;
+  min-width:0;
+  border-radius:var(--radius-xl);
+  overflow:hidden;
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  background:#111;
+}
+.homeArticleMedia img{
+  display:block;
+  width:100%;
+  aspect-ratio:16/9;
+  object-fit:cover;
+  transition:transform .35s ease;
+}
+.homeArticleMedia:hover img{transform:scale(1.035)}
+.homeArticleCopy .h2{margin:10px 0 12px; max-width:820px}
+.homeArticleCopy p{max-width:760px}
+.homeArticleLinks{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px}
+.articleShell{min-height:70vh; padding:46px 0 86px}
+.articleBackLink{display:inline-block; margin-bottom:24px; color:var(--muted); font-weight:850}
+.articleBackLink:hover{color:var(--yellow)}
+.articleHeroGrid{display:grid; grid-template-columns:minmax(0,1fr) minmax(360px,.82fr); gap:48px; align-items:center}
+.articleHeroCopy h1{margin:14px 0 18px; font-size:clamp(42px,5vw,68px); line-height:.98; letter-spacing:0}
+.articleHeroCopy p{font-size:20px; color:var(--muted); max-width:720px}
+.articleFactGrid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1px; margin:28px 0; background:var(--line); border:1px solid var(--line); border-radius:var(--radius-md); overflow:hidden}
+.articleFactGrid div{display:grid; gap:3px; padding:15px; background:#121212}
+.articleFactGrid span{color:var(--muted2); font-size:12px; text-transform:uppercase; font-weight:900; letter-spacing:.08em}
+.articleFactGrid strong{font-size:15px}
+.articleActions{display:flex; flex-wrap:wrap; gap:10px}
+.articleHeroMedia{margin:0; border-radius:var(--radius-xl); overflow:hidden; background:#171717; border:1px solid var(--line); box-shadow:var(--shadow)}
+.articleHeroMedia img{width:100%; min-height:330px; aspect-ratio:16/10; object-fit:cover}
+.articleHeroMedia figcaption{padding:12px 15px; color:var(--muted2); font-size:12px}
+.articleBodyGrid{display:grid; grid-template-columns:minmax(0,1fr) minmax(260px,.36fr); gap:44px; margin-top:64px; padding-top:44px; border-top:1px solid var(--line)}
+.articleBodyGrid h2{font-size:28px; margin:34px 0 18px}
+.articleBodyGrid h2:first-child{margin-top:0}
+.articleStory p{font-size:18px; color:var(--muted); max-width:760px}
+.articleSourceCard{align-self:start; display:grid; gap:12px; padding:24px; border-radius:var(--radius-lg); border:1px solid var(--line); background:rgba(230,184,74,.07)}
+.articleSourceCard ul{padding-left:20px; color:var(--muted)}
+.articleSourceCard li{margin:9px 0}
+.articleSourceCard a{display:block; color:var(--yellow); font-weight:850}
+
+@media (max-width: 960px){
+  .homeArticleFeature,
+  .articleHeroGrid,
+  .articleBodyGrid{grid-template-columns:1fr}
+  .articleHeroMedia{max-width:720px}
+}
+
+@media (max-width: 680px){
+  .articleFactGrid{grid-template-columns:1fr}
+  .articleHeroGrid{gap:30px}
+  .articleHeroCopy h1{font-size:42px}
+  .homeArticleFeature{gap:22px}
+  .homeArticleLinks,
+  .articleActions{align-items:stretch; flex-direction:column}
+  .homeArticleLinks .btn,
+  .articleActions .btn{width:100%; justify-content:center}
+}

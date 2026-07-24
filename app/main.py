@@ -231,6 +231,9 @@ _WHITE_LEGACY_HTML_TO_CANONICAL = {
     for key, route in _LEGACY_HTML_TO_CANONICAL.items()
 }
 _LEGACY_STATIC_HTML_FILES = {"investors.html", "security.html", "contact.html", "privacy.html", "terms.html"}
+_ARTICLE_HTML_FILES = {
+    "dine-la-pasadena-2026": "dine-la-pasadena-2026.html",
+}
 
 # Admin web portal (served from the same process for local testing).
 if _ADMIN_STATIC_DIR.exists():
@@ -1201,6 +1204,14 @@ def home_portal_hollywood_sports() -> str:
     return _read_html_or_missing(_HOME_PORTAL_DIR / "hollywood-sports.html", "Hollywood Sports landing page")
 
 
+@app.get("/articles/{article_slug}", response_class=HTMLResponse)
+def home_portal_article(article_slug: str) -> str:
+    filename = _ARTICLE_HTML_FILES.get(article_slug.strip().lower())
+    if not filename:
+        raise HTTPException(status_code=404, detail="Article not found")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "articles" / filename, "Article")
+
+
 @app.get("/guests", include_in_schema=False)
 def home_portal_guests_redirect() -> RedirectResponse:
     return RedirectResponse(url="/members", status_code=308)
@@ -1326,6 +1337,14 @@ def home_portal_white_hollywood_sports() -> str:
         _HOME_PORTAL_WHITE_DIR / "hollywood-sports.html",
         "Hollywood Sports landing page (white)",
     )
+
+
+@app.get("/white/articles/{article_slug}", response_class=HTMLResponse)
+def home_portal_white_article(article_slug: str) -> str:
+    filename = _ARTICLE_HTML_FILES.get(article_slug.strip().lower())
+    if not filename:
+        raise HTTPException(status_code=404, detail="Article not found")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "articles" / filename, "Article")
 
 
 @app.get("/white/guests", include_in_schema=False)
