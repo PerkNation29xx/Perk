@@ -294,6 +294,61 @@ def _find_dine_la_city_guide(article_slug: str) -> Optional[tuple[dict, dict]]:
     return None
 
 
+def _dine_la_restaurant_rank(item: dict) -> tuple[int, str]:
+    name = str(item.get("name") or "")
+    price = str(item.get("price_range") or "")
+    cuisine = ", ".join(item.get("cuisine") or [])
+    score = 0
+    if "Lunch" in price and "Dinner" in price:
+        score += 18
+    elif "Dinner" in price:
+        score += 10
+    if "$25" in price or "$35" in price:
+        score += 12
+    if "$65 & Above" in price:
+        score += 8
+    if any(term in cuisine for term in ("Sushi", "Seafood", "Steakhouse", "French", "Japanese", "Italian", "Mediterranean")):
+        score += 8
+    if any(term in name for term in ("Steakhouse", "Sushi", "Prime", "Grill", "Coastal", "Cheesery")):
+        score += 5
+    return (-score, name.lower())
+
+
+def _dine_la_review_note(item: dict) -> str:
+    name = str(item.get("name") or "This restaurant")
+    price = str(item.get("price_range") or "")
+    cuisine = ", ".join(item.get("cuisine") or []) or "dining"
+    if "Lunch" in price and "Dinner" in price:
+        meal_note = "The lunch-and-dinner availability gives it more flexibility than dinner-only picks."
+    elif "Lunch" in price:
+        meal_note = "This is strongest as a daytime reservation or lower-pressure first stop."
+    else:
+        meal_note = "Treat this as a dinner-first reservation and book ahead for peak nights."
+    if "$65 & Above" in price:
+        tier_note = "The higher menu tier makes it better for celebrations, date nights, and client dinners."
+    elif "$25" in price or "$35" in price:
+        tier_note = "The accessible menu tier makes it useful for value-focused restaurant-week planning."
+    elif "$45" in price or "$55" in price:
+        tier_note = "The mid-tier pricing works well when you want a polished meal without jumping straight to a splurge."
+    else:
+        tier_note = "Check the menu before booking so the final price matches the occasion."
+    return f"{name} stands out for {cuisine}. {meal_note} {tier_note}"
+
+
+def _render_ranked_dine_la_items(restaurants: list[dict], source_url: str, limit: int = 8) -> str:
+    ranked = sorted(restaurants, key=_dine_la_restaurant_rank)[:limit]
+    return "\n".join(
+        (
+            "          <li>"
+            f"<strong>#{index} <a href=\"{_escape(item.get('url') or source_url)}\" target=\"_blank\" rel=\"noopener noreferrer\">{_escape(item.get('name'))}</a></strong>"
+            f"<span>{_escape(_dine_la_review_note(item))}</span>"
+            f"<small>{_escape(', '.join(item.get('cuisine') or []) or 'Dining')} · {_escape(item.get('price_range') or 'Check menu')} · {_escape(item.get('street') or '')}</small>"
+            "</li>"
+        )
+        for index, item in enumerate(ranked, start=1)
+    )
+
+
 def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> Optional[str]:
     found = _find_dine_la_city_guide(article_slug)
     if not found:
@@ -315,11 +370,12 @@ def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> O
     directory_note = (
         f"Perk Nation currently has {int(directory_count):,} directory listings for {city_name}, so this guide can connect restaurant-week searches to deeper local discovery."
         if isinstance(directory_count, int)
-        else f"{city_name} is part of the official Dine LA city set; use the Perk Nation directory search to connect the dining plan with nearby categories."
+        else f"{city_name} has enough Dine LA restaurant-week context to support a focused local guide; use the Perk Nation directory search to connect the dining plan with nearby categories."
     )
+    ranked_items = _render_ranked_dine_la_items(restaurants, source_url, limit=10)
     restaurant_items = "\n".join(
         (
-            "          <li>"
+          "          <li>"
             f"<strong><a href=\"{_escape(item.get('url') or source_url)}\" target=\"_blank\" rel=\"noopener noreferrer\">{_escape(item.get('name'))}</a></strong>"
             f" · {_escape(', '.join(item.get('cuisine') or []) or 'Dining')}"
             f" · {_escape(item.get('price_range') or 'Check menu')}"
@@ -338,7 +394,7 @@ def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> O
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Dine LA { _escape(city_name) } guide with official 2026 restaurant listings, price tiers, cuisines, and Perk Nation local discovery links." />
+  <meta name="description" content="Dine LA { _escape(city_name) } guide with ranked restaurant picks, review notes, price tiers, cuisines, and Perk Nation local discovery links." />
   <meta name="theme-color" content="#0d0d0d" />
   <title>Dine LA { _escape(city_name) } guide: {restaurant_count} restaurants | Perk Nation</title>
   <link rel="canonical" href="{_escape(canonical_url)}" />
@@ -351,7 +407,7 @@ def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> O
       "@context": "https://schema.org",
       "@type": "Article",
       "headline": "Dine LA { _escape(city_name) } guide: {restaurant_count} restaurants",
-      "description": "Official Dine LA 2026 restaurant listings for { _escape(city_name) }, organized for local search and reservation planning.",
+      "description": "Dine LA 2026 restaurant guide for { _escape(city_name) }, with ranked picks and practical review notes for local planning.",
       "image": "https://perknation.app/assets/articles/dine-la-pasadena-2026.jpg",
       "author": {{"@type": "Organization", "name": "Perk Nation"}},
       "publisher": {{"@type": "Organization", "name": "Perk Nation"}},
@@ -377,43 +433,47 @@ def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> O
     <section class="articleHeroGrid">
       <div class="articleHeroCopy">
         <div class="badge">Dine LA by city</div>
-        <h1>Dine LA { _escape(city_name) } guide: {restaurant_count} official listings.</h1>
-        <p>{_escape(city_name)} has {restaurant_count} restaurants in the official Dine LA 2026 listing. Use this city page to compare cuisines, price tiers, and nearby Perk Nation discovery paths before booking.</p>
+        <h1>Dine LA { _escape(city_name) } guide: ranked picks from {restaurant_count} restaurants.</h1>
+        <p>{_escape(city_name)} has {restaurant_count} Dine LA restaurants to choose from. Use this city guide to compare ranked picks, cuisines, price tiers, and nearby Perk Nation discovery paths before booking.</p>
         <div class="articleFactGrid">
           <div><span>Dates</span><strong>{_escape(data.get('dates') or 'August 14-28, 2026')}</strong></div>
-          <div><span>City listings</span><strong>{restaurant_count} restaurants</strong></div>
+          <div><span>Restaurants</span><strong>{restaurant_count} choices</strong></div>
           <div><span>Top cuisines</span><strong>{_escape(cuisines)}</strong></div>
           <div><span>Price tiers</span><strong>{_escape(price_summary)}</strong></div>
         </div>
         <div class="articleActions">
-          <a class="btn primary" href="{_escape(source_url)}" target="_blank" rel="noopener noreferrer">Open official Dine LA listing</a>
+          <a class="btn primary" href="{_escape(source_url)}" target="_blank" rel="noopener noreferrer">Open Dine LA restaurant pages</a>
           <a class="btn" href="{_escape(directory_route)}">Search { _escape(city_name) } on Perk Nation</a>
         </div>
       </div>
       <figure class="articleHeroMedia">
         <img src="/assets/articles/dine-la-pasadena-2026.jpg" alt="Golden-hour restaurant table with spritz drinks, seasonal plates, and a city dining view" />
-        <figcaption>Confirm final menus, booking windows, and availability with the official Dine LA listing before visiting.</figcaption>
+        <figcaption>Use the guide below to compare restaurants, then confirm current menus and booking windows before visiting.</figcaption>
       </figure>
     </section>
     <section class="articleBodyGrid">
       <div class="articleStory">
         <h2>How to plan { _escape(city_name) }</h2>
         <p>{_escape(directory_note)}</p>
-        <p>For SEO and reader usefulness, treat this page as the city landing page for Dine LA { _escape(city_name) }, then create supporting internal links by cuisine, lunch, dinner, date-night, seafood, steakhouse, patio, family, and nearby-event intent.</p>
-        <h2>{ _escape(city_name) } restaurant listings</h2>
+        <p>Use the rankings first, then use the full list when you already know the cuisine, neighborhood, or price tier you want. The ranking favors restaurants with broader meal availability, clearer value, strong occasion fit, and cuisine intent that people commonly search during restaurant week.</p>
+        <h2>Top ranked restaurants in { _escape(city_name) }</h2>
+        <ol>
+{ranked_items}
+        </ol>
+        <h2>More { _escape(city_name) } restaurants to compare</h2>
         <ul>
 {restaurant_items}
         </ul>
       </div>
       <aside class="articleSourceCard">
-        <h2>Measure next</h2>
+        <h2>How to choose</h2>
         <ul>
-          <li>Organic entrances to this city article.</li>
-          <li>Outbound clicks to official Dine LA restaurant listings.</li>
-          <li>Clicks into the Perk Nation city directory.</li>
-          <li>Search impressions for Dine LA plus city and cuisine phrases.</li>
+          <li>Pick lunch when you want value and easier reservations.</li>
+          <li>Pick dinner-only restaurants for date nights and celebrations.</li>
+          <li>Use higher tiers for occasion meals, not casual first tries.</li>
+          <li>Open each restaurant page before booking to confirm menus.</li>
         </ul>
-        <a href="{_escape(source_url)}" target="_blank" rel="noopener noreferrer">Official Dine LA source</a>
+        <a href="{_escape(source_url)}" target="_blank" rel="noopener noreferrer">Dine LA restaurant pages</a>
         <a href="{_escape(directory_route)}">Perk Nation { _escape(city_name) } search</a>
         <h2>Other city guides</h2>
         <ul>
