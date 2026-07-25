@@ -19,14 +19,21 @@
 <header class="header">
   <div class="container">
     <div class="nav">
-      <a class="brand" href="/white/" aria-label="Perk Nation home">
-        <span class="brandMark" aria-hidden="true">
-          <img src="assets/mark.svg" alt="" width="24" height="24" />
-        </span>
-        <span>Perk Nation</span>
-      </a>
+      <div class="brandStack">
+        <a class="brand" href="/white/" aria-label="Perk Nation home">
+          <span class="brandMark" aria-hidden="true">
+            <img src="assets/mark.svg" alt="" width="24" height="24" />
+          </span>
+          <span>Perk Nation</span>
+        </a>
+        <button class="brandMenuBtn" data-menu-btn aria-expanded="false" aria-controls="white-category-menu">
+          <span aria-hidden="true">☰</span>
+          <span>Explore categories</span>
+        </button>
+      </div>
 
       <nav class="navlinks" aria-label="Primary navigation">
+        <a href="/white/events">Events</a>
         <a href="/white/directory">Directory</a>
         <a href="/white/members">Members</a>
         <a href="/white/merchants">Merchants</a>
@@ -36,19 +43,43 @@
       </nav>
 
       <div class="navcta">
-        <button class="btn menuBtn" data-menu-btn aria-label="Open menu">☰</button>
-                <a class="btn ghost" href="/white/login">Login</a>
+        <a class="btn ghost" href="/white/login">Login</a>
       </div>
     </div>
 
-    <div class="mobileMenu" data-mobile-menu>
-      <a href="/white/directory">Directory</a>
-      <a href="/white/members">Members</a>
-      <a href="/white/merchants">Merchants</a>
-      <a href="/white/how-it-works">How it Works</a>
-      <a href="/white/contact-us">Contact Us</a>
-      <a href="/white/faq">FAQ</a>
-      <a href="/white/login">Login</a>
+    <div class="mobileMenu" data-mobile-menu id="white-category-menu">
+      <div class="mobileMenuGrid">
+        <div class="mobileMenuGroup">
+          <div class="mobileMenuTitle">Lifestyle</div>
+          <a href="/white/events">Events</a>
+          <a href="/white/events#concerts">Concerts</a>
+          <a href="/white/events#sports">Sports</a>
+          <a href="/white/directory?q=community">Community</a>
+        </div>
+        <div class="mobileMenuGroup">
+          <div class="mobileMenuTitle">Food &amp; style</div>
+          <a href="/white/articles/dine-la-pasadena-2026">Food</a>
+          <a href="#pasadena-reviews">Dining</a>
+          <a href="/white/articles/la-fashion-events-2026">Fashion</a>
+          <a href="#crystal-jewelry">Shopping</a>
+        </div>
+        <div class="mobileMenuGroup">
+          <div class="mobileMenuTitle">Wellness &amp; discovery</div>
+          <a href="#wellness-beauty">Wellness &amp; Beauty</a>
+          <a href="/white/directory?q=travel">Travel</a>
+          <a href="#bond-collective">Workspace</a>
+          <a href="/white/directory">Directory</a>
+        </div>
+        <div class="mobileMenuGroup">
+          <div class="mobileMenuTitle">Perk Nation</div>
+          <a href="/white/members">Members</a>
+          <a href="/white/merchants">Merchants</a>
+          <a href="/white/how-it-works">How it Works</a>
+          <a href="/white/contact-us">Contact Us</a>
+          <a href="/white/faq">FAQ</a>
+          <a href="/white/login">Login</a>
+        </div>
+      </div>
     </div>
   </div>
 </header>
@@ -80,7 +111,7 @@
         </div>
         <div class="discoveryTrendGrid">
           <a href="/white/directory?q=restaurants&amp;city=Los%20Angeles"><span aria-hidden="true">🍽</span><strong>LA food &amp; dining</strong><small>Restaurants and neighborhood favorites</small></a>
-          <a href="/white/directory?q=events&amp;city=Los%20Angeles"><span aria-hidden="true">✦</span><strong>Things to do</strong><small>Events, entertainment, and local experiences</small></a>
+          <a href="/white/events"><span aria-hidden="true">✦</span><strong>Things to do</strong><small>Events, entertainment, and local experiences</small></a>
           <a href="/white/directory?q=wellness&amp;city=Los%20Angeles"><span aria-hidden="true">＋</span><strong>Wellness &amp; self-care</strong><small>Fitness, beauty, and healthy living</small></a>
           <a href="/white/directory?q=fashion&amp;city=Los%20Angeles"><span aria-hidden="true">◆</span><strong>Fashion &amp; shopping</strong><small>Boutiques, designers, and local style</small></a>
         </div>
@@ -90,7 +121,7 @@
 
   <section class="section homeArticleSection" id="dine-la-guide">
     <div class="container homeArticleFeature">
-      <a class="homeArticleMedia" href="/articles/dine-la-pasadena-2026" aria-label="Read the Dine LA and Pasadena dining guide">
+      <a class="homeArticleMedia" href="/white/articles/dine-la-pasadena-2026" aria-label="Read the Dine LA and Pasadena dining guide">
         <img src="/assets/articles/dine-la-pasadena-2026.jpg" alt="Golden-hour restaurant table with spritz drinks, seasonal plates, and a Pasadena-style city view" loading="eager" />
       </a>
       <div class="homeArticleCopy">
@@ -101,7 +132,7 @@
           Los Angeles, Santa Monica, Beverly Hills, Pasadena, Long Beach, Glendale, Burbank, Arcadia, and more.
         </p>
         <div class="homeArticleLinks">
-          <a class="btn primary" href="/articles/dine-la-pasadena-2026">Read the guide</a>
+          <a class="btn primary" href="/white/articles/dine-la-pasadena-2026">Read the guide</a>
           <a class="btn" href="/white/directory?city=Pasadena">Browse Pasadena dining</a>
           <a class="btn ghost" href="https://www.discoverlosangeles.com/dinela" target="_blank" rel="noopener">Official Dine LA</a>
         </div>
@@ -111,7 +142,7 @@
 
   <section class="section homeArticleSection homeArticleSectionFashion" id="la-fashion-events-guide">
     <div class="container homeArticleFeature">
-      <a class="homeArticleMedia" href="/articles/la-fashion-events-2026" aria-label="Read the LA fashion events guide">
+      <a class="homeArticleMedia" href="/white/articles/la-fashion-events-2026" aria-label="Read the LA fashion events guide">
         <img src="/assets/articles/la-fashion-events-2026.jpg" alt="Downtown Los Angeles fashion event with a runway, clothing racks, and local shoppers" loading="eager" />
       </a>
       <div class="homeArticleCopy">
@@ -122,7 +153,7 @@
           for readers already interested in Los Angeles style, shopping, food, and local events.
         </p>
         <div class="homeArticleLinks">
-          <a class="btn primary" href="/articles/la-fashion-events-2026">Read the fashion guide</a>
+          <a class="btn primary" href="/white/articles/la-fashion-events-2026">Read the fashion guide</a>
           <a class="btn" href="/white/directory?q=fashion&amp;city=Los%20Angeles">Browse LA fashion</a>
           <a class="btn ghost" href="https://fashiondistrict.org/explore/calendar" target="_blank" rel="noopener">Fashion District calendar</a>
         </div>
@@ -132,7 +163,7 @@
 
   <section class="section homeArticleSection wellnessBeautySection" id="wellness-beauty">
     <div class="container homeArticleFeature">
-      <a class="homeArticleMedia" href="/articles/vvs-cosmetics-victor-kuzmanovsky-wellness-beauty" aria-label="Read the VVS Cosmetics wellness and beauty interview">
+      <a class="homeArticleMedia" href="/white/articles/vvs-cosmetics-victor-kuzmanovsky-wellness-beauty" aria-label="Read the VVS Cosmetics wellness and beauty interview">
         <img src="https://vvscosmetics.mk/cdn/shop/files/hf_20260718_020011_85e5443c-155b-442d-b67f-4986921b7dc4_1.png?v=1784340082&amp;width=1445" alt="VVS Cosmetics day and night creams" loading="lazy" referrerpolicy="no-referrer" />
       </a>
       <div class="homeArticleCopy">
@@ -143,7 +174,7 @@
           sustainability, and the day-and-night creams behind the brand.
         </p>
         <div class="homeArticleLinks">
-          <a class="btn primary" href="/articles/vvs-cosmetics-victor-kuzmanovsky-wellness-beauty">Read the interview</a>
+          <a class="btn primary" href="/white/articles/vvs-cosmetics-victor-kuzmanovsky-wellness-beauty">Read the interview</a>
           <a class="btn" href="https://vvscosmetics.mk/" target="_blank" rel="noopener">Visit VVS Cosmetics</a>
           <a class="btn ghost" href="https://www.instagram.com/v_v_s_cosmetics/" target="_blank" rel="noopener">@v_v_s_cosmetics</a>
         </div>
@@ -162,7 +193,7 @@
       </div>
       <div class="discoveryTopicGrid">
         <a href="/white/directory?q=restaurants"><span aria-hidden="true">🍴</span><strong>Food &amp; Drink</strong><small>Restaurants, cafés, markets, and nightlife</small></a>
-        <a href="/white/directory?q=events"><span aria-hidden="true">✦</span><strong>Events</strong><small>Weekend plans, music, culture, and family fun</small></a>
+        <a href="/white/events"><span aria-hidden="true">✦</span><strong>Events</strong><small>Weekend plans, music, culture, and family fun</small></a>
         <a href="/white/directory?q=lifestyle"><span aria-hidden="true">☀</span><strong>Lifestyle</strong><small>People, places, and ideas shaping local life</small></a>
         <a href="/white/directory?q=fashion"><span aria-hidden="true">◇</span><strong>Fashion &amp; Beauty</strong><small>Local style, boutiques, designers, and beauty</small></a>
         <a href="/white/directory?q=wellness"><span aria-hidden="true">＋</span><strong>Wellness</strong><small>Fitness, self-care, healthy dining, and outdoors</small></a>
@@ -212,6 +243,33 @@
             <section class="directoryCategoryGroup"><div class="directoryCategoryGroupHeading"><span class="directoryIcon" aria-hidden="true">◆</span><strong>Manufacturing &amp; Other Services</strong></div></section>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section homeEventsSection" id="upcoming-events">
+    <div class="container">
+      <div class="homeEventsHeading">
+        <div>
+          <div class="badge">Event guide</div>
+          <h2 class="h2">Major events across California.</h2>
+          <p class="muted">Concerts, live experiences, sports, and season openers with official source links and city-by-city context.</p>
+        </div>
+        <a class="btn primary" href="/white/events">Explore all events</a>
+      </div>
+      <div class="homeEventsGrid">
+        <a class="homeEventFeature" href="/white/events/kcon-la-2026">
+          <img src="https://www.cryptoarena.com/assets/img/KCONLA2026_Crypto.com-Arena-Web-Banner_1130x665-42621624e4.png" alt="KCON LA 2026 lineup artwork" loading="lazy" referrerpolicy="no-referrer" />
+          <span><small>Live events · Aug 14-16</small><strong>KCON LA takes over downtown Los Angeles</strong></span>
+        </a>
+        <a class="homeEventFeature" href="/white/events/ufc-sacramento-2026">
+          <img src="https://www.golden1center.com/wp-content/uploads/2026/06/12317395024_08-22_CityAnnouncement_1920x1080.jpg" alt="UFC Sacramento Hernandez versus Rodrigues fight announcement" loading="lazy" referrerpolicy="no-referrer" />
+          <span><small>Sports · Aug 22</small><strong>UFC returns to Sacramento</strong></span>
+        </a>
+        <a class="homeEventFeature" href="/white/events/chargers-home-opener-2026">
+          <img src="https://static.clubs.nfl.com/image/upload/t_editorial_landscape_12_desktop/chargers/r5aw49chjba4pq2m4nvg" alt="Los Angeles Chargers 2026 schedule announcement" loading="lazy" referrerpolicy="no-referrer" />
+          <span><small>Season openers · Sep 13</small><strong>Chargers open the season at SoFi</strong></span>
+        </a>
       </div>
     </div>
   </section>

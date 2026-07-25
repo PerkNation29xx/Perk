@@ -236,6 +236,17 @@ _ARTICLE_HTML_FILES = {
     "la-fashion-events-2026": "la-fashion-events-2026.html",
     "vvs-cosmetics-victor-kuzmanovsky-wellness-beauty": "vvs-cosmetics-victor-kuzmanovsky-wellness-beauty.html",
 }
+_EVENT_SLUGS = {
+    "kcon-la-2026",
+    "mount-westmore-san-jose",
+    "j-cole-los-angeles",
+    "carin-leon-san-diego",
+    "ufc-sacramento-2026",
+    "ringling-san-diego-2026",
+    "chargers-home-opener-2026",
+    "49ers-home-opener-2026",
+    "rams-home-opener-2026",
+}
 _DINE_LA_CITY_GUIDES_FILE = _HOME_PORTAL_DIR / "assets" / "articles" / "dine-la-city-guides-2026.json"
 
 # Admin web portal (served from the same process for local testing).
@@ -1420,6 +1431,18 @@ def home_portal_hollywood_sports() -> str:
     return _read_html_or_missing(_HOME_PORTAL_DIR / "hollywood-sports.html", "Hollywood Sports landing page")
 
 
+@app.get("/events", response_class=HTMLResponse)
+def home_portal_events() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "events.html", "Events page")
+
+
+@app.get("/events/{event_slug}", response_class=HTMLResponse)
+def home_portal_event_article(event_slug: str) -> str:
+    if event_slug not in _EVENT_SLUGS:
+        raise HTTPException(status_code=404, detail="Event article not found")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "event-detail.html", "Event article")
+
+
 @app.get("/articles/{article_slug}", response_class=HTMLResponse)
 def home_portal_article(article_slug: str) -> str:
     filename = _ARTICLE_HTML_FILES.get(article_slug.strip().lower())
@@ -1556,6 +1579,18 @@ def home_portal_white_hollywood_sports() -> str:
         _HOME_PORTAL_WHITE_DIR / "hollywood-sports.html",
         "Hollywood Sports landing page (white)",
     )
+
+
+@app.get("/white/events", response_class=HTMLResponse)
+def home_portal_white_events() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "events.html", "Events page (white)")
+
+
+@app.get("/white/events/{event_slug}", response_class=HTMLResponse)
+def home_portal_white_event_article(event_slug: str) -> str:
+    if event_slug not in _EVENT_SLUGS:
+        raise HTTPException(status_code=404, detail="Event article not found")
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "event-detail.html", "Event article (white)")
 
 
 @app.get("/white/articles/{article_slug}", response_class=HTMLResponse)
