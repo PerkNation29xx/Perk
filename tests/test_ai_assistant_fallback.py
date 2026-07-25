@@ -184,6 +184,33 @@ def test_home_local_guide_includes_review_context_for_current_events(monkeypatch
     assert "not active PerkNation promotions" in system_context
 
 
+def test_home_local_guide_review_listing_question_answers_directly(monkeypatch) -> None:
+    def _unexpected_spark(*_args, **_kwargs) -> tuple[str, str]:
+        raise AssertionError("review listing questions should not call Spark")
+
+    monkeypatch.setattr(settings, "ai_enabled", True)
+    monkeypatch.setattr(settings, "ai_provider", "spark")
+    monkeypatch.setattr(settings, "spark_public_base_url", "http://spark.example")
+    monkeypatch.setattr(ai_assistant, "_request_spark_chat", _unexpected_spark)
+
+    result = chat_with_assistant(
+        message="What current fashion events, sports, concerts, and restaurants are listed for review on PerkNation?",
+        history=[],
+        db=object(),
+        current_user=None,
+        user_role=None,
+        requested_context="home_local_guide",
+    )
+
+    answer = result.answer.lower()
+    assert result.model == "nvidia/nemotron-3-super"
+    assert "la fashion events" in answer
+    assert "kcon la 2026" in answer
+    assert "ufc fight night" in answer
+    assert "dine la 2026" in answer
+    assert "not active perknation promos" in answer
+
+
 def test_consumer_account_uses_nemotron_super_spark_lane(monkeypatch) -> None:
     captured: dict[str, object] = {}
 

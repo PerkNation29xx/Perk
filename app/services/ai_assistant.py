@@ -1419,6 +1419,10 @@ def _execute_live_query_if_requested(
     if not text:
         return None
 
+    public_review_response = _public_review_live_query_response(text, role_context)
+    if public_review_response:
+        return public_review_response
+
     public_directory_response = _public_directory_live_query_response(db, text)
     if public_directory_response:
         return public_directory_response
@@ -1451,6 +1455,8 @@ def _should_return_live_query_directly(message: str, role_context: str) -> bool:
     text = _normalize_user_text(message)
     if not text:
         return False
+    if _is_public_review_query(text):
+        return True
     return _contains_any(
         text,
         (
@@ -1471,6 +1477,69 @@ def _should_return_live_query_directly(message: str, role_context: str) -> bool:
             "available deals",
         ),
     )
+
+
+def _is_public_review_query(text: str) -> bool:
+    return _contains_any(
+        text,
+        (
+            "fashion event",
+            "fashion events",
+            "sports",
+            "concert",
+            "concerts",
+            "restaurant review",
+            "restaurant reviews",
+            "restaurants listed",
+            "listed for review",
+            "review on perknation",
+            "reviews on perknation",
+            "listed on the website",
+            "current listed",
+            "current events",
+            "website events",
+        ),
+    )
+
+
+def _public_review_live_query_response(text: str, role_context: str) -> Optional[str]:
+    if role_context not in {"public", "home_local_guide"} or not _is_public_review_query(text):
+        return None
+
+    matching_items = []
+    wants_fashion = _contains_any(text, ("fashion", "style", "shopping", "sample sale", "market week"))
+    wants_sports = _contains_any(text, ("sports", "game", "games", "stadium", "ufc", "chargers", "rams"))
+    wants_concerts = _contains_any(text, ("concert", "concerts", "music", "kcon", "mount westmore"))
+    wants_restaurants = _contains_any(text, ("restaurant", "restaurants", "dining", "dine la"))
+    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_restaurants))
+
+    for item in _PUBLIC_REVIEW_COVERAGE_ITEMS:
+        category = str(item["category"]).lower()
+        if (
+            wants_all
+            or (wants_fashion and "fashion" in category)
+            or (wants_sports and "sports" in category)
+            or (wants_concerts and "concert" in category)
+            or (wants_restaurants and "restaurant" in category)
+        ):
+            matching_items.append(item)
+
+    if not matching_items:
+        matching_items = list(_PUBLIC_REVIEW_COVERAGE_ITEMS)
+
+    lines = [
+        "Current PerkNation review/editorial coverage includes these categories. These are guides and review topics, not active PerkNation promos unless a separate deal is listed:",
+    ]
+    for item in matching_items:
+        lines.append(
+            "- "
+            f"{item['category']} in {item['city']}: {item['title']} ({item['timing']}). "
+            f"Use {item['route']} for the guide; {item['details']}"
+        )
+    lines.append(
+        "For active promos, keep using the confirmed promo list: Hollywood Sports, Bond Collective, jewelry discounts, and El Portal World Cup happy hour."
+    )
+    return "\n".join(lines)
 
 
 def _public_promotions_live_query_response(db: Session, text: str) -> Optional[str]:
