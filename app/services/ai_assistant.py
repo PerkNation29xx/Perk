@@ -49,6 +49,8 @@ class AIChatResult:
 _ALLOWED_CONTEXTS = {"consumer", "merchant", "admin", "public", "home_local_guide"}
 _DETERMINISTIC_MODEL_NAME = "perk-deterministic"
 _NEMOTRON_SPARK_CONTEXTS = {"home_local_guide", "public", "consumer", "merchant", "admin"}
+_SPARK_INPUT_TOKEN_BUDGET = 3600
+_SPARK_MESSAGE_OVERHEAD_TOKENS = 8
 
 
 def resolve_context(user_role: Optional[UserRole], requested_context: Optional[str]) -> str:
@@ -164,6 +166,7 @@ def chat_with_assistant(
     )
     include_home_local_guide = role_context == "home_local_guide"
     include_restaurant_context = db is not None and is_restaurant_discovery_query(message)
+    include_public_review_context = _should_include_public_review_context(message, role_context)
     include_public_directory_context = (
         db is not None
         and role_context in {"public", "home_local_guide"}
@@ -226,6 +229,14 @@ def chat_with_assistant(
                     ),
                 }
             )
+
+    if include_public_review_context:
+        messages.append(
+            {
+                "role": "system",
+                "content": _public_review_coverage_context(),
+            }
+        )
 
     if include_public_directory_context and db is not None:
         directory_context = _build_public_directory_context(db, message=message, limit=12)
@@ -423,11 +434,12 @@ def _request_spark_chat(
     if host_id not in {"spark", "mini"}:
         host_id = "mini"
     model_name = (model_override or settings.ollama_model).strip() or settings.ollama_model
+    request_messages = _compact_messages_for_spark(messages)
 
     body = {
         "hostId": host_id,
         "model": model_name,
-        "messages": messages,
+        "messages": request_messages,
         "temperature": max(0.0, min(settings.ollama_temperature, 1.0)),
         "maxTokens": 900,
     }
@@ -479,6 +491,89 @@ def _request_spark_chat(
         raise AIServiceError("Spark gateway returned an empty response.")
 
     return model, answer
+
+
+def _estimate_prompt_tokens(messages: list[dict[str, str]]) -> int:
+    total = 0
+    for item in messages:
+        total += _SPARK_MESSAGE_OVERHEAD_TOKENS
+        total += max(1, len(str(item.get("role") or "")) // 4)
+        total += max(1, len(str(item.get("content") or "")) // 4)
+    return total
+
+
+def _trim_content_to_estimated_tokens(content: str, token_budget: int) -> str:
+    clean = content.strip()
+    if token_budget <= 0:
+        return ""
+    if max(1, len(clean) // 4) <= token_budget:
+        return clean
+    max_chars = max(120, token_budget * 4)
+    trimmed = clean[:max_chars].rstrip()
+    if "\n" in trimmed and len(trimmed) > 240:
+        trimmed = trimmed.rsplit("\n", 1)[0].rstrip()
+    return trimmed + "\n[context truncated to fit Spark input limit]"
+
+
+def _compact_messages_for_spark(
+    messages: list[dict[str, str]],
+    *,
+    token_budget: int = _SPARK_INPUT_TOKEN_BUDGET,
+) -> list[dict[str, str]]:
+    compact = [
+        {
+            "role": str(item.get("role") or "").strip(),
+            "content": str(item.get("content") or "").strip(),
+        }
+        for item in messages
+        if str(item.get("role") or "").strip() and str(item.get("content") or "").strip()
+    ]
+    if _estimate_prompt_tokens(compact) <= token_budget:
+        return compact
+
+    def _last_user_index() -> Optional[int]:
+        for idx in range(len(compact) - 1, -1, -1):
+            if compact[idx].get("role") == "user":
+                return idx
+        return None
+
+    while _estimate_prompt_tokens(compact) > token_budget:
+        protected = _last_user_index()
+        removable_idx = next(
+            (
+                idx
+                for idx, item in enumerate(compact)
+                if idx != protected and item.get("role") in {"user", "assistant"}
+            ),
+            None,
+        )
+        if removable_idx is None:
+            break
+        del compact[removable_idx]
+
+    for per_message_budget in (900, 650, 450, 300):
+        if _estimate_prompt_tokens(compact) <= token_budget:
+            return compact
+        latest_user = _last_user_index()
+        for idx in range(len(compact) - 1, -1, -1):
+            if idx == latest_user:
+                continue
+            item = compact[idx]
+            content = item.get("content") or ""
+            if max(1, len(content) // 4) > per_message_budget:
+                item["content"] = _trim_content_to_estimated_tokens(content, per_message_budget)
+                if _estimate_prompt_tokens(compact) <= token_budget:
+                    return compact
+
+    if _estimate_prompt_tokens(compact) > token_budget:
+        latest_user = _last_user_index()
+        if latest_user is not None:
+            compact[latest_user]["content"] = _trim_content_to_estimated_tokens(
+                compact[latest_user].get("content") or "",
+                240,
+            )
+
+    return compact
 
 
 def _request_openai_chat(messages: list[dict[str, str]]) -> tuple[str, str]:
@@ -606,8 +701,9 @@ def _system_prompt_for_context(role_context: str) -> str:
     if role_context == "home_local_guide":
         return (
             "You are the PerkNation AI Local Guide on the public homepage. "
-            "Use HOME LOCAL GUIDE CONTEXT, LIVE QUERY RESULT, PUBLIC BUSINESS DIRECTORY CONTEXT, LOCAL DISCOVERY CONTEXT, and LA RESTAURANT KNOWLEDGE CONTEXT as authoritative. "
-            "Keep three concepts separate: active PerkNation promotions/offers, public business-directory listings, and local restaurant or discovery recommendations. "
+            "Only answer questions about the current PerkNation public promos using confirmed promo context; use separate context for directory, editorial, restaurant, and local-discovery questions. "
+            "Use HOME LOCAL GUIDE CONTEXT, LIVE QUERY RESULT, PUBLIC REVIEW COVERAGE CONTEXT, PUBLIC BUSINESS DIRECTORY CONTEXT, LOCAL DISCOVERY CONTEXT, and LA RESTAURANT KNOWLEDGE CONTEXT as authoritative. "
+            "Keep four concepts separate: active PerkNation promotions/offers, public business-directory listings, PerkNation editorial/review coverage, and local restaurant or discovery recommendations. "
             "For counts, use the live count in context and never infer totals from a shortlist. "
             "Do not invent promos, rewards, prices, discounts, venues, hours, dates, or ticket terms. "
             "For business directory listings, do not infer missing city, address, phone, website, hours, or services; if LOCAL DISCOVERY CONTEXT says a field is not listed, say it is not listed. "
@@ -638,16 +734,139 @@ def _home_local_guide_context(*, db: Optional[Session]) -> str:
     lines.extend(
         [
             "",
+            "Confirmed current PerkNation public promo examples:",
+            "- Hollywood Sports paintball campaign: $60 package with 11 regular entry tickets plus 1 Golden Ticket, and a $5 entry-only pass.",
+            "- Bond Collective workspace promo: 20% initial discount on coworking, private offices, dedicated desks, day passes, and meeting rooms.",
+            "- Crystal jewelry drop: Swarovski Annual Snowflake 10-year period, Swarovski Sorcerer Mickey, Christian Dior Necklace, and Swarovski Swan Crystal Pin Set with pricing pending confirmation.",
+            "- El Portal Restaurant World Cup promo: game-day happy hour Tuesday-Friday 12PM-6PM and Saturday-Sunday 12PM-5PM during games.",
+            "",
             "Restaurant guide examples currently surfaced on the homepage:",
             "- Union, Agnes, Fishwives, Perle, Bone Kettle, Osawa, Panda Inn, and Pez Coastal Kitchen are Pasadena restaurant recommendations, not discount offers unless another promo says so.",
             "",
+            "Editorial/review coverage examples currently surfaced or planned for PerkNation readers:",
+            "- Los Angeles fashion guide: LA Market Week, CMC sample-sale Fridays, Fashion District shopping, LA Vintage warehouse sale, and The Grove K-beauty pop-up.",
+            "- Events coverage: KCON LA at Crypto.com Arena, UFC Sacramento, Ringling San Diego, and NFL home openers at SoFi Stadium and Levi's Stadium.",
+            "- Restaurant coverage: Dine LA 2026 city guides, Pasadena restaurant picks, and broader local dining discovery.",
+            "",
             "Answering rules:",
             "- Keep offer counts separate from business-directory listing counts.",
+            "- Keep editorial/review coverage separate from active PerkNation promotions.",
             "- If asked for all promotions, summarize active PerkNation offers from live data and offer to narrow by merchant, city, ZIP, or category.",
             "- If asked for business listings, answer from the public directory count or directory search context, not the offer count.",
             "- If asked for recommendations, use local discovery or restaurant context and make clear it is a shortlist, not the total directory.",
         ]
     )
+    return "\n".join(lines)
+
+
+_PUBLIC_REVIEW_COVERAGE_ITEMS = (
+    {
+        "category": "Fashion and shopping",
+        "city": "Los Angeles",
+        "title": "LA fashion events to plan around now",
+        "timing": "late July through October 2026",
+        "route": "/articles/la-fashion-events-2026",
+        "details": (
+            "LA Market Week at California Market Center and The New Mart; CMC public sample-sale Fridays "
+            "on July 31, August 28, September 25, and October 30; LA Vintage warehouse sale on August 8; "
+            "The Grove EESEOL K-beauty pop-up July 17-August 15."
+        ),
+    },
+    {
+        "category": "Concerts and fan events",
+        "city": "Los Angeles",
+        "title": "KCON LA 2026",
+        "timing": "August 14-16, 2026",
+        "route": "/events/kcon-la-2026",
+        "details": "K-pop arena programming at Crypto.com Arena, useful for downtown dining, shopping, hotel, and transit guides.",
+    },
+    {
+        "category": "Concerts",
+        "city": "San Jose",
+        "title": "Mount Westmore",
+        "timing": "August 21, 2026",
+        "route": "/events/mount-westmore-san-jose",
+        "details": "West Coast hip-hop arena show at SAP Center with Snoop Dogg, Ice Cube, E-40, and Too Short.",
+    },
+    {
+        "category": "Sports",
+        "city": "Sacramento",
+        "title": "UFC Fight Night: Hernandez vs. Rodrigues",
+        "timing": "August 22, 2026",
+        "route": "/events/ufc-sacramento-2026",
+        "details": "Golden 1 Center fight-night coverage; pair with restaurants, hotels, and downtown Sacramento planning.",
+    },
+    {
+        "category": "Sports",
+        "city": "Inglewood / Los Angeles",
+        "title": "Chargers and Rams home openers",
+        "timing": "September 13 and September 21, 2026",
+        "route": "/events",
+        "details": "SoFi Stadium season-opener planning for pregame dining, parking, fan style, and local discovery.",
+    },
+    {
+        "category": "Restaurants",
+        "city": "Los Angeles and Pasadena",
+        "title": "Dine LA 2026 city guides",
+        "timing": "August 14-28, 2026",
+        "route": "/articles/dine-la-pasadena-2026",
+        "details": "City-specific Dine LA planning, including Pasadena ranked picks and internal links into nearby directory searches.",
+    },
+)
+
+
+def _should_include_public_review_context(message: str, role_context: str) -> bool:
+    if role_context not in {"public", "home_local_guide"}:
+        return False
+    text = _normalize_user_text(message)
+    if not text:
+        return False
+    return _contains_any(
+        text,
+        (
+            "fashion",
+            "style",
+            "shopping",
+            "sample sale",
+            "market week",
+            "event",
+            "events",
+            "concert",
+            "concerts",
+            "show",
+            "shows",
+            "sports",
+            "game",
+            "games",
+            "stadium",
+            "arena",
+            "restaurant",
+            "restaurants",
+            "dining",
+            "dine la",
+            "review",
+            "reviews",
+            "guide",
+            "current",
+            "listed",
+            "website",
+        ),
+    )
+
+
+def _public_review_coverage_context() -> str:
+    lines = [
+        "PUBLIC REVIEW COVERAGE CONTEXT (authoritative public/editorial content)",
+        "Important distinction: these are PerkNation editorial/review topics and planning guides, not active PerkNation promotions unless a separate live offer says so.",
+        "Use these items when the visitor asks what fashion events, sports, concerts, restaurants, or reviews are current/listed on the website.",
+        "coverage_items:",
+    ]
+    for item in _PUBLIC_REVIEW_COVERAGE_ITEMS:
+        lines.append(
+            "- "
+            f"category={item['category']}; city={item['city']}; title={item['title']}; "
+            f"timing={item['timing']}; route={item['route']}; details={item['details']}"
+        )
     return "\n".join(lines)
 
 
@@ -671,28 +890,33 @@ def _public_marketplace_context(db: Session) -> str:
     except Exception:
         lines.append("business_directory_counts: unavailable")
 
-    active_offers = db.scalars(
-        select(Offer)
-        .options(selectinload(Offer.merchant), selectinload(Offer.location))
-        .where(
-            and_(
-                Offer.approval_status == OfferStatus.approved,
-                Offer.starts_at <= now,
-                Offer.ends_at >= now,
+    try:
+        active_offers = db.scalars(
+            select(Offer)
+            .options(selectinload(Offer.merchant), selectinload(Offer.location))
+            .where(
+                and_(
+                    Offer.approval_status == OfferStatus.approved,
+                    Offer.starts_at <= now,
+                    Offer.ends_at >= now,
+                )
             )
-        )
-        .order_by(desc(Offer.created_at), desc(Offer.id))
-        .limit(30)
-    ).all()
-    active_offer_count = db.scalar(
-        select(func.count()).select_from(Offer).where(
-            and_(
-                Offer.approval_status == OfferStatus.approved,
-                Offer.starts_at <= now,
-                Offer.ends_at >= now,
+            .order_by(desc(Offer.created_at), desc(Offer.id))
+            .limit(30)
+        ).all()
+        active_offer_count = db.scalar(
+            select(func.count()).select_from(Offer).where(
+                and_(
+                    Offer.approval_status == OfferStatus.approved,
+                    Offer.starts_at <= now,
+                    Offer.ends_at >= now,
+                )
             )
-        )
-    ) or 0
+        ) or 0
+    except Exception:
+        active_offers = []
+        active_offer_count = 0
+        lines.append("active_promotion_query: unavailable")
 
     lines.append(f"active_promotion_count: {int(active_offer_count)}")
     if active_offers:
@@ -911,6 +1135,9 @@ def _format_directory_row(row: object) -> str:
 
 def _guard_current_perk_answer(*, message: str, answer: str) -> str:
     normalized_answer = answer.lower()
+    if _is_discount_query(message) and not _mentions_confirmed_promo(answer):
+        return _confirmed_current_deals_answer(message)
+
     forbidden_terms = (
         "cashback",
         "cash-back",
@@ -1556,7 +1783,10 @@ def _capabilities_for_role(role_context: str) -> str:
     if role_context == "home_local_guide":
         return (
             "I can help with current PerkNation promotions, business-directory listings, nearby categories, "
-            "and local restaurant or discovery recommendations. I keep promotions separate from broader business listings."
+            "fashion/events/sports/concert/restaurant review coverage, and local discovery recommendations. "
+            "Confirmed promos include Hollywood Sports paintball tickets, Bond Collective workspace services, "
+            "jewelry discounts, and El Portal World Cup game-day happy hour; Pasadena restaurant picks are recommendations. "
+            "I keep promotions separate from broader business listings and editorial guides."
         )
     return "I can answer public product and onboarding questions."
 

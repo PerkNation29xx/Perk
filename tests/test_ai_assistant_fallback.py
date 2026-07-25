@@ -1,3 +1,5 @@
+import json
+
 from app.core.config import settings
 from app.db.models import UserRole
 from app.services import ai_assistant
@@ -138,6 +140,48 @@ def test_home_local_guide_uses_nemotron_super_spark_lane(monkeypatch) -> None:
     assert captured["model_override"] == "nvidia/nemotron-3-super"
     assert captured["host_id_override"] == "spark"
     assert "HOME LOCAL GUIDE CONTEXT" in str(captured["system_context"])
+
+
+def test_home_local_guide_includes_review_context_for_current_events(monkeypatch) -> None:
+    captured: dict[str, str] = {}
+
+    def _fake_spark(
+        messages: list[dict[str, str]],
+        *,
+        base_url_override=None,
+        model_override=None,
+        host_id_override=None,
+    ) -> tuple[str, str]:
+        captured["system_context"] = "\n\n".join(
+            item["content"] for item in messages if item.get("role") == "system"
+        )
+        return str(model_override), "Use the LA fashion guide, KCON, UFC, SoFi openers, and Dine LA coverage."
+
+    monkeypatch.setattr(settings, "ai_enabled", True)
+    monkeypatch.setattr(settings, "ai_provider", "spark")
+    monkeypatch.setattr(settings, "spark_public_base_url", "http://spark.example")
+    monkeypatch.setattr(settings, "home_local_guide_spark_base_url", "http://chat.neonflux.co")
+    monkeypatch.setattr(settings, "home_local_guide_model", "nvidia/nemotron-3-super")
+    monkeypatch.setattr(settings, "home_local_guide_spark_host_id", "spark")
+    monkeypatch.setattr(ai_assistant, "_request_spark_chat", _fake_spark)
+
+    result = chat_with_assistant(
+        message="What current fashion events, sports, concerts, and restaurants are listed for review?",
+        history=[],
+        db=None,
+        current_user=None,
+        user_role=None,
+        requested_context="home_local_guide",
+    )
+
+    system_context = captured["system_context"]
+    assert result.role_context == "home_local_guide"
+    assert "PUBLIC REVIEW COVERAGE CONTEXT" in system_context
+    assert "LA fashion events to plan around now" in system_context
+    assert "KCON LA 2026" in system_context
+    assert "UFC Fight Night" in system_context
+    assert "Dine LA 2026 city guides" in system_context
+    assert "not active PerkNation promotions" in system_context
 
 
 def test_consumer_account_uses_nemotron_super_spark_lane(monkeypatch) -> None:
@@ -415,3 +459,50 @@ def test_home_local_guide_allows_business_directory_context(monkeypatch) -> None
     assert result.role_context == "home_local_guide"
     assert "LOCAL DISCOVERY CONTEXT" in str(captured["system_context"])
     assert "source=business_directory" in str(captured["system_context"])
+
+
+def test_spark_messages_are_compacted_under_input_budget(monkeypatch) -> None:
+    captured: dict[str, object] = {}
+
+    class _FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def read(self) -> bytes:
+            return b'{"model":"spark-model","content":"ok"}'
+
+    def _fake_urlopen(req, timeout):
+        payload = json.loads(req.data.decode("utf-8"))
+        captured["messages"] = payload["messages"]
+        captured["timeout"] = timeout
+        return _FakeResponse()
+
+    oversized_messages = [
+        {"role": "system", "content": "System context. " + ("large context " * 900)},
+        {"role": "system", "content": "More context. " + ("restaurant event fashion sports " * 500)},
+    ]
+    oversized_messages.extend(
+        {"role": "assistant" if idx % 2 else "user", "content": f"old message {idx} " + ("history " * 500)}
+        for idx in range(20)
+    )
+    oversized_messages.append({"role": "user", "content": "Final current fashion events question"})
+
+    monkeypatch.setattr(settings, "spark_public_base_url", "http://spark.example")
+    monkeypatch.setattr(ai_assistant.request, "urlopen", _fake_urlopen)
+
+    model, answer = ai_assistant._request_spark_chat(
+        oversized_messages,
+        base_url_override="http://spark.example",
+        model_override="nvidia/nemotron-3-super",
+        host_id_override="spark",
+    )
+
+    sent_messages = captured["messages"]
+    assert model == "spark-model"
+    assert answer == "ok"
+    assert isinstance(sent_messages, list)
+    assert ai_assistant._estimate_prompt_tokens(sent_messages) <= ai_assistant._SPARK_INPUT_TOKEN_BUDGET
+    assert sent_messages[-1]["content"] == "Final current fashion events question"
