@@ -233,6 +233,7 @@ _WHITE_LEGACY_HTML_TO_CANONICAL = {
 _LEGACY_STATIC_HTML_FILES = {"investors.html", "security.html", "contact.html", "privacy.html", "terms.html"}
 _ARTICLE_HTML_FILES = {
     "dine-la-pasadena-2026": "dine-la-pasadena-2026.html",
+    "la-fashion-events-2026": "la-fashion-events-2026.html",
 }
 
 # Admin web portal (served from the same process for local testing).
