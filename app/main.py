@@ -235,6 +235,7 @@ _ARTICLE_HTML_FILES = {
     "dine-la-pasadena-2026": "dine-la-pasadena-2026.html",
     "la-fashion-events-2026": "la-fashion-events-2026.html",
     "vvs-cosmetics-victor-kuzmanovsky-wellness-beauty": "vvs-cosmetics-victor-kuzmanovsky-wellness-beauty.html",
+    "southern-california-august-events-2026": "southern-california-august-events-2026.html",
 }
 _EVENT_SLUGS = {
     "kcon-la-2026",
