@@ -235,6 +235,7 @@ _ARTICLE_HTML_FILES = {
     "dine-la-pasadena-2026": "dine-la-pasadena-2026.html",
     "la-fashion-events-2026": "la-fashion-events-2026.html",
 }
+_DINE_LA_CITY_GUIDES_FILE = _HOME_PORTAL_DIR / "assets" / "articles" / "dine-la-city-guides-2026.json"
 
 # Admin web portal (served from the same process for local testing).
 if _ADMIN_STATIC_DIR.exists():
@@ -272,6 +273,159 @@ def _escape(value: object) -> str:
 def _public_url(path: str) -> str:
     normalized = path if path.startswith("/") else f"/{path}"
     return settings._join_public_url(settings.public_web_base_url, normalized)
+
+
+def _load_dine_la_city_guides() -> dict:
+    if not _DINE_LA_CITY_GUIDES_FILE.exists():
+        return {"cities": []}
+    try:
+        return json.loads(_DINE_LA_CITY_GUIDES_FILE.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        logger.exception("Dine LA city guide data is not valid JSON")
+        return {"cities": []}
+
+
+def _find_dine_la_city_guide(article_slug: str) -> Optional[tuple[dict, dict]]:
+    normalized = article_slug.strip().lower()
+    data = _load_dine_la_city_guides()
+    for city in data.get("cities", []):
+        if city.get("article_slug") == normalized:
+            return data, city
+    return None
+
+
+def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> Optional[str]:
+    found = _find_dine_la_city_guide(article_slug)
+    if not found:
+        return None
+    data, city = found
+    city_name = city.get("city", "")
+    restaurants = city.get("restaurants", [])
+    restaurant_count = int(city.get("restaurant_count") or len(restaurants))
+    route = city.get("route") or f"/articles/{article_slug}"
+    canonical_url = _public_url(route)
+    directory_route = city.get("directory_route") or f"/directory?city={quote_plus(city_name)}"
+    if white and directory_route.startswith("/"):
+        directory_route = f"/white{directory_route}"
+    source_url = data.get("source") or "https://www.discoverlosangeles.com/dinela"
+    cuisines = ", ".join(city.get("top_cuisines", [])[:5]) or "local dining"
+    price_ranges = city.get("price_ranges", [])[:4]
+    price_summary = "; ".join(price_ranges) if price_ranges else "check current Dine LA menus"
+    directory_count = city.get("perk_directory_count")
+    directory_note = (
+        f"Perk Nation currently has {int(directory_count):,} directory listings for {city_name}, so this guide can connect restaurant-week searches to deeper local discovery."
+        if isinstance(directory_count, int)
+        else f"{city_name} is part of the official Dine LA city set; use the Perk Nation directory search to connect the dining plan with nearby categories."
+    )
+    restaurant_items = "\n".join(
+        (
+            "          <li>"
+            f"<strong><a href=\"{_escape(item.get('url') or source_url)}\" target=\"_blank\" rel=\"noopener noreferrer\">{_escape(item.get('name'))}</a></strong>"
+            f" · {_escape(', '.join(item.get('cuisine') or []) or 'Dining')}"
+            f" · {_escape(item.get('price_range') or 'Check menu')}"
+            f" · {_escape(item.get('street') or city_name)}"
+            "</li>"
+        )
+        for item in restaurants
+    )
+    all_cities = [other for other in data.get("cities", []) if other.get("article_slug") != article_slug]
+    related_items = "\n".join(
+        f"          <li><a href=\"{_escape(other.get('white_route') if white else other.get('route'))}\">{_escape(other.get('city'))} Dine LA guide</a> · {int(other.get('restaurant_count') or 0)} listings</li>"
+        for other in all_cities[:10]
+    )
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Dine LA { _escape(city_name) } guide with official 2026 restaurant listings, price tiers, cuisines, and Perk Nation local discovery links." />
+  <meta name="theme-color" content="#0d0d0d" />
+  <title>Dine LA { _escape(city_name) } guide: {restaurant_count} restaurants | Perk Nation</title>
+  <link rel="canonical" href="{_escape(canonical_url)}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/styles.css?v=20260725-dine-la-cities" />
+  <script type="application/ld+json">
+    {{
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Dine LA { _escape(city_name) } guide: {restaurant_count} restaurants",
+      "description": "Official Dine LA 2026 restaurant listings for { _escape(city_name) }, organized for local search and reservation planning.",
+      "image": "https://perknation.app/assets/articles/dine-la-pasadena-2026.jpg",
+      "author": {{"@type": "Organization", "name": "Perk Nation"}},
+      "publisher": {{"@type": "Organization", "name": "Perk Nation"}},
+      "datePublished": "2026-07-25",
+      "dateModified": "{_escape(data.get('generated_on') or '2026-07-25')}",
+      "mainEntityOfPage": "{_escape(canonical_url)}"
+    }}
+  </script>
+</head>
+<body>
+<header class="header">
+  <div class="container">
+    <div class="nav">
+      <a class="brand" href="/" aria-label="Perk Nation home"><span class="brandMark"><img src="/assets/mark.svg" alt="" width="24" height="24" /></span><span>Perk Nation</span></a>
+      <nav class="navlinks" aria-label="Primary navigation"><a href="/directory">Directory</a><a href="/events">Events</a><a href="/members">Members</a><a href="/merchants">Merchants</a><a href="/contact-us">Contact Us</a></nav>
+      <div class="navcta"><a class="btn ghost" href="/login">Login</a></div>
+    </div>
+  </div>
+</header>
+<main class="articleShell">
+  <article class="container">
+    <a class="articleBackLink" href="/articles/dine-la-pasadena-2026">Back to the city guide hub</a>
+    <section class="articleHeroGrid">
+      <div class="articleHeroCopy">
+        <div class="badge">Dine LA by city</div>
+        <h1>Dine LA { _escape(city_name) } guide: {restaurant_count} official listings.</h1>
+        <p>{_escape(city_name)} has {restaurant_count} restaurants in the official Dine LA 2026 listing. Use this city page to compare cuisines, price tiers, and nearby Perk Nation discovery paths before booking.</p>
+        <div class="articleFactGrid">
+          <div><span>Dates</span><strong>{_escape(data.get('dates') or 'August 14-28, 2026')}</strong></div>
+          <div><span>City listings</span><strong>{restaurant_count} restaurants</strong></div>
+          <div><span>Top cuisines</span><strong>{_escape(cuisines)}</strong></div>
+          <div><span>Price tiers</span><strong>{_escape(price_summary)}</strong></div>
+        </div>
+        <div class="articleActions">
+          <a class="btn primary" href="{_escape(source_url)}" target="_blank" rel="noopener noreferrer">Open official Dine LA listing</a>
+          <a class="btn" href="{_escape(directory_route)}">Search { _escape(city_name) } on Perk Nation</a>
+        </div>
+      </div>
+      <figure class="articleHeroMedia">
+        <img src="/assets/articles/dine-la-pasadena-2026.jpg" alt="Golden-hour restaurant table with spritz drinks, seasonal plates, and a city dining view" />
+        <figcaption>Confirm final menus, booking windows, and availability with the official Dine LA listing before visiting.</figcaption>
+      </figure>
+    </section>
+    <section class="articleBodyGrid">
+      <div class="articleStory">
+        <h2>How to plan { _escape(city_name) }</h2>
+        <p>{_escape(directory_note)}</p>
+        <p>For SEO and reader usefulness, treat this page as the city landing page for Dine LA { _escape(city_name) }, then create supporting internal links by cuisine, lunch, dinner, date-night, seafood, steakhouse, patio, family, and nearby-event intent.</p>
+        <h2>{ _escape(city_name) } restaurant listings</h2>
+        <ul>
+{restaurant_items}
+        </ul>
+      </div>
+      <aside class="articleSourceCard">
+        <h2>Measure next</h2>
+        <ul>
+          <li>Organic entrances to this city article.</li>
+          <li>Outbound clicks to official Dine LA restaurant listings.</li>
+          <li>Clicks into the Perk Nation city directory.</li>
+          <li>Search impressions for Dine LA plus city and cuisine phrases.</li>
+        </ul>
+        <a href="{_escape(source_url)}" target="_blank" rel="noopener noreferrer">Official Dine LA source</a>
+        <a href="{_escape(directory_route)}">Perk Nation { _escape(city_name) } search</a>
+        <h2>Other city guides</h2>
+        <ul>
+{related_items}
+        </ul>
+      </aside>
+    </section>
+  </article>
+</main>
+<footer class="footer"><div class="container"><div class="footerBottom"><span>© 2026 Perk Nation</span><span><a href="/directory">Directory</a> · <a href="/events">Events</a> · <a href="/privacy-policy">Privacy</a></span></div></div></footer>
+</body>
+</html>"""
 
 
 def _theme_path(path: str, *, white: bool) -> str:
@@ -1208,9 +1362,12 @@ def home_portal_hollywood_sports() -> str:
 @app.get("/articles/{article_slug}", response_class=HTMLResponse)
 def home_portal_article(article_slug: str) -> str:
     filename = _ARTICLE_HTML_FILES.get(article_slug.strip().lower())
-    if not filename:
-        raise HTTPException(status_code=404, detail="Article not found")
-    return _read_html_or_missing(_HOME_PORTAL_DIR / "articles" / filename, "Article")
+    if filename:
+        return _read_html_or_missing(_HOME_PORTAL_DIR / "articles" / filename, "Article")
+    rendered_article = _render_dine_la_city_article(article_slug)
+    if rendered_article:
+        return rendered_article
+    raise HTTPException(status_code=404, detail="Article not found")
 
 
 @app.get("/guests", include_in_schema=False)
@@ -1343,9 +1500,12 @@ def home_portal_white_hollywood_sports() -> str:
 @app.get("/white/articles/{article_slug}", response_class=HTMLResponse)
 def home_portal_white_article(article_slug: str) -> str:
     filename = _ARTICLE_HTML_FILES.get(article_slug.strip().lower())
-    if not filename:
-        raise HTTPException(status_code=404, detail="Article not found")
-    return _read_html_or_missing(_HOME_PORTAL_DIR / "articles" / filename, "Article")
+    if filename:
+        return _read_html_or_missing(_HOME_PORTAL_DIR / "articles" / filename, "Article")
+    rendered_article = _render_dine_la_city_article(article_slug, white=True)
+    if rendered_article:
+        return rendered_article
+    raise HTTPException(status_code=404, detail="Article not found")
 
 
 @app.get("/white/guests", include_in_schema=False)
