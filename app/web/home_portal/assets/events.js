@@ -65,6 +65,19 @@
             <div><span>City</span><strong>${escapeHtml(event.city)}</strong></div>
           </div>
           <a class="btn primary" href="${escapeHtml(event.officialUrl)}" target="_blank" rel="noopener noreferrer">Official event page ↗</a>
+          <div class="sharePanel" data-share-panel data-share-title="${escapeHtml(event.title)}" data-share-text="${escapeHtml(event.summary)}" data-share-url="${escapeHtml(`${location.origin}${eventBase}/${event.slug}`)}">
+            <div class="shareIntro"><span>Share this event</span><strong>Send this plan to friends.</strong></div>
+            <div class="shareActions" aria-label="Share options">
+              <button type="button" data-share-action="instagram">Instagram</button>
+              <button type="button" data-share-action="facebook">Facebook</button>
+              <button type="button" data-share-action="tiktok">TikTok</button>
+              <button type="button" data-share-action="sms">SMS</button>
+              <button type="button" data-share-action="imessage">iMessage</button>
+              <button type="button" data-share-action="email">Email</button>
+              <button type="button" data-share-action="copy">Copy link</button>
+            </div>
+            <div class="shareStatus" data-share-status aria-live="polite"></div>
+          </div>
         </div>
         <figure class="eventArticleMedia">
           <img src="${escapeHtml(event.image)}" alt="${escapeHtml(event.imageAlt)}" referrerpolicy="no-referrer" />

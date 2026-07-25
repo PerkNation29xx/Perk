@@ -1566,6 +1566,46 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 .articleSourceCard li{margin:9px 0}
 .articleSourceCard a{display:block; color:var(--yellow); font-weight:850}
 
+.sharePanel{
+  display:grid;
+  gap:14px;
+  margin:24px 0;
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  background:rgba(250,247,247,.045);
+  box-shadow:var(--shadow-soft);
+}
+.shareIntro{display:grid; gap:3px}
+.shareIntro span{
+  color:var(--yellow);
+  font-size:12px;
+  font-weight:950;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+.shareIntro strong{font-size:18px; line-height:1.2}
+.shareActions{display:flex; flex-wrap:wrap; gap:8px}
+.shareActions button{
+  min-height:38px;
+  border:1px solid rgba(250,247,247,.16);
+  border-radius:999px;
+  background:rgba(250,247,247,.055);
+  color:var(--ink);
+  font:inherit;
+  font-size:13px;
+  font-weight:850;
+  padding:8px 12px;
+  cursor:pointer;
+}
+.shareActions button:hover,
+.shareActions button:focus-visible{
+  border-color:rgba(230,184,74,.46);
+  background:rgba(230,184,74,.12);
+  outline:0;
+}
+.shareStatus{min-height:18px; color:var(--muted2); font-size:13px; font-weight:800}
+
 @media (max-width: 960px){
   .homeArticleFeature,
   .articleHeroGrid,
@@ -1582,4 +1622,6 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   .articleActions{align-items:stretch; flex-direction:column}
   .homeArticleLinks .btn,
   .articleActions .btn{width:100%; justify-content:center}
+  .shareActions{display:grid; grid-template-columns:repeat(2,minmax(0,1fr))}
+  .shareActions button{width:100%}
 }

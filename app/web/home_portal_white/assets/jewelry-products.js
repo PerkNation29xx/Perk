@@ -134,6 +134,14 @@
     });
   };
 
+  const updateShare = (product) => {
+    const panel = $("[data-share-panel]");
+    if (!panel || !product) return;
+    panel.dataset.shareTitle = `${product.title} - Perk Nation jewelry offer`;
+    panel.dataset.shareText = `Share this Perk Nation jewelry offer: ${product.title}.`;
+    panel.dataset.shareUrl = `${window.location.origin}${window.location.pathname}`;
+  };
+
   const renderProduct = (product, slug) => {
     document.title = `${product.title} - Perk Nation`;
     setText("[data-jewelry-category]", product.category);
@@ -145,6 +153,7 @@
     setText("[data-jewelry-note]", product.note);
     renderMedia(product);
     renderBullets(product);
+    updateShare(product);
 
     const retail = $("[data-jewelry-retail]");
     if (retail) retail.classList.toggle("noStrike", !product.purchasable);

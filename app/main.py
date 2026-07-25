@@ -372,6 +372,8 @@ def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> O
     restaurant_count = int(city.get("restaurant_count") or len(restaurants))
     route = city.get("route") or f"/articles/{article_slug}"
     canonical_url = _public_url(route)
+    share_route = city.get("white_route") if white else route
+    share_url = _public_url(share_route or route)
     directory_route = city.get("directory_route") or f"/directory?city={quote_plus(city_name)}"
     if white and directory_route.startswith("/"):
         directory_route = f"/white{directory_route}"
@@ -458,6 +460,19 @@ def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> O
           <a class="btn primary" href="{_escape(source_url)}" target="_blank" rel="noopener noreferrer">Open Dine LA restaurant pages</a>
           <a class="btn" href="{_escape(directory_route)}">Search { _escape(city_name) } on Perk Nation</a>
         </div>
+        <div class="sharePanel" data-share-panel data-share-title="Dine LA { _escape(city_name) } guide" data-share-text="Share the Perk Nation Dine LA guide for { _escape(city_name) }." data-share-url="{_escape(share_url)}">
+          <div class="shareIntro"><span>Share this city guide</span><strong>Send the { _escape(city_name) } restaurant picks.</strong></div>
+          <div class="shareActions" aria-label="Share options">
+            <button type="button" data-share-action="instagram">Instagram</button>
+            <button type="button" data-share-action="facebook">Facebook</button>
+            <button type="button" data-share-action="tiktok">TikTok</button>
+            <button type="button" data-share-action="sms">SMS</button>
+            <button type="button" data-share-action="imessage">iMessage</button>
+            <button type="button" data-share-action="email">Email</button>
+            <button type="button" data-share-action="copy">Copy link</button>
+          </div>
+          <div class="shareStatus" data-share-status aria-live="polite"></div>
+        </div>
       </div>
       <figure class="articleHeroMedia">
         <img src="/assets/articles/dine-la-pasadena-2026.jpg" alt="Golden-hour restaurant table with spritz drinks, seasonal plates, and a city dining view" />
@@ -497,6 +512,7 @@ def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> O
   </article>
 </main>
 <footer class="footer"><div class="container"><div class="footerBottom"><span>© 2026 Perk Nation</span><span><a href="/directory">Directory</a> · <a href="/events">Events</a> · <a href="/privacy-policy">Privacy</a></span></div></div></footer>
+<script src="/assets/share.js" defer></script>
 </body>
 </html>"""
 
@@ -1422,6 +1438,11 @@ def home_portal_business_directory_detail(business_slug: str) -> str:
     return _render_business_page(slug=business_slug, white=False)
 
 
+@app.get("/jewelry", include_in_schema=False)
+def home_portal_jewelry_redirect() -> RedirectResponse:
+    return RedirectResponse(url="/#crystal-jewelry", status_code=308)
+
+
 @app.get("/jewelry/{product_slug}", response_class=HTMLResponse)
 def home_portal_jewelry_product(product_slug: str) -> str:
     return _read_html_or_missing(_HOME_PORTAL_DIR / "jewelry-product.html", "Jewelry product page")
@@ -1567,6 +1588,11 @@ def home_portal_white_directory_city(city_slug: str, q: str = "") -> str:
 @app.get("/white/business/{business_slug}", response_class=HTMLResponse)
 def home_portal_white_business_directory_detail(business_slug: str) -> str:
     return _render_business_page(slug=business_slug, white=True)
+
+
+@app.get("/white/jewelry", include_in_schema=False)
+def home_portal_white_jewelry_redirect() -> RedirectResponse:
+    return RedirectResponse(url="/white/#crystal-jewelry", status_code=308)
 
 
 @app.get("/white/jewelry/{product_slug}", response_class=HTMLResponse)

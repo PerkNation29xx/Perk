@@ -276,6 +276,19 @@
           <button class="btn primary" type="button" data-hsp-checkout-trigger data-offer-label="Hollywood Sports offer campaign" data-offer-code="hsp-campaign">Buy now</button>
           <a class="btn" href="#digital-offers">View digital offers</a>
         </div>
+        <div class="sharePanel" data-share-panel data-share-title="Hollywood Sports Perk Nation offer" data-share-text="Share the Perk Nation Hollywood Sports paintball offer campaign." data-share-url="https://perknation.app/hollywood-sports">
+          <div class="shareIntro"><span>Share this offer</span><strong>Send the paintball package to your group.</strong></div>
+          <div class="shareActions" aria-label="Share options">
+            <button type="button" data-share-action="instagram">Instagram</button>
+            <button type="button" data-share-action="facebook">Facebook</button>
+            <button type="button" data-share-action="tiktok">TikTok</button>
+            <button type="button" data-share-action="sms">SMS</button>
+            <button type="button" data-share-action="imessage">iMessage</button>
+            <button type="button" data-share-action="email">Email</button>
+            <button type="button" data-share-action="copy">Copy link</button>
+          </div>
+          <div class="shareStatus" data-share-status aria-live="polite"></div>
+        </div>
 
         <div class="hspMetrics">
           <div class="hspMetric">
@@ -811,6 +824,7 @@
 </div>
 
 <script src="assets/app.js?v=20260525a"></script>
+<script src="/assets/share.js" defer></script>
 <script>
   (() => {
     const form = document.querySelector("[data-hsp-chat-form]");
