@@ -234,6 +234,7 @@ _LEGACY_STATIC_HTML_FILES = {"investors.html", "security.html", "contact.html", 
 _ARTICLE_HTML_FILES = {
     "dine-la-pasadena-2026": "dine-la-pasadena-2026.html",
     "la-fashion-events-2026": "la-fashion-events-2026.html",
+    "vvs-cosmetics-victor-kuzmanovsky-wellness-beauty": "vvs-cosmetics-victor-kuzmanovsky-wellness-beauty.html",
 }
 _DINE_LA_CITY_GUIDES_FILE = _HOME_PORTAL_DIR / "assets" / "articles" / "dine-la-city-guides-2026.json"
 
