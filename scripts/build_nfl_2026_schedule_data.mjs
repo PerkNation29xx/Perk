@@ -63,7 +63,11 @@ function normalizeNetwork(competition) {
   const networks = (competition.broadcasts || [])
     .map((broadcast) => broadcast?.media?.shortName)
     .filter(Boolean);
-  return [...new Set(networks)].join(" / ") || "TBD";
+  const labels = networks.map((network) => ({
+    "NFL Net": "NFL Network",
+    "ESPN Unlmtd": "ESPN",
+  })[network] || network);
+  return [...new Set(labels)].join(" / ") || "TBD";
 }
 
 function scheduleEntry(event, teamName) {
@@ -87,12 +91,28 @@ function scheduleEntry(event, teamName) {
   };
 }
 
+function preseasonEntry(event, teamName, index) {
+  const game = scheduleEntry(event, teamName);
+  return {
+    ...game,
+    week: index + 1,
+  };
+}
+
 async function loadTeam(meta) {
   const [id, nflAbbreviation, name, shortName, conference, division, officialSlug] = meta;
-  const endpoint = `https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/${id}/schedule?season=2026`;
-  const response = await fetch(endpoint);
-  if (!response.ok) throw new Error(`${name}: ${response.status} ${response.statusText}`);
-  const payload = await response.json();
+  const regularEndpoint = `https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/${id}/schedule?season=2026&seasontype=2`;
+  const preseasonEndpoint = `https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/${id}/schedule?season=2026&seasontype=1`;
+  const [regularResponse, preseasonResponse] = await Promise.all([
+    fetch(regularEndpoint),
+    fetch(preseasonEndpoint),
+  ]);
+  if (!regularResponse.ok) throw new Error(`${name} regular season: ${regularResponse.status} ${regularResponse.statusText}`);
+  if (!preseasonResponse.ok) throw new Error(`${name} preseason: ${preseasonResponse.status} ${preseasonResponse.statusText}`);
+  const [payload, preseasonPayload] = await Promise.all([
+    regularResponse.json(),
+    preseasonResponse.json(),
+  ]);
   const games = (payload.events || [])
     .map((event) => scheduleEntry(event, name))
     .sort((left, right) => left.week - right.week);
@@ -109,6 +129,9 @@ async function loadTeam(meta) {
       venue: "—",
     };
   });
+  const preseason = (preseasonPayload.events || [])
+    .sort((left, right) => new Date(left.date) - new Date(right.date))
+    .map((event, index) => preseasonEntry(event, name, index));
   const opener = schedule[0];
   const firstHome = schedule.find((game) => game.site === "home");
   return {
@@ -127,6 +150,7 @@ async function loadTeam(meta) {
     venue: firstHome?.venue || "Venue TBD",
     featured: Object.hasOwn(featuredSlugs, id),
     opener,
+    preseason,
     schedule,
   };
 }
@@ -135,6 +159,8 @@ const output = {
   season: 2026,
   sourceLabel: "Official NFL 2026 team schedules",
   sourceUrl: "https://www.nfl.com/schedules/2026/by-team",
+  preseasonSourceLabel: "Official NFL 2026 preseason opponents and club schedule announcements",
+  preseasonSourceUrl: "https://www.nfl.com/news/2026-nfl-preseason-complete-team-by-team-opponents",
   teams: await Promise.all(teams.map(loadTeam)),
 };
 

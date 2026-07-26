@@ -2,6 +2,8 @@
   "season": 2026,
   "sourceLabel": "Official NFL 2026 team schedules",
   "sourceUrl": "https://www.nfl.com/schedules/2026/by-team",
+  "preseasonSourceLabel": "Official NFL 2026 preseason opponents and club schedule announcements",
+  "preseasonSourceUrl": "https://www.nfl.com/news/2026-nfl-preseason-complete-team-by-team-opponents",
   "teams": [
     {
       "id": "buf",
@@ -27,6 +29,35 @@
         "network": "CBS",
         "venue": "NRG Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Sat, Aug 15",
+          "site": "home",
+          "opponent": "Carolina Panthers",
+          "time": "10:00 AM PT",
+          "network": "TBD",
+          "venue": "Highmark Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sat, Aug 22",
+          "site": "away",
+          "opponent": "Cleveland Browns",
+          "time": "10:00 AM PT",
+          "network": "NFL Network",
+          "venue": "Huntington Bank Field"
+        },
+        {
+          "week": 3,
+          "date": "Thu, Aug 27",
+          "site": "home",
+          "opponent": "Pittsburgh Steelers",
+          "time": "4:00 PM PT",
+          "network": "NFL Network",
+          "venue": "Highmark Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -216,6 +247,35 @@
         "network": "FOX",
         "venue": "Allegiant Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Fri, Aug 14",
+          "site": "away",
+          "opponent": "Washington Commanders",
+          "time": "4:00 PM PT",
+          "network": "TBD",
+          "venue": "Northwest Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sat, Aug 22",
+          "site": "home",
+          "opponent": "New York Giants",
+          "time": "1:00 PM PT",
+          "network": "NFL Network",
+          "venue": "Hard Rock Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Fri, Aug 28",
+          "site": "home",
+          "opponent": "Atlanta Falcons",
+          "time": "4:00 PM PT",
+          "network": "TBD",
+          "venue": "Hard Rock Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -405,6 +465,35 @@
         "network": "NBC",
         "venue": "Lumen Field"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Thu, Aug 13",
+          "site": "home",
+          "opponent": "Indianapolis Colts",
+          "time": "4:30 PM PT",
+          "network": "TBD",
+          "venue": "Gillette Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sat, Aug 22",
+          "site": "home",
+          "opponent": "Philadelphia Eagles",
+          "time": "4:00 PM PT",
+          "network": "NFL Network",
+          "venue": "Gillette Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Thu, Aug 27",
+          "site": "away",
+          "opponent": "Cleveland Browns",
+          "time": "5:00 PM PT",
+          "network": "Prime Video",
+          "venue": "Huntington Bank Field"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -594,6 +683,35 @@
         "network": "CBS",
         "venue": "Nissan Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Fri, Aug 14",
+          "site": "home",
+          "opponent": "Tampa Bay Buccaneers",
+          "time": "4:00 PM PT",
+          "network": "NFL Network",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Fri, Aug 21",
+          "site": "away",
+          "opponent": "Pittsburgh Steelers",
+          "time": "4:00 PM PT",
+          "network": "NFL Network",
+          "venue": "Acrisure Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Fri, Aug 28",
+          "site": "home",
+          "opponent": "New York Giants",
+          "time": "4:30 PM PT",
+          "network": "TBD",
+          "venue": "MetLife Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -783,6 +901,35 @@
         "network": "CBS",
         "venue": "Lucas Oil Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Sat, Aug 15",
+          "site": "home",
+          "opponent": "Philadelphia Eagles",
+          "time": "4:00 PM PT",
+          "network": "ESPN",
+          "venue": "M&T Bank Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sat, Aug 22",
+          "site": "away",
+          "opponent": "Minnesota Vikings",
+          "time": "10:00 AM PT",
+          "network": "ESPN",
+          "venue": "U.S. Bank Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Fri, Aug 28",
+          "site": "home",
+          "opponent": "Washington Commanders",
+          "time": "3:00 PM PT",
+          "network": "NFL Network",
+          "venue": "M&T Bank Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -972,6 +1119,35 @@
         "network": "FOX",
         "venue": "Paycor Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Thu, Aug 13",
+          "site": "home",
+          "opponent": "Detroit Lions",
+          "time": "4:00 PM PT",
+          "network": "TBD",
+          "venue": "Paycor Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sat, Aug 22",
+          "site": "home",
+          "opponent": "Chicago Bears",
+          "time": "4:00 PM PT",
+          "network": "TBD",
+          "venue": "Paycor Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Fri, Aug 28",
+          "site": "away",
+          "opponent": "Philadelphia Eagles",
+          "time": "5:00 PM PT",
+          "network": "CBS",
+          "venue": "Lincoln Financial Field"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -1051,7 +1227,7 @@
           "site": "away",
           "opponent": "Atlanta Falcons",
           "time": "6:30 AM PT",
-          "network": "NFL Net",
+          "network": "NFL Network",
           "venue": "Santiago Bernabéu"
         },
         {
@@ -1161,6 +1337,35 @@
         "network": "CBS",
         "venue": "EverBank Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Sat, Aug 15",
+          "site": "away",
+          "opponent": "Chicago Bears",
+          "time": "10:00 AM PT",
+          "network": "NFL Network",
+          "venue": "Soldier Field"
+        },
+        {
+          "week": 2,
+          "date": "Sat, Aug 22",
+          "site": "home",
+          "opponent": "Buffalo Bills",
+          "time": "10:00 AM PT",
+          "network": "NFL Network",
+          "venue": "Huntington Bank Field"
+        },
+        {
+          "week": 3,
+          "date": "Thu, Aug 27",
+          "site": "home",
+          "opponent": "New England Patriots",
+          "time": "5:00 PM PT",
+          "network": "Prime Video",
+          "venue": "Huntington Bank Field"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -1350,6 +1555,35 @@
         "network": "FOX",
         "venue": "Acrisure Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Thu, Aug 13",
+          "site": "home",
+          "opponent": "Green Bay Packers",
+          "time": "4:00 PM PT",
+          "network": "NFL Network",
+          "venue": "Acrisure Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Fri, Aug 21",
+          "site": "home",
+          "opponent": "New York Jets",
+          "time": "4:00 PM PT",
+          "network": "NFL Network",
+          "venue": "Acrisure Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Thu, Aug 27",
+          "site": "away",
+          "opponent": "Buffalo Bills",
+          "time": "4:00 PM PT",
+          "network": "NFL Network",
+          "venue": "Highmark Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -1411,7 +1645,7 @@
           "site": "away",
           "opponent": "New Orleans Saints",
           "time": "6:30 AM PT",
-          "network": "NFL Net",
+          "network": "NFL Network",
           "venue": "Stade de France"
         },
         {
@@ -1539,6 +1773,35 @@
         "network": "CBS",
         "venue": "NRG Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Thu, Aug 13",
+          "site": "home",
+          "opponent": "Los Angeles Chargers",
+          "time": "5:00 PM PT",
+          "network": "TBD",
+          "venue": "NRG Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Thu, Aug 20",
+          "site": "home",
+          "opponent": "Las Vegas Raiders",
+          "time": "5:00 PM PT",
+          "network": "ESPN",
+          "venue": "NRG Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Fri, Aug 28",
+          "site": "away",
+          "opponent": "Carolina Panthers",
+          "time": "4:00 PM PT",
+          "network": "TBD",
+          "venue": "Bank of America Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -1591,7 +1854,7 @@
           "site": "away",
           "opponent": "Jacksonville Jaguars",
           "time": "6:30 AM PT",
-          "network": "NFL Net",
+          "network": "NFL Network",
           "venue": "Wembley Stadium"
         },
         {
@@ -1728,6 +1991,35 @@
         "network": "CBS",
         "venue": "Lucas Oil Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Thu, Aug 13",
+          "site": "away",
+          "opponent": "New England Patriots",
+          "time": "4:30 PM PT",
+          "network": "TBD",
+          "venue": "Gillette Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sat, Aug 22",
+          "site": "home",
+          "opponent": "Atlanta Falcons",
+          "time": "10:00 AM PT",
+          "network": "TBD",
+          "venue": "Lucas Oil Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sat, Aug 29",
+          "site": "home",
+          "opponent": "Detroit Lions",
+          "time": "10:00 AM PT",
+          "network": "NFL Network",
+          "venue": "Lucas Oil Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -1762,7 +2054,7 @@
           "site": "away",
           "opponent": "Washington Commanders",
           "time": "6:30 AM PT",
-          "network": "NFL Net",
+          "network": "NFL Network",
           "venue": "Tottenham Hotspur Stadium"
         },
         {
@@ -1917,6 +2209,35 @@
         "network": "CBS",
         "venue": "EverBank Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Sat, Aug 15",
+          "site": "away",
+          "opponent": "New Orleans Saints",
+          "time": "1:00 PM PT",
+          "network": "ESPN",
+          "venue": "Caesars Superdome"
+        },
+        {
+          "week": 2,
+          "date": "Fri, Aug 21",
+          "site": "home",
+          "opponent": "Carolina Panthers",
+          "time": "4:30 PM PT",
+          "network": "ESPN",
+          "venue": "EverBank Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Fri, Aug 28",
+          "site": "home",
+          "opponent": "Tampa Bay Buccaneers",
+          "time": "4:30 PM PT",
+          "network": "TBD",
+          "venue": "EverBank Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -1960,7 +2281,7 @@
           "site": "home",
           "opponent": "Philadelphia Eagles",
           "time": "6:30 AM PT",
-          "network": "NFL Net",
+          "network": "NFL Network",
           "venue": "Tottenham Hotspur Stadium"
         },
         {
@@ -1969,7 +2290,7 @@
           "site": "home",
           "opponent": "Houston Texans",
           "time": "6:30 AM PT",
-          "network": "NFL Net",
+          "network": "NFL Network",
           "venue": "Wembley Stadium"
         },
         {
@@ -2106,6 +2427,35 @@
         "network": "CBS",
         "venue": "Nissan Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Thu, Aug 13",
+          "site": "away",
+          "opponent": "San Francisco 49ers",
+          "time": "6:00 PM PT",
+          "network": "NFL Network",
+          "venue": "Levi's Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Aug 23",
+          "site": "home",
+          "opponent": "Seattle Seahawks",
+          "time": "5:00 PM PT",
+          "network": "FOX",
+          "venue": "Nissan Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sat, Aug 29",
+          "site": "home",
+          "opponent": "Chicago Bears",
+          "time": "3:00 PM PT",
+          "network": "NFL Network",
+          "venue": "Nissan Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -2295,6 +2645,35 @@
         "network": "ESPN / ABC",
         "venue": "GEHA Field at Arrowhead Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Fri, Aug 14",
+          "site": "away",
+          "opponent": "Atlanta Falcons",
+          "time": "4:00 PM PT",
+          "network": "ESPN",
+          "venue": "Mercedes-Benz Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Fri, Aug 21",
+          "site": "home",
+          "opponent": "Green Bay Packers",
+          "time": "6:00 PM PT",
+          "network": "NFL Network",
+          "venue": "Empower Field at Mile High"
+        },
+        {
+          "week": 3,
+          "date": "Fri, Aug 28",
+          "site": "home",
+          "opponent": "Minnesota Vikings",
+          "time": "6:00 PM PT",
+          "network": "NFL Network",
+          "venue": "Empower Field at Mile High"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -2484,6 +2863,35 @@
         "network": "ESPN / ABC",
         "venue": "GEHA Field at Arrowhead Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Sat, Aug 15",
+          "site": "home",
+          "opponent": "Los Angeles Rams",
+          "time": "1:00 PM PT",
+          "network": "NFL Network",
+          "venue": "GEHA Field at Arrowhead Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sat, Aug 22",
+          "site": "away",
+          "opponent": "Tampa Bay Buccaneers",
+          "time": "4:30 PM PT",
+          "network": "ESPN",
+          "venue": "Raymond James Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Fri, Aug 28",
+          "site": "home",
+          "opponent": "Seattle Seahawks",
+          "time": "5:00 PM PT",
+          "network": "ESPN",
+          "venue": "GEHA Field at Arrowhead Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -2673,6 +3081,35 @@
         "network": "FOX",
         "venue": "Allegiant Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Thu, Aug 13",
+          "site": "home",
+          "opponent": "Arizona Cardinals",
+          "time": "5:00 PM PT",
+          "network": "ESPN",
+          "venue": "Allegiant Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Thu, Aug 20",
+          "site": "away",
+          "opponent": "Houston Texans",
+          "time": "5:00 PM PT",
+          "network": "ESPN",
+          "venue": "NRG Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Thu, Aug 27",
+          "site": "home",
+          "opponent": "San Francisco 49ers",
+          "time": "5:00 PM PT",
+          "network": "ESPN",
+          "venue": "Allegiant Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -2862,6 +3299,35 @@
         "network": "CBS",
         "venue": "SoFi Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Thu, Aug 13",
+          "site": "away",
+          "opponent": "Houston Texans",
+          "time": "5:00 PM PT",
+          "network": "TBD",
+          "venue": "NRG Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Thu, Aug 20",
+          "site": "home",
+          "opponent": "San Francisco 49ers",
+          "time": "7:00 PM PT",
+          "network": "NFL Network",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Thu, Aug 27",
+          "site": "home",
+          "opponent": "Los Angeles Rams",
+          "time": "7:00 PM PT",
+          "network": "NFL Network",
+          "venue": "SoFi Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -3051,6 +3517,35 @@
         "network": "NBC",
         "venue": "MetLife Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Sat, Aug 15",
+          "site": "away",
+          "opponent": "Seattle Seahawks",
+          "time": "5:00 PM PT",
+          "network": "NFL Network",
+          "venue": "Lumen Field"
+        },
+        {
+          "week": 2,
+          "date": "Sat, Aug 22",
+          "site": "away",
+          "opponent": "Arizona Cardinals",
+          "time": "7:00 PM PT",
+          "network": "NFL Network",
+          "venue": "State Farm Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Fri, Aug 28",
+          "site": "home",
+          "opponent": "New Orleans Saints",
+          "time": "5:00 PM PT",
+          "network": "ESPN",
+          "venue": "AT&T Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -3240,6 +3735,35 @@
         "network": "NBC",
         "venue": "MetLife Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Sat, Aug 15",
+          "site": "home",
+          "opponent": "Minnesota Vikings",
+          "time": "10:00 AM PT",
+          "network": "ESPN",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sat, Aug 22",
+          "site": "away",
+          "opponent": "Miami Dolphins",
+          "time": "1:00 PM PT",
+          "network": "NFL Network",
+          "venue": "Hard Rock Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Fri, Aug 28",
+          "site": "away",
+          "opponent": "New York Jets",
+          "time": "4:30 PM PT",
+          "network": "TBD",
+          "venue": "MetLife Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -3429,6 +3953,35 @@
         "network": "FOX",
         "venue": "Lincoln Financial Field"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Sat, Aug 15",
+          "site": "away",
+          "opponent": "Baltimore Ravens",
+          "time": "4:00 PM PT",
+          "network": "ESPN",
+          "venue": "M&T Bank Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sat, Aug 22",
+          "site": "away",
+          "opponent": "New England Patriots",
+          "time": "4:00 PM PT",
+          "network": "NFL Network",
+          "venue": "Gillette Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Fri, Aug 28",
+          "site": "home",
+          "opponent": "Cincinnati Bengals",
+          "time": "5:00 PM PT",
+          "network": "CBS",
+          "venue": "Lincoln Financial Field"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -3472,7 +4025,7 @@
           "site": "away",
           "opponent": "Jacksonville Jaguars",
           "time": "6:30 AM PT",
-          "network": "NFL Net",
+          "network": "NFL Network",
           "venue": "Tottenham Hotspur Stadium"
         },
         {
@@ -3618,6 +4171,35 @@
         "network": "FOX",
         "venue": "Lincoln Financial Field"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Fri, Aug 14",
+          "site": "home",
+          "opponent": "Miami Dolphins",
+          "time": "4:00 PM PT",
+          "network": "TBD",
+          "venue": "Northwest Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sat, Aug 22",
+          "site": "away",
+          "opponent": "Detroit Lions",
+          "time": "9:00 AM PT",
+          "network": "TBD",
+          "venue": "Ford Field"
+        },
+        {
+          "week": 3,
+          "date": "Fri, Aug 28",
+          "site": "away",
+          "opponent": "Baltimore Ravens",
+          "time": "3:00 PM PT",
+          "network": "NFL Network",
+          "venue": "M&T Bank Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -3652,7 +4234,7 @@
           "site": "home",
           "opponent": "Indianapolis Colts",
           "time": "6:30 AM PT",
-          "network": "NFL Net",
+          "network": "NFL Network",
           "venue": "Tottenham Hotspur Stadium"
         },
         {
@@ -3807,6 +4389,35 @@
         "network": "FOX",
         "venue": "Bank of America Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Sat, Aug 15",
+          "site": "home",
+          "opponent": "Cleveland Browns",
+          "time": "10:00 AM PT",
+          "network": "NFL Network",
+          "venue": "Soldier Field"
+        },
+        {
+          "week": 2,
+          "date": "Sat, Aug 22",
+          "site": "away",
+          "opponent": "Cincinnati Bengals",
+          "time": "4:00 PM PT",
+          "network": "TBD",
+          "venue": "Paycor Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sat, Aug 29",
+          "site": "away",
+          "opponent": "Tennessee Titans",
+          "time": "3:00 PM PT",
+          "network": "NFL Network",
+          "venue": "Nissan Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -3996,6 +4607,35 @@
         "network": "FOX",
         "venue": "Ford Field"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Thu, Aug 13",
+          "site": "away",
+          "opponent": "Cincinnati Bengals",
+          "time": "4:00 PM PT",
+          "network": "TBD",
+          "venue": "Paycor Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sat, Aug 22",
+          "site": "home",
+          "opponent": "Washington Commanders",
+          "time": "9:00 AM PT",
+          "network": "TBD",
+          "venue": "Ford Field"
+        },
+        {
+          "week": 3,
+          "date": "Sat, Aug 29",
+          "site": "away",
+          "opponent": "Indianapolis Colts",
+          "time": "10:00 AM PT",
+          "network": "NFL Network",
+          "venue": "Lucas Oil Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -4185,6 +4825,35 @@
         "network": "CBS",
         "venue": "U.S. Bank Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Thu, Aug 13",
+          "site": "away",
+          "opponent": "Pittsburgh Steelers",
+          "time": "4:00 PM PT",
+          "network": "NFL Network",
+          "venue": "Acrisure Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Fri, Aug 21",
+          "site": "away",
+          "opponent": "Denver Broncos",
+          "time": "6:00 PM PT",
+          "network": "NFL Network",
+          "venue": "Empower Field at Mile High"
+        },
+        {
+          "week": 3,
+          "date": "Fri, Aug 28",
+          "site": "home",
+          "opponent": "Arizona Cardinals",
+          "time": "5:00 PM PT",
+          "network": "TBD",
+          "venue": "Lambeau Field"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -4374,6 +5043,35 @@
         "network": "CBS",
         "venue": "U.S. Bank Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Sat, Aug 15",
+          "site": "away",
+          "opponent": "New York Giants",
+          "time": "10:00 AM PT",
+          "network": "ESPN",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sat, Aug 22",
+          "site": "home",
+          "opponent": "Baltimore Ravens",
+          "time": "10:00 AM PT",
+          "network": "ESPN",
+          "venue": "U.S. Bank Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Fri, Aug 28",
+          "site": "away",
+          "opponent": "Denver Broncos",
+          "time": "6:00 PM PT",
+          "network": "NFL Network",
+          "venue": "Empower Field at Mile High"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -4563,6 +5261,35 @@
         "network": "FOX",
         "venue": "Acrisure Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Fri, Aug 14",
+          "site": "home",
+          "opponent": "Denver Broncos",
+          "time": "4:00 PM PT",
+          "network": "ESPN",
+          "venue": "Mercedes-Benz Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sat, Aug 22",
+          "site": "away",
+          "opponent": "Indianapolis Colts",
+          "time": "10:00 AM PT",
+          "network": "TBD",
+          "venue": "Lucas Oil Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Fri, Aug 28",
+          "site": "away",
+          "opponent": "Miami Dolphins",
+          "time": "4:00 PM PT",
+          "network": "TBD",
+          "venue": "Hard Rock Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -4642,7 +5369,7 @@
           "site": "home",
           "opponent": "Cincinnati Bengals",
           "time": "6:30 AM PT",
-          "network": "NFL Net",
+          "network": "NFL Network",
           "venue": "Santiago Bernabéu"
         },
         {
@@ -4752,6 +5479,44 @@
         "network": "FOX",
         "venue": "Bank of America Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Thu, Aug 6",
+          "site": "away",
+          "opponent": "Arizona Cardinals",
+          "time": "5:00 PM PT",
+          "network": "NBC",
+          "venue": "Tom Benson Hall of Fame Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sat, Aug 15",
+          "site": "away",
+          "opponent": "Buffalo Bills",
+          "time": "10:00 AM PT",
+          "network": "TBD",
+          "venue": "Highmark Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Fri, Aug 21",
+          "site": "away",
+          "opponent": "Jacksonville Jaguars",
+          "time": "4:30 PM PT",
+          "network": "ESPN",
+          "venue": "EverBank Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Fri, Aug 28",
+          "site": "home",
+          "opponent": "Houston Texans",
+          "time": "4:00 PM PT",
+          "network": "TBD",
+          "venue": "Bank of America Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -4941,6 +5706,35 @@
         "network": "FOX",
         "venue": "Ford Field"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Sat, Aug 15",
+          "site": "home",
+          "opponent": "Jacksonville Jaguars",
+          "time": "1:00 PM PT",
+          "network": "ESPN",
+          "venue": "Caesars Superdome"
+        },
+        {
+          "week": 2,
+          "date": "Sat, Aug 22",
+          "site": "away",
+          "opponent": "Los Angeles Rams",
+          "time": "1:00 PM PT",
+          "network": "ESPN",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Fri, Aug 28",
+          "site": "away",
+          "opponent": "Dallas Cowboys",
+          "time": "5:00 PM PT",
+          "network": "ESPN",
+          "venue": "AT&T Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -5002,7 +5796,7 @@
           "site": "home",
           "opponent": "Pittsburgh Steelers",
           "time": "6:30 AM PT",
-          "network": "NFL Net",
+          "network": "NFL Network",
           "venue": "Stade de France"
         },
         {
@@ -5130,6 +5924,35 @@
         "network": "FOX",
         "venue": "Paycor Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Fri, Aug 14",
+          "site": "away",
+          "opponent": "New York Jets",
+          "time": "4:00 PM PT",
+          "network": "NFL Network",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sat, Aug 22",
+          "site": "home",
+          "opponent": "Kansas City Chiefs",
+          "time": "4:30 PM PT",
+          "network": "ESPN",
+          "venue": "Raymond James Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Fri, Aug 28",
+          "site": "away",
+          "opponent": "Jacksonville Jaguars",
+          "time": "4:30 PM PT",
+          "network": "TBD",
+          "venue": "EverBank Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -5319,6 +6142,44 @@
         "network": "CBS",
         "venue": "SoFi Stadium"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Thu, Aug 6",
+          "site": "home",
+          "opponent": "Carolina Panthers",
+          "time": "5:00 PM PT",
+          "network": "NBC",
+          "venue": "Tom Benson Hall of Fame Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Thu, Aug 13",
+          "site": "away",
+          "opponent": "Las Vegas Raiders",
+          "time": "5:00 PM PT",
+          "network": "ESPN",
+          "venue": "Allegiant Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sat, Aug 22",
+          "site": "home",
+          "opponent": "Dallas Cowboys",
+          "time": "7:00 PM PT",
+          "network": "NFL Network",
+          "venue": "State Farm Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Fri, Aug 28",
+          "site": "away",
+          "opponent": "Green Bay Packers",
+          "time": "5:00 PM PT",
+          "network": "TBD",
+          "venue": "Lambeau Field"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -5508,6 +6369,35 @@
         "network": "Netflix",
         "venue": "Melbourne Cricket Ground"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Sat, Aug 15",
+          "site": "away",
+          "opponent": "Kansas City Chiefs",
+          "time": "1:00 PM PT",
+          "network": "NFL Network",
+          "venue": "GEHA Field at Arrowhead Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sat, Aug 22",
+          "site": "home",
+          "opponent": "New Orleans Saints",
+          "time": "1:00 PM PT",
+          "network": "ESPN",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Thu, Aug 27",
+          "site": "away",
+          "opponent": "Los Angeles Chargers",
+          "time": "7:00 PM PT",
+          "network": "NFL Network",
+          "venue": "SoFi Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -5697,6 +6587,35 @@
         "network": "Netflix",
         "venue": "Melbourne Cricket Ground"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Thu, Aug 13",
+          "site": "home",
+          "opponent": "Tennessee Titans",
+          "time": "6:00 PM PT",
+          "network": "NFL Network",
+          "venue": "Levi's Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Thu, Aug 20",
+          "site": "away",
+          "opponent": "Los Angeles Chargers",
+          "time": "7:00 PM PT",
+          "network": "NFL Network",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Thu, Aug 27",
+          "site": "away",
+          "opponent": "Las Vegas Raiders",
+          "time": "5:00 PM PT",
+          "network": "ESPN",
+          "venue": "Allegiant Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,
@@ -5886,6 +6805,35 @@
         "network": "NBC",
         "venue": "Lumen Field"
       },
+      "preseason": [
+        {
+          "week": 1,
+          "date": "Sat, Aug 15",
+          "site": "home",
+          "opponent": "Dallas Cowboys",
+          "time": "5:00 PM PT",
+          "network": "NFL Network",
+          "venue": "Lumen Field"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Aug 23",
+          "site": "away",
+          "opponent": "Tennessee Titans",
+          "time": "5:00 PM PT",
+          "network": "FOX",
+          "venue": "Nissan Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Fri, Aug 28",
+          "site": "away",
+          "opponent": "Kansas City Chiefs",
+          "time": "5:00 PM PT",
+          "network": "ESPN",
+          "venue": "GEHA Field at Arrowhead Stadium"
+        }
+      ],
       "schedule": [
         {
           "week": 1,

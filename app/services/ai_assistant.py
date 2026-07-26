@@ -113,6 +113,7 @@ def chat_with_assistant(
     current_user: Optional[User] = None,
     user_role: Optional[UserRole] = None,
     requested_context: Optional[str] = None,
+    page_path: Optional[str] = None,
     user_latitude: Optional[float] = None,
     user_longitude: Optional[float] = None,
 ) -> AIChatResult:
@@ -188,6 +189,19 @@ def chat_with_assistant(
     )
 
     messages: list[dict[str, str]] = [{"role": "system", "content": system_prompt}]
+
+    normalized_page_path = re.sub(r"[^a-zA-Z0-9/_-]", "", (page_path or "").strip())[:300]
+    if normalized_page_path and role_context in {"public", "home_local_guide"}:
+        messages.append(
+            {
+                "role": "system",
+                "content": (
+                    f"PUBLIC PAGE CONTEXT: The visitor is currently viewing {normalized_page_path}. "
+                    "Use the page category to interpret short follow-up questions, but use only "
+                    "authoritative live or editorial context for factual claims."
+                ),
+            }
+        )
 
     if include_home_local_guide:
         messages.append(
@@ -1485,6 +1499,15 @@ def _nfl_game_line(game: dict[str, object]) -> str:
     )
 
 
+def _nfl_preseason_game_line(game: dict[str, object]) -> str:
+    site = str(game.get("site") or "")
+    site_label = "vs." if site == "home" else "at"
+    return (
+        f"Preseason Week {game.get('week')}: {site_label} {game.get('opponent')} on {game.get('date')} "
+        f"at {game.get('time')} ({game.get('network')}) — {game.get('venue')}."
+    )
+
+
 def _public_nfl_schedule_live_query_response(text: str, role_context: str) -> Optional[str]:
     if role_context not in {"public", "home_local_guide"} or not _is_public_nfl_query(text):
         return None
@@ -1517,9 +1540,39 @@ def _public_nfl_schedule_live_query_response(text: str, role_context: str) -> Op
 
     team = teams[0]
     schedule = team.get("schedule") if isinstance(team.get("schedule"), list) else []
+    preseason = team.get("preseason") if isinstance(team.get("preseason"), list) else []
     if not schedule:
         return None
     opponent_team = teams[1] if len(teams) > 1 else None
+    wants_preseason = _contains_any(text, ("preseason", "pre season", "exhibition"))
+    if wants_preseason:
+        if not preseason:
+            return (
+                f"The announced 2026 preseason schedule for {team.get('name')} is not available in the guide yet. "
+                f"Check the official team schedule at {team.get('officialUrl')}."
+            )
+        if opponent_team:
+            opponent_name = str(opponent_team.get("name") or "")
+            game = next((item for item in preseason if item.get("opponent") == opponent_name), None)
+            if game is None:
+                return (
+                    f"I could not find an announced 2026 preseason matchup between {team.get('name')} and "
+                    f"{opponent_name}. See the full NFL guide at /nfl-2026-2027 or verify {team.get('officialUrl')}."
+                )
+            return (
+                f"{team.get('name')} vs. {opponent_name}: {_nfl_preseason_game_line(game)} "
+                f"See the team article at /events/{team.get('slug')} and the shareable 2026–27 NFL guide at "
+                "/nfl-2026-2027. Confirm late broadcast or ticket changes on the official team schedule: "
+                f"{team.get('officialUrl')}."
+            )
+        lines = [f"{team.get('name')} 2026 preseason schedule (Pacific Time):"]
+        lines.extend(f"- {_nfl_preseason_game_line(item)}" for item in preseason)
+        lines.append(
+            f"Team article: /events/{team.get('slug')} | Shareable NFL guide: /nfl-2026-2027 | "
+            f"Official schedule: {team.get('officialUrl')}"
+        )
+        return "\n".join(lines)
+
     week_match = re.search(r"\bweek\s*(\d{1,2})\b", text)
     game: Optional[dict[str, object]] = None
     if week_match:

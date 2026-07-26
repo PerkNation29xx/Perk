@@ -37,6 +37,7 @@ def ai_chat(
             current_user=current_user,
             user_role=current_user.role if current_user else None,
             requested_context=payload.context,
+            page_path=payload.page_path,
             user_latitude=payload.user_latitude,
             user_longitude=payload.user_longitude,
         )

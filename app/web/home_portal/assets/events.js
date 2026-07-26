@@ -2,6 +2,7 @@
   const editorialEvents = Array.isArray(window.PERK_NATION_EVENTS) ? window.PERK_NATION_EVENTS : [];
   const eventBase = location.pathname.startsWith("/white/") ? "/white/events" : "/events";
   const directoryBase = location.pathname.startsWith("/white/") ? "/white/directory" : "/directory";
+  const isNflGuide = location.pathname === "/nfl-2026-2027";
   const escapeHtml = (value) => String(value || "").replace(/[&<>'"]/g, (char) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
   })[char]);
@@ -51,6 +52,9 @@
       ],
       scheduleTitle: `${team.name} 2026 regular-season schedule`,
       scheduleNote: "Times are shown in Pacific Time. Week 18 and eligible games may change; confirm on the official NFL schedule before making plans.",
+      preseasonTitle: `${team.name} 2026 preseason schedule`,
+      preseasonNote: "Announced preseason dates and times are shown in Pacific Time. Confirm late broadcast and ticket changes with the team.",
+      preseason: team.preseason,
       schedule: team.schedule,
       officialUrl: team.officialUrl,
       image: team.logo,
@@ -81,6 +85,9 @@
     return {
       ...generated,
       ...editorial,
+      preseason: team.preseason,
+      preseasonTitle: `${team.name} 2026 preseason schedule`,
+      preseasonNote: generated.preseasonNote,
       schedule: team.schedule,
       scheduleTitle: `${team.name} 2026 regular-season schedule`,
       scheduleNote: generated.scheduleNote,
@@ -143,7 +150,8 @@
     return `<section class="eventCategorySection" id="season-openers">
       <div class="eventSectionHeading"><div><span class="badge">Season openers</span><h2 class="h2">Featured California teams</h2><p class="muted">Start with the three featured teams, then expand the league guide for every AFC and NFC club.</p></div><span>3 featured · 32 teams</span></div>
       <div class="eventGrid">${featured.map(eventCard).join("")}</div>
-      <details class="nflLeagueExplorer">
+      <div class="nflGuideShareCta"><a class="btn primary" href="/nfl-2026-2027">Open the shareable 2026–2027 NFL guide</a><span>Friendly URL for social posts: perknation.app/nfl-2026-2027</span></div>
+      <details class="nflLeagueExplorer"${isNflGuide ? " open" : ""}>
         <summary><span><strong>Explore all 32 NFL teams</strong><small>Organized by AFC, NFC, and division</small></span><span class="nflExplorerAction">Expand league guide</span></summary>
         <div class="nflLeagueBody">
           <div class="nflLeagueIntro"><div><span class="badge">2026 regular season</span><h2>Every team. Every announced week.</h2></div><a href="https://www.nfl.com/schedules/2026/by-team" target="_blank" rel="noopener noreferrer">Official NFL team schedules ↗</a></div>
@@ -155,7 +163,10 @@
   }
 
   function scheduleMarkup(event) {
-    const schedule = Array.isArray(event.schedule) ? event.schedule : [];
+    const options = arguments[1] || {};
+    const schedule = Array.isArray(options.schedule)
+      ? options.schedule
+      : (Array.isArray(event.schedule) ? event.schedule : []);
     if (!schedule.length) return "";
     const rows = schedule.map((game) => {
       const site = String(game.site || "").toLowerCase();
@@ -173,12 +184,13 @@
       </tr>`;
     }).join("");
 
-    return `<section class="eventSchedule" aria-labelledby="event-schedule-title">
+    const headingId = options.headingId || "event-regular-schedule-title";
+    return `<section class="eventSchedule" aria-labelledby="${escapeHtml(headingId)}">
       <div class="eventScheduleHeading">
-        <div><span class="badge">Full announced season</span><h2 id="event-schedule-title">${escapeHtml(event.scheduleTitle || "Regular-season schedule")}</h2></div>
+        <div><span class="badge">${escapeHtml(options.badge || "Full announced season")}</span><h2 id="${escapeHtml(headingId)}">${escapeHtml(options.title || event.scheduleTitle || "Regular-season schedule")}</h2></div>
         <a class="btn small" href="${escapeHtml(event.officialUrl)}" target="_blank" rel="noopener noreferrer">Official schedule ↗</a>
       </div>
-      <p class="eventScheduleNote">${escapeHtml(event.scheduleNote || "Schedule details may change. Confirm with the team before making plans.")}</p>
+      <p class="eventScheduleNote">${escapeHtml(options.note || event.scheduleNote || "Schedule details may change. Confirm with the team before making plans.")}</p>
       <div class="eventScheduleTableWrap">
         <table class="eventScheduleTable">
           <thead><tr><th scope="col">Week</th><th scope="col">Date</th><th scope="col">Matchup</th><th scope="col">Time PT</th><th scope="col">Watch</th><th scope="col">Venue</th></tr></thead>
@@ -200,7 +212,7 @@
         <div class="eventGrid">${matches.map(eventCard).join("")}</div>
       </section>`;
     }).join("");
-    hub.innerHTML = `${standardSections}${seasonOpenersMarkup()}`;
+    hub.innerHTML = isNflGuide ? seasonOpenersMarkup() : `${standardSections}${seasonOpenersMarkup()}`;
   }
 
   const article = document.querySelector("[data-event-article]");
@@ -250,10 +262,17 @@
         </div>
         ${media}
       </div>
+      ${scheduleMarkup(event, {
+        schedule: event.preseason,
+        badge: "Preseason",
+        title: event.preseasonTitle,
+        note: event.preseasonNote,
+        headingId: "event-preseason-schedule-title",
+      })}
       ${scheduleMarkup(event)}
       <div class="eventArticleBody">
         <div class="eventStory"><h2>What to know</h2>${event.paragraphs.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("")}
-          ${event.isNfl ? `<div class="eventInternalLinks"><h3>Plan around game day</h3><a href="${eventBase}">Browse the 32-team NFL guide</a><a href="${directoryBase}?q=sports%20bar">Find sports bars</a><a href="${directoryBase}?q=restaurant">Find restaurants</a><a href="${directoryBase}?q=hotel">Find hotels</a></div>` : ""}
+          ${event.isNfl ? `<div class="eventInternalLinks"><h3>Plan around game day</h3><a href="/nfl-2026-2027">Share the 2026–2027 NFL guide</a><a href="${eventBase}">Browse all events</a><a href="${directoryBase}?q=sports%20bar">Find sports bars</a><a href="${directoryBase}?q=restaurant">Find restaurants</a><a href="${directoryBase}?q=hotel">Find hotels</a></div>` : ""}
         </div>
         <aside class="eventHighlights"><h2>${event.isNfl ? "Best for & key details" : "Event highlights"}</h2><ul>${event.highlights.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul><a href="${escapeHtml(event.officialUrl)}" target="_blank" rel="noopener noreferrer">Verify details on the official page ↗</a></aside>
       </div>

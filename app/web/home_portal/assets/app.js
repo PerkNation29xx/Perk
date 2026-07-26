@@ -1257,6 +1257,124 @@
       return;
     }
 
+    const AI_CATEGORY_PROMPTS = {
+      discover: {
+        label: "Discover",
+        welcome: "Ask about events, restaurants, shopping, wellness, promotions, or nearby businesses.",
+        questions: ["What should I do in Southern California this weekend?", "Show current promotions", "Find restaurants near me"],
+      },
+      nfl: {
+        label: "NFL",
+        welcome: "Ask about preseason matchups, any team’s opener, kickoff time, opponent, network, or venue.",
+        questions: ["When do the Chargers play the 49ers in preseason?", "What time do the Chargers play in Week 1?", "Show all NFC teams"],
+      },
+      events: {
+        label: "Events",
+        welcome: "Ask about current event dates, venues, planning notes, or the complete NFL guide.",
+        questions: ["What events are coming up?", "Show the 2026–2027 NFL opener guide", "What is happening in Los Angeles?"],
+      },
+      dining: {
+        label: "Dining",
+        welcome: "Ask for dining guides, best-for recommendations, cuisine, neighborhood, and practical planning notes.",
+        questions: ["What are the best Pasadena restaurant picks?", "Find restaurants near me", "Which dining guide is best for a date night?"],
+      },
+      fashion: {
+        label: "Fashion",
+        welcome: "Ask about fashion events, designers, dates, venues, and nearby places to make a day of it.",
+        questions: ["What fashion events are coming up in LA?", "Which fashion event is best for networking?", "Find fashion businesses near me"],
+      },
+      shopping: {
+        label: "Shopping",
+        welcome: "Ask about shopping categories, jewelry, local businesses, and current discounts.",
+        questions: ["Show jewelry and shopping options", "Find boutiques near me", "Are there current shopping promotions?"],
+      },
+      wellness: {
+        label: "Wellness",
+        welcome: "Ask about wellness and beauty guides, businesses, events, and best-for use cases.",
+        questions: ["Show wellness and beauty guides", "Find wellness businesses near me", "What is best for a self-care day?"],
+      },
+      directory: {
+        label: "Directory",
+        welcome: "Ask for nearby businesses by city or category, then narrow by what matters to you.",
+        questions: ["Find sports bars near me", "Show restaurants in Pasadena", "Find hotels near SoFi Stadium"],
+      },
+      promotions: {
+        label: "Promotions",
+        welcome: "Ask which verified PerkNation promotions are active and narrow by city or category.",
+        questions: ["What promotions are active now?", "Show dining deals", "Are there family entertainment offers?"],
+      },
+    };
+    const categoryOrder = ["discover", "nfl", "events", "dining", "fashion", "shopping", "wellness", "directory", "promotions"];
+    const inferCategory = ()=>{
+      const path = location.pathname.toLowerCase();
+      if(path === "/nfl-2026-2027" || (path.startsWith("/events/") && /(opener|chargers|rams|49ers)/.test(path))) return "nfl";
+      if(path.startsWith("/events")) return "events";
+      if(path.startsWith("/directory") || path.startsWith("/business/")) return "directory";
+      if(path.includes("dine-") || path.includes("restaurant")) return "dining";
+      if(path.includes("fashion")) return "fashion";
+      if(path.includes("wellness") || path.includes("beauty") || path.includes("cosmetics")) return "wellness";
+      if(path.startsWith("/jewelry") || path.startsWith("/shopping")) return "shopping";
+      if(path.startsWith("/promotions")) return "promotions";
+      return "discover";
+    };
+    let activeCategory = (rail && rail.dataset.aiCategory && AI_CATEGORY_PROMPTS[rail.dataset.aiCategory])
+      ? rail.dataset.aiCategory
+      : inferCategory();
+    const card = form.closest(".aiDiscoveryCard");
+    let categoryPicker = rail ? rail.querySelector("[data-ai-category-picker]") : null;
+    let questionChips = rail ? rail.querySelector("[data-ai-question-chips]") : null;
+    if(card && !categoryPicker){
+      categoryPicker = document.createElement("div");
+      categoryPicker.className = "aiCategoryPicker";
+      categoryPicker.dataset.aiCategoryPicker = "";
+      categoryPicker.setAttribute("aria-label", "Assistant categories");
+      const header = card.querySelector(".aiDiscoveryHeader");
+      if(header) header.insertAdjacentElement("afterend", categoryPicker);
+    }
+    if(card && !questionChips){
+      questionChips = document.createElement("div");
+      questionChips.className = "aiQuestionChips";
+      questionChips.dataset.aiQuestionChips = "";
+      questionChips.setAttribute("aria-label", "Suggested questions");
+      if(categoryPicker) categoryPicker.insertAdjacentElement("afterend", questionChips);
+    }
+    const renderAssistantCategory = (category)=>{
+      activeCategory = AI_CATEGORY_PROMPTS[category] ? category : "discover";
+      const config = AI_CATEGORY_PROMPTS[activeCategory];
+      if(rail) rail.dataset.aiCategory = activeCategory;
+      if(categoryPicker){
+        categoryPicker.innerHTML = categoryOrder.map((key)=> (
+          `<button type="button" data-ai-category-choice="${key}" aria-pressed="${key === activeCategory ? "true" : "false"}">${AI_CATEGORY_PROMPTS[key].label}</button>`
+        )).join("");
+      }
+      if(questionChips){
+        questionChips.innerHTML = config.questions.map((question)=> (
+          `<button type="button" data-ai-question="${question.replace(/&/g, "&amp;").replace(/"/g, "&quot;")}">${question}</button>`
+        )).join("");
+      }
+      const welcome = messages.querySelector("[data-ai-welcome]") || messages.querySelector(".aiBubble.assistant");
+      if(welcome && messages.querySelectorAll(".aiBubble").length === 1){
+        welcome.textContent = config.welcome;
+      }
+      setStatus(`Ready for ${config.label.toLowerCase()} questions.`);
+    };
+    if(categoryPicker){
+      categoryPicker.addEventListener("click", (event)=>{
+        const button = event.target.closest("[data-ai-category-choice]");
+        if(!button) return;
+        renderAssistantCategory(button.dataset.aiCategoryChoice);
+      });
+    }
+    if(questionChips){
+      questionChips.addEventListener("click", (event)=>{
+        const button = event.target.closest("[data-ai-question]");
+        if(!button) return;
+        input.value = button.dataset.aiQuestion || button.textContent || "";
+        setRailOpen(true);
+        form.requestSubmit();
+      });
+    }
+
     const setRailOpen = (open)=>{
       if(!rail) return;
       rail.classList.toggle("is-open", Boolean(open));
@@ -1296,9 +1414,9 @@
         appendHomeAssistantMessage(
           messages,
           "assistant",
-          "Ask me when any NFL team plays, who they face, or what time the game starts. I can also help with PerkNation events and local discovery."
+          AI_CATEGORY_PROMPTS[activeCategory].welcome
         );
-        setStatus("Cleared. Ask about football, events, promotions, or local picks.");
+        setStatus(`Cleared. Ready for ${AI_CATEGORY_PROMPTS[activeCategory].label.toLowerCase()} questions.`);
       });
     }
 
@@ -1329,6 +1447,7 @@
           body: JSON.stringify({
             message,
             context: "home_local_guide",
+            page_path: location.pathname,
             history,
             user_latitude: coords ? coords.latitude : null,
             user_longitude: coords ? coords.longitude : null,
@@ -1361,6 +1480,7 @@
         if(clearBtn) clearBtn.disabled = false;
       }
     });
+    renderAssistantCategory(activeCategory);
   }
 
   wireHomepageAssistant();

@@ -404,6 +404,72 @@ img{max-width:100%; display:block}
   flex-wrap: wrap;
 }
 
+.aiCategoryPicker,
+.aiQuestionChips{
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+  padding: 2px 1px 4px;
+  scrollbar-width: thin;
+}
+
+.aiCategoryPicker button,
+.aiQuestionChips button{
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  background: rgba(var(--surface-rgb),.76);
+  font: 700 12px/1.2 inherit;
+  cursor: pointer;
+}
+
+.aiCategoryPicker button{
+  padding: 8px 11px;
+}
+
+.aiCategoryPicker button[aria-pressed="true"]{
+  border-color: rgba(230,184,74,.72);
+  color: #17130b;
+  background: var(--yellow);
+}
+
+.aiQuestionChips{
+  flex-wrap: wrap;
+  overflow: visible;
+}
+
+.aiQuestionChips button{
+  flex: 1 1 140px;
+  padding: 9px 11px;
+  text-align: left;
+}
+
+.aiQuestionChips button:hover,
+.aiQuestionChips button:focus-visible{
+  border-color: var(--yellow);
+  outline: none;
+}
+
+.nflGuideShareCta{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 18px 0;
+  padding: 14px;
+  border: 1px solid rgba(230,184,74,.42);
+  border-radius: 16px;
+  background: rgba(230,184,74,.08);
+}
+
+.nflGuideShareCta span{
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .aiDiscoveryMeta{
   color: var(--muted2);
   max-width: 380px;

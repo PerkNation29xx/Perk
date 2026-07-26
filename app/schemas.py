@@ -471,6 +471,7 @@ class AIChatTurn(BaseModel):
 class AIChatRequest(BaseModel):
     message: str = Field(min_length=1, max_length=2000)
     context: Optional[str] = Field(default=None, max_length=32)
+    page_path: Optional[str] = Field(default=None, max_length=300)
     history: list[AIChatTurn] = Field(default_factory=list, max_length=40)
     user_latitude: Optional[float] = Field(default=None, ge=-90, le=90)
     user_longitude: Optional[float] = Field(default=None, ge=-180, le=180)

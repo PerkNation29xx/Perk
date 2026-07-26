@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 _GOOGLE_ANALYTICS_ID = "G-VYL0SBGMWL"
 _INDEXNOW_KEY = "7a937e1db6b8272beca3c7860157d6112a7301b5832fd8a01590e17803adb3f3"
 _INDEXNOW_KEY_PATH = f"/{_INDEXNOW_KEY}.txt"
-_PUBLIC_BUILD_ID = "20260726-nfl-league-guide"
+_PUBLIC_BUILD_ID = "20260726-category-ai-preseason"
 _GOOGLE_ANALYTICS_SNIPPET = f"""<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id={_GOOGLE_ANALYTICS_ID}"></script>
 <script>
@@ -204,8 +204,36 @@ def _public_shell_header() -> str:
 </header>"""
 
 
-def _public_ai_rail() -> str:
-    return """<section class="aiDiscoverySection aiRail" id="local-ai-assistant" data-ai-rail aria-label="Perk Nation AI local guide">
+def _public_ai_category(path: str) -> str:
+    normalized = (path or "/").lower()
+    if normalized == "/nfl-2026-2027" or normalized.startswith("/events/") and any(
+        token in normalized for token in ("opener", "chargers", "rams", "49ers")
+    ):
+        return "nfl"
+    if normalized.startswith("/events"):
+        return "events"
+    if normalized.startswith(("/directory", "/business/")):
+        return "directory"
+    if normalized.startswith("/articles/") and any(
+        token in normalized for token in ("dine-", "restaurant", "food")
+    ):
+        return "dining"
+    if normalized.startswith("/articles/") and "fashion" in normalized:
+        return "fashion"
+    if normalized.startswith(("/jewelry", "/shopping")):
+        return "shopping"
+    if normalized.startswith("/promotions"):
+        return "promotions"
+    if normalized.startswith("/articles/") and any(
+        token in normalized for token in ("wellness", "beauty", "cosmetics")
+    ):
+        return "wellness"
+    return "discover"
+
+
+def _public_ai_rail(path: str) -> str:
+    category = _public_ai_category(path)
+    return f"""<section class="aiDiscoverySection aiRail" id="local-ai-assistant" data-ai-rail aria-label="Perk Nation AI local guide" data-ai-category="{category}">
   <div class="aiRailShell">
     <button class="aiRailTab" type="button" data-ai-rail-toggle aria-expanded="false" aria-controls="public-ai-rail-panel">
       <span class="aiRailSpark" aria-hidden="true">✦</span><span>Ask Perk Nation AI</span>
@@ -216,12 +244,14 @@ def _public_ai_rail() -> str:
         <div>
           <div class="badge">AI Local Guide</div>
           <h2 class="h2">Ask Perk Nation.</h2>
-          <p class="muted">Ask about NFL teams, game times, events, current promotions, or nearby businesses.</p>
+          <p class="muted">Choose a category or ask about this page, events, current promotions, and nearby businesses.</p>
         </div>
-        <div class="small aiDiscoveryMeta" data-home-ai-status>Ready for football, events, and local plans.</div>
+        <div class="small aiDiscoveryMeta" data-home-ai-status>Ready for category questions and local plans.</div>
       </div>
+      <div class="aiCategoryPicker" data-ai-category-picker aria-label="Assistant categories"></div>
+      <div class="aiQuestionChips" data-ai-question-chips aria-label="Suggested questions"></div>
       <div class="aiDiscoveryMessages" data-home-ai-messages>
-        <div class="aiBubble assistant">Ask me when any NFL team plays, who they face, or what time the game starts. I can also help with PerkNation events and local discovery.</div>
+        <div class="aiBubble assistant" data-ai-welcome>Ask me about this category or choose a suggested question below.</div>
       </div>
       <form class="aiDiscoveryComposer" data-home-ai-form>
         <textarea data-home-ai-input placeholder="Example: What time do the Bills play in Week 1?" aria-label="Ask Perk Nation AI about football teams, events, and local recommendations" required></textarea>
@@ -290,7 +320,7 @@ def _inject_public_shell(document_html: str, *, path: str) -> str:
         else:
             document_html = f"{document_html}\n{app_script}"
     if "data-home-ai-form" not in document_html:
-        assistant = _public_ai_rail()
+        assistant = _public_ai_rail(path)
         if re.search(r"</body>", document_html, flags=re.IGNORECASE):
             document_html = re.sub(
                 r"</body>",
@@ -1703,6 +1733,34 @@ def home_portal_hollywood_sports() -> str:
 @app.get("/events", response_class=HTMLResponse)
 def home_portal_events() -> str:
     return _read_html_or_missing(_HOME_PORTAL_DIR / "events.html", "Events page")
+
+
+@app.get("/nfl", include_in_schema=False)
+def home_portal_nfl_short_redirect() -> RedirectResponse:
+    return RedirectResponse(url="/nfl-2026-2027", status_code=308)
+
+
+@app.get("/nfl-2026-2027", response_class=HTMLResponse)
+def home_portal_nfl_guide() -> str:
+    html = _read_text_or_missing(_HOME_PORTAL_DIR / "events.html")
+    replacements = {
+        "<title>Events | Perk Nation</title>": "<title>2026–2027 NFL Season Opener Guide | Perk Nation</title>",
+        '<link rel="canonical" href="/events" />': '<link rel="canonical" href="/nfl-2026-2027" />',
+        "Major California events plus all 32 NFL team season openers and complete 2026 schedules, organized by AFC and NFC.": "Plan the 2026–2027 NFL season with all 32 team openers, preseason games, full schedules, Pacific kickoff times, venues, and broadcast details.",
+        '<span class="badge">Perk Nation event guide</span><h1 class="h1">Big nights. Opening days. Every NFL team.</h1><p>Curated California events plus all 32 NFL season openers and complete announced schedules, organized by AFC and NFC with direct links to the official source.</p>': '<span class="badge">2026–2027 NFL guide</span><h1 class="h1">Every NFL team. One shareable season guide.</h1><p>Plan preseason and opening weekend, then explore the full announced schedule for every AFC and NFC team with Pacific kickoff times and official sources.</p>',
+        '<nav class="eventJumpNav" aria-label="Event categories"><a href="#concerts">Concerts</a><a href="#live-events">Live events</a><a href="#sports">Sports</a><a href="#season-openers">Season openers</a></nav>': '<nav class="eventJumpNav" aria-label="NFL guide sections"><a href="#season-openers">Featured teams</a><a href="#afc-teams">AFC</a><a href="#nfc-teams">NFC</a><a href="/events">All events</a></nav>',
+        'data-share-title="Perk Nation California events guide" data-share-text="Share the Perk Nation events hub for concerts, sports, and major California dates." data-share-url="https://perknation.app/events"': 'data-share-title="Perk Nation 2026–2027 NFL season opener guide" data-share-text="Plan preseason and opening weekend with all 32 NFL teams, game times, venues, and schedules." data-share-url="https://perknation.app/nfl-2026-2027"',
+        "<span>Share events</span><strong>Send the event hub.</strong>": "<span>Share the NFL guide</span><strong>Start the social push.</strong>",
+        'data-events-hub': 'data-events-hub data-nfl-guide',
+    }
+    for before, after in replacements.items():
+        html = html.replace(before, after)
+    social_meta = """<meta property="og:title" content="2026–2027 NFL Season Opener Guide | Perk Nation" />
+  <meta property="og:description" content="All 32 NFL teams, preseason games, opening weekend, Pacific kickoff times, venues, and complete announced schedules." />
+  <meta property="og:url" content="https://perknation.app/nfl-2026-2027" />
+  <meta property="og:image" content="https://static.clubs.nfl.com/image/upload/t_editorial_landscape_12_desktop/chargers/r5aw49chjba4pq2m4nvg" />
+  <meta name="twitter:card" content="summary_large_image" />"""
+    return html.replace("</head>", f"  {social_meta}\n</head>", 1)
 
 
 @app.get("/events/{event_slug}", response_class=HTMLResponse)
