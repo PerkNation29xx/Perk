@@ -261,16 +261,22 @@ if _HOME_STATIC_DIR.exists():
     app.mount("/site/static", StaticFiles(directory=str(_HOME_STATIC_DIR)), name="home-static")
 if _HOME_ASSETS_DIR.exists():
     app.mount("/assets", StaticFiles(directory=str(_HOME_ASSETS_DIR)), name="home-assets")
-if _HOME_WHITE_STATIC_DIR.exists():
-    app.mount("/white/static", StaticFiles(directory=str(_HOME_WHITE_STATIC_DIR)), name="home-white-static")
-if _HOME_WHITE_ASSETS_DIR.exists():
-    app.mount("/white/assets", StaticFiles(directory=str(_HOME_WHITE_ASSETS_DIR)), name="home-white-assets")
+if _HOME_STATIC_DIR.exists():
+    app.mount("/white/static", StaticFiles(directory=str(_HOME_STATIC_DIR)), name="home-white-static")
+if _HOME_ASSETS_DIR.exists():
+    app.mount("/white/assets", StaticFiles(directory=str(_HOME_ASSETS_DIR)), name="home-white-assets")
 
 
-def _read_html_or_missing(path: Path, name: str) -> str:
+def _read_html_or_missing(path: Path, name: str, *, theme: str = "dark") -> str:
     if not path.exists():
         raise HTTPException(status_code=404, detail=f"{name} not found")
-    return path.read_text(encoding="utf-8")
+    content = path.read_text(encoding="utf-8")
+    normalized_theme = theme if theme in {"light", "dark"} else "dark"
+    return content.replace(
+        '<html lang="en">',
+        f'<html lang="en" data-theme="{normalized_theme}">',
+        1,
+    )
 
 
 def _read_text_or_missing(path: Path, fallback: str = "") -> str:
@@ -405,7 +411,7 @@ def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> O
         for other in all_cities[:10]
     )
     return f"""<!doctype html>
-<html lang="en">
+<html lang="en" data-theme="{'light' if white else 'dark'}">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -556,7 +562,7 @@ def _directory_shell(*, title: str, description: str, canonical_path: str, body:
             + "</script>"
         )
     return f"""<!doctype html>
-<html lang="en">
+<html lang="en" data-theme="{'light' if white else 'dark'}">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -1528,37 +1534,37 @@ def home_portal_white_redirect() -> RedirectResponse:
 
 @app.get("/white/", response_class=HTMLResponse)
 def home_portal_white() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "index.html", "Home portal (white)")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "index.html", "Home portal", theme="light")
 
 
 @app.get("/white/login", response_class=HTMLResponse)
 def home_portal_white_login() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "login.html", "Login page (white)")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "login.html", "Login page", theme="light")
 
 
 @app.get("/white/redeem", response_class=HTMLResponse)
 def home_portal_white_redeem() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "redeem.html", "Redeem page (white)")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "redeem.html", "Redeem page", theme="light")
 
 
 @app.get("/white/invite", response_class=HTMLResponse)
 def home_portal_white_invite() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "invite.html", "Invite page (white)")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "invite.html", "Invite page", theme="light")
 
 
 @app.get("/white/reset-password", response_class=HTMLResponse)
 def home_portal_white_reset_password() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "reset-password.html", "Reset-password page (white)")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "reset-password.html", "Reset-password page", theme="light")
 
 
 @app.get("/white/create-account", response_class=HTMLResponse)
 def home_portal_white_create_account() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "create-account.html", "Create-account page (white)")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "create-account.html", "Create-account page", theme="light")
 
 
 @app.get("/white/members", response_class=HTMLResponse)
 def home_portal_white_members() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "members.html", "Members page (white)")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "members.html", "Members page", theme="light")
 
 
 @app.get("/white/directory", response_class=HTMLResponse)
@@ -1597,34 +1603,35 @@ def home_portal_white_jewelry_redirect() -> RedirectResponse:
 
 @app.get("/white/jewelry/{product_slug}", response_class=HTMLResponse)
 def home_portal_white_jewelry_product(product_slug: str) -> str:
-    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "jewelry-product.html", "Jewelry product page (white)")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "jewelry-product.html", "Jewelry product page", theme="light")
 
 
 @app.get("/white/hollywood-sports", response_class=HTMLResponse)
 def home_portal_white_hollywood_sports() -> str:
     return _read_html_or_missing(
-        _HOME_PORTAL_WHITE_DIR / "hollywood-sports.html",
-        "Hollywood Sports landing page (white)",
+        _HOME_PORTAL_DIR / "hollywood-sports.html",
+        "Hollywood Sports landing page",
+        theme="light",
     )
 
 
 @app.get("/white/events", response_class=HTMLResponse)
 def home_portal_white_events() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "events.html", "Events page (white)")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "events.html", "Events page", theme="light")
 
 
 @app.get("/white/events/{event_slug}", response_class=HTMLResponse)
 def home_portal_white_event_article(event_slug: str) -> str:
     if event_slug not in _EVENT_SLUGS:
         raise HTTPException(status_code=404, detail="Event article not found")
-    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "event-detail.html", "Event article (white)")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "event-detail.html", "Event article", theme="light")
 
 
 @app.get("/white/articles/{article_slug}", response_class=HTMLResponse)
 def home_portal_white_article(article_slug: str) -> str:
     filename = _ARTICLE_HTML_FILES.get(article_slug.strip().lower())
     if filename:
-        return _read_html_or_missing(_HOME_PORTAL_DIR / "articles" / filename, "Article")
+        return _read_html_or_missing(_HOME_PORTAL_DIR / "articles" / filename, "Article", theme="light")
     rendered_article = _render_dine_la_city_article(article_slug, white=True)
     if rendered_article:
         return rendered_article
@@ -1638,42 +1645,42 @@ def home_portal_white_guests_redirect() -> RedirectResponse:
 
 @app.get("/white/merchants", response_class=HTMLResponse)
 def home_portal_white_merchants() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "merchants.html", "Merchants page (white)")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "merchants.html", "Merchants page", theme="light")
 
 
 @app.get("/white/how-it-works", response_class=HTMLResponse)
 def home_portal_white_how_it_works() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "how-it-works.html", "How-it-works page (white)")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "how-it-works.html", "How-it-works page", theme="light")
 
 
 @app.get("/white/contact-us", response_class=HTMLResponse)
 def home_portal_white_contact_us() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "contact-us.html", "Contact-us page (white)")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "contact-us.html", "Contact-us page", theme="light")
 
 
 @app.get("/white/faq", response_class=HTMLResponse)
 def home_portal_white_faq() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "faq.html", "FAQ page (white)")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "faq.html", "FAQ page", theme="light")
 
 
 @app.get("/white/privacy-policy", response_class=HTMLResponse)
 def home_portal_white_privacy_policy() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "privacy-policy.html", "Privacy-policy page (white)")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "privacy-policy.html", "Privacy-policy page", theme="light")
 
 
 @app.get("/white/terms-of-use", response_class=HTMLResponse)
 def home_portal_white_terms_of_use() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "terms-of-use.html", "Terms-of-use page (white)")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "terms-of-use.html", "Terms-of-use page", theme="light")
 
 
 @app.get("/white/disclaimer", response_class=HTMLResponse)
 def home_portal_white_disclaimer() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "disclaimer.html", "Disclaimer page (white)")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "disclaimer.html", "Disclaimer page", theme="light")
 
 
 @app.get("/white/merchant-terms", response_class=HTMLResponse)
 def home_portal_white_merchant_terms() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "merchant-terms.html", "Merchant terms page (white)")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "merchant-terms.html", "Merchant terms page", theme="light")
 
 
 @app.get("/white/{page_name}.html", response_class=HTMLResponse)
@@ -1687,7 +1694,7 @@ def home_portal_white_page(page_name: str) -> Response:
         raise HTTPException(status_code=404, detail="Page not found")
     if filename not in _LEGACY_STATIC_HTML_FILES:
         raise HTTPException(status_code=404, detail="Legacy HTML route not available")
-    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / filename, "Home portal page (white)")
+    return _read_html_or_missing(_HOME_PORTAL_DIR / filename, "Home portal page", theme="light")
 
 
 @app.get("/{page_name}.html", response_class=HTMLResponse)

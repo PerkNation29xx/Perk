@@ -2,70 +2,61 @@
   const menuBtn = document.querySelector('[data-menu-btn]');
   const mobileMenu = document.querySelector('[data-mobile-menu]');
   if(menuBtn && mobileMenu){
-    menuBtn.addEventListener('click', ()=> mobileMenu.classList.toggle('show'));
+    menuBtn.addEventListener('click', ()=>{
+      const isOpen = mobileMenu.classList.toggle('show');
+      menuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    mobileMenu.addEventListener('click', (event)=>{
+      if(event.target.closest('a')){
+        mobileMenu.classList.remove('show');
+        menuBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
   }
 
   const THEME_PREF_KEY = "perknation_site_theme";
+  const VALID_THEMES = new Set(["light", "dark"]);
 
-  function isWhitePath(pathname){
-    return pathname === "/white" || pathname.startsWith("/white/");
+  function defaultTheme(){
+    const declared = String(document.documentElement.dataset.theme || "").toLowerCase();
+    if(VALID_THEMES.has(declared)){
+      return declared;
+    }
+    return window.location.pathname === "/white" || window.location.pathname.startsWith("/white/")
+      ? "light"
+      : "dark";
   }
 
-  function toThemedPath(pathname, theme){
-    const normalized = String(pathname || "/").startsWith("/")
-      ? String(pathname || "/")
-      : `/${String(pathname || "/")}`;
+  function storedTheme(){
+    try{
+      const saved = String(localStorage.getItem(THEME_PREF_KEY) || "").toLowerCase();
+      return VALID_THEMES.has(saved) ? saved : "";
+    } catch(_err){
+      return "";
+    }
+  }
 
-    if(theme === "white"){
-      if(isWhitePath(normalized)){
-        return normalized === "/white" ? "/white/" : normalized;
+  function applyTheme(theme, persist){
+    const resolved = VALID_THEMES.has(theme) ? theme : defaultTheme();
+    document.documentElement.dataset.theme = resolved;
+    document.documentElement.style.colorScheme = resolved;
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    if(themeColor){
+      themeColor.setAttribute("content", resolved === "dark" ? "#0d0d0d" : "#f8fafc");
+    }
+    if(persist){
+      try{
+        localStorage.setItem(THEME_PREF_KEY, resolved);
+      } catch(_err){
+        // Storage can be unavailable in private or restricted browser contexts.
       }
-      if(normalized === "/"){
-        return "/white/";
-      }
-      return `/white${normalized}`;
     }
-
-    if(!isWhitePath(normalized)){
-      return normalized;
-    }
-    if(normalized === "/white" || normalized === "/white/"){
-      return "/";
-    }
-    return normalized.replace(/^\/white/, "") || "/";
-  }
-
-  function toThemedHref(theme){
-    const path = toThemedPath(window.location.pathname, theme);
-    return `${path}${window.location.search || ""}${window.location.hash || ""}`;
-  }
-
-  function maybeApplySavedThemePreference(){
-    const saved = localStorage.getItem(THEME_PREF_KEY);
-    if(saved !== "white" && saved !== "dark"){
-      return false;
-    }
-
-    const currentTheme = isWhitePath(window.location.pathname) ? "white" : "dark";
-    if(saved === currentTheme){
-      return false;
-    }
-
-    const href = toThemedHref(saved);
-    window.location.replace(href);
-    return true;
+    document.dispatchEvent(new CustomEvent("perknation:themechange", { detail: { theme: resolved } }));
+    return resolved;
   }
 
   function wireThemeToggle(){
-    const currentTheme = isWhitePath(window.location.pathname) ? "white" : "dark";
-    if(!localStorage.getItem(THEME_PREF_KEY)){
-      localStorage.setItem(THEME_PREF_KEY, currentTheme);
-    }
-
-    const nextTheme = currentTheme === "white" ? "dark" : "white";
-    const toggleLabel = nextTheme === "dark" ? "Dark mode" : "Light mode";
-    const toggleAriaLabel = `Switch to ${toggleLabel.toLowerCase()}`;
-    const nextHref = toThemedHref(nextTheme);
+    let currentTheme = applyTheme(storedTheme() || defaultTheme(), false);
 
     const headerContainer = document.querySelector(".header .container");
     if(!headerContainer || headerContainer.querySelector("[data-theme-switch-row]")){
@@ -81,22 +72,22 @@
 
     const text = document.createElement("span");
     text.className = "themeSwitchText";
-    text.textContent = toggleLabel;
+    text.textContent = currentTheme === "dark" ? "Dark mode" : "Light mode";
 
     const input = document.createElement("input");
     input.type = "checkbox";
     input.className = "themeSwitchInput";
     input.checked = currentTheme === "dark";
     input.setAttribute("role", "switch");
-    input.setAttribute("aria-label", toggleAriaLabel);
+    input.setAttribute("aria-label", "Toggle dark mode");
 
     const track = document.createElement("span");
     track.className = "themeSwitchTrack";
     track.setAttribute("aria-hidden", "true");
 
     input.addEventListener("change", ()=>{
-      localStorage.setItem(THEME_PREF_KEY, nextTheme);
-      window.location.href = nextHref;
+      currentTheme = applyTheme(input.checked ? "dark" : "light", true);
+      text.textContent = currentTheme === "dark" ? "Dark mode" : "Light mode";
     });
 
     label.append(text, input, track);
@@ -110,9 +101,6 @@
     headerContainer.prepend(row);
   }
 
-  if(maybeApplySavedThemePreference()){
-    return;
-  }
   wireThemeToggle();
 
   function parseAppScriptVersion(){
@@ -320,9 +308,6 @@
 
   function themedDirectoryPath(path){
     const normalized = String(path || "/directory").startsWith("/") ? String(path || "/directory") : `/${path}`;
-    if(isWhitePath(window.location.pathname)){
-      return normalized.startsWith("/white/") ? normalized : `/white${normalized}`;
-    }
     return normalized.replace(/^\/white/, "") || "/directory";
   }
 
