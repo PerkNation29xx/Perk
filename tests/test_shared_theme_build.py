@@ -12,7 +12,7 @@ def _without_theme_marker(html: str) -> str:
     return re.sub(r'\sdata-theme="(?:light|dark)"', "", html, count=1)
 
 
-def test_home_routes_share_the_category_hierarchy_build() -> None:
+def test_home_routes_share_the_shared_theme_build() -> None:
     dark = client.get("/")
     light = client.get("/white/")
 
@@ -20,7 +20,7 @@ def test_home_routes_share_the_category_hierarchy_build() -> None:
     assert light.status_code == 200
     assert 'data-theme="dark"' in dark.text
     assert 'data-theme="light"' in light.text
-    assert "20260715-category-hierarchy" in dark.text
+    assert "20260726-shared-theme" in dark.text
     assert "Find your next favorite place, experience, or local story." in dark.text
     assert dark.text.index("Find your next favorite place, experience, or local story.") < dark.text.index(
         "Hollywood Sports packages are live."
