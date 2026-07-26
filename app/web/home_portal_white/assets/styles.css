@@ -2556,6 +2556,22 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 .eventArticleMedia{margin:0; border-radius:var(--radius-xl); overflow:hidden; background:var(--surface); border:1px solid var(--line); box-shadow:var(--shadow)}
 .eventArticleMedia img{width:100%; min-height:330px; aspect-ratio:16/10; object-fit:cover}
 .eventArticleMedia figcaption{padding:12px 15px; color:var(--muted2); font-size:12px}
+.eventSchedule{margin-top:64px; padding:30px; border:1px solid var(--line); border-radius:var(--radius-xl); background:rgba(var(--surface-rgb),.82); box-shadow:var(--shadow-soft)}
+.eventScheduleHeading{display:flex; align-items:end; justify-content:space-between; gap:24px}
+.eventScheduleHeading h2{margin:10px 0 0; font-size:clamp(28px,3vw,40px); line-height:1.05}
+.eventScheduleNote{max-width:880px; margin:16px 0 24px; color:var(--muted)}
+.eventScheduleTableWrap{overflow-x:auto; border:1px solid var(--line); border-radius:var(--radius-md); background:var(--surface)}
+.eventScheduleTable{width:100%; min-width:760px; border-collapse:collapse}
+.eventScheduleTable th,.eventScheduleTable td{padding:14px 16px; border-bottom:1px solid var(--line); text-align:left; vertical-align:middle}
+.eventScheduleTable thead th{background:var(--surface-muted); color:var(--muted2); font-size:12px; font-weight:900; letter-spacing:.07em; text-transform:uppercase}
+.eventScheduleTable tbody th{width:64px; color:var(--coral); font-size:17px}
+.eventScheduleTable tbody tr:last-child th,.eventScheduleTable tbody tr:last-child td{border-bottom:0}
+.eventScheduleTable tbody tr:hover{background:rgba(230,184,74,.08)}
+.eventScheduleMatchup{display:flex; align-items:center; gap:10px; min-width:250px}
+.eventScheduleSite{display:inline-flex; justify-content:center; min-width:51px; padding:4px 8px; border:1px solid var(--line); border-radius:999px; color:var(--muted2); font-size:11px; font-weight:900; letter-spacing:.05em; text-transform:uppercase}
+.eventScheduleSite.home{background:rgba(230,184,74,.16); color:var(--ink)}
+.eventScheduleSite.away{background:var(--surface-muted)}
+.eventScheduleSite.neutral{background:rgba(195,63,22,.12); color:var(--coral)}
 .eventArticleBody{display:grid; grid-template-columns:minmax(0,1fr) minmax(260px,.36fr); gap:44px; margin-top:64px; padding-top:44px; border-top:1px solid var(--line)}
 .eventArticleBody h2{font-size:28px; margin:0 0 18px}
 .eventStory p{font-size:18px; color:var(--muted); max-width:760px}
@@ -2593,6 +2609,8 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   .eventFacts{grid-template-columns:1fr}
   .eventArticleHero{gap:30px}
   .eventArticleCopy .h1{font-size:42px}
+  .eventSchedule{margin-top:42px; padding:20px 16px}
+  .eventScheduleHeading{align-items:flex-start; flex-direction:column}
   .homeEventsHeading{align-items:flex-start; flex-direction:column}
 }
 

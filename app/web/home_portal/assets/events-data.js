@@ -144,6 +144,28 @@ window.PERK_NATION_EVENTS = [
       "The Chargers list kickoff at 1:25 PM PT. Consult the official schedule announcement for ticket links and any league scheduling updates."
     ],
     highlights: ["NFL Week 1", "True home season opener", "First of two straight SoFi games"],
+    scheduleTitle: "Los Angeles Chargers 2026 regular-season schedule",
+    scheduleNote: "All times are Pacific. Dates, kickoff times and broadcasts remain subject to NFL flexible scheduling; Week 17 and Week 18 details are still to be announced.",
+    schedule: [
+      { week: "1", date: "Sun, Sep 13", site: "home", opponent: "Arizona Cardinals", time: "1:25 PM", network: "CBS" },
+      { week: "2", date: "Sun, Sep 20", site: "home", opponent: "Las Vegas Raiders", time: "1:05 PM", network: "CBS" },
+      { week: "3", date: "Sun, Sep 27", site: "away", opponent: "Buffalo Bills", time: "10:00 AM", network: "FOX" },
+      { week: "4", date: "Sun, Oct 4", site: "away", opponent: "Seattle Seahawks", time: "1:25 PM", network: "CBS" },
+      { week: "5", date: "Sun, Oct 11", site: "home", opponent: "Denver Broncos", time: "1:05 PM", network: "CBS" },
+      { week: "6", date: "Sun, Oct 18", site: "away", opponent: "Kansas City Chiefs", time: "1:25 PM", network: "CBS" },
+      { week: "7", date: "Sun, Oct 25", site: "bye", opponent: "Bye week", time: "—", network: "—" },
+      { week: "8", date: "Sun, Nov 1", site: "away", opponent: "Los Angeles Rams", time: "1:05 PM", network: "FOX" },
+      { week: "9", date: "Sun, Nov 8", site: "home", opponent: "Houston Texans", time: "1:05 PM", network: "CBS" },
+      { week: "10", date: "Mon, Nov 16", site: "away", opponent: "Baltimore Ravens", time: "5:15 PM", network: "ESPN" },
+      { week: "11", date: "Sun, Nov 22", site: "home", opponent: "New York Jets", time: "1:05 PM", network: "FOX" },
+      { week: "12", date: "Sun, Nov 29", site: "home", opponent: "New England Patriots", time: "5:20 PM", network: "NBC" },
+      { week: "13", date: "Sun, Dec 6", site: "away", opponent: "Tampa Bay Buccaneers", time: "10:00 AM", network: "CBS" },
+      { week: "14", date: "Sun, Dec 13", site: "away", opponent: "Las Vegas Raiders", time: "1:05 PM", network: "CBS" },
+      { week: "15", date: "Thu, Dec 17", site: "home", opponent: "San Francisco 49ers", time: "5:15 PM", network: "Prime Video" },
+      { week: "16", date: "Sun, Dec 27", site: "away", opponent: "Miami Dolphins", time: "10:00 AM", network: "FOX" },
+      { week: "17", date: "TBD", site: "home", opponent: "Kansas City Chiefs", time: "TBD", network: "TBD" },
+      { week: "18", date: "TBD", site: "away", opponent: "Denver Broncos", time: "TBD", network: "TBD" }
+    ],
     credit: "Official editorial image via Los Angeles Chargers"
   },
   {
@@ -165,6 +187,28 @@ window.PERK_NATION_EVENTS = [
       "Kickoff is scheduled for 1:25 PM PT. The team’s official schedule page should be treated as the source of truth for changes and ticket access."
     ],
     highlights: ["Bay Area home opener", "Week 2 vs. Miami", "Sunday afternoon kickoff"],
+    scheduleTitle: "San Francisco 49ers 2026 regular-season schedule",
+    scheduleNote: "All times are Pacific. Dates, kickoff times and broadcasts remain subject to NFL flexible scheduling; Week 18 timing is still to be announced.",
+    schedule: [
+      { week: "1", date: "Thu, Sep 10", site: "neutral", opponent: "Los Angeles Rams · Melbourne", time: "5:35 PM", network: "Netflix" },
+      { week: "2", date: "Sun, Sep 20", site: "home", opponent: "Miami Dolphins", time: "1:25 PM", network: "FOX" },
+      { week: "3", date: "Sun, Sep 27", site: "home", opponent: "Arizona Cardinals", time: "1:05 PM", network: "FOX" },
+      { week: "4", date: "Sun, Oct 4", site: "home", opponent: "Denver Broncos", time: "1:25 PM", network: "CBS" },
+      { week: "5", date: "Sun, Oct 11", site: "away", opponent: "Seattle Seahawks", time: "1:25 PM", network: "FOX" },
+      { week: "6", date: "Mon, Oct 19", site: "home", opponent: "Washington Commanders", time: "5:15 PM", network: "ESPN & ABC" },
+      { week: "7", date: "Sun, Oct 25", site: "away", opponent: "Atlanta Falcons", time: "10:00 AM", network: "FOX" },
+      { week: "8", date: "Sun, Nov 1", site: "bye", opponent: "Bye week", time: "—", network: "—" },
+      { week: "9", date: "Sun, Nov 8", site: "home", opponent: "Las Vegas Raiders", time: "1:05 PM", network: "CBS" },
+      { week: "10", date: "Sun, Nov 15", site: "away", opponent: "Dallas Cowboys", time: "1:25 PM", network: "FOX" },
+      { week: "11", date: "Sun, Nov 22", site: "neutral", opponent: "Minnesota Vikings · Mexico City", time: "5:20 PM", network: "NBC" },
+      { week: "12", date: "Sun, Nov 29", site: "home", opponent: "Seattle Seahawks", time: "1:25 PM", network: "FOX" },
+      { week: "13", date: "Sun, Dec 6", site: "away", opponent: "New York Giants", time: "10:00 AM", network: "FOX" },
+      { week: "14", date: "Sun, Dec 13", site: "home", opponent: "Los Angeles Rams", time: "1:25 PM", network: "FOX" },
+      { week: "15", date: "Thu, Dec 17", site: "away", opponent: "Los Angeles Chargers", time: "5:15 PM", network: "Prime Video" },
+      { week: "16", date: "Sun, Dec 27", site: "away", opponent: "Kansas City Chiefs", time: "1:25 PM", network: "CBS" },
+      { week: "17", date: "Sun, Jan 3", site: "home", opponent: "Philadelphia Eagles", time: "5:20 PM", network: "NBC" },
+      { week: "18", date: "Jan 9 or 10", site: "away", opponent: "Arizona Cardinals", time: "TBD", network: "TBD" }
+    ],
     credit: "Official editorial image via San Francisco 49ers"
   },
   {
@@ -186,6 +230,28 @@ window.PERK_NATION_EVENTS = [
       "Kickoff is listed for 5:15 PM PT. Fans should use the official Rams schedule announcement for current broadcast and ticket information."
     ],
     highlights: ["Monday Night Football", "First Rams game at SoFi", "Week 2 home opener"],
+    scheduleTitle: "Los Angeles Rams 2026 regular-season schedule",
+    scheduleNote: "All times are Pacific. Dates, kickoff times and broadcasts remain subject to NFL flexible scheduling; Week 17 and Week 18 details are still to be announced.",
+    schedule: [
+      { week: "1", date: "Thu, Sep 10", site: "neutral", opponent: "San Francisco 49ers · Melbourne", time: "5:35 PM", network: "Netflix" },
+      { week: "2", date: "Mon, Sep 21", site: "home", opponent: "New York Giants", time: "5:15 PM", network: "ESPN & ABC" },
+      { week: "3", date: "Sun, Sep 27", site: "away", opponent: "Denver Broncos", time: "5:20 PM", network: "NBC" },
+      { week: "4", date: "Sun, Oct 4", site: "away", opponent: "Philadelphia Eagles", time: "10:00 AM", network: "FOX" },
+      { week: "5", date: "Mon, Oct 12", site: "home", opponent: "Buffalo Bills", time: "5:15 PM", network: "ESPN" },
+      { week: "6", date: "Sun, Oct 18", site: "home", opponent: "Arizona Cardinals", time: "1:05 PM", network: "FOX" },
+      { week: "7", date: "Sun, Oct 25", site: "away", opponent: "Las Vegas Raiders", time: "1:25 PM", network: "FOX" },
+      { week: "8", date: "Sun, Nov 1", site: "home", opponent: "Los Angeles Chargers", time: "1:05 PM", network: "FOX" },
+      { week: "9", date: "Sun, Nov 8", site: "away", opponent: "Washington Commanders", time: "10:00 AM", network: "FOX" },
+      { week: "10", date: "Sun, Nov 15", site: "away", opponent: "Arizona Cardinals", time: "1:05 PM", network: "CBS" },
+      { week: "11", date: "—", site: "bye", opponent: "Bye week", time: "—", network: "—" },
+      { week: "12", date: "Wed, Nov 25", site: "home", opponent: "Green Bay Packers", time: "5:00 PM", network: "Netflix" },
+      { week: "13", date: "Thu, Dec 3", site: "home", opponent: "Kansas City Chiefs", time: "5:15 PM", network: "Prime Video" },
+      { week: "14", date: "Sun, Dec 13", site: "away", opponent: "San Francisco 49ers", time: "1:25 PM", network: "FOX" },
+      { week: "15", date: "Sun, Dec 20", site: "home", opponent: "Dallas Cowboys", time: "1:25 PM", network: "CBS" },
+      { week: "16", date: "Fri, Dec 25", site: "away", opponent: "Seattle Seahawks", time: "5:15 PM", network: "FOX" },
+      { week: "17", date: "TBD", site: "away", opponent: "Tampa Bay Buccaneers", time: "TBD", network: "TBD" },
+      { week: "18", date: "TBD", site: "home", opponent: "Seattle Seahawks", time: "TBD", network: "TBD" }
+    ],
     credit: "Official editorial image via Los Angeles Rams"
   }
 ];

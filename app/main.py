@@ -551,8 +551,8 @@ def _directory_page_path(*, white: bool, city_slug: Optional[str] = None, busine
 
 def _directory_shell(*, title: str, description: str, canonical_path: str, body: str, white: bool, json_ld: Optional[dict] = None) -> str:
     brand_href = "/white/" if white else "/"
-    style_href = f"{_asset_path('styles.css', white=white)}?v=directory20260726-shared-theme"
-    script_href = f"{_asset_path('app.js', white=white)}?v=directory20260726-shared-theme"
+    style_href = f"{_asset_path('styles.css', white=white)}?v=directory20260726-season-schedules"
+    script_href = f"{_asset_path('app.js', white=white)}?v=directory20260726-season-schedules"
     json_ld_html = ""
     if json_ld:
         json_ld_payload = json.dumps(json_ld, ensure_ascii=False).replace("</", "<\\/")
