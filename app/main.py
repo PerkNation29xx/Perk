@@ -34,6 +34,7 @@ logger = logging.getLogger(__name__)
 _GOOGLE_ANALYTICS_ID = "G-VYL0SBGMWL"
 _INDEXNOW_KEY = "7a937e1db6b8272beca3c7860157d6112a7301b5832fd8a01590e17803adb3f3"
 _INDEXNOW_KEY_PATH = f"/{_INDEXNOW_KEY}.txt"
+_PUBLIC_BUILD_ID = "20260726-unified-public-shell"
 _GOOGLE_ANALYTICS_SNIPPET = f"""<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id={_GOOGLE_ANALYTICS_ID}"></script>
 <script>
@@ -134,6 +135,132 @@ def _inject_social_meta(html: str) -> str:
     return f"{html[:head_close_index]}\n{snippet}\n{html[head_close_index:]}"
 
 
+def _is_public_html_path(path: str) -> bool:
+    normalized = str(path or "/").split("?", 1)[0]
+    excluded_roots = ("/admin", "/user", "/merchant", "/v1", "/docs", "/redoc")
+    return not any(normalized == root or normalized.startswith(f"{root}/") for root in excluded_roots)
+
+
+def _public_shell_header() -> str:
+    return """<header class="header">
+  <div class="container">
+    <div class="nav">
+      <div class="brandStack">
+        <a class="brand" href="/" aria-label="Perk Nation home">
+          <span class="brandMark" aria-hidden="true"><img src="/assets/mark.svg" alt="" width="24" height="24" /></span>
+          <span>Perk Nation</span>
+        </a>
+        <button class="brandMenuBtn" data-menu-btn aria-expanded="false" aria-controls="public-category-menu">
+          <span aria-hidden="true">☰</span>
+          <span>Explore categories</span>
+        </button>
+      </div>
+      <nav class="navlinks" aria-label="Primary navigation">
+        <a href="/events">Events</a>
+        <a href="/directory">Directory</a>
+        <a href="/members">Members</a>
+        <a href="/merchants">Merchants</a>
+        <a href="/how-it-works">How it Works</a>
+        <a href="/contact-us">Contact Us</a>
+        <a href="/faq">FAQ</a>
+      </nav>
+      <div class="navcta"><a class="btn ghost" href="/login">Login</a></div>
+    </div>
+    <div class="mobileMenu" data-mobile-menu id="public-category-menu">
+      <div class="mobileMenuGrid">
+        <div class="mobileMenuGroup">
+          <div class="mobileMenuTitle">Lifestyle</div>
+          <a href="/events">Events</a>
+          <a href="/events#concerts">Concerts</a>
+          <a href="/events#sports">Sports</a>
+          <a href="/directory?q=community">Community</a>
+        </div>
+        <div class="mobileMenuGroup">
+          <div class="mobileMenuTitle">Food &amp; style</div>
+          <a href="/articles/dine-la-pasadena-2026">Food</a>
+          <a href="/#pasadena-reviews">Dining</a>
+          <a href="/articles/la-fashion-events-2026">Fashion</a>
+          <a href="/#crystal-jewelry">Shopping</a>
+        </div>
+        <div class="mobileMenuGroup">
+          <div class="mobileMenuTitle">Wellness &amp; discovery</div>
+          <a href="/#wellness-beauty">Wellness &amp; Beauty</a>
+          <a href="/directory?q=travel">Travel</a>
+          <a href="/#bond-collective">Workspace</a>
+          <a href="/directory">Directory</a>
+        </div>
+        <div class="mobileMenuGroup">
+          <div class="mobileMenuTitle">Perk Nation</div>
+          <a href="/members">Members</a>
+          <a href="/merchants">Merchants</a>
+          <a href="/how-it-works">How it Works</a>
+          <a href="/contact-us">Contact Us</a>
+          <a href="/faq">FAQ</a>
+          <a href="/login">Login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>"""
+
+
+_PUBLIC_HEADER_RE = re.compile(
+    r'<header\b[^>]*class=["\'][^"\']*\bheader\b[^"\']*["\'][^>]*>.*?</header>',
+    flags=re.IGNORECASE | re.DOTALL,
+)
+_PUBLIC_ASSET_RE = re.compile(
+    r'(?P<attribute>\b(?:href|src)\s*=\s*)(?P<quote>["\'])'
+    r'(?P<path>(?:(?:\.\./)*|/)?(?:white/)?assets/(?P<asset>[^"\'>?]+\.(?:css|js)))'
+    r'(?:\?[^"\']*)?(?P=quote)',
+    flags=re.IGNORECASE,
+)
+
+
+def _inject_public_shell(document_html: str, *, path: str) -> str:
+    if not _is_public_html_path(path):
+        return document_html
+
+    header = _public_shell_header()
+    if _PUBLIC_HEADER_RE.search(document_html):
+        document_html = _PUBLIC_HEADER_RE.sub(header, document_html, count=1)
+    else:
+        document_html = re.sub(
+            r"(<body\b[^>]*>)",
+            lambda match: f"{match.group(1)}\n{header}",
+            document_html,
+            count=1,
+            flags=re.IGNORECASE,
+        )
+
+    def version_asset(match: re.Match[str]) -> str:
+        asset = match.group("asset")
+        return (
+            f'{match.group("attribute")}{match.group("quote")}'
+            f"/assets/{asset}?v={_PUBLIC_BUILD_ID}{match.group('quote')}"
+        )
+
+    document_html = _PUBLIC_ASSET_RE.sub(version_asset, document_html)
+    if not re.search(
+        r'<script\b[^>]*src=["\']/assets/app\.js\?v='
+        + re.escape(_PUBLIC_BUILD_ID)
+        + r'["\']',
+        document_html,
+        flags=re.IGNORECASE,
+    ):
+        app_script = f'<script src="/assets/app.js?v={_PUBLIC_BUILD_ID}" defer></script>'
+        if re.search(r"</body>", document_html, flags=re.IGNORECASE):
+            document_html = re.sub(
+                r"</body>",
+                f"{app_script}\n</body>",
+                document_html,
+                count=1,
+                flags=re.IGNORECASE,
+            )
+        else:
+            document_html = f"{document_html}\n{app_script}"
+    return document_html
+
+
 @app.middleware("http")
 async def google_analytics_html_middleware(request: Request, call_next):
     response = await call_next(request)
@@ -159,6 +286,7 @@ async def google_analytics_html_middleware(request: Request, call_next):
 
     headers = dict(response.headers)
     headers.pop("content-length", None)
+    html = _inject_public_shell(html, path=request.url.path)
     html = _inject_social_meta(html)
     html = _inject_google_analytics(html)
     return Response(
@@ -167,6 +295,12 @@ async def google_analytics_html_middleware(request: Request, call_next):
         headers=headers,
         media_type=None,
     )
+
+
+@app.get("/web/build", include_in_schema=False)
+def public_web_build() -> dict[str, str]:
+    return {"label": f"Build {_PUBLIC_BUILD_ID}", "id": _PUBLIC_BUILD_ID}
+
 
 _BASE_DIR = Path(__file__).resolve().parent
 _HOME_PORTAL_DIR = _BASE_DIR / "web" / "home_portal"
@@ -551,8 +685,8 @@ def _directory_page_path(*, white: bool, city_slug: Optional[str] = None, busine
 
 def _directory_shell(*, title: str, description: str, canonical_path: str, body: str, white: bool, json_ld: Optional[dict] = None) -> str:
     brand_href = "/white/" if white else "/"
-    style_href = f"{_asset_path('styles.css', white=white)}?v=directory20260726-season-schedules"
-    script_href = f"{_asset_path('app.js', white=white)}?v=directory20260726-season-schedules"
+    style_href = f"{_asset_path('styles.css', white=white)}?v={_PUBLIC_BUILD_ID}"
+    script_href = f"{_asset_path('app.js', white=white)}?v={_PUBLIC_BUILD_ID}"
     json_ld_html = ""
     if json_ld:
         json_ld_payload = json.dumps(json_ld, ensure_ascii=False).replace("</", "<\\/")

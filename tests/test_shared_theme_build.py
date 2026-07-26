@@ -20,7 +20,7 @@ def test_home_routes_share_the_shared_theme_build() -> None:
     assert light.status_code == 200
     assert 'data-theme="dark"' in dark.text
     assert 'data-theme="light"' in light.text
-    assert "20260726-season-schedules" in dark.text
+    assert "20260726-unified-public-shell" in dark.text
     assert "Find your next favorite place, experience, or local story." in dark.text
     assert dark.text.index("Find your next favorite place, experience, or local story.") < dark.text.index(
         "Hollywood Sports packages are live."

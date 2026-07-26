@@ -51,5 +51,4 @@ def test_season_opener_routes_load_the_new_versioned_assets() -> None:
     for slug in SEASON_OPENER_SLUGS:
         response = client.get(f"/events/{slug}")
         assert response.status_code == 200
-        assert "20260726-season-schedules" in response.text
-
+        assert "20260726-unified-public-shell" in response.text

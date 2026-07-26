@@ -56,7 +56,11 @@
   }
 
   function wireThemeToggle(){
-    let currentTheme = applyTheme(storedTheme() || defaultTheme(), false);
+    const savedTheme = storedTheme();
+    let currentTheme = applyTheme(savedTheme || defaultTheme(), false);
+    if(!savedTheme && (window.location.pathname === "/white" || window.location.pathname.startsWith("/white/"))){
+      currentTheme = applyTheme(currentTheme, true);
+    }
 
     const headerContainer = document.querySelector(".header .container");
     if(!headerContainer || headerContainer.querySelector("[data-theme-switch-row]")){
