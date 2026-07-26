@@ -2,7 +2,7 @@ import re
 
 from fastapi.testclient import TestClient
 
-from app.main import app
+from app.main import _PUBLIC_BUILD_ID, app
 
 
 client = TestClient(app)
@@ -20,7 +20,7 @@ def test_home_routes_share_the_shared_theme_build() -> None:
     assert light.status_code == 200
     assert 'data-theme="dark"' in dark.text
     assert 'data-theme="light"' in light.text
-    assert "20260726-unified-public-shell" in dark.text
+    assert _PUBLIC_BUILD_ID in dark.text
     assert "Find your next favorite place, experience, or local story." in dark.text
     assert dark.text.index("Find your next favorite place, experience, or local story.") < dark.text.index(
         "Hollywood Sports packages are live."

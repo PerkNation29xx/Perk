@@ -531,35 +531,39 @@
     </div>
   </section>
 
-  <section class="section aiDiscoverySection" id="local-ai-assistant">
-    <div class="container">
-      <div class="card pad aiDiscoveryCard">
+  <section class="aiDiscoverySection aiRail" id="local-ai-assistant" data-ai-rail aria-label="Perk Nation AI local guide">
+    <div class="aiRailShell">
+      <button class="aiRailTab" type="button" data-ai-rail-toggle aria-expanded="false" aria-controls="public-ai-rail-panel">
+        <span class="aiRailSpark" aria-hidden="true">✦</span><span>Ask Perk Nation AI</span>
+      </button>
+      <div class="card pad aiDiscoveryCard" id="public-ai-rail-panel">
+        <button class="aiRailClose" type="button" data-ai-rail-close aria-label="Hide Perk Nation AI">×</button>
         <div class="aiDiscoveryHeader">
           <div>
             <div class="badge">AI Local Guide</div>
-            <h2 class="h2">Ask Perk Nation what to do nearby.</h2>
-            <p class="muted">Ask about current PerkNation promotions, business listings, nearby categories, or local restaurant picks.</p>
+            <h2 class="h2">Ask Perk Nation.</h2>
+            <p class="muted">Ask about NFL teams, game times, events, current promotions, or nearby businesses.</p>
           </div>
           <div class="small aiDiscoveryMeta" data-home-ai-status>
-            Ready. Share your area, cuisine, category, or vibe.
+            Ready for football, events, and local plans.
           </div>
         </div>
 
         <div class="aiDiscoveryMessages" data-home-ai-messages>
           <div class="aiBubble assistant">
-            Ask about current PerkNation promotions, business listings, nearby categories, or local restaurant picks.
+            Ask me when any NFL team plays, who they face, or what time the game starts. I can also help with PerkNation events and local discovery.
           </div>
         </div>
 
         <form class="aiDiscoveryComposer" data-home-ai-form>
           <textarea
             data-home-ai-input
-            placeholder="Example: Where should we eat near Old Pasadena or shop local fashion in LA?"
-            aria-label="Ask Perk Nation AI for local recommendations"
+            placeholder="Example: What time do the Bills play in Week 1?"
+            aria-label="Ask Perk Nation AI about football teams, events, and local recommendations"
             required
           ></textarea>
           <div class="aiDiscoveryActions">
-            <button class="btn primary" type="submit" data-home-ai-send>Get recommendations</button>
+            <button class="btn primary" type="submit" data-home-ai-send>Ask AI</button>
             <button class="btn" type="button" data-home-ai-clear>Clear</button>
           </div>
         </form>

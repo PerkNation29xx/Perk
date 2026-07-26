@@ -2,7 +2,7 @@ from pathlib import Path
 
 from fastapi.testclient import TestClient
 
-from app.main import app
+from app.main import _PUBLIC_BUILD_ID, app
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -51,4 +51,4 @@ def test_season_opener_routes_load_the_new_versioned_assets() -> None:
     for slug in SEASON_OPENER_SLUGS:
         response = client.get(f"/events/{slug}")
         assert response.status_code == 200
-        assert "20260726-unified-public-shell" in response.text
+        assert _PUBLIC_BUILD_ID in response.text

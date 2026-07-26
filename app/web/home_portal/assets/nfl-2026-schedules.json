@@ -1,0 +1,6055 @@
+{
+  "season": 2026,
+  "sourceLabel": "Official NFL 2026 team schedules",
+  "sourceUrl": "https://www.nfl.com/schedules/2026/by-team",
+  "teams": [
+    {
+      "id": "buf",
+      "abbreviation": "BUF",
+      "name": "Buffalo Bills",
+      "shortName": "Bills",
+      "city": "Buffalo",
+      "conference": "AFC",
+      "division": "East",
+      "slug": "buffalo-bills-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/buffalo-bills",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/BUF",
+      "color": "#00338d",
+      "alternateColor": "#d50a0a",
+      "venue": "Highmark Stadium",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "away",
+        "opponent": "Houston Texans",
+        "time": "10:00 AM PT",
+        "network": "CBS",
+        "venue": "NRG Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "away",
+          "opponent": "Houston Texans",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "NRG Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Thu, Sep 17",
+          "site": "home",
+          "opponent": "Detroit Lions",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "Highmark Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "home",
+          "opponent": "Los Angeles Chargers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Highmark Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "home",
+          "opponent": "New England Patriots",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Highmark Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Mon, Oct 12",
+          "site": "away",
+          "opponent": "Los Angeles Rams",
+          "time": "5:15 PM PT",
+          "network": "ESPN / ABC",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "away",
+          "opponent": "Las Vegas Raiders",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Allegiant Stadium"
+        },
+        {
+          "week": 7,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "home",
+          "opponent": "Baltimore Ravens",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Highmark Stadium"
+        },
+        {
+          "week": 9,
+          "date": "Mon, Nov 9",
+          "site": "away",
+          "opponent": "Minnesota Vikings",
+          "time": "5:15 PM PT",
+          "network": "ESPN / ABC",
+          "venue": "U.S. Bank Stadium"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "away",
+          "opponent": "New York Jets",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "home",
+          "opponent": "Miami Dolphins",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Highmark Stadium"
+        },
+        {
+          "week": 12,
+          "date": "Thu, Nov 26",
+          "site": "home",
+          "opponent": "Kansas City Chiefs",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Highmark Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "away",
+          "opponent": "New England Patriots",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Gillette Stadium"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "away",
+          "opponent": "Green Bay Packers",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Lambeau Field"
+        },
+        {
+          "week": 15,
+          "date": "Sat, Dec 19",
+          "site": "home",
+          "opponent": "Chicago Bears",
+          "time": "5:20 PM PT",
+          "network": "CBS",
+          "venue": "Highmark Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Fri, Dec 25",
+          "site": "away",
+          "opponent": "Denver Broncos",
+          "time": "1:30 PM PT",
+          "network": "Netflix",
+          "venue": "Empower Field at Mile High"
+        },
+        {
+          "week": 17,
+          "date": "Sun, Jan 3",
+          "site": "away",
+          "opponent": "Miami Dolphins",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Hard Rock Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "home",
+          "opponent": "New York Jets",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Highmark Stadium"
+        }
+      ]
+    },
+    {
+      "id": "mia",
+      "abbreviation": "MIA",
+      "name": "Miami Dolphins",
+      "shortName": "Dolphins",
+      "city": "Miami",
+      "conference": "AFC",
+      "division": "East",
+      "slug": "miami-dolphins-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/miami-dolphins",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/MIA",
+      "color": "#008e97",
+      "alternateColor": "#d50a0a",
+      "venue": "Hard Rock Stadium",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "away",
+        "opponent": "Las Vegas Raiders",
+        "time": "1:25 PM PT",
+        "network": "FOX",
+        "venue": "Allegiant Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "away",
+          "opponent": "Las Vegas Raiders",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Allegiant Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "away",
+          "opponent": "San Francisco 49ers",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Levi's Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "home",
+          "opponent": "Kansas City Chiefs",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Hard Rock Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "away",
+          "opponent": "Minnesota Vikings",
+          "time": "1:05 PM PT",
+          "network": "FOX",
+          "venue": "U.S. Bank Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "home",
+          "opponent": "Cincinnati Bengals",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Hard Rock Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "away",
+          "opponent": "New York Jets",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "home",
+          "opponent": "New England Patriots",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Hard Rock Stadium"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "home",
+          "opponent": "Detroit Lions",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Hard Rock Stadium"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "away",
+          "opponent": "Indianapolis Colts",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Lucas Oil Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "away",
+          "opponent": "Buffalo Bills",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Highmark Stadium"
+        },
+        {
+          "week": 12,
+          "date": "Sun, Nov 29",
+          "site": "home",
+          "opponent": "New York Jets",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Hard Rock Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "away",
+          "opponent": "Denver Broncos",
+          "time": "1:05 PM PT",
+          "network": "FOX",
+          "venue": "Empower Field at Mile High"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "home",
+          "opponent": "Chicago Bears",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Hard Rock Stadium"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "away",
+          "opponent": "Green Bay Packers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Lambeau Field"
+        },
+        {
+          "week": 16,
+          "date": "Sun, Dec 27",
+          "site": "home",
+          "opponent": "Los Angeles Chargers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Hard Rock Stadium"
+        },
+        {
+          "week": 17,
+          "date": "Sun, Jan 3",
+          "site": "home",
+          "opponent": "Buffalo Bills",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Hard Rock Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "away",
+          "opponent": "New England Patriots",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Gillette Stadium"
+        }
+      ]
+    },
+    {
+      "id": "ne",
+      "abbreviation": "NE",
+      "name": "New England Patriots",
+      "shortName": "Patriots",
+      "city": "New England",
+      "conference": "AFC",
+      "division": "East",
+      "slug": "new-england-patriots-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/new-england-patriots",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/NE",
+      "color": "#002a5c",
+      "alternateColor": "#d50a0a",
+      "venue": "Gillette Stadium",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Wed, Sep 9",
+        "site": "away",
+        "opponent": "Seattle Seahawks",
+        "time": "5:20 PM PT",
+        "network": "NBC",
+        "venue": "Lumen Field"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Wed, Sep 9",
+          "site": "away",
+          "opponent": "Seattle Seahawks",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Lumen Field"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "home",
+          "opponent": "Pittsburgh Steelers",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Gillette Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "away",
+          "opponent": "Jacksonville Jaguars",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "EverBank Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "away",
+          "opponent": "Buffalo Bills",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Highmark Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "home",
+          "opponent": "Las Vegas Raiders",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Gillette Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "home",
+          "opponent": "New York Jets",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Gillette Stadium"
+        },
+        {
+          "week": 7,
+          "date": "Thu, Oct 22",
+          "site": "away",
+          "opponent": "Chicago Bears",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "Soldier Field"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "away",
+          "opponent": "Miami Dolphins",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Hard Rock Stadium"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "home",
+          "opponent": "Green Bay Packers",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Gillette Stadium"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "away",
+          "opponent": "Detroit Lions",
+          "time": "6:30 AM PT",
+          "network": "FOX",
+          "venue": "FC Bayern Munich Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 12,
+          "date": "Sun, Nov 29",
+          "site": "away",
+          "opponent": "Los Angeles Chargers",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "home",
+          "opponent": "Buffalo Bills",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Gillette Stadium"
+        },
+        {
+          "week": 14,
+          "date": "Thu, Dec 10",
+          "site": "home",
+          "opponent": "Minnesota Vikings",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "Gillette Stadium"
+        },
+        {
+          "week": 15,
+          "date": "Mon, Dec 21",
+          "site": "away",
+          "opponent": "Kansas City Chiefs",
+          "time": "5:15 PM PT",
+          "network": "ESPN / ABC",
+          "venue": "GEHA Field at Arrowhead Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Sun, Dec 27",
+          "site": "away",
+          "opponent": "New York Jets",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 17,
+          "date": "Sat, Jan 2",
+          "site": "home",
+          "opponent": "Denver Broncos",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Gillette Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "home",
+          "opponent": "Miami Dolphins",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Gillette Stadium"
+        }
+      ]
+    },
+    {
+      "id": "nyj",
+      "abbreviation": "NYJ",
+      "name": "New York Jets",
+      "shortName": "Jets",
+      "city": "New York",
+      "conference": "AFC",
+      "division": "East",
+      "slug": "new-york-jets-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/new-york-jets",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/NYJ",
+      "color": "#115740",
+      "alternateColor": "#d50a0a",
+      "venue": "MetLife Stadium",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "away",
+        "opponent": "Tennessee Titans",
+        "time": "10:00 AM PT",
+        "network": "CBS",
+        "venue": "Nissan Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "away",
+          "opponent": "Tennessee Titans",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Nissan Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "home",
+          "opponent": "Green Bay Packers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "away",
+          "opponent": "Detroit Lions",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Ford Field"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "away",
+          "opponent": "Chicago Bears",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Soldier Field"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "home",
+          "opponent": "Cleveland Browns",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "away",
+          "opponent": "New England Patriots",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Gillette Stadium"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "home",
+          "opponent": "Miami Dolphins",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "home",
+          "opponent": "Las Vegas Raiders",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "away",
+          "opponent": "Kansas City Chiefs",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "GEHA Field at Arrowhead Stadium"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "home",
+          "opponent": "Buffalo Bills",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "away",
+          "opponent": "Los Angeles Chargers",
+          "time": "1:05 PM PT",
+          "network": "FOX",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 12,
+          "date": "Sun, Nov 29",
+          "site": "away",
+          "opponent": "Miami Dolphins",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Hard Rock Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "home",
+          "opponent": "Denver Broncos",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "away",
+          "opponent": "Arizona Cardinals",
+          "time": "1:05 PM PT",
+          "network": "FOX",
+          "venue": "State Farm Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Sun, Dec 27",
+          "site": "home",
+          "opponent": "New England Patriots",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 17,
+          "date": "Sun, Jan 3",
+          "site": "home",
+          "opponent": "Minnesota Vikings",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "away",
+          "opponent": "Buffalo Bills",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Highmark Stadium"
+        }
+      ]
+    },
+    {
+      "id": "bal",
+      "abbreviation": "BAL",
+      "name": "Baltimore Ravens",
+      "shortName": "Ravens",
+      "city": "Baltimore",
+      "conference": "AFC",
+      "division": "North",
+      "slug": "baltimore-ravens-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/baltimore-ravens",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/BAL",
+      "color": "#29126f",
+      "alternateColor": "#d50a0a",
+      "venue": "M&T Bank Stadium",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "away",
+        "opponent": "Indianapolis Colts",
+        "time": "10:00 AM PT",
+        "network": "CBS",
+        "venue": "Lucas Oil Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "away",
+          "opponent": "Indianapolis Colts",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Lucas Oil Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "home",
+          "opponent": "New Orleans Saints",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "M&T Bank Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "away",
+          "opponent": "Dallas Cowboys",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Maracanã Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "home",
+          "opponent": "Tennessee Titans",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "M&T Bank Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "away",
+          "opponent": "Atlanta Falcons",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Mercedes-Benz Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "away",
+          "opponent": "Cleveland Browns",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Huntington Bank Field"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "home",
+          "opponent": "Cincinnati Bengals",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "M&T Bank Stadium"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "away",
+          "opponent": "Buffalo Bills",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Highmark Stadium"
+        },
+        {
+          "week": 9,
+          "date": "Thu, Nov 5",
+          "site": "home",
+          "opponent": "Jacksonville Jaguars",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "M&T Bank Stadium"
+        },
+        {
+          "week": 10,
+          "date": "Mon, Nov 16",
+          "site": "home",
+          "opponent": "Los Angeles Chargers",
+          "time": "5:15 PM PT",
+          "network": "ESPN",
+          "venue": "M&T Bank Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "away",
+          "opponent": "Carolina Panthers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Bank of America Stadium"
+        },
+        {
+          "week": 12,
+          "date": "Sun, Nov 29",
+          "site": "away",
+          "opponent": "Houston Texans",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "NRG Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "home",
+          "opponent": "Tampa Bay Buccaneers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "M&T Bank Stadium"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "away",
+          "opponent": "Pittsburgh Steelers",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Acrisure Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Sun, Dec 27",
+          "site": "home",
+          "opponent": "Cleveland Browns",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "M&T Bank Stadium"
+        },
+        {
+          "week": 17,
+          "date": "Thu, Dec 31",
+          "site": "away",
+          "opponent": "Cincinnati Bengals",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "Paycor Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "home",
+          "opponent": "Pittsburgh Steelers",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "M&T Bank Stadium"
+        }
+      ]
+    },
+    {
+      "id": "cin",
+      "abbreviation": "CIN",
+      "name": "Cincinnati Bengals",
+      "shortName": "Bengals",
+      "city": "Cincinnati",
+      "conference": "AFC",
+      "division": "North",
+      "slug": "cincinnati-bengals-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/cincinnati-bengals",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/CIN",
+      "color": "#fb4f14",
+      "alternateColor": "#d50a0a",
+      "venue": "Paycor Stadium",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "home",
+        "opponent": "Tampa Bay Buccaneers",
+        "time": "10:00 AM PT",
+        "network": "FOX",
+        "venue": "Paycor Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "home",
+          "opponent": "Tampa Bay Buccaneers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Paycor Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "away",
+          "opponent": "Houston Texans",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "NRG Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "away",
+          "opponent": "Pittsburgh Steelers",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Acrisure Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "home",
+          "opponent": "Jacksonville Jaguars",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Paycor Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "away",
+          "opponent": "Miami Dolphins",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Hard Rock Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "away",
+          "opponent": "Baltimore Ravens",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "M&T Bank Stadium"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "home",
+          "opponent": "Tennessee Titans",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Paycor Stadium"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "away",
+          "opponent": "Atlanta Falcons",
+          "time": "6:30 AM PT",
+          "network": "NFL Net",
+          "venue": "Santiago Bernabéu"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "home",
+          "opponent": "Pittsburgh Steelers",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Paycor Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Mon, Nov 23",
+          "site": "away",
+          "opponent": "Washington Commanders",
+          "time": "5:15 PM PT",
+          "network": "ESPN",
+          "venue": "Northwest Stadium"
+        },
+        {
+          "week": 12,
+          "date": "Sun, Nov 29",
+          "site": "home",
+          "opponent": "New Orleans Saints",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Paycor Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "away",
+          "opponent": "Cleveland Browns",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Huntington Bank Field"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "home",
+          "opponent": "Kansas City Chiefs",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Paycor Stadium"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "away",
+          "opponent": "Carolina Panthers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Bank of America Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Sat, Dec 26",
+          "site": "away",
+          "opponent": "Indianapolis Colts",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Lucas Oil Stadium"
+        },
+        {
+          "week": 17,
+          "date": "Thu, Dec 31",
+          "site": "home",
+          "opponent": "Baltimore Ravens",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "Paycor Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "home",
+          "opponent": "Cleveland Browns",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Paycor Stadium"
+        }
+      ]
+    },
+    {
+      "id": "cle",
+      "abbreviation": "CLE",
+      "name": "Cleveland Browns",
+      "shortName": "Browns",
+      "city": "Cleveland",
+      "conference": "AFC",
+      "division": "North",
+      "slug": "cleveland-browns-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/cleveland-browns",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/CLE",
+      "color": "#472a08",
+      "alternateColor": "#d50a0a",
+      "venue": "Huntington Bank Field",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "away",
+        "opponent": "Jacksonville Jaguars",
+        "time": "10:00 AM PT",
+        "network": "CBS",
+        "venue": "EverBank Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "away",
+          "opponent": "Jacksonville Jaguars",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "EverBank Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "away",
+          "opponent": "Tampa Bay Buccaneers",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Raymond James Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "home",
+          "opponent": "Carolina Panthers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Huntington Bank Field"
+        },
+        {
+          "week": 4,
+          "date": "Thu, Oct 1",
+          "site": "home",
+          "opponent": "Pittsburgh Steelers",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "Huntington Bank Field"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "away",
+          "opponent": "New York Jets",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "home",
+          "opponent": "Baltimore Ravens",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Huntington Bank Field"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "away",
+          "opponent": "Tennessee Titans",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Nissan Stadium"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "away",
+          "opponent": "Pittsburgh Steelers",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Acrisure Stadium"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "away",
+          "opponent": "New Orleans Saints",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Caesars Superdome"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "home",
+          "opponent": "Houston Texans",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Huntington Bank Field"
+        },
+        {
+          "week": 11,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 12,
+          "date": "Sun, Nov 29",
+          "site": "home",
+          "opponent": "Las Vegas Raiders",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Huntington Bank Field"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "home",
+          "opponent": "Cincinnati Bengals",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Huntington Bank Field"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "home",
+          "opponent": "Atlanta Falcons",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Huntington Bank Field"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "away",
+          "opponent": "New York Giants",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Sun, Dec 27",
+          "site": "away",
+          "opponent": "Baltimore Ravens",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "M&T Bank Stadium"
+        },
+        {
+          "week": 17,
+          "date": "Sun, Jan 3",
+          "site": "home",
+          "opponent": "Indianapolis Colts",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Huntington Bank Field"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "away",
+          "opponent": "Cincinnati Bengals",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Paycor Stadium"
+        }
+      ]
+    },
+    {
+      "id": "pit",
+      "abbreviation": "PIT",
+      "name": "Pittsburgh Steelers",
+      "shortName": "Steelers",
+      "city": "Pittsburgh",
+      "conference": "AFC",
+      "division": "North",
+      "slug": "pittsburgh-steelers-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/pittsburgh-steelers",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/PIT",
+      "color": "#000000",
+      "alternateColor": "#d50a0a",
+      "venue": "Acrisure Stadium",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "home",
+        "opponent": "Atlanta Falcons",
+        "time": "10:00 AM PT",
+        "network": "FOX",
+        "venue": "Acrisure Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "home",
+          "opponent": "Atlanta Falcons",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Acrisure Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "away",
+          "opponent": "New England Patriots",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Gillette Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "home",
+          "opponent": "Cincinnati Bengals",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Acrisure Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Thu, Oct 1",
+          "site": "away",
+          "opponent": "Cleveland Browns",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "Huntington Bank Field"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "home",
+          "opponent": "Indianapolis Colts",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Acrisure Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "away",
+          "opponent": "Tampa Bay Buccaneers",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Raymond James Stadium"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "away",
+          "opponent": "New Orleans Saints",
+          "time": "6:30 AM PT",
+          "network": "NFL Net",
+          "venue": "Stade de France"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "home",
+          "opponent": "Cleveland Browns",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Acrisure Stadium"
+        },
+        {
+          "week": 9,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "away",
+          "opponent": "Cincinnati Bengals",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Paycor Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "away",
+          "opponent": "Philadelphia Eagles",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Lincoln Financial Field"
+        },
+        {
+          "week": 12,
+          "date": "Fri, Nov 27",
+          "site": "home",
+          "opponent": "Denver Broncos",
+          "time": "12:00 PM PT",
+          "network": "Prime Video",
+          "venue": "Acrisure Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "home",
+          "opponent": "Houston Texans",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Acrisure Stadium"
+        },
+        {
+          "week": 14,
+          "date": "Mon, Dec 14",
+          "site": "away",
+          "opponent": "Jacksonville Jaguars",
+          "time": "5:15 PM PT",
+          "network": "ESPN",
+          "venue": "EverBank Stadium"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "home",
+          "opponent": "Baltimore Ravens",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Acrisure Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Sat, Dec 26",
+          "site": "home",
+          "opponent": "Carolina Panthers",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Acrisure Stadium"
+        },
+        {
+          "week": 17,
+          "date": "Sun, Jan 3",
+          "site": "away",
+          "opponent": "Tennessee Titans",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Nissan Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "away",
+          "opponent": "Baltimore Ravens",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "M&T Bank Stadium"
+        }
+      ]
+    },
+    {
+      "id": "hou",
+      "abbreviation": "HOU",
+      "name": "Houston Texans",
+      "shortName": "Texans",
+      "city": "Houston",
+      "conference": "AFC",
+      "division": "South",
+      "slug": "houston-texans-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/houston-texans",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/HOU",
+      "color": "#00143f",
+      "alternateColor": "#d50a0a",
+      "venue": "NRG Stadium",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "home",
+        "opponent": "Buffalo Bills",
+        "time": "10:00 AM PT",
+        "network": "CBS",
+        "venue": "NRG Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "home",
+          "opponent": "Buffalo Bills",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "NRG Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "home",
+          "opponent": "Cincinnati Bengals",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "NRG Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "away",
+          "opponent": "Indianapolis Colts",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Lucas Oil Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "home",
+          "opponent": "Dallas Cowboys",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "NRG Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "away",
+          "opponent": "Tennessee Titans",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Nissan Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "away",
+          "opponent": "Jacksonville Jaguars",
+          "time": "6:30 AM PT",
+          "network": "NFL Net",
+          "venue": "Wembley Stadium"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "home",
+          "opponent": "New York Giants",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "NRG Stadium"
+        },
+        {
+          "week": 8,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "away",
+          "opponent": "Los Angeles Chargers",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "away",
+          "opponent": "Cleveland Browns",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Huntington Bank Field"
+        },
+        {
+          "week": 11,
+          "date": "Thu, Nov 19",
+          "site": "home",
+          "opponent": "Indianapolis Colts",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "NRG Stadium"
+        },
+        {
+          "week": 12,
+          "date": "Sun, Nov 29",
+          "site": "home",
+          "opponent": "Baltimore Ravens",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "NRG Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "away",
+          "opponent": "Pittsburgh Steelers",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Acrisure Stadium"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "away",
+          "opponent": "Washington Commanders",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Northwest Stadium"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "home",
+          "opponent": "Jacksonville Jaguars",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "NRG Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Thu, Dec 24",
+          "site": "away",
+          "opponent": "Philadelphia Eagles",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "Lincoln Financial Field"
+        },
+        {
+          "week": 17,
+          "date": "Mon, Jan 4",
+          "site": "away",
+          "opponent": "Green Bay Packers",
+          "time": "5:15 PM PT",
+          "network": "ESPN",
+          "venue": "Lambeau Field"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "home",
+          "opponent": "Tennessee Titans",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "NRG Stadium"
+        }
+      ]
+    },
+    {
+      "id": "ind",
+      "abbreviation": "IND",
+      "name": "Indianapolis Colts",
+      "shortName": "Colts",
+      "city": "Indianapolis",
+      "conference": "AFC",
+      "division": "South",
+      "slug": "indianapolis-colts-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/indianapolis-colts",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/IND",
+      "color": "#003b75",
+      "alternateColor": "#d50a0a",
+      "venue": "Lucas Oil Stadium",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "home",
+        "opponent": "Baltimore Ravens",
+        "time": "10:00 AM PT",
+        "network": "CBS",
+        "venue": "Lucas Oil Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "home",
+          "opponent": "Baltimore Ravens",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Lucas Oil Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "away",
+          "opponent": "Kansas City Chiefs",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "GEHA Field at Arrowhead Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "home",
+          "opponent": "Houston Texans",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Lucas Oil Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "away",
+          "opponent": "Washington Commanders",
+          "time": "6:30 AM PT",
+          "network": "NFL Net",
+          "venue": "Tottenham Hotspur Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "away",
+          "opponent": "Pittsburgh Steelers",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Acrisure Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "home",
+          "opponent": "Tennessee Titans",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Lucas Oil Stadium"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "away",
+          "opponent": "Minnesota Vikings",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "U.S. Bank Stadium"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "away",
+          "opponent": "Jacksonville Jaguars",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "EverBank Stadium"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "home",
+          "opponent": "Dallas Cowboys",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Lucas Oil Stadium"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "home",
+          "opponent": "Miami Dolphins",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Lucas Oil Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Thu, Nov 19",
+          "site": "away",
+          "opponent": "Houston Texans",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "NRG Stadium"
+        },
+        {
+          "week": 12,
+          "date": "Sun, Nov 29",
+          "site": "home",
+          "opponent": "New York Giants",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Lucas Oil Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "away",
+          "opponent": "Philadelphia Eagles",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Lincoln Financial Field"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "away",
+          "opponent": "Tennessee Titans",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Nissan Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Sat, Dec 26",
+          "site": "home",
+          "opponent": "Cincinnati Bengals",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Lucas Oil Stadium"
+        },
+        {
+          "week": 17,
+          "date": "Sun, Jan 3",
+          "site": "away",
+          "opponent": "Cleveland Browns",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Huntington Bank Field"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "home",
+          "opponent": "Jacksonville Jaguars",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Lucas Oil Stadium"
+        }
+      ]
+    },
+    {
+      "id": "jax",
+      "abbreviation": "JAX",
+      "name": "Jacksonville Jaguars",
+      "shortName": "Jaguars",
+      "city": "Jacksonville",
+      "conference": "AFC",
+      "division": "South",
+      "slug": "jacksonville-jaguars-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/jacksonville-jaguars",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/JAX",
+      "color": "#007487",
+      "alternateColor": "#d50a0a",
+      "venue": "EverBank Stadium",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "home",
+        "opponent": "Cleveland Browns",
+        "time": "10:00 AM PT",
+        "network": "CBS",
+        "venue": "EverBank Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "home",
+          "opponent": "Cleveland Browns",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "EverBank Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "away",
+          "opponent": "Denver Broncos",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "Empower Field at Mile High"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "home",
+          "opponent": "New England Patriots",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "EverBank Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "away",
+          "opponent": "Cincinnati Bengals",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Paycor Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "home",
+          "opponent": "Philadelphia Eagles",
+          "time": "6:30 AM PT",
+          "network": "NFL Net",
+          "venue": "Tottenham Hotspur Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "home",
+          "opponent": "Houston Texans",
+          "time": "6:30 AM PT",
+          "network": "NFL Net",
+          "venue": "Wembley Stadium"
+        },
+        {
+          "week": 7,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "home",
+          "opponent": "Indianapolis Colts",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "EverBank Stadium"
+        },
+        {
+          "week": 9,
+          "date": "Thu, Nov 5",
+          "site": "away",
+          "opponent": "Baltimore Ravens",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "M&T Bank Stadium"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "away",
+          "opponent": "Tennessee Titans",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Nissan Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "away",
+          "opponent": "New York Giants",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 12,
+          "date": "Sun, Nov 29",
+          "site": "home",
+          "opponent": "Tennessee Titans",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "EverBank Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "away",
+          "opponent": "Chicago Bears",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Soldier Field"
+        },
+        {
+          "week": 14,
+          "date": "Mon, Dec 14",
+          "site": "home",
+          "opponent": "Pittsburgh Steelers",
+          "time": "5:15 PM PT",
+          "network": "ESPN",
+          "venue": "EverBank Stadium"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "away",
+          "opponent": "Houston Texans",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "NRG Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Sun, Dec 27",
+          "site": "away",
+          "opponent": "Dallas Cowboys",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "AT&T Stadium"
+        },
+        {
+          "week": 17,
+          "date": "Sat, Jan 2",
+          "site": "home",
+          "opponent": "Washington Commanders",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "EverBank Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "away",
+          "opponent": "Indianapolis Colts",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Lucas Oil Stadium"
+        }
+      ]
+    },
+    {
+      "id": "ten",
+      "abbreviation": "TEN",
+      "name": "Tennessee Titans",
+      "shortName": "Titans",
+      "city": "Tennessee",
+      "conference": "AFC",
+      "division": "South",
+      "slug": "tennessee-titans-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/tennessee-titans",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/TEN",
+      "color": "#4b92db",
+      "alternateColor": "#d50a0a",
+      "venue": "Nissan Stadium",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "home",
+        "opponent": "New York Jets",
+        "time": "10:00 AM PT",
+        "network": "CBS",
+        "venue": "Nissan Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "home",
+          "opponent": "New York Jets",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Nissan Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "home",
+          "opponent": "Philadelphia Eagles",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Nissan Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "away",
+          "opponent": "New York Giants",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "away",
+          "opponent": "Baltimore Ravens",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "M&T Bank Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "home",
+          "opponent": "Houston Texans",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Nissan Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "away",
+          "opponent": "Indianapolis Colts",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Lucas Oil Stadium"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "home",
+          "opponent": "Cleveland Browns",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Nissan Stadium"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "away",
+          "opponent": "Cincinnati Bengals",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Paycor Stadium"
+        },
+        {
+          "week": 9,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "home",
+          "opponent": "Jacksonville Jaguars",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Nissan Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "away",
+          "opponent": "Dallas Cowboys",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "AT&T Stadium"
+        },
+        {
+          "week": 12,
+          "date": "Sun, Nov 29",
+          "site": "away",
+          "opponent": "Jacksonville Jaguars",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "EverBank Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "home",
+          "opponent": "Washington Commanders",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Nissan Stadium"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "away",
+          "opponent": "Detroit Lions",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Ford Field"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "home",
+          "opponent": "Indianapolis Colts",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Nissan Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Sun, Dec 27",
+          "site": "away",
+          "opponent": "Las Vegas Raiders",
+          "time": "1:05 PM PT",
+          "network": "FOX",
+          "venue": "Allegiant Stadium"
+        },
+        {
+          "week": 17,
+          "date": "Sun, Jan 3",
+          "site": "home",
+          "opponent": "Pittsburgh Steelers",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Nissan Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "away",
+          "opponent": "Houston Texans",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "NRG Stadium"
+        }
+      ]
+    },
+    {
+      "id": "den",
+      "abbreviation": "DEN",
+      "name": "Denver Broncos",
+      "shortName": "Broncos",
+      "city": "Denver",
+      "conference": "AFC",
+      "division": "West",
+      "slug": "denver-broncos-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/denver-broncos",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/DEN",
+      "color": "#0a2343",
+      "alternateColor": "#d50a0a",
+      "venue": "Empower Field at Mile High",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Mon, Sep 14",
+        "site": "away",
+        "opponent": "Kansas City Chiefs",
+        "time": "5:15 PM PT",
+        "network": "ESPN / ABC",
+        "venue": "GEHA Field at Arrowhead Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Mon, Sep 14",
+          "site": "away",
+          "opponent": "Kansas City Chiefs",
+          "time": "5:15 PM PT",
+          "network": "ESPN / ABC",
+          "venue": "GEHA Field at Arrowhead Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "home",
+          "opponent": "Jacksonville Jaguars",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "Empower Field at Mile High"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "home",
+          "opponent": "Los Angeles Rams",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Empower Field at Mile High"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "away",
+          "opponent": "San Francisco 49ers",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Levi's Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "away",
+          "opponent": "Los Angeles Chargers",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Thu, Oct 15",
+          "site": "home",
+          "opponent": "Seattle Seahawks",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "Empower Field at Mile High"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "away",
+          "opponent": "Arizona Cardinals",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "State Farm Stadium"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "home",
+          "opponent": "Kansas City Chiefs",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Empower Field at Mile High"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "away",
+          "opponent": "Carolina Panthers",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Bank of America Stadium"
+        },
+        {
+          "week": 10,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "home",
+          "opponent": "Las Vegas Raiders",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Empower Field at Mile High"
+        },
+        {
+          "week": 12,
+          "date": "Fri, Nov 27",
+          "site": "away",
+          "opponent": "Pittsburgh Steelers",
+          "time": "12:00 PM PT",
+          "network": "Prime Video",
+          "venue": "Acrisure Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "home",
+          "opponent": "Miami Dolphins",
+          "time": "1:05 PM PT",
+          "network": "FOX",
+          "venue": "Empower Field at Mile High"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "away",
+          "opponent": "New York Jets",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "away",
+          "opponent": "Las Vegas Raiders",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Allegiant Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Fri, Dec 25",
+          "site": "home",
+          "opponent": "Buffalo Bills",
+          "time": "1:30 PM PT",
+          "network": "Netflix",
+          "venue": "Empower Field at Mile High"
+        },
+        {
+          "week": 17,
+          "date": "Sat, Jan 2",
+          "site": "away",
+          "opponent": "New England Patriots",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Gillette Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "home",
+          "opponent": "Los Angeles Chargers",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Empower Field at Mile High"
+        }
+      ]
+    },
+    {
+      "id": "kc",
+      "abbreviation": "KC",
+      "name": "Kansas City Chiefs",
+      "shortName": "Chiefs",
+      "city": "Kansas City",
+      "conference": "AFC",
+      "division": "West",
+      "slug": "kansas-city-chiefs-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/kansas-city-chiefs",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/KC",
+      "color": "#e31837",
+      "alternateColor": "#d50a0a",
+      "venue": "GEHA Field at Arrowhead Stadium",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Mon, Sep 14",
+        "site": "home",
+        "opponent": "Denver Broncos",
+        "time": "5:15 PM PT",
+        "network": "ESPN / ABC",
+        "venue": "GEHA Field at Arrowhead Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Mon, Sep 14",
+          "site": "home",
+          "opponent": "Denver Broncos",
+          "time": "5:15 PM PT",
+          "network": "ESPN / ABC",
+          "venue": "GEHA Field at Arrowhead Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "home",
+          "opponent": "Indianapolis Colts",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "GEHA Field at Arrowhead Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "away",
+          "opponent": "Miami Dolphins",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Hard Rock Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "away",
+          "opponent": "Las Vegas Raiders",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Allegiant Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "home",
+          "opponent": "Los Angeles Chargers",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "GEHA Field at Arrowhead Stadium"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "away",
+          "opponent": "Seattle Seahawks",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Lumen Field"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "away",
+          "opponent": "Denver Broncos",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Empower Field at Mile High"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "home",
+          "opponent": "New York Jets",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "GEHA Field at Arrowhead Stadium"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "away",
+          "opponent": "Atlanta Falcons",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Mercedes-Benz Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "home",
+          "opponent": "Arizona Cardinals",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "GEHA Field at Arrowhead Stadium"
+        },
+        {
+          "week": 12,
+          "date": "Thu, Nov 26",
+          "site": "away",
+          "opponent": "Buffalo Bills",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Highmark Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Thu, Dec 3",
+          "site": "away",
+          "opponent": "Los Angeles Rams",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "away",
+          "opponent": "Cincinnati Bengals",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Paycor Stadium"
+        },
+        {
+          "week": 15,
+          "date": "Mon, Dec 21",
+          "site": "home",
+          "opponent": "New England Patriots",
+          "time": "5:15 PM PT",
+          "network": "ESPN / ABC",
+          "venue": "GEHA Field at Arrowhead Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Sun, Dec 27",
+          "site": "home",
+          "opponent": "San Francisco 49ers",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "GEHA Field at Arrowhead Stadium"
+        },
+        {
+          "week": 17,
+          "date": "Sat, Jan 2",
+          "site": "away",
+          "opponent": "Los Angeles Chargers",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "home",
+          "opponent": "Las Vegas Raiders",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "GEHA Field at Arrowhead Stadium"
+        }
+      ]
+    },
+    {
+      "id": "lv",
+      "abbreviation": "LV",
+      "name": "Las Vegas Raiders",
+      "shortName": "Raiders",
+      "city": "Las Vegas",
+      "conference": "AFC",
+      "division": "West",
+      "slug": "las-vegas-raiders-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/las-vegas-raiders",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/LV",
+      "color": "#000000",
+      "alternateColor": "#d50a0a",
+      "venue": "Allegiant Stadium",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "home",
+        "opponent": "Miami Dolphins",
+        "time": "1:25 PM PT",
+        "network": "FOX",
+        "venue": "Allegiant Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "home",
+          "opponent": "Miami Dolphins",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Allegiant Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "away",
+          "opponent": "Los Angeles Chargers",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "away",
+          "opponent": "New Orleans Saints",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Caesars Superdome"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "home",
+          "opponent": "Kansas City Chiefs",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Allegiant Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "away",
+          "opponent": "New England Patriots",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Gillette Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "home",
+          "opponent": "Buffalo Bills",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Allegiant Stadium"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "home",
+          "opponent": "Los Angeles Rams",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Allegiant Stadium"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "away",
+          "opponent": "New York Jets",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "away",
+          "opponent": "San Francisco 49ers",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "Levi's Stadium"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "home",
+          "opponent": "Seattle Seahawks",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "Allegiant Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "away",
+          "opponent": "Denver Broncos",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Empower Field at Mile High"
+        },
+        {
+          "week": 12,
+          "date": "Sun, Nov 29",
+          "site": "away",
+          "opponent": "Cleveland Browns",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Huntington Bank Field"
+        },
+        {
+          "week": 13,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "home",
+          "opponent": "Los Angeles Chargers",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "Allegiant Stadium"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "home",
+          "opponent": "Denver Broncos",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Allegiant Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Sun, Dec 27",
+          "site": "home",
+          "opponent": "Tennessee Titans",
+          "time": "1:05 PM PT",
+          "network": "FOX",
+          "venue": "Allegiant Stadium"
+        },
+        {
+          "week": 17,
+          "date": "Sun, Jan 3",
+          "site": "away",
+          "opponent": "Arizona Cardinals",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "State Farm Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "away",
+          "opponent": "Kansas City Chiefs",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "GEHA Field at Arrowhead Stadium"
+        }
+      ]
+    },
+    {
+      "id": "lac",
+      "abbreviation": "LAC",
+      "name": "Los Angeles Chargers",
+      "shortName": "Chargers",
+      "city": "Los Angeles",
+      "conference": "AFC",
+      "division": "West",
+      "slug": "chargers-home-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/los-angeles-chargers",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/LAC",
+      "color": "#0080c6",
+      "alternateColor": "#d50a0a",
+      "venue": "SoFi Stadium",
+      "featured": true,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "home",
+        "opponent": "Arizona Cardinals",
+        "time": "1:25 PM PT",
+        "network": "CBS",
+        "venue": "SoFi Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "home",
+          "opponent": "Arizona Cardinals",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "home",
+          "opponent": "Las Vegas Raiders",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "away",
+          "opponent": "Buffalo Bills",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Highmark Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "away",
+          "opponent": "Seattle Seahawks",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Lumen Field"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "home",
+          "opponent": "Denver Broncos",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "away",
+          "opponent": "Kansas City Chiefs",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "GEHA Field at Arrowhead Stadium"
+        },
+        {
+          "week": 7,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "away",
+          "opponent": "Los Angeles Rams",
+          "time": "1:05 PM PT",
+          "network": "FOX",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "home",
+          "opponent": "Houston Texans",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 10,
+          "date": "Mon, Nov 16",
+          "site": "away",
+          "opponent": "Baltimore Ravens",
+          "time": "5:15 PM PT",
+          "network": "ESPN",
+          "venue": "M&T Bank Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "home",
+          "opponent": "New York Jets",
+          "time": "1:05 PM PT",
+          "network": "FOX",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 12,
+          "date": "Sun, Nov 29",
+          "site": "home",
+          "opponent": "New England Patriots",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "away",
+          "opponent": "Tampa Bay Buccaneers",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Raymond James Stadium"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "away",
+          "opponent": "Las Vegas Raiders",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "Allegiant Stadium"
+        },
+        {
+          "week": 15,
+          "date": "Thu, Dec 17",
+          "site": "home",
+          "opponent": "San Francisco 49ers",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Sun, Dec 27",
+          "site": "away",
+          "opponent": "Miami Dolphins",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Hard Rock Stadium"
+        },
+        {
+          "week": 17,
+          "date": "Sat, Jan 2",
+          "site": "home",
+          "opponent": "Kansas City Chiefs",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "away",
+          "opponent": "Denver Broncos",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Empower Field at Mile High"
+        }
+      ]
+    },
+    {
+      "id": "dal",
+      "abbreviation": "DAL",
+      "name": "Dallas Cowboys",
+      "shortName": "Cowboys",
+      "city": "Dallas",
+      "conference": "NFC",
+      "division": "East",
+      "slug": "dallas-cowboys-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/dallas-cowboys",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/DAL",
+      "color": "#002a5c",
+      "alternateColor": "#d50a0a",
+      "venue": "AT&T Stadium",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "away",
+        "opponent": "New York Giants",
+        "time": "5:20 PM PT",
+        "network": "NBC",
+        "venue": "MetLife Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "away",
+          "opponent": "New York Giants",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "home",
+          "opponent": "Washington Commanders",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "AT&T Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "home",
+          "opponent": "Baltimore Ravens",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Maracanã Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "away",
+          "opponent": "Houston Texans",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "NRG Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Thu, Oct 8",
+          "site": "home",
+          "opponent": "Tampa Bay Buccaneers",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "AT&T Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "away",
+          "opponent": "Green Bay Packers",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Lambeau Field"
+        },
+        {
+          "week": 7,
+          "date": "Mon, Oct 26",
+          "site": "away",
+          "opponent": "Philadelphia Eagles",
+          "time": "5:15 PM PT",
+          "network": "ESPN / ABC",
+          "venue": "Lincoln Financial Field"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "home",
+          "opponent": "Arizona Cardinals",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "AT&T Stadium"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "away",
+          "opponent": "Indianapolis Colts",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Lucas Oil Stadium"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "home",
+          "opponent": "San Francisco 49ers",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "AT&T Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "home",
+          "opponent": "Tennessee Titans",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "AT&T Stadium"
+        },
+        {
+          "week": 12,
+          "date": "Thu, Nov 26",
+          "site": "home",
+          "opponent": "Philadelphia Eagles",
+          "time": "1:30 PM PT",
+          "network": "FOX",
+          "venue": "AT&T Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Mon, Dec 7",
+          "site": "away",
+          "opponent": "Seattle Seahawks",
+          "time": "5:15 PM PT",
+          "network": "ESPN / ABC",
+          "venue": "Lumen Field"
+        },
+        {
+          "week": 14,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "away",
+          "opponent": "Los Angeles Rams",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Sun, Dec 27",
+          "site": "home",
+          "opponent": "Jacksonville Jaguars",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "AT&T Stadium"
+        },
+        {
+          "week": 17,
+          "date": "Sun, Jan 3",
+          "site": "home",
+          "opponent": "New York Giants",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "AT&T Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "away",
+          "opponent": "Washington Commanders",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Northwest Stadium"
+        }
+      ]
+    },
+    {
+      "id": "nyg",
+      "abbreviation": "NYG",
+      "name": "New York Giants",
+      "shortName": "Giants",
+      "city": "New York",
+      "conference": "NFC",
+      "division": "East",
+      "slug": "new-york-giants-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/new-york-giants",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/NYG",
+      "color": "#003c7f",
+      "alternateColor": "#d50a0a",
+      "venue": "MetLife Stadium",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "home",
+        "opponent": "Dallas Cowboys",
+        "time": "5:20 PM PT",
+        "network": "NBC",
+        "venue": "MetLife Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "home",
+          "opponent": "Dallas Cowboys",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Mon, Sep 21",
+          "site": "away",
+          "opponent": "Los Angeles Rams",
+          "time": "5:15 PM PT",
+          "network": "ESPN / ABC",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "home",
+          "opponent": "Tennessee Titans",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "home",
+          "opponent": "Arizona Cardinals",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "away",
+          "opponent": "Washington Commanders",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Northwest Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "home",
+          "opponent": "New Orleans Saints",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "away",
+          "opponent": "Houston Texans",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "NRG Stadium"
+        },
+        {
+          "week": 8,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "away",
+          "opponent": "Philadelphia Eagles",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Lincoln Financial Field"
+        },
+        {
+          "week": 10,
+          "date": "Thu, Nov 12",
+          "site": "home",
+          "opponent": "Washington Commanders",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "home",
+          "opponent": "Jacksonville Jaguars",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 12,
+          "date": "Sun, Nov 29",
+          "site": "away",
+          "opponent": "Indianapolis Colts",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Lucas Oil Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "home",
+          "opponent": "San Francisco 49ers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "away",
+          "opponent": "Seattle Seahawks",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Lumen Field"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "home",
+          "opponent": "Cleveland Browns",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Mon, Dec 28",
+          "site": "away",
+          "opponent": "Detroit Lions",
+          "time": "5:15 PM PT",
+          "network": "ESPN",
+          "venue": "Ford Field"
+        },
+        {
+          "week": 17,
+          "date": "Sun, Jan 3",
+          "site": "away",
+          "opponent": "Dallas Cowboys",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "AT&T Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "home",
+          "opponent": "Philadelphia Eagles",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "MetLife Stadium"
+        }
+      ]
+    },
+    {
+      "id": "phi",
+      "abbreviation": "PHI",
+      "name": "Philadelphia Eagles",
+      "shortName": "Eagles",
+      "city": "Philadelphia",
+      "conference": "NFC",
+      "division": "East",
+      "slug": "philadelphia-eagles-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/philadelphia-eagles",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/PHI",
+      "color": "#06424d",
+      "alternateColor": "#d50a0a",
+      "venue": "Lincoln Financial Field",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "home",
+        "opponent": "Washington Commanders",
+        "time": "1:25 PM PT",
+        "network": "FOX",
+        "venue": "Lincoln Financial Field"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "home",
+          "opponent": "Washington Commanders",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Lincoln Financial Field"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "away",
+          "opponent": "Tennessee Titans",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Nissan Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Mon, Sep 28",
+          "site": "away",
+          "opponent": "Chicago Bears",
+          "time": "5:15 PM PT",
+          "network": "ESPN / ABC",
+          "venue": "Soldier Field"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "home",
+          "opponent": "Los Angeles Rams",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Lincoln Financial Field"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "away",
+          "opponent": "Jacksonville Jaguars",
+          "time": "6:30 AM PT",
+          "network": "NFL Net",
+          "venue": "Tottenham Hotspur Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "home",
+          "opponent": "Carolina Panthers",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Lincoln Financial Field"
+        },
+        {
+          "week": 7,
+          "date": "Mon, Oct 26",
+          "site": "home",
+          "opponent": "Dallas Cowboys",
+          "time": "5:15 PM PT",
+          "network": "ESPN / ABC",
+          "venue": "Lincoln Financial Field"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "away",
+          "opponent": "Washington Commanders",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Northwest Stadium"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "home",
+          "opponent": "New York Giants",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Lincoln Financial Field"
+        },
+        {
+          "week": 10,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "home",
+          "opponent": "Pittsburgh Steelers",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Lincoln Financial Field"
+        },
+        {
+          "week": 12,
+          "date": "Thu, Nov 26",
+          "site": "away",
+          "opponent": "Dallas Cowboys",
+          "time": "1:30 PM PT",
+          "network": "FOX",
+          "venue": "AT&T Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "away",
+          "opponent": "Arizona Cardinals",
+          "time": "1:05 PM PT",
+          "network": "FOX",
+          "venue": "State Farm Stadium"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "home",
+          "opponent": "Indianapolis Colts",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Lincoln Financial Field"
+        },
+        {
+          "week": 15,
+          "date": "Sat, Dec 19",
+          "site": "home",
+          "opponent": "Seattle Seahawks",
+          "time": "2:00 PM PT",
+          "network": "FOX",
+          "venue": "Lincoln Financial Field"
+        },
+        {
+          "week": 16,
+          "date": "Thu, Dec 24",
+          "site": "home",
+          "opponent": "Houston Texans",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "Lincoln Financial Field"
+        },
+        {
+          "week": 17,
+          "date": "Sun, Jan 3",
+          "site": "away",
+          "opponent": "San Francisco 49ers",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Levi's Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "away",
+          "opponent": "New York Giants",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "MetLife Stadium"
+        }
+      ]
+    },
+    {
+      "id": "wsh",
+      "abbreviation": "WAS",
+      "name": "Washington Commanders",
+      "shortName": "Commanders",
+      "city": "Washington",
+      "conference": "NFC",
+      "division": "East",
+      "slug": "washington-commanders-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/washington-commanders",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/WAS",
+      "color": "#5a1414",
+      "alternateColor": "#d50a0a",
+      "venue": "Northwest Stadium",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "away",
+        "opponent": "Philadelphia Eagles",
+        "time": "1:25 PM PT",
+        "network": "FOX",
+        "venue": "Lincoln Financial Field"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "away",
+          "opponent": "Philadelphia Eagles",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Lincoln Financial Field"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "away",
+          "opponent": "Dallas Cowboys",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "AT&T Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "home",
+          "opponent": "Seattle Seahawks",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Northwest Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "home",
+          "opponent": "Indianapolis Colts",
+          "time": "6:30 AM PT",
+          "network": "NFL Net",
+          "venue": "Tottenham Hotspur Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "home",
+          "opponent": "New York Giants",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Northwest Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Mon, Oct 19",
+          "site": "away",
+          "opponent": "San Francisco 49ers",
+          "time": "5:15 PM PT",
+          "network": "ESPN / ABC",
+          "venue": "Levi's Stadium"
+        },
+        {
+          "week": 7,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "home",
+          "opponent": "Philadelphia Eagles",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Northwest Stadium"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "home",
+          "opponent": "Los Angeles Rams",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Northwest Stadium"
+        },
+        {
+          "week": 10,
+          "date": "Thu, Nov 12",
+          "site": "away",
+          "opponent": "New York Giants",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Mon, Nov 23",
+          "site": "home",
+          "opponent": "Cincinnati Bengals",
+          "time": "5:15 PM PT",
+          "network": "ESPN",
+          "venue": "Northwest Stadium"
+        },
+        {
+          "week": 12,
+          "date": "Sun, Nov 29",
+          "site": "away",
+          "opponent": "Arizona Cardinals",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "State Farm Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "away",
+          "opponent": "Tennessee Titans",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Nissan Stadium"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "home",
+          "opponent": "Houston Texans",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Northwest Stadium"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "home",
+          "opponent": "Atlanta Falcons",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Northwest Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Sat, Dec 26",
+          "site": "away",
+          "opponent": "Minnesota Vikings",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "U.S. Bank Stadium"
+        },
+        {
+          "week": 17,
+          "date": "Sat, Jan 2",
+          "site": "away",
+          "opponent": "Jacksonville Jaguars",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "EverBank Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "home",
+          "opponent": "Dallas Cowboys",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Northwest Stadium"
+        }
+      ]
+    },
+    {
+      "id": "chi",
+      "abbreviation": "CHI",
+      "name": "Chicago Bears",
+      "shortName": "Bears",
+      "city": "Chicago",
+      "conference": "NFC",
+      "division": "North",
+      "slug": "chicago-bears-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/chicago-bears",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/CHI",
+      "color": "#0b1c3a",
+      "alternateColor": "#d50a0a",
+      "venue": "Soldier Field",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "away",
+        "opponent": "Carolina Panthers",
+        "time": "10:00 AM PT",
+        "network": "FOX",
+        "venue": "Bank of America Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "away",
+          "opponent": "Carolina Panthers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Bank of America Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "home",
+          "opponent": "Minnesota Vikings",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Soldier Field"
+        },
+        {
+          "week": 3,
+          "date": "Mon, Sep 28",
+          "site": "home",
+          "opponent": "Philadelphia Eagles",
+          "time": "5:15 PM PT",
+          "network": "ESPN / ABC",
+          "venue": "Soldier Field"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "home",
+          "opponent": "New York Jets",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Soldier Field"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "away",
+          "opponent": "Green Bay Packers",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Lambeau Field"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "away",
+          "opponent": "Atlanta Falcons",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Mercedes-Benz Stadium"
+        },
+        {
+          "week": 7,
+          "date": "Thu, Oct 22",
+          "site": "home",
+          "opponent": "New England Patriots",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "Soldier Field"
+        },
+        {
+          "week": 8,
+          "date": "Mon, Nov 2",
+          "site": "away",
+          "opponent": "Seattle Seahawks",
+          "time": "5:15 PM PT",
+          "network": "ESPN",
+          "venue": "Lumen Field"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "home",
+          "opponent": "Tampa Bay Buccaneers",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Soldier Field"
+        },
+        {
+          "week": 10,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "home",
+          "opponent": "New Orleans Saints",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Soldier Field"
+        },
+        {
+          "week": 12,
+          "date": "Thu, Nov 26",
+          "site": "away",
+          "opponent": "Detroit Lions",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Ford Field"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "home",
+          "opponent": "Jacksonville Jaguars",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Soldier Field"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "away",
+          "opponent": "Miami Dolphins",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Hard Rock Stadium"
+        },
+        {
+          "week": 15,
+          "date": "Sat, Dec 19",
+          "site": "away",
+          "opponent": "Buffalo Bills",
+          "time": "5:20 PM PT",
+          "network": "CBS",
+          "venue": "Highmark Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Fri, Dec 25",
+          "site": "home",
+          "opponent": "Green Bay Packers",
+          "time": "10:00 AM PT",
+          "network": "Netflix",
+          "venue": "Soldier Field"
+        },
+        {
+          "week": 17,
+          "date": "Sun, Jan 3",
+          "site": "home",
+          "opponent": "Detroit Lions",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Soldier Field"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "away",
+          "opponent": "Minnesota Vikings",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "U.S. Bank Stadium"
+        }
+      ]
+    },
+    {
+      "id": "det",
+      "abbreviation": "DET",
+      "name": "Detroit Lions",
+      "shortName": "Lions",
+      "city": "Detroit",
+      "conference": "NFC",
+      "division": "North",
+      "slug": "detroit-lions-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/detroit-lions",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/DET",
+      "color": "#0076b6",
+      "alternateColor": "#d50a0a",
+      "venue": "Ford Field",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "home",
+        "opponent": "New Orleans Saints",
+        "time": "10:00 AM PT",
+        "network": "FOX",
+        "venue": "Ford Field"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "home",
+          "opponent": "New Orleans Saints",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Ford Field"
+        },
+        {
+          "week": 2,
+          "date": "Thu, Sep 17",
+          "site": "away",
+          "opponent": "Buffalo Bills",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "Highmark Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "home",
+          "opponent": "New York Jets",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Ford Field"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "away",
+          "opponent": "Carolina Panthers",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Bank of America Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "away",
+          "opponent": "Arizona Cardinals",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "State Farm Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "home",
+          "opponent": "Green Bay Packers",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Ford Field"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "home",
+          "opponent": "Minnesota Vikings",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Ford Field"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "away",
+          "opponent": "Miami Dolphins",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Hard Rock Stadium"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "home",
+          "opponent": "New England Patriots",
+          "time": "6:30 AM PT",
+          "network": "FOX",
+          "venue": "FC Bayern Munich Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "home",
+          "opponent": "Tampa Bay Buccaneers",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Ford Field"
+        },
+        {
+          "week": 12,
+          "date": "Thu, Nov 26",
+          "site": "home",
+          "opponent": "Chicago Bears",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Ford Field"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "away",
+          "opponent": "Atlanta Falcons",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Mercedes-Benz Stadium"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "home",
+          "opponent": "Tennessee Titans",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Ford Field"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "away",
+          "opponent": "Minnesota Vikings",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "U.S. Bank Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Mon, Dec 28",
+          "site": "home",
+          "opponent": "New York Giants",
+          "time": "5:15 PM PT",
+          "network": "ESPN",
+          "venue": "Ford Field"
+        },
+        {
+          "week": 17,
+          "date": "Sun, Jan 3",
+          "site": "away",
+          "opponent": "Chicago Bears",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Soldier Field"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "away",
+          "opponent": "Green Bay Packers",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Lambeau Field"
+        }
+      ]
+    },
+    {
+      "id": "gb",
+      "abbreviation": "GB",
+      "name": "Green Bay Packers",
+      "shortName": "Packers",
+      "city": "Green Bay",
+      "conference": "NFC",
+      "division": "North",
+      "slug": "green-bay-packers-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/green-bay-packers",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/GB",
+      "color": "#204e32",
+      "alternateColor": "#d50a0a",
+      "venue": "Lambeau Field",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "away",
+        "opponent": "Minnesota Vikings",
+        "time": "1:25 PM PT",
+        "network": "CBS",
+        "venue": "U.S. Bank Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "away",
+          "opponent": "Minnesota Vikings",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "U.S. Bank Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "away",
+          "opponent": "New York Jets",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Thu, Sep 24",
+          "site": "home",
+          "opponent": "Atlanta Falcons",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "Lambeau Field"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "away",
+          "opponent": "Tampa Bay Buccaneers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Raymond James Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "home",
+          "opponent": "Chicago Bears",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Lambeau Field"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "home",
+          "opponent": "Dallas Cowboys",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Lambeau Field"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "away",
+          "opponent": "Detroit Lions",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Ford Field"
+        },
+        {
+          "week": 8,
+          "date": "Thu, Oct 29",
+          "site": "home",
+          "opponent": "Carolina Panthers",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "Lambeau Field"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "away",
+          "opponent": "New England Patriots",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Gillette Stadium"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "home",
+          "opponent": "Minnesota Vikings",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Lambeau Field"
+        },
+        {
+          "week": 11,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 12,
+          "date": "Wed, Nov 25",
+          "site": "away",
+          "opponent": "Los Angeles Rams",
+          "time": "5:00 PM PT",
+          "network": "Netflix",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "away",
+          "opponent": "New Orleans Saints",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Caesars Superdome"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "home",
+          "opponent": "Buffalo Bills",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Lambeau Field"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "home",
+          "opponent": "Miami Dolphins",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Lambeau Field"
+        },
+        {
+          "week": 16,
+          "date": "Fri, Dec 25",
+          "site": "away",
+          "opponent": "Chicago Bears",
+          "time": "10:00 AM PT",
+          "network": "Netflix",
+          "venue": "Soldier Field"
+        },
+        {
+          "week": 17,
+          "date": "Mon, Jan 4",
+          "site": "home",
+          "opponent": "Houston Texans",
+          "time": "5:15 PM PT",
+          "network": "ESPN",
+          "venue": "Lambeau Field"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "home",
+          "opponent": "Detroit Lions",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Lambeau Field"
+        }
+      ]
+    },
+    {
+      "id": "min",
+      "abbreviation": "MIN",
+      "name": "Minnesota Vikings",
+      "shortName": "Vikings",
+      "city": "Minnesota",
+      "conference": "NFC",
+      "division": "North",
+      "slug": "minnesota-vikings-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/minnesota-vikings",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/MIN",
+      "color": "#4f2683",
+      "alternateColor": "#d50a0a",
+      "venue": "U.S. Bank Stadium",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "home",
+        "opponent": "Green Bay Packers",
+        "time": "1:25 PM PT",
+        "network": "CBS",
+        "venue": "U.S. Bank Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "home",
+          "opponent": "Green Bay Packers",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "U.S. Bank Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "away",
+          "opponent": "Chicago Bears",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Soldier Field"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "away",
+          "opponent": "Tampa Bay Buccaneers",
+          "time": "1:05 PM PT",
+          "network": "FOX",
+          "venue": "Raymond James Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "home",
+          "opponent": "Miami Dolphins",
+          "time": "1:05 PM PT",
+          "network": "FOX",
+          "venue": "U.S. Bank Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "away",
+          "opponent": "New Orleans Saints",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Caesars Superdome"
+        },
+        {
+          "week": 6,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "home",
+          "opponent": "Indianapolis Colts",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "U.S. Bank Stadium"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "away",
+          "opponent": "Detroit Lions",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Ford Field"
+        },
+        {
+          "week": 9,
+          "date": "Mon, Nov 9",
+          "site": "home",
+          "opponent": "Buffalo Bills",
+          "time": "5:15 PM PT",
+          "network": "ESPN / ABC",
+          "venue": "U.S. Bank Stadium"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "away",
+          "opponent": "Green Bay Packers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Lambeau Field"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "away",
+          "opponent": "San Francisco 49ers",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Estadio Banorte"
+        },
+        {
+          "week": 12,
+          "date": "Sun, Nov 29",
+          "site": "home",
+          "opponent": "Atlanta Falcons",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "U.S. Bank Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "home",
+          "opponent": "Carolina Panthers",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "U.S. Bank Stadium"
+        },
+        {
+          "week": 14,
+          "date": "Thu, Dec 10",
+          "site": "away",
+          "opponent": "New England Patriots",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "Gillette Stadium"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "home",
+          "opponent": "Detroit Lions",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "U.S. Bank Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Sat, Dec 26",
+          "site": "home",
+          "opponent": "Washington Commanders",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "U.S. Bank Stadium"
+        },
+        {
+          "week": 17,
+          "date": "Sun, Jan 3",
+          "site": "away",
+          "opponent": "New York Jets",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "home",
+          "opponent": "Chicago Bears",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "U.S. Bank Stadium"
+        }
+      ]
+    },
+    {
+      "id": "atl",
+      "abbreviation": "ATL",
+      "name": "Atlanta Falcons",
+      "shortName": "Falcons",
+      "city": "Atlanta",
+      "conference": "NFC",
+      "division": "South",
+      "slug": "atlanta-falcons-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/atlanta-falcons",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/ATL",
+      "color": "#a71930",
+      "alternateColor": "#d50a0a",
+      "venue": "Mercedes-Benz Stadium",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "away",
+        "opponent": "Pittsburgh Steelers",
+        "time": "10:00 AM PT",
+        "network": "FOX",
+        "venue": "Acrisure Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "away",
+          "opponent": "Pittsburgh Steelers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Acrisure Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "home",
+          "opponent": "Carolina Panthers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Mercedes-Benz Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Thu, Sep 24",
+          "site": "away",
+          "opponent": "Green Bay Packers",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "Lambeau Field"
+        },
+        {
+          "week": 4,
+          "date": "Mon, Oct 5",
+          "site": "away",
+          "opponent": "New Orleans Saints",
+          "time": "5:15 PM PT",
+          "network": "ESPN",
+          "venue": "Caesars Superdome"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "home",
+          "opponent": "Baltimore Ravens",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Mercedes-Benz Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "home",
+          "opponent": "Chicago Bears",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Mercedes-Benz Stadium"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "home",
+          "opponent": "San Francisco 49ers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Mercedes-Benz Stadium"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "away",
+          "opponent": "Tampa Bay Buccaneers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Raymond James Stadium"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "home",
+          "opponent": "Cincinnati Bengals",
+          "time": "6:30 AM PT",
+          "network": "NFL Net",
+          "venue": "Santiago Bernabéu"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "home",
+          "opponent": "Kansas City Chiefs",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Mercedes-Benz Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 12,
+          "date": "Sun, Nov 29",
+          "site": "away",
+          "opponent": "Minnesota Vikings",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "U.S. Bank Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "home",
+          "opponent": "Detroit Lions",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Mercedes-Benz Stadium"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "away",
+          "opponent": "Cleveland Browns",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Huntington Bank Field"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "away",
+          "opponent": "Washington Commanders",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Northwest Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Sat, Dec 26",
+          "site": "home",
+          "opponent": "Tampa Bay Buccaneers",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Mercedes-Benz Stadium"
+        },
+        {
+          "week": 17,
+          "date": "Sun, Jan 3",
+          "site": "home",
+          "opponent": "New Orleans Saints",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Mercedes-Benz Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "away",
+          "opponent": "Carolina Panthers",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Bank of America Stadium"
+        }
+      ]
+    },
+    {
+      "id": "car",
+      "abbreviation": "CAR",
+      "name": "Carolina Panthers",
+      "shortName": "Panthers",
+      "city": "Carolina",
+      "conference": "NFC",
+      "division": "South",
+      "slug": "carolina-panthers-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/carolina-panthers",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/CAR",
+      "color": "#0085ca",
+      "alternateColor": "#d50a0a",
+      "venue": "Bank of America Stadium",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "home",
+        "opponent": "Chicago Bears",
+        "time": "10:00 AM PT",
+        "network": "FOX",
+        "venue": "Bank of America Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "home",
+          "opponent": "Chicago Bears",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Bank of America Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "away",
+          "opponent": "Atlanta Falcons",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Mercedes-Benz Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "away",
+          "opponent": "Cleveland Browns",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Huntington Bank Field"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "home",
+          "opponent": "Detroit Lions",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Bank of America Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "away",
+          "opponent": "Philadelphia Eagles",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Lincoln Financial Field"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "home",
+          "opponent": "Tampa Bay Buccaneers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Bank of America Stadium"
+        },
+        {
+          "week": 8,
+          "date": "Thu, Oct 29",
+          "site": "away",
+          "opponent": "Green Bay Packers",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "Lambeau Field"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "home",
+          "opponent": "Denver Broncos",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Bank of America Stadium"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "away",
+          "opponent": "New Orleans Saints",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Caesars Superdome"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "home",
+          "opponent": "Baltimore Ravens",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Bank of America Stadium"
+        },
+        {
+          "week": 12,
+          "date": "Mon, Nov 30",
+          "site": "away",
+          "opponent": "Tampa Bay Buccaneers",
+          "time": "5:15 PM PT",
+          "network": "ESPN",
+          "venue": "Raymond James Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "away",
+          "opponent": "Minnesota Vikings",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "U.S. Bank Stadium"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "home",
+          "opponent": "New Orleans Saints",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Bank of America Stadium"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "home",
+          "opponent": "Cincinnati Bengals",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Bank of America Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Sat, Dec 26",
+          "site": "away",
+          "opponent": "Pittsburgh Steelers",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Acrisure Stadium"
+        },
+        {
+          "week": 17,
+          "date": "Sun, Jan 3",
+          "site": "home",
+          "opponent": "Seattle Seahawks",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Bank of America Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "home",
+          "opponent": "Atlanta Falcons",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Bank of America Stadium"
+        }
+      ]
+    },
+    {
+      "id": "no",
+      "abbreviation": "NO",
+      "name": "New Orleans Saints",
+      "shortName": "Saints",
+      "city": "New Orleans",
+      "conference": "NFC",
+      "division": "South",
+      "slug": "new-orleans-saints-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/new-orleans-saints",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/NO",
+      "color": "#d3bc8d",
+      "alternateColor": "#d50a0a",
+      "venue": "Caesars Superdome",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "away",
+        "opponent": "Detroit Lions",
+        "time": "10:00 AM PT",
+        "network": "FOX",
+        "venue": "Ford Field"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "away",
+          "opponent": "Detroit Lions",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Ford Field"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "away",
+          "opponent": "Baltimore Ravens",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "M&T Bank Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "home",
+          "opponent": "Las Vegas Raiders",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Caesars Superdome"
+        },
+        {
+          "week": 4,
+          "date": "Mon, Oct 5",
+          "site": "home",
+          "opponent": "Atlanta Falcons",
+          "time": "5:15 PM PT",
+          "network": "ESPN",
+          "venue": "Caesars Superdome"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "home",
+          "opponent": "Minnesota Vikings",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Caesars Superdome"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "away",
+          "opponent": "New York Giants",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "home",
+          "opponent": "Pittsburgh Steelers",
+          "time": "6:30 AM PT",
+          "network": "NFL Net",
+          "venue": "Stade de France"
+        },
+        {
+          "week": 8,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "home",
+          "opponent": "Cleveland Browns",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Caesars Superdome"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "home",
+          "opponent": "Carolina Panthers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Caesars Superdome"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "away",
+          "opponent": "Chicago Bears",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Soldier Field"
+        },
+        {
+          "week": 12,
+          "date": "Sun, Nov 29",
+          "site": "away",
+          "opponent": "Cincinnati Bengals",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Paycor Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "home",
+          "opponent": "Green Bay Packers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Caesars Superdome"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "away",
+          "opponent": "Carolina Panthers",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Bank of America Stadium"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "away",
+          "opponent": "Tampa Bay Buccaneers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Raymond James Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Sun, Dec 27",
+          "site": "home",
+          "opponent": "Arizona Cardinals",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Caesars Superdome"
+        },
+        {
+          "week": 17,
+          "date": "Sun, Jan 3",
+          "site": "away",
+          "opponent": "Atlanta Falcons",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Mercedes-Benz Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "home",
+          "opponent": "Tampa Bay Buccaneers",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Caesars Superdome"
+        }
+      ]
+    },
+    {
+      "id": "tb",
+      "abbreviation": "TB",
+      "name": "Tampa Bay Buccaneers",
+      "shortName": "Buccaneers",
+      "city": "Tampa Bay",
+      "conference": "NFC",
+      "division": "South",
+      "slug": "tampa-bay-buccaneers-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/tampa-bay-buccaneers",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/TB",
+      "color": "#bd1c36",
+      "alternateColor": "#d50a0a",
+      "venue": "Raymond James Stadium",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "away",
+        "opponent": "Cincinnati Bengals",
+        "time": "10:00 AM PT",
+        "network": "FOX",
+        "venue": "Paycor Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "away",
+          "opponent": "Cincinnati Bengals",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Paycor Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "home",
+          "opponent": "Cleveland Browns",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Raymond James Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "home",
+          "opponent": "Minnesota Vikings",
+          "time": "1:05 PM PT",
+          "network": "FOX",
+          "venue": "Raymond James Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "home",
+          "opponent": "Green Bay Packers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Raymond James Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Thu, Oct 8",
+          "site": "away",
+          "opponent": "Dallas Cowboys",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "AT&T Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "home",
+          "opponent": "Pittsburgh Steelers",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Raymond James Stadium"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "away",
+          "opponent": "Carolina Panthers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Bank of America Stadium"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "home",
+          "opponent": "Atlanta Falcons",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Raymond James Stadium"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "away",
+          "opponent": "Chicago Bears",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Soldier Field"
+        },
+        {
+          "week": 10,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "away",
+          "opponent": "Detroit Lions",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Ford Field"
+        },
+        {
+          "week": 12,
+          "date": "Mon, Nov 30",
+          "site": "home",
+          "opponent": "Carolina Panthers",
+          "time": "5:15 PM PT",
+          "network": "ESPN",
+          "venue": "Raymond James Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "home",
+          "opponent": "Los Angeles Chargers",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "Raymond James Stadium"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "away",
+          "opponent": "Baltimore Ravens",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "M&T Bank Stadium"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "home",
+          "opponent": "New Orleans Saints",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Raymond James Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Sat, Dec 26",
+          "site": "away",
+          "opponent": "Atlanta Falcons",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Mercedes-Benz Stadium"
+        },
+        {
+          "week": 17,
+          "date": "Sat, Jan 2",
+          "site": "home",
+          "opponent": "Los Angeles Rams",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Raymond James Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "away",
+          "opponent": "New Orleans Saints",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Caesars Superdome"
+        }
+      ]
+    },
+    {
+      "id": "ari",
+      "abbreviation": "ARI",
+      "name": "Arizona Cardinals",
+      "shortName": "Cardinals",
+      "city": "Arizona",
+      "conference": "NFC",
+      "division": "West",
+      "slug": "arizona-cardinals-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/arizona-cardinals",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/ARI",
+      "color": "#a40227",
+      "alternateColor": "#d50a0a",
+      "venue": "State Farm Stadium",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Sun, Sep 13",
+        "site": "away",
+        "opponent": "Los Angeles Chargers",
+        "time": "1:25 PM PT",
+        "network": "CBS",
+        "venue": "SoFi Stadium"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Sun, Sep 13",
+          "site": "away",
+          "opponent": "Los Angeles Chargers",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "home",
+          "opponent": "Seattle Seahawks",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "State Farm Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "away",
+          "opponent": "San Francisco 49ers",
+          "time": "1:05 PM PT",
+          "network": "FOX",
+          "venue": "Levi's Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "away",
+          "opponent": "New York Giants",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "home",
+          "opponent": "Detroit Lions",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "State Farm Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "away",
+          "opponent": "Los Angeles Rams",
+          "time": "1:05 PM PT",
+          "network": "FOX",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "home",
+          "opponent": "Denver Broncos",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "State Farm Stadium"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "away",
+          "opponent": "Dallas Cowboys",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "AT&T Stadium"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "away",
+          "opponent": "Seattle Seahawks",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Lumen Field"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "home",
+          "opponent": "Los Angeles Rams",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "State Farm Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "away",
+          "opponent": "Kansas City Chiefs",
+          "time": "10:00 AM PT",
+          "network": "CBS",
+          "venue": "GEHA Field at Arrowhead Stadium"
+        },
+        {
+          "week": 12,
+          "date": "Sun, Nov 29",
+          "site": "home",
+          "opponent": "Washington Commanders",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "State Farm Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "home",
+          "opponent": "Philadelphia Eagles",
+          "time": "1:05 PM PT",
+          "network": "FOX",
+          "venue": "State Farm Stadium"
+        },
+        {
+          "week": 14,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "home",
+          "opponent": "New York Jets",
+          "time": "1:05 PM PT",
+          "network": "FOX",
+          "venue": "State Farm Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Sun, Dec 27",
+          "site": "away",
+          "opponent": "New Orleans Saints",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Caesars Superdome"
+        },
+        {
+          "week": 17,
+          "date": "Sun, Jan 3",
+          "site": "home",
+          "opponent": "Las Vegas Raiders",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "State Farm Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "home",
+          "opponent": "San Francisco 49ers",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "State Farm Stadium"
+        }
+      ]
+    },
+    {
+      "id": "lar",
+      "abbreviation": "LA",
+      "name": "Los Angeles Rams",
+      "shortName": "Rams",
+      "city": "Los Angeles",
+      "conference": "NFC",
+      "division": "West",
+      "slug": "rams-home-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/los-angeles-rams",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/LA",
+      "color": "#003594",
+      "alternateColor": "#d50a0a",
+      "venue": "Melbourne Cricket Ground",
+      "featured": true,
+      "opener": {
+        "week": 1,
+        "date": "Thu, Sep 10",
+        "site": "home",
+        "opponent": "San Francisco 49ers",
+        "time": "5:35 PM PT",
+        "network": "Netflix",
+        "venue": "Melbourne Cricket Ground"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Thu, Sep 10",
+          "site": "home",
+          "opponent": "San Francisco 49ers",
+          "time": "5:35 PM PT",
+          "network": "Netflix",
+          "venue": "Melbourne Cricket Ground"
+        },
+        {
+          "week": 2,
+          "date": "Mon, Sep 21",
+          "site": "home",
+          "opponent": "New York Giants",
+          "time": "5:15 PM PT",
+          "network": "ESPN / ABC",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "away",
+          "opponent": "Denver Broncos",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Empower Field at Mile High"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "away",
+          "opponent": "Philadelphia Eagles",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Lincoln Financial Field"
+        },
+        {
+          "week": 5,
+          "date": "Mon, Oct 12",
+          "site": "home",
+          "opponent": "Buffalo Bills",
+          "time": "5:15 PM PT",
+          "network": "ESPN / ABC",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 6,
+          "date": "Sun, Oct 18",
+          "site": "home",
+          "opponent": "Arizona Cardinals",
+          "time": "1:05 PM PT",
+          "network": "FOX",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "away",
+          "opponent": "Las Vegas Raiders",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Allegiant Stadium"
+        },
+        {
+          "week": 8,
+          "date": "Sun, Nov 1",
+          "site": "home",
+          "opponent": "Los Angeles Chargers",
+          "time": "1:05 PM PT",
+          "network": "FOX",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "away",
+          "opponent": "Washington Commanders",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Northwest Stadium"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "away",
+          "opponent": "Arizona Cardinals",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "State Farm Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 12,
+          "date": "Wed, Nov 25",
+          "site": "home",
+          "opponent": "Green Bay Packers",
+          "time": "5:00 PM PT",
+          "network": "Netflix",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Thu, Dec 3",
+          "site": "home",
+          "opponent": "Kansas City Chiefs",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "away",
+          "opponent": "San Francisco 49ers",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Levi's Stadium"
+        },
+        {
+          "week": 15,
+          "date": "Sun, Dec 20",
+          "site": "home",
+          "opponent": "Dallas Cowboys",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Fri, Dec 25",
+          "site": "away",
+          "opponent": "Seattle Seahawks",
+          "time": "5:15 PM PT",
+          "network": "FOX",
+          "venue": "Lumen Field"
+        },
+        {
+          "week": 17,
+          "date": "Sat, Jan 2",
+          "site": "away",
+          "opponent": "Tampa Bay Buccaneers",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "Raymond James Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "home",
+          "opponent": "Seattle Seahawks",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "SoFi Stadium"
+        }
+      ]
+    },
+    {
+      "id": "sf",
+      "abbreviation": "SF",
+      "name": "San Francisco 49ers",
+      "shortName": "49ers",
+      "city": "San Francisco",
+      "conference": "NFC",
+      "division": "West",
+      "slug": "49ers-home-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/san-francisco-49ers",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/SF",
+      "color": "#aa0000",
+      "alternateColor": "#d50a0a",
+      "venue": "Levi's Stadium",
+      "featured": true,
+      "opener": {
+        "week": 1,
+        "date": "Thu, Sep 10",
+        "site": "away",
+        "opponent": "Los Angeles Rams",
+        "time": "5:35 PM PT",
+        "network": "Netflix",
+        "venue": "Melbourne Cricket Ground"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Thu, Sep 10",
+          "site": "away",
+          "opponent": "Los Angeles Rams",
+          "time": "5:35 PM PT",
+          "network": "Netflix",
+          "venue": "Melbourne Cricket Ground"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "home",
+          "opponent": "Miami Dolphins",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Levi's Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "home",
+          "opponent": "Arizona Cardinals",
+          "time": "1:05 PM PT",
+          "network": "FOX",
+          "venue": "Levi's Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "home",
+          "opponent": "Denver Broncos",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Levi's Stadium"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "away",
+          "opponent": "Seattle Seahawks",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Lumen Field"
+        },
+        {
+          "week": 6,
+          "date": "Mon, Oct 19",
+          "site": "home",
+          "opponent": "Washington Commanders",
+          "time": "5:15 PM PT",
+          "network": "ESPN / ABC",
+          "venue": "Levi's Stadium"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "away",
+          "opponent": "Atlanta Falcons",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Mercedes-Benz Stadium"
+        },
+        {
+          "week": 8,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "home",
+          "opponent": "Las Vegas Raiders",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "Levi's Stadium"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "away",
+          "opponent": "Dallas Cowboys",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "AT&T Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Sun, Nov 22",
+          "site": "home",
+          "opponent": "Minnesota Vikings",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Estadio Banorte"
+        },
+        {
+          "week": 12,
+          "date": "Sun, Nov 29",
+          "site": "home",
+          "opponent": "Seattle Seahawks",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Levi's Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Sun, Dec 6",
+          "site": "away",
+          "opponent": "New York Giants",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "MetLife Stadium"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "home",
+          "opponent": "Los Angeles Rams",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Levi's Stadium"
+        },
+        {
+          "week": 15,
+          "date": "Thu, Dec 17",
+          "site": "away",
+          "opponent": "Los Angeles Chargers",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "SoFi Stadium"
+        },
+        {
+          "week": 16,
+          "date": "Sun, Dec 27",
+          "site": "away",
+          "opponent": "Kansas City Chiefs",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "GEHA Field at Arrowhead Stadium"
+        },
+        {
+          "week": 17,
+          "date": "Sun, Jan 3",
+          "site": "home",
+          "opponent": "Philadelphia Eagles",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Levi's Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "away",
+          "opponent": "Arizona Cardinals",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "State Farm Stadium"
+        }
+      ]
+    },
+    {
+      "id": "sea",
+      "abbreviation": "SEA",
+      "name": "Seattle Seahawks",
+      "shortName": "Seahawks",
+      "city": "Seattle",
+      "conference": "NFC",
+      "division": "West",
+      "slug": "seattle-seahawks-season-opener-2026",
+      "officialUrl": "https://www.nfl.com/schedules/2026/by-team/seattle-seahawks",
+      "logo": "https://static.www.nfl.com/league/api/clubs/logos/SEA",
+      "color": "#002a5c",
+      "alternateColor": "#d50a0a",
+      "venue": "Lumen Field",
+      "featured": false,
+      "opener": {
+        "week": 1,
+        "date": "Wed, Sep 9",
+        "site": "home",
+        "opponent": "New England Patriots",
+        "time": "5:20 PM PT",
+        "network": "NBC",
+        "venue": "Lumen Field"
+      },
+      "schedule": [
+        {
+          "week": 1,
+          "date": "Wed, Sep 9",
+          "site": "home",
+          "opponent": "New England Patriots",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Lumen Field"
+        },
+        {
+          "week": 2,
+          "date": "Sun, Sep 20",
+          "site": "away",
+          "opponent": "Arizona Cardinals",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "State Farm Stadium"
+        },
+        {
+          "week": 3,
+          "date": "Sun, Sep 27",
+          "site": "away",
+          "opponent": "Washington Commanders",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Northwest Stadium"
+        },
+        {
+          "week": 4,
+          "date": "Sun, Oct 4",
+          "site": "home",
+          "opponent": "Los Angeles Chargers",
+          "time": "1:25 PM PT",
+          "network": "CBS",
+          "venue": "Lumen Field"
+        },
+        {
+          "week": 5,
+          "date": "Sun, Oct 11",
+          "site": "home",
+          "opponent": "San Francisco 49ers",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Lumen Field"
+        },
+        {
+          "week": 6,
+          "date": "Thu, Oct 15",
+          "site": "away",
+          "opponent": "Denver Broncos",
+          "time": "5:15 PM PT",
+          "network": "Prime Video",
+          "venue": "Empower Field at Mile High"
+        },
+        {
+          "week": 7,
+          "date": "Sun, Oct 25",
+          "site": "home",
+          "opponent": "Kansas City Chiefs",
+          "time": "5:20 PM PT",
+          "network": "NBC",
+          "venue": "Lumen Field"
+        },
+        {
+          "week": 8,
+          "date": "Mon, Nov 2",
+          "site": "home",
+          "opponent": "Chicago Bears",
+          "time": "5:15 PM PT",
+          "network": "ESPN",
+          "venue": "Lumen Field"
+        },
+        {
+          "week": 9,
+          "date": "Sun, Nov 8",
+          "site": "home",
+          "opponent": "Arizona Cardinals",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Lumen Field"
+        },
+        {
+          "week": 10,
+          "date": "Sun, Nov 15",
+          "site": "away",
+          "opponent": "Las Vegas Raiders",
+          "time": "1:05 PM PT",
+          "network": "CBS",
+          "venue": "Allegiant Stadium"
+        },
+        {
+          "week": 11,
+          "date": "Bye",
+          "site": "bye",
+          "opponent": "Bye week",
+          "time": "—",
+          "network": "—",
+          "venue": "—"
+        },
+        {
+          "week": 12,
+          "date": "Sun, Nov 29",
+          "site": "away",
+          "opponent": "San Francisco 49ers",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Levi's Stadium"
+        },
+        {
+          "week": 13,
+          "date": "Mon, Dec 7",
+          "site": "home",
+          "opponent": "Dallas Cowboys",
+          "time": "5:15 PM PT",
+          "network": "ESPN / ABC",
+          "venue": "Lumen Field"
+        },
+        {
+          "week": 14,
+          "date": "Sun, Dec 13",
+          "site": "home",
+          "opponent": "New York Giants",
+          "time": "1:25 PM PT",
+          "network": "FOX",
+          "venue": "Lumen Field"
+        },
+        {
+          "week": 15,
+          "date": "Sat, Dec 19",
+          "site": "away",
+          "opponent": "Philadelphia Eagles",
+          "time": "2:00 PM PT",
+          "network": "FOX",
+          "venue": "Lincoln Financial Field"
+        },
+        {
+          "week": 16,
+          "date": "Fri, Dec 25",
+          "site": "home",
+          "opponent": "Los Angeles Rams",
+          "time": "5:15 PM PT",
+          "network": "FOX",
+          "venue": "Lumen Field"
+        },
+        {
+          "week": 17,
+          "date": "Sun, Jan 3",
+          "site": "away",
+          "opponent": "Carolina Panthers",
+          "time": "10:00 AM PT",
+          "network": "FOX",
+          "venue": "Bank of America Stadium"
+        },
+        {
+          "week": 18,
+          "date": "Jan 9 or 10",
+          "site": "away",
+          "opponent": "Los Angeles Rams",
+          "time": "TBD",
+          "network": "TBD",
+          "venue": "SoFi Stadium"
+        }
+      ]
+    }
+  ]
+}

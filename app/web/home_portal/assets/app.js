@@ -1250,9 +1250,39 @@
     const input = document.querySelector("[data-home-ai-input]");
     const sendBtn = document.querySelector("[data-home-ai-send]");
     const clearBtn = document.querySelector("[data-home-ai-clear]");
+    const rail = form ? form.closest("[data-ai-rail]") : null;
+    const railToggle = rail ? rail.querySelector("[data-ai-rail-toggle]") : null;
+    const railClose = rail ? rail.querySelector("[data-ai-rail-close]") : null;
     if(!form || !messages || !input || !sendBtn){
       return;
     }
+
+    const setRailOpen = (open)=>{
+      if(!rail) return;
+      rail.classList.toggle("is-open", Boolean(open));
+      if(railToggle){
+        railToggle.setAttribute("aria-expanded", open ? "true" : "false");
+      }
+    };
+
+    if(railToggle){
+      railToggle.addEventListener("click", ()=>{
+        const nextOpen = !rail.classList.contains("is-open");
+        setRailOpen(nextOpen);
+        if(nextOpen){
+          window.setTimeout(()=> input.focus(), 80);
+        }
+      });
+    }
+    if(railClose){
+      railClose.addEventListener("click", ()=> setRailOpen(false));
+    }
+    document.addEventListener("keydown", (event)=>{
+      if(event.key === "Escape" && rail && rail.classList.contains("is-open")){
+        setRailOpen(false);
+        if(railToggle) railToggle.focus();
+      }
+    });
 
     const setStatus = (value)=>{
       if(status){
@@ -1266,9 +1296,9 @@
         appendHomeAssistantMessage(
           messages,
           "assistant",
-          "Ask about current PerkNation promotions, business listings, nearby categories, or local restaurant picks."
+          "Ask me when any NFL team plays, who they face, or what time the game starts. I can also help with PerkNation events and local discovery."
         );
-        setStatus("Cleared. Ask about current promotions, business listings, or local picks.");
+        setStatus("Cleared. Ask about football, events, promotions, or local picks.");
       });
     }
 
@@ -1278,6 +1308,7 @@
       if(!message) return;
 
       appendHomeAssistantMessage(messages, "user", message);
+      setRailOpen(true);
       input.value = "";
       input.focus();
       sendBtn.disabled = true;

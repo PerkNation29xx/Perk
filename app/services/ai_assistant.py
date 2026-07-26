@@ -3,7 +3,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from decimal import Decimal
+from functools import lru_cache
 import json
+from pathlib import Path
 import re
 from typing import Optional
 from urllib import error, request
@@ -51,6 +53,13 @@ _DETERMINISTIC_MODEL_NAME = "perk-deterministic"
 _NEMOTRON_SPARK_CONTEXTS = {"home_local_guide", "public", "consumer", "merchant", "admin"}
 _SPARK_INPUT_TOKEN_BUDGET = 3600
 _SPARK_MESSAGE_OVERHEAD_TOKENS = 8
+_NFL_SCHEDULE_DATA_FILE = (
+    Path(__file__).resolve().parents[1]
+    / "web"
+    / "home_portal"
+    / "assets"
+    / "nfl-2026-schedules.json"
+)
 
 
 def resolve_context(user_role: Optional[UserRole], requested_context: Optional[str]) -> str:
@@ -745,7 +754,7 @@ def _home_local_guide_context(*, db: Optional[Session]) -> str:
             "",
             "Editorial/review coverage examples currently surfaced or planned for PerkNation readers:",
             "- Los Angeles fashion guide: LA Market Week, CMC sample-sale Fridays, Fashion District shopping, LA Vintage warehouse sale, and The Grove K-beauty pop-up.",
-            "- Events coverage: KCON LA at Crypto.com Arena, UFC Sacramento, Ringling San Diego, and NFL home openers at SoFi Stadium and Levi's Stadium.",
+            "- Events coverage: KCON LA at Crypto.com Arena, UFC Sacramento, Ringling San Diego, and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
             "- Restaurant coverage: Dine LA 2026 city guides, Pasadena restaurant picks, and broader local dining discovery.",
             "",
             "Answering rules:",
@@ -799,10 +808,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Sports",
         "city": "Inglewood / Los Angeles",
-        "title": "Chargers and Rams home openers",
-        "timing": "September 13 and September 21, 2026",
+        "title": "All 32 NFL team schedules and season openers",
+        "timing": "September 9, 2026 through Week 18",
         "route": "/events",
-        "details": "SoFi Stadium season-opener planning for pregame dining, parking, fan style, and local discovery.",
+        "details": "AFC/NFC league guide with full 18-week schedules, Pacific kickoff times, networks, venues, and byes; Chargers, Rams, and 49ers are featured.",
     },
     {
         "category": "Restaurants",
@@ -1405,6 +1414,151 @@ def _execute_confirmed_action_if_requested(
     return None
 
 
+@lru_cache(maxsize=1)
+def _nfl_schedule_teams() -> tuple[dict[str, object], ...]:
+    try:
+        payload = json.loads(_NFL_SCHEDULE_DATA_FILE.read_text(encoding="utf-8"))
+    except (OSError, ValueError, TypeError):
+        return ()
+    teams = payload.get("teams", [])
+    if not isinstance(teams, list):
+        return ()
+    return tuple(team for team in teams if isinstance(team, dict))
+
+
+def _nfl_team_aliases(team: dict[str, object]) -> tuple[str, ...]:
+    name = str(team.get("name") or "").lower()
+    short_name = str(team.get("shortName") or "").lower()
+    aliases = {name, short_name}
+    if name == "san francisco 49ers":
+        aliases.update(("49ers", "niners", "san francisco"))
+    elif name == "washington commanders":
+        aliases.update(("washington", "commanders"))
+    elif name in {"los angeles chargers", "los angeles rams"}:
+        aliases.add(f"la {short_name}")
+    return tuple(alias for alias in aliases if len(alias) >= 4)
+
+
+def _matching_nfl_teams(text: str) -> list[dict[str, object]]:
+    matches: list[tuple[int, dict[str, object]]] = []
+    for team in _nfl_schedule_teams():
+        positions = [
+            text.find(alias)
+            for alias in _nfl_team_aliases(team)
+            if re.search(rf"(?<![a-z0-9]){re.escape(alias)}(?![a-z0-9])", text)
+        ]
+        if positions:
+            matches.append((min(position for position in positions if position >= 0), team))
+    matches.sort(key=lambda match: match[0])
+    return [team for _, team in matches]
+
+
+def _is_public_nfl_query(text: str) -> bool:
+    if _matching_nfl_teams(text):
+        return True
+    return _contains_any(
+        text,
+        (
+            "nfl",
+            "football team",
+            "football teams",
+            "football game",
+            "football games",
+            "season opener",
+            "season openers",
+            "afc teams",
+            "nfc teams",
+            "afc schedule",
+            "nfc schedule",
+        ),
+    )
+
+
+def _nfl_game_line(game: dict[str, object]) -> str:
+    site = str(game.get("site") or "")
+    if site == "bye":
+        return f"Week {game.get('week')}: bye."
+    site_label = "vs." if site == "home" else "at"
+    return (
+        f"Week {game.get('week')}: {site_label} {game.get('opponent')} on {game.get('date')} "
+        f"at {game.get('time')} ({game.get('network')}) — {game.get('venue')}."
+    )
+
+
+def _public_nfl_schedule_live_query_response(text: str, role_context: str) -> Optional[str]:
+    if role_context not in {"public", "home_local_guide"} or not _is_public_nfl_query(text):
+        return None
+
+    teams = _matching_nfl_teams(text)
+    all_teams = list(_nfl_schedule_teams())
+    if not all_teams:
+        return "The 2026 NFL schedule guide is temporarily unavailable. Browse /events for current PerkNation event coverage."
+
+    if not teams:
+        conference = "AFC" if re.search(r"\bafc\b", text) else "NFC" if re.search(r"\bnfc\b", text) else ""
+        if conference:
+            names = [str(team.get("name")) for team in all_teams if team.get("conference") == conference]
+            return (
+                f"{conference} teams in the PerkNation 2026 NFL guide: {', '.join(names)}. "
+                "Open /events and expand “Explore all 32 NFL teams” for every schedule, kickoff time, network, venue, and bye."
+            )
+        featured = [team for team in all_teams if team.get("featured")]
+        lines = [
+            "PerkNation now covers all 32 NFL teams, organized by AFC and NFC. The three featured California teams are:"
+        ]
+        for team in featured:
+            opener = team.get("opener") if isinstance(team.get("opener"), dict) else {}
+            lines.append(
+                f"- {team.get('name')}: {_nfl_game_line(opener)} "
+                f"Guide: /events/{team.get('slug')}"
+            )
+        lines.append("Open /events and expand “Explore all 32 NFL teams” to choose any club.")
+        return "\n".join(lines)
+
+    team = teams[0]
+    schedule = team.get("schedule") if isinstance(team.get("schedule"), list) else []
+    if not schedule:
+        return None
+    opponent_team = teams[1] if len(teams) > 1 else None
+    week_match = re.search(r"\bweek\s*(\d{1,2})\b", text)
+    game: Optional[dict[str, object]] = None
+    if week_match:
+        requested_week = int(week_match.group(1))
+        game = next((item for item in schedule if int(item.get("week") or 0) == requested_week), None)
+        if game is None:
+            return f"The 2026 regular season has Weeks 1–18. Open /events/{team.get('slug')} for the complete {team.get('name')} schedule."
+    elif opponent_team:
+        opponent_name = str(opponent_team.get("name") or "")
+        game = next((item for item in schedule if item.get("opponent") == opponent_name), None)
+    elif _contains_any(text, ("home opener", "first home", "home game")):
+        game = next((item for item in schedule if item.get("site") == "home"), None)
+    elif _contains_any(text, ("full schedule", "all games", "every game", "all weeks")):
+        lines = [f"{team.get('name')} 2026 regular-season schedule (Pacific Time):"]
+        lines.extend(f"- {_nfl_game_line(item)}" for item in schedule)
+        lines.append(
+            f"Official schedule: {team.get('officialUrl')} | PerkNation guide: /events/{team.get('slug')}"
+        )
+        lines.append("Week 18 and other eligible games can change under NFL flexible scheduling.")
+        return "\n".join(lines)
+    else:
+        game = schedule[0]
+
+    if game is None:
+        return (
+            f"I could not find a 2026 regular-season matchup between {team.get('name')} and "
+            f"{opponent_team.get('name') if opponent_team else 'that opponent'}. "
+            f"Open /events/{team.get('slug')} for all announced weeks."
+        )
+
+    label = "home opener" if _contains_any(text, ("home opener", "first home")) else "2026 schedule"
+    return (
+        f"{team.get('name')} {label}: {_nfl_game_line(game)} "
+        f"See all 18 weeks at /events/{team.get('slug')}. "
+        f"Official NFL schedule: {team.get('officialUrl')}. "
+        "Kickoff times are shown in Pacific Time and eligible games may flex."
+    )
+
+
 def _execute_live_query_if_requested(
     *,
     db: Optional[Session],
@@ -1412,11 +1566,15 @@ def _execute_live_query_if_requested(
     role_context: str,
     message: str,
 ) -> Optional[str]:
-    if db is None:
-        return None
-
     text = _normalize_user_text(message)
     if not text:
+        return None
+
+    public_nfl_response = _public_nfl_schedule_live_query_response(text, role_context)
+    if public_nfl_response:
+        return public_nfl_response
+
+    if db is None:
         return None
 
     public_review_response = _public_review_live_query_response(text, role_context)
@@ -1456,6 +1614,8 @@ def _should_return_live_query_directly(message: str, role_context: str) -> bool:
     if not text:
         return False
     if _is_public_review_query(text):
+        return True
+    if _is_public_nfl_query(text):
         return True
     return _contains_any(
         text,

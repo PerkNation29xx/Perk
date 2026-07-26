@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 _GOOGLE_ANALYTICS_ID = "G-VYL0SBGMWL"
 _INDEXNOW_KEY = "7a937e1db6b8272beca3c7860157d6112a7301b5832fd8a01590e17803adb3f3"
 _INDEXNOW_KEY_PATH = f"/{_INDEXNOW_KEY}.txt"
-_PUBLIC_BUILD_ID = "20260726-unified-public-shell"
+_PUBLIC_BUILD_ID = "20260726-nfl-league-guide"
 _GOOGLE_ANALYTICS_SNIPPET = f"""<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id={_GOOGLE_ANALYTICS_ID}"></script>
 <script>
@@ -204,6 +204,37 @@ def _public_shell_header() -> str:
 </header>"""
 
 
+def _public_ai_rail() -> str:
+    return """<section class="aiDiscoverySection aiRail" id="local-ai-assistant" data-ai-rail aria-label="Perk Nation AI local guide">
+  <div class="aiRailShell">
+    <button class="aiRailTab" type="button" data-ai-rail-toggle aria-expanded="false" aria-controls="public-ai-rail-panel">
+      <span class="aiRailSpark" aria-hidden="true">✦</span><span>Ask Perk Nation AI</span>
+    </button>
+    <div class="card pad aiDiscoveryCard" id="public-ai-rail-panel">
+      <button class="aiRailClose" type="button" data-ai-rail-close aria-label="Hide Perk Nation AI">×</button>
+      <div class="aiDiscoveryHeader">
+        <div>
+          <div class="badge">AI Local Guide</div>
+          <h2 class="h2">Ask Perk Nation.</h2>
+          <p class="muted">Ask about NFL teams, game times, events, current promotions, or nearby businesses.</p>
+        </div>
+        <div class="small aiDiscoveryMeta" data-home-ai-status>Ready for football, events, and local plans.</div>
+      </div>
+      <div class="aiDiscoveryMessages" data-home-ai-messages>
+        <div class="aiBubble assistant">Ask me when any NFL team plays, who they face, or what time the game starts. I can also help with PerkNation events and local discovery.</div>
+      </div>
+      <form class="aiDiscoveryComposer" data-home-ai-form>
+        <textarea data-home-ai-input placeholder="Example: What time do the Bills play in Week 1?" aria-label="Ask Perk Nation AI about football teams, events, and local recommendations" required></textarea>
+        <div class="aiDiscoveryActions">
+          <button class="btn primary" type="submit" data-home-ai-send>Ask AI</button>
+          <button class="btn" type="button" data-home-ai-clear>Clear</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>"""
+
+
 _PUBLIC_HEADER_RE = re.compile(
     r'<header\b[^>]*class=["\'][^"\']*\bheader\b[^"\']*["\'][^>]*>.*?</header>',
     flags=re.IGNORECASE | re.DOTALL,
@@ -258,6 +289,18 @@ def _inject_public_shell(document_html: str, *, path: str) -> str:
             )
         else:
             document_html = f"{document_html}\n{app_script}"
+    if "data-home-ai-form" not in document_html:
+        assistant = _public_ai_rail()
+        if re.search(r"</body>", document_html, flags=re.IGNORECASE):
+            document_html = re.sub(
+                r"</body>",
+                f"{assistant}\n</body>",
+                document_html,
+                count=1,
+                flags=re.IGNORECASE,
+            )
+        else:
+            document_html = f"{document_html}\n{assistant}"
     return document_html
 
 
@@ -371,7 +414,7 @@ _ARTICLE_HTML_FILES = {
     "vvs-cosmetics-victor-kuzmanovsky-wellness-beauty": "vvs-cosmetics-victor-kuzmanovsky-wellness-beauty.html",
     "southern-california-august-events-2026": "southern-california-august-events-2026.html",
 }
-_EVENT_SLUGS = {
+_BASE_EVENT_SLUGS = {
     "kcon-la-2026",
     "mount-westmore-san-jose",
     "j-cole-los-angeles",
@@ -382,6 +425,17 @@ _EVENT_SLUGS = {
     "49ers-home-opener-2026",
     "rams-home-opener-2026",
 }
+_NFL_SCHEDULES_FILE = _HOME_ASSETS_DIR / "nfl-2026-schedules.json"
+try:
+    _NFL_TEAMS_BY_SLUG = {
+        str(team["slug"]): team
+        for team in json.loads(_NFL_SCHEDULES_FILE.read_text(encoding="utf-8")).get("teams", [])
+        if team.get("slug")
+    }
+except (OSError, ValueError, TypeError):
+    _NFL_TEAMS_BY_SLUG = {}
+_NFL_EVENT_SLUGS = set(_NFL_TEAMS_BY_SLUG)
+_EVENT_SLUGS = _BASE_EVENT_SLUGS | _NFL_EVENT_SLUGS
 _DINE_LA_CITY_GUIDES_FILE = _HOME_PORTAL_DIR / "assets" / "articles" / "dine-la-city-guides-2026.json"
 
 # Admin web portal (served from the same process for local testing).
@@ -409,6 +463,59 @@ def _read_html_or_missing(path: Path, name: str, *, theme: str = "dark") -> str:
     return content.replace(
         '<html lang="en">',
         f'<html lang="en" data-theme="{normalized_theme}">',
+        1,
+    )
+
+
+def _render_event_article(event_slug: str, *, theme: str = "dark") -> str:
+    document_html = _read_html_or_missing(
+        _HOME_PORTAL_DIR / "event-detail.html",
+        "Event article",
+        theme=theme,
+    )
+    team = _NFL_TEAMS_BY_SLUG.get(event_slug)
+    if not team:
+        return document_html
+
+    opener = team.get("opener") if isinstance(team.get("opener"), dict) else {}
+    name = str(team.get("name") or "NFL team")
+    opponent = str(opener.get("opponent") or "its Week 1 opponent")
+    title = f"{name} 2026 Season Opener and Full Schedule | Perk Nation"
+    description = (
+        f"{name} opens the 2026 season against {opponent}. See all 18 weeks, "
+        "Pacific kickoff times, networks, venues, the bye, and the official NFL schedule."
+    )
+    canonical = f"/events/{event_slug}"
+    document_html = re.sub(
+        r"<title>.*?</title>",
+        f"<title>{_escape(title)}</title>",
+        document_html,
+        count=1,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    document_html = re.sub(
+        r'<meta\s+name=["\']description["\']\s+content=["\'].*?["\']\s*/?>',
+        f'<meta name="description" content="{_escape(description)}" />',
+        document_html,
+        count=1,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    document_html = re.sub(
+        r'<link\s+rel=["\']canonical["\']\s+href=["\'].*?["\']\s*/?>',
+        f'<link rel="canonical" href="{_escape(canonical)}" />',
+        document_html,
+        count=1,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    noscript = (
+        "<noscript><article class=\"eventNotFound\">"
+        f"<span class=\"badge\">2026 NFL schedule</span><h1 class=\"h1\">{_escape(name)} season opener and full schedule</h1>"
+        f"<p>{_escape(description)}</p><a class=\"btn primary\" href=\"{_escape(team.get('officialUrl'))}\">Official NFL schedule</a>"
+        "</article></noscript>"
+    )
+    return document_html.replace(
+        '<div class="eventLoading">Loading event…</div>',
+        f'<div class="eventLoading">Loading event…</div>{noscript}',
         1,
     )
 
@@ -1602,7 +1709,7 @@ def home_portal_events() -> str:
 def home_portal_event_article(event_slug: str) -> str:
     if event_slug not in _EVENT_SLUGS:
         raise HTTPException(status_code=404, detail="Event article not found")
-    return _read_html_or_missing(_HOME_PORTAL_DIR / "event-detail.html", "Event article")
+    return _render_event_article(event_slug)
 
 
 @app.get("/articles/{article_slug}", response_class=HTMLResponse)
@@ -1758,7 +1865,7 @@ def home_portal_white_events() -> str:
 def home_portal_white_event_article(event_slug: str) -> str:
     if event_slug not in _EVENT_SLUGS:
         raise HTTPException(status_code=404, detail="Event article not found")
-    return _read_html_or_missing(_HOME_PORTAL_DIR / "event-detail.html", "Event article", theme="light")
+    return _render_event_article(event_slug, theme="light")
 
 
 @app.get("/white/articles/{article_slug}", response_class=HTMLResponse)
