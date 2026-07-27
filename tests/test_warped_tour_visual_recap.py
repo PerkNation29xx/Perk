@@ -17,6 +17,9 @@ def test_warped_recap_has_artist_portraits_social_links_and_official_video() -> 
     assert html.count("official Vans Warped Tour lineup portrait") == 6
     assert html.count('class="warpedVideoGrid"') == 1
     assert html.count("instagram.com/vanswarpedtour/reel/") == 4
+    assert "youtube-nocookie.com/embed/MnKtScnMTs8" in html
+    assert "youtube-nocookie.com/embed/Pf1sWmhdrAM" in html
+    assert "These official artist videos are not Long Beach set footage." in html
     for artist in (
         "Alemeda",
         "Good Terms",

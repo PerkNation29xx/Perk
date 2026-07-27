@@ -3090,9 +3090,10 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 .warpedVideoGrid iframe{
   display:block;
   width:100%;
-  height:610px;
+  aspect-ratio:16/9;
+  height:auto;
   border:0;
-  background:#fff;
+  background:#000;
 }
 .warpedVideoGrid figcaption{
   padding:14px 16px 17px;
@@ -3100,13 +3101,13 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   font-size:13px;
   line-height:1.55;
 }
+.warpedVideoLinks{margin:16px 0 0; color:var(--muted); font-size:14px; line-height:1.65}
+.warpedVideoLinks a{color:var(--ink); font-weight:850; text-underline-offset:3px}
 @media (max-width:880px){
   .warpedArtistGrid,
   .warpedVideoGrid{grid-template-columns:1fr}
-  .warpedVideoGrid iframe{height:660px}
 }
 @media (max-width:560px){
   .warpedArtistSection,
   .warpedVideoSection{margin:32px -4px; padding:17px; border-radius:20px}
-  .warpedVideoGrid iframe{height:590px}
 }
