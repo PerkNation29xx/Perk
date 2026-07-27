@@ -796,6 +796,18 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         ),
     },
     {
+        "category": "Events, concerts, and festivals",
+        "city": "Southern California",
+        "title": "Fifteen Southern California summer plans",
+        "timing": "July 31-August 29, 2026",
+        "route": "/articles/southern-california-august-events-2026",
+        "details": (
+            "Ranked planning guide covering the OC Fair, Burbank film week, Long Beach food and music, "
+            "Santa Monica outdoor programs, Glendale park events, Pasadena POPS, West Hollywood Summer Sounds "
+            "on August 16, Noah Kahan at the Rose Bowl on August 15, and Just Like Heaven on August 22."
+        ),
+    },
+    {
         "category": "Concerts and fan events",
         "city": "Los Angeles",
         "title": "KCON LA 2026",
