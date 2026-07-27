@@ -785,14 +785,14 @@ def _home_local_guide_context(*, db: Optional[Session]) -> str:
 _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Fashion and shopping",
-        "city": "Los Angeles",
-        "title": "LA fashion events to plan around now",
-        "timing": "late July through October 2026",
+        "city": "Los Angeles, United States, and international",
+        "title": "2026 Fashion Week calendar: LA, New York, Miami and the world",
+        "timing": "August through October 2026",
         "route": "/articles/la-fashion-events-2026",
         "details": (
-            "LA Market Week at California Market Center and The New Mart; CMC public sample-sale Fridays "
-            "on July 31, August 28, September 25, and October 30; LA Vintage warehouse sale on August 8; "
-            "The Grove EESEOL K-beauty pop-up July 17-August 15."
+            "LA Market Week and public CMC sample-sale dates plus official 2026 fashion weeks in Copenhagen "
+            "August 3-7, Tokyo August 31-September 5, New York September 10-15, London September 17-21, "
+            "Milan September 22-28, Paris September 28-October 6, and Miami October 13-17."
         ),
     },
     {
@@ -1698,6 +1698,8 @@ def _is_public_review_query(text: str) -> bool:
         (
             "fashion event",
             "fashion events",
+            "fashion week",
+            "fashion weeks",
             "sports",
             "concert",
             "concerts",
@@ -1726,6 +1728,25 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     wants_restaurants = _contains_any(text, ("restaurant", "restaurants", "dining", "dine la"))
     wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_restaurants))
 
+    if wants_fashion and not any((wants_sports, wants_concerts, wants_restaurants)):
+        return "\n".join(
+            (
+                "Upcoming dates in the PerkNation 2026 Fashion Week guide:",
+                "- Los Angeles Market Week: August 2-6, with another market October 12-15 (trade credentials required).",
+                "- Copenhagen Fashion Week: August 3-7.",
+                "- Rakuten Fashion Week TOKYO: August 31-September 5.",
+                "- New York Fashion Week: September 10-15.",
+                "- London Fashion Week: September 17-21.",
+                "- Milano Fashion Week: September 22-28.",
+                "- Paris Fashion Week Womenswear: September 28-October 6.",
+                "- Miami Fashion Week: October 13-17.",
+                "Best starting points: New York for the U.S. industry overview, Milan and Paris for luxury, "
+                "Copenhagen, London, and Tokyo for emerging perspectives, and Miami for international, resort, "
+                "culture, and technology crossover. Read the rankings, access notes, and official-source links at "
+                "/articles/la-fashion-events-2026.",
+            )
+        )
+
     for item in _PUBLIC_REVIEW_COVERAGE_ITEMS:
         category = str(item["category"]).lower()
         if (
@@ -1740,17 +1761,15 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if not matching_items:
         matching_items = list(_PUBLIC_REVIEW_COVERAGE_ITEMS)
 
-    lines = [
-        "Current PerkNation review/editorial coverage includes these categories. These are guides and review topics, not active PerkNation promos unless a separate deal is listed:",
-    ]
+    lines = ["Here are the current PerkNation guides and events that match your question:"]
     for item in matching_items:
         lines.append(
             "- "
             f"{item['category']} in {item['city']}: {item['title']} ({item['timing']}). "
-            f"Use {item['route']} for the guide; {item['details']}"
+            f"Open {item['route']} for the guide. {item['details']}"
         )
     lines.append(
-        "For active promos, keep using the confirmed promo list: Hollywood Sports, Bond Collective, jewelry discounts, and El Portal World Cup happy hour."
+        "Looking for deals instead? Ask for current promotions by city or category."
     )
     return "\n".join(lines)
 

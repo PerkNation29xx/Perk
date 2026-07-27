@@ -1280,8 +1280,8 @@
       },
       fashion: {
         label: "Fashion",
-        welcome: "Ask about fashion events, designers, dates, venues, and nearby places to make a day of it.",
-        questions: ["What fashion events are coming up in LA?", "Which fashion event is best for networking?", "Find fashion businesses near me"],
+        welcome: "Ask about 2026 fashion weeks, official dates, access, best-for picks, or LA fashion businesses.",
+        questions: ["Which 2026 fashion weeks are coming up?", "When are New York, Miami, and Paris Fashion Week?", "Find fashion businesses near me"],
       },
       shopping: {
         label: "Shopping",

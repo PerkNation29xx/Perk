@@ -177,7 +177,7 @@ def test_home_local_guide_includes_review_context_for_current_events(monkeypatch
     system_context = captured["system_context"]
     assert result.role_context == "home_local_guide"
     assert "PUBLIC REVIEW COVERAGE CONTEXT" in system_context
-    assert "LA fashion events to plan around now" in system_context
+    assert "2026 Fashion Week calendar: LA, New York, Miami and the world" in system_context
     assert "KCON LA 2026" in system_context
     assert "UFC Fight Night" in system_context
     assert "Dine LA 2026 city guides" in system_context
@@ -204,11 +204,12 @@ def test_home_local_guide_review_listing_question_answers_directly(monkeypatch) 
 
     answer = result.answer.lower()
     assert result.model == "nvidia/nemotron-3-super"
-    assert "la fashion events" in answer
+    assert "2026 fashion week calendar" in answer
     assert "kcon la 2026" in answer
     assert "ufc fight night" in answer
     assert "dine la 2026" in answer
-    assert "not active perknation promos" in answer
+    assert "current perknation guides and events" in answer
+    assert "ask for current promotions" in answer
 
 
 def test_consumer_account_uses_nemotron_super_spark_lane(monkeypatch) -> None:
