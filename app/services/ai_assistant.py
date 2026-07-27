@@ -795,6 +795,19 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
             "Milan September 22-28, Paris September 28-October 6, and Miami October 13-17."
         ),
     },
+
+    {
+        "category": "Concerts, festivals, and local culture",
+        "city": "Long Beach",
+        "title": "Vans Warped Tour Long Beach 2026 recap",
+        "timing": "July 25-26, 2026",
+        "route": "/articles/vans-warped-tour-long-beach-2026",
+        "details": (
+            "Source-backed recap of the Shoreline Waterfront weekend covering more than 100 artists, "
+            "Amazon Music livestream coverage, skate/BMX/wrestling extras, Artist Alley and vendors, "
+            "Long Beach food collaborations, fan-post signals, heat planning, and owner-credit media links."
+        ),
+    },
     {
         "category": "Events, concerts, and festivals",
         "city": "Southern California",
@@ -868,6 +881,11 @@ def _should_include_public_review_context(message: str, role_context: str) -> bo
             "events",
             "concert",
             "concerts",
+            "warped",
+            "vans",
+            "festival",
+            "festivals",
+            "long beach",
             "show",
             "shows",
             "sports",
@@ -1715,6 +1733,11 @@ def _is_public_review_query(text: str) -> bool:
             "sports",
             "concert",
             "concerts",
+            "warped",
+            "vans",
+            "festival",
+            "festivals",
+            "long beach",
             "restaurant review",
             "restaurant reviews",
             "restaurants listed",
@@ -1736,7 +1759,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     matching_items = []
     wants_fashion = _contains_any(text, ("fashion", "style", "shopping", "sample sale", "market week"))
     wants_sports = _contains_any(text, ("sports", "game", "games", "stadium", "ufc", "chargers", "rams"))
-    wants_concerts = _contains_any(text, ("concert", "concerts", "music", "kcon", "mount westmore"))
+    wants_concerts = _contains_any(text, ("concert", "concerts", "music", "festival", "festivals", "warped", "vans", "long beach", "kcon", "mount westmore"))
     wants_restaurants = _contains_any(text, ("restaurant", "restaurants", "dining", "dine la"))
     wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_restaurants))
 

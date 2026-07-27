@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 _GOOGLE_ANALYTICS_ID = "G-VYL0SBGMWL"
 _INDEXNOW_KEY = "7a937e1db6b8272beca3c7860157d6112a7301b5832fd8a01590e17803adb3f3"
 _INDEXNOW_KEY_PATH = f"/{_INDEXNOW_KEY}.txt"
-_PUBLIC_BUILD_ID = "20260727-august-events-refresh"
+_PUBLIC_BUILD_ID = "20260727-warped-long-beach-recap"
 _GOOGLE_ANALYTICS_SNIPPET = f"""<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id={_GOOGLE_ANALYTICS_ID}"></script>
 <script>
@@ -211,6 +211,10 @@ def _public_ai_category(path: str) -> str:
     ):
         return "nfl"
     if normalized.startswith("/events"):
+        return "events"
+    if normalized.startswith("/articles/") and any(
+        token in normalized for token in ("warped", "festival", "concert", "long-beach")
+    ):
         return "events"
     if normalized.startswith(("/directory", "/business/")):
         return "directory"
@@ -443,6 +447,7 @@ _ARTICLE_HTML_FILES = {
     "la-fashion-events-2026": "la-fashion-events-2026.html",
     "vvs-cosmetics-victor-kuzmanovsky-wellness-beauty": "vvs-cosmetics-victor-kuzmanovsky-wellness-beauty.html",
     "southern-california-august-events-2026": "southern-california-august-events-2026.html",
+    "vans-warped-tour-long-beach-2026": "vans-warped-tour-long-beach-2026.html",
 }
 _BASE_EVENT_SLUGS = {
     "kcon-la-2026",
