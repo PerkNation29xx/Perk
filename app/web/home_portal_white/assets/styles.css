@@ -2704,3 +2704,103 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
   .shareActions{display:grid; grid-template-columns:repeat(2,minmax(0,1fr))}
   .shareActions button{width:100%}
 }
+
+/* Vans Warped Tour visual recap */
+.warpedArtistSection,
+.warpedVideoSection{
+  margin:42px 0;
+  padding:24px;
+  border:1px solid var(--line);
+  border-radius:24px;
+  background:linear-gradient(145deg,rgba(var(--surface-rgb),.92),rgba(230,184,74,.09));
+  box-shadow:var(--shadow-soft);
+}
+.warpedSectionIntro{margin-bottom:20px}
+.warpedSectionIntro > span{
+  color:var(--coral);
+  font-size:12px;
+  font-weight:950;
+  letter-spacing:.09em;
+  text-transform:uppercase;
+}
+.warpedSectionIntro h2{margin:7px 0 10px}
+.warpedSectionIntro p{margin:0; color:var(--muted); line-height:1.65}
+.warpedArtistGrid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+}
+.warpedArtistCard{
+  min-width:0;
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:rgba(var(--bg-rgb),.68);
+}
+.warpedArtistCard > img{
+  display:block;
+  width:100%;
+  aspect-ratio:4/3;
+  object-fit:cover;
+  background:rgba(var(--surface-rgb),.9);
+}
+.warpedArtistCard > div{padding:17px}
+.warpedArtistCard h3{margin:0 0 8px; font-size:21px}
+.warpedArtistCard p{margin:0; color:var(--muted); line-height:1.55}
+.warpedArtistCard nav{display:flex; flex-wrap:wrap; gap:8px; margin-top:14px}
+.warpedArtistCard nav a,
+.warpedVideoGrid figcaption a{
+  color:var(--ink);
+  font-size:13px;
+  font-weight:900;
+  text-decoration:underline;
+  text-decoration-color:rgba(230,184,74,.72);
+  text-underline-offset:4px;
+}
+.warpedArtistCard nav a{
+  padding:7px 9px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  text-decoration:none;
+}
+.warpedArtistCard nav a:hover,
+.warpedArtistCard nav a:focus-visible{
+  border-color:rgba(230,184,74,.7);
+  background:rgba(230,184,74,.12);
+}
+.warpedCredit{margin:16px 0 0; color:var(--muted2); font-size:12px; line-height:1.55}
+.warpedVideoGrid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+}
+.warpedVideoGrid figure{
+  margin:0;
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:rgba(var(--bg-rgb),.76);
+}
+.warpedVideoGrid iframe{
+  display:block;
+  width:100%;
+  height:610px;
+  border:0;
+  background:#fff;
+}
+.warpedVideoGrid figcaption{
+  padding:14px 16px 17px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.55;
+}
+@media (max-width:880px){
+  .warpedArtistGrid,
+  .warpedVideoGrid{grid-template-columns:1fr}
+  .warpedVideoGrid iframe{height:660px}
+}
+@media (max-width:560px){
+  .warpedArtistSection,
+  .warpedVideoSection{margin:32px -4px; padding:17px; border-radius:20px}
+  .warpedVideoGrid iframe{height:590px}
+}

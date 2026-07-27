@@ -803,9 +803,9 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "timing": "July 25-26, 2026",
         "route": "/articles/vans-warped-tour-long-beach-2026",
         "details": (
-            "Source-backed recap of the Shoreline Waterfront weekend covering more than 100 artists, "
-            "Amazon Music livestream coverage, skate/BMX/wrestling extras, Artist Alley and vendors, "
-            "Long Beach food collaborations, fan-post signals, heat planning, and owner-credit media links."
+            "Visual, reported recap of the Shoreline Waterfront weekend covering more than 100 artists, "
+            "official festival videos, emerging-artist portraits and artist-owned social links, "
+            "skate/BMX/wrestling extras, Long Beach food collaborations, fan reactions, and heat planning."
         ),
     },
     {

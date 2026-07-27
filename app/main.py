@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 _GOOGLE_ANALYTICS_ID = "G-VYL0SBGMWL"
 _INDEXNOW_KEY = "7a937e1db6b8272beca3c7860157d6112a7301b5832fd8a01590e17803adb3f3"
 _INDEXNOW_KEY_PATH = f"/{_INDEXNOW_KEY}.txt"
-_PUBLIC_BUILD_ID = "20260727-warped-long-beach-recap"
+_PUBLIC_BUILD_ID = "20260727-warped-visual-recap"
 _GOOGLE_ANALYTICS_SNIPPET = f"""<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id={_GOOGLE_ANALYTICS_ID}"></script>
 <script>
