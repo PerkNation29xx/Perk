@@ -32,9 +32,10 @@ from app.db import models as _models  # noqa: F401
 logger = logging.getLogger(__name__)
 
 _GOOGLE_ANALYTICS_ID = "G-VYL0SBGMWL"
+_GOOGLE_ADSENSE_CLIENT = "ca-pub-3063725681470585"
 _INDEXNOW_KEY = "7a937e1db6b8272beca3c7860157d6112a7301b5832fd8a01590e17803adb3f3"
 _INDEXNOW_KEY_PATH = f"/{_INDEXNOW_KEY}.txt"
-_PUBLIC_BUILD_ID = "20260727-warped-visual-recap"
+_PUBLIC_BUILD_ID = "20260727-adsense-banners"
 _GOOGLE_ANALYTICS_SNIPPET = f"""<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id={_GOOGLE_ANALYTICS_ID}"></script>
 <script>
@@ -44,6 +45,9 @@ _GOOGLE_ANALYTICS_SNIPPET = f"""<!-- Google tag (gtag.js) -->
 
   gtag('config', '{_GOOGLE_ANALYTICS_ID}');
 </script>"""
+_GOOGLE_ADSENSE_SNIPPET = f"""<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={_GOOGLE_ADSENSE_CLIENT}"
+     crossorigin="anonymous"></script>"""
 _DEFAULT_SOCIAL_IMAGE_PATH = "/assets/photos/hero-dining-room.jpg"
 
 
@@ -86,6 +90,18 @@ def _inject_google_analytics(html: str) -> str:
         return html
 
     return f"{html[:head_close_index]}\n{_GOOGLE_ANALYTICS_SNIPPET}\n{html[head_close_index:]}"
+
+
+def _inject_google_adsense(html: str) -> str:
+    if "pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" in html:
+        return html
+
+    lower_html = html.lower()
+    head_close_index = lower_html.find("</head>")
+    if head_close_index < 0:
+        return html
+
+    return f"{html[:head_close_index]}\n{_GOOGLE_ADSENSE_SNIPPET}\n{html[head_close_index:]}"
 
 
 def _regex_group(pattern: str, text: str) -> str:
@@ -366,6 +382,7 @@ async def google_analytics_html_middleware(request: Request, call_next):
     html = _inject_public_shell(html, path=request.url.path)
     html = _inject_social_meta(html)
     html = _inject_google_analytics(html)
+    html = _inject_google_adsense(html)
     return Response(
         content=html,
         status_code=response.status_code,
