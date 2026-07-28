@@ -234,24 +234,34 @@ _WHITE_LEGACY_HTML_TO_CANONICAL = {
     for key, route in _LEGACY_HTML_TO_CANONICAL.items()
 }
 _LEGACY_STATIC_HTML_FILES = {"investors.html", "security.html", "contact.html", "privacy.html", "terms.html"}
-_ARTICLE_HTML_FILES = {
-    "dine-la-pasadena-2026": "dine-la-pasadena-2026.html",
-    "la-fashion-events-2026": "la-fashion-events-2026.html",
-    "vvs-cosmetics-victor-kuzmanovsky-wellness-beauty": "vvs-cosmetics-victor-kuzmanovsky-wellness-beauty.html",
-    "southern-california-august-events-2026": "southern-california-august-events-2026.html",
-}
-_EVENT_SLUGS = {
-    "kcon-la-2026",
-    "mount-westmore-san-jose",
-    "j-cole-los-angeles",
-    "carin-leon-san-diego",
-    "ufc-sacramento-2026",
-    "ringling-san-diego-2026",
-    "chargers-home-opener-2026",
-    "49ers-home-opener-2026",
-    "rams-home-opener-2026",
-}
+_ARTICLES_DIR = _HOME_PORTAL_DIR / "articles"
 _DINE_LA_CITY_GUIDES_FILE = _HOME_PORTAL_DIR / "assets" / "articles" / "dine-la-city-guides-2026.json"
+_EVENTS_DATA_FILE = _HOME_PORTAL_DIR / "assets" / "events-data.js"
+
+
+def _discover_article_html_files() -> dict[str, str]:
+    if not _ARTICLES_DIR.exists():
+        return {}
+    return {
+        article_path.stem: article_path.name
+        for article_path in sorted(_ARTICLES_DIR.glob("*.html"))
+        if article_path.is_file()
+    }
+
+
+def _discover_event_slugs() -> set[str]:
+    if not _EVENTS_DATA_FILE.exists():
+        return set()
+    try:
+        content = _EVENTS_DATA_FILE.read_text(encoding="utf-8")
+    except OSError:
+        logger.exception("Unable to read event data for route discovery")
+        return set()
+    return set(re.findall(r"""slug:\s*["']([^"']+)["']""", content))
+
+
+_ARTICLE_HTML_FILES = _discover_article_html_files()
+_EVENT_SLUGS = _discover_event_slugs()
 
 # Admin web portal (served from the same process for local testing).
 if _ADMIN_STATIC_DIR.exists():
@@ -1290,6 +1300,9 @@ def _canonical_sitemap_url(raw_loc: str, *, white: bool) -> str:
     elif white:
         path = _theme_path(path, white=True)
 
+    if not _sitemap_path_is_routeable(path):
+        return ""
+
     return _public_url(path)
 
 
@@ -1300,6 +1313,22 @@ def _sitemap_urls_from_xml(content: str, *, white: bool) -> set[str]:
         if url:
             urls.add(url)
     return urls
+
+
+def _sitemap_path_is_routeable(path: str) -> bool:
+    route_path = path
+    if route_path.startswith("/white/"):
+        route_path = route_path.removeprefix("/white")
+    if route_path == "/white":
+        route_path = "/"
+
+    if route_path.startswith("/articles/"):
+        slug = route_path.removeprefix("/articles/").strip("/")
+        return slug in _ARTICLE_HTML_FILES or _find_dine_la_city_guide(slug) is not None
+    if route_path.startswith("/events/"):
+        slug = route_path.removeprefix("/events/").strip("/")
+        return slug in _EVENT_SLUGS
+    return True
 
 
 def _sitemap_xml_from_urls(urls: set[str]) -> str:
