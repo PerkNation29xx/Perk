@@ -1,8 +1,11 @@
-from contextlib import asynccontextmanager
+import asyncio
+from contextlib import asynccontextmanager, suppress
+from datetime import datetime, timezone
 import html
 import json
 import logging
 import re
+import threading
 from urllib.parse import quote, quote_plus, urlsplit
 
 from fastapi import FastAPI, HTTPException, Request
@@ -47,12 +50,18 @@ _DEFAULT_SOCIAL_IMAGE_PATH = "/assets/photos/hero-dining-room.jpg"
 _PUBLIC_DIRECTORY_CACHE_HEADERS = {
     "Cache-Control": "public, max-age=300, stale-while-revalidate=3600",
 }
+_SITEMAP_SNAPSHOT_REFRESH_SECONDS = 6 * 60 * 60
+_SITEMAP_SNAPSHOT_RETRY_SECONDS = 5 * 60
+_sitemap_snapshot_lock = threading.RLock()
+_sitemap_snapshots: dict[str, tuple[str, str]] = {}
+_sitemap_snapshot_error = ""
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.db_ready = False
     app.state.db_startup_error = None
+    sitemap_snapshot_task = None
     try:
         Base.metadata.create_all(bind=engine)
         run_migrations(engine)
@@ -71,7 +80,20 @@ async def lifespan(app: FastAPI):
         app.state.db_startup_error = str(exc)
         logger.exception("Database init failed during startup; continuing in degraded mode")
 
-    yield
+    try:
+        await asyncio.to_thread(_refresh_sitemap_snapshots, reason="startup")
+    except Exception as exc:  # noqa: BLE001
+        app.state.sitemap_snapshot_error = str(exc)
+        logger.exception("Sitemap snapshot startup refresh failed; routes will use fallback builders")
+
+    sitemap_snapshot_task = asyncio.create_task(_sitemap_snapshot_refresh_loop())
+
+    try:
+        yield
+    finally:
+        sitemap_snapshot_task.cancel()
+        with suppress(asyncio.CancelledError):
+            await sitemap_snapshot_task
 
 
 app = FastAPI(title=settings.project_name, lifespan=lifespan)
@@ -1336,11 +1358,103 @@ def _sitemap_xml_from_urls(urls: set[str]) -> str:
     return f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{body}\n</urlset>\n'
 
 
-def _append_directory_sitemap(content: str, *, white: bool = False) -> str:
+def _append_directory_sitemap(content: str, *, white: bool = False, directory_xml: Optional[str] = None) -> str:
     urls = _sitemap_urls_from_xml(content, white=white)
-    directory_xml = _directory_sitemap_xml(white=white)
+    if directory_xml is None:
+        directory_xml = _directory_sitemap_xml(white=white)
     urls.update(_sitemap_urls_from_xml(directory_xml, white=white))
     return _sitemap_xml_from_urls(urls)
+
+
+def _utc_now_label() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def _build_sitemap_snapshot_payloads() -> dict[str, str]:
+    home_sitemap_content = _read_text_or_missing(
+        _HOME_PORTAL_DIR / "sitemap.xml",
+        fallback="<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"/>",
+    )
+    white_sitemap_content = _read_text_or_missing(
+        _HOME_PORTAL_WHITE_DIR / "sitemap.xml",
+        fallback="<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"/>",
+    )
+    business_directory_xml = _directory_sitemap_xml()
+    white_business_directory_xml = _directory_sitemap_xml(white=True)
+    return {
+        "home": _append_directory_sitemap(
+            home_sitemap_content,
+            directory_xml=business_directory_xml,
+        ),
+        "business_directory": business_directory_xml,
+        "white": _append_directory_sitemap(
+            white_sitemap_content,
+            white=True,
+            directory_xml=white_business_directory_xml,
+        ),
+    }
+
+
+def _refresh_sitemap_snapshots(*, reason: str) -> dict[str, int]:
+    global _sitemap_snapshots, _sitemap_snapshot_error
+    generated_at = _utc_now_label()
+    payloads = _build_sitemap_snapshot_payloads()
+    snapshots = {key: (xml, generated_at) for key, xml in payloads.items()}
+    with _sitemap_snapshot_lock:
+        _sitemap_snapshots = snapshots
+        _sitemap_snapshot_error = ""
+    sizes = {key: len(xml.encode("utf-8")) for key, xml in payloads.items()}
+    logger.info("Refreshed sitemap snapshots reason=%s generated_at=%s sizes=%s", reason, generated_at, sizes)
+    return sizes
+
+
+async def _sitemap_snapshot_refresh_loop() -> None:
+    global _sitemap_snapshot_error
+    delay = _SITEMAP_SNAPSHOT_REFRESH_SECONDS
+    while True:
+        await asyncio.sleep(delay)
+        try:
+            await asyncio.to_thread(_refresh_sitemap_snapshots, reason="scheduled")
+            delay = _SITEMAP_SNAPSHOT_REFRESH_SECONDS
+        except Exception as exc:  # noqa: BLE001
+            with _sitemap_snapshot_lock:
+                _sitemap_snapshot_error = str(exc)
+            logger.exception("Scheduled sitemap snapshot refresh failed")
+            delay = _SITEMAP_SNAPSHOT_RETRY_SECONDS
+
+
+def _get_sitemap_snapshot(key: str) -> Optional[tuple[str, str]]:
+    with _sitemap_snapshot_lock:
+        return _sitemap_snapshots.get(key)
+
+
+def _sitemap_snapshot_headers(*, source: str, generated_at: Optional[str] = None) -> dict[str, str]:
+    headers = dict(_PUBLIC_DIRECTORY_CACHE_HEADERS)
+    headers["X-PerkNation-Sitemap-Source"] = source
+    if generated_at:
+        headers["X-PerkNation-Sitemap-Generated-At"] = generated_at
+    return headers
+
+
+def _sitemap_snapshot_response(key: str, fallback_builder) -> Response:
+    snapshot = _get_sitemap_snapshot(key)
+    if snapshot:
+        content, generated_at = snapshot
+        return Response(
+            content=content,
+            media_type="application/xml",
+            headers=_sitemap_snapshot_headers(source="snapshot", generated_at=generated_at),
+        )
+
+    content = fallback_builder()
+    generated_at = _utc_now_label()
+    with _sitemap_snapshot_lock:
+        _sitemap_snapshots[key] = (content, generated_at)
+    return Response(
+        content=content,
+        media_type="application/xml",
+        headers=_sitemap_snapshot_headers(source="fallback", generated_at=generated_at),
+    )
 
 
 def _robots_txt(*, white: bool = False) -> str:
@@ -1747,21 +1861,20 @@ def home_portal_robots() -> str:
 
 @app.get("/sitemap.xml")
 def home_portal_sitemap() -> Response:
-    content = _read_text_or_missing(_HOME_PORTAL_DIR / "sitemap.xml", fallback="<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"/>")
-    return Response(
-        content=_append_directory_sitemap(content),
-        media_type="application/xml",
-        headers=_PUBLIC_DIRECTORY_CACHE_HEADERS,
+    return _sitemap_snapshot_response(
+        "home",
+        lambda: _append_directory_sitemap(
+            _read_text_or_missing(
+                _HOME_PORTAL_DIR / "sitemap.xml",
+                fallback="<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"/>",
+            )
+        ),
     )
 
 
 @app.get("/business-directory-sitemap.xml")
 def home_portal_business_directory_sitemap() -> Response:
-    return Response(
-        content=_directory_sitemap_xml(),
-        media_type="application/xml",
-        headers=_PUBLIC_DIRECTORY_CACHE_HEADERS,
-    )
+    return _sitemap_snapshot_response("business_directory", lambda: _directory_sitemap_xml())
 
 
 @app.get(_INDEXNOW_KEY_PATH, response_class=PlainTextResponse, include_in_schema=False)
@@ -1776,11 +1889,15 @@ def home_portal_white_robots() -> str:
 
 @app.get("/white/sitemap.xml")
 def home_portal_white_sitemap() -> Response:
-    content = _read_text_or_missing(_HOME_PORTAL_WHITE_DIR / "sitemap.xml", fallback="<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"/>")
-    return Response(
-        content=_append_directory_sitemap(content, white=True),
-        media_type="application/xml",
-        headers=_PUBLIC_DIRECTORY_CACHE_HEADERS,
+    return _sitemap_snapshot_response(
+        "white",
+        lambda: _append_directory_sitemap(
+            _read_text_or_missing(
+                _HOME_PORTAL_WHITE_DIR / "sitemap.xml",
+                fallback="<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"/>",
+            ),
+            white=True,
+        ),
     )
 
 
