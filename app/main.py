@@ -33,9 +33,10 @@ logger = logging.getLogger(__name__)
 
 _GOOGLE_ANALYTICS_ID = "G-VYL0SBGMWL"
 _GOOGLE_ADSENSE_CLIENT = "ca-pub-3063725681470585"
+_ADS_TXT_CONTENT = "google.com, pub-3063725681470585, DIRECT, f08c47fec0942fa0\n"
 _INDEXNOW_KEY = "7a937e1db6b8272beca3c7860157d6112a7301b5832fd8a01590e17803adb3f3"
 _INDEXNOW_KEY_PATH = f"/{_INDEXNOW_KEY}.txt"
-_PUBLIC_BUILD_ID = "20260727-adsense-banners"
+_PUBLIC_BUILD_ID = "20260727-adstxt"
 _GOOGLE_ANALYTICS_SNIPPET = f"""<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id={_GOOGLE_ANALYTICS_ID}"></script>
 <script>
@@ -2035,6 +2036,11 @@ def home_portal_page(page_name: str) -> Response:
 @app.get("/robots.txt", response_class=PlainTextResponse)
 def home_portal_robots() -> str:
     return _robots_txt()
+
+
+@app.get("/ads.txt", response_class=PlainTextResponse, include_in_schema=False)
+def home_portal_ads_txt() -> str:
+    return _ADS_TXT_CONTENT
 
 
 @app.get("/sitemap.xml")
