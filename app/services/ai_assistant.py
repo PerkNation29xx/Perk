@@ -821,6 +821,18 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         ),
     },
     {
+        "category": "Fan events, conventions, and Anaheim",
+        "city": "Anaheim",
+        "title": "D23 Anaheim 2026 practical guide",
+        "timing": "August 8-16, 2026",
+        "route": "/articles/d23-anaheim-2026-guide",
+        "details": (
+            "Ranked guide to D23's Anaheim week, including current pass and standby guidance, the August 14-16 "
+            "Ultimate Disney Fan Event, Muzeo's Walt Disney Archives exhibition, Bottle Logic, the Anaheim "
+            "Packing District, Angel Stadium, Disneyland Resort, and Perk Nation's Anaheim directory."
+        ),
+    },
+    {
         "category": "Concerts and fan events",
         "city": "Los Angeles",
         "title": "KCON LA 2026",
@@ -885,6 +897,9 @@ def _should_include_public_review_context(message: str, role_context: str) -> bo
             "vans",
             "festival",
             "festivals",
+            "fan event",
+            "fan events",
+            "d23",
             "long beach",
             "show",
             "shows",
@@ -1737,6 +1752,9 @@ def _is_public_review_query(text: str) -> bool:
             "vans",
             "festival",
             "festivals",
+            "fan event",
+            "fan events",
+            "d23",
             "long beach",
             "restaurant review",
             "restaurant reviews",
@@ -1761,7 +1779,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     wants_sports = _contains_any(text, ("sports", "game", "games", "stadium", "ufc", "chargers", "rams"))
     wants_concerts = _contains_any(text, ("concert", "concerts", "music", "festival", "festivals", "warped", "vans", "long beach", "kcon", "mount westmore"))
     wants_restaurants = _contains_any(text, ("restaurant", "restaurants", "dining", "dine la"))
-    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_restaurants))
+    wants_fan_events = _contains_any(text, ("fan event", "fan events", "convention", "conventions", "d23"))
+    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_restaurants, wants_fan_events))
 
     if wants_fashion and not any((wants_sports, wants_concerts, wants_restaurants)):
         return "\n".join(
@@ -1790,6 +1809,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
             or (wants_sports and "sports" in category)
             or (wants_concerts and "concert" in category)
             or (wants_restaurants and "restaurant" in category)
+            or (wants_fan_events and "fan event" in category)
         ):
             matching_items.append(item)
 

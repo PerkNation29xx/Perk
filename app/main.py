@@ -36,7 +36,7 @@ _GOOGLE_ADSENSE_CLIENT = "ca-pub-3063725681470585"
 _ADS_TXT_CONTENT = "google.com, pub-3063725681470585, DIRECT, f08c47fec0942fa0\n"
 _INDEXNOW_KEY = "7a937e1db6b8272beca3c7860157d6112a7301b5832fd8a01590e17803adb3f3"
 _INDEXNOW_KEY_PATH = f"/{_INDEXNOW_KEY}.txt"
-_PUBLIC_BUILD_ID = "20260727-adstxt"
+_PUBLIC_BUILD_ID = "20260728-d23-anaheim-guide"
 _GOOGLE_ANALYTICS_SNIPPET = f"""<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id={_GOOGLE_ANALYTICS_ID}"></script>
 <script>
@@ -461,6 +461,7 @@ _WHITE_LEGACY_HTML_TO_CANONICAL = {
 }
 _LEGACY_STATIC_HTML_FILES = {"investors.html", "security.html", "contact.html", "privacy.html", "terms.html"}
 _ARTICLE_HTML_FILES = {
+    "d23-anaheim-2026-guide": "d23-anaheim-2026-guide.html",
     "dine-la-pasadena-2026": "dine-la-pasadena-2026.html",
     "la-fashion-events-2026": "la-fashion-events-2026.html",
     "vvs-cosmetics-victor-kuzmanovsky-wellness-beauty": "vvs-cosmetics-victor-kuzmanovsky-wellness-beauty.html",
