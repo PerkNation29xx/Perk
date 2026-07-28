@@ -32,11 +32,8 @@ from app.db import models as _models  # noqa: F401
 logger = logging.getLogger(__name__)
 
 _GOOGLE_ANALYTICS_ID = "G-VYL0SBGMWL"
-_GOOGLE_ADSENSE_CLIENT = "ca-pub-3063725681470585"
-_ADS_TXT_CONTENT = "google.com, pub-3063725681470585, DIRECT, f08c47fec0942fa0\n"
 _INDEXNOW_KEY = "7a937e1db6b8272beca3c7860157d6112a7301b5832fd8a01590e17803adb3f3"
 _INDEXNOW_KEY_PATH = f"/{_INDEXNOW_KEY}.txt"
-_PUBLIC_BUILD_ID = "20260728-d23-anaheim-guide"
 _GOOGLE_ANALYTICS_SNIPPET = f"""<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id={_GOOGLE_ANALYTICS_ID}"></script>
 <script>
@@ -46,10 +43,10 @@ _GOOGLE_ANALYTICS_SNIPPET = f"""<!-- Google tag (gtag.js) -->
 
   gtag('config', '{_GOOGLE_ANALYTICS_ID}');
 </script>"""
-_GOOGLE_ADSENSE_SNIPPET = f"""<!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={_GOOGLE_ADSENSE_CLIENT}"
-     crossorigin="anonymous"></script>"""
 _DEFAULT_SOCIAL_IMAGE_PATH = "/assets/photos/hero-dining-room.jpg"
+_PUBLIC_DIRECTORY_CACHE_HEADERS = {
+    "Cache-Control": "public, max-age=300, stale-while-revalidate=3600",
+}
 
 
 @asynccontextmanager
@@ -91,18 +88,6 @@ def _inject_google_analytics(html: str) -> str:
         return html
 
     return f"{html[:head_close_index]}\n{_GOOGLE_ANALYTICS_SNIPPET}\n{html[head_close_index:]}"
-
-
-def _inject_google_adsense(html: str) -> str:
-    if "pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" in html:
-        return html
-
-    lower_html = html.lower()
-    head_close_index = lower_html.find("</head>")
-    if head_close_index < 0:
-        return html
-
-    return f"{html[:head_close_index]}\n{_GOOGLE_ADSENSE_SNIPPET}\n{html[head_close_index:]}"
 
 
 def _regex_group(pattern: str, text: str) -> str:
@@ -152,209 +137,6 @@ def _inject_social_meta(html: str) -> str:
     return f"{html[:head_close_index]}\n{snippet}\n{html[head_close_index:]}"
 
 
-def _is_public_html_path(path: str) -> bool:
-    normalized = str(path or "/").split("?", 1)[0]
-    excluded_roots = ("/admin", "/user", "/merchant", "/v1", "/docs", "/redoc")
-    return not any(normalized == root or normalized.startswith(f"{root}/") for root in excluded_roots)
-
-
-def _public_shell_header() -> str:
-    return """<header class="header">
-  <div class="container">
-    <div class="nav">
-      <div class="brandStack">
-        <a class="brand" href="/" aria-label="Perk Nation home">
-          <span class="brandMark" aria-hidden="true"><img src="/assets/mark.svg" alt="" width="24" height="24" /></span>
-          <span>Perk Nation</span>
-        </a>
-        <button class="brandMenuBtn" data-menu-btn aria-expanded="false" aria-controls="public-category-menu">
-          <span aria-hidden="true">☰</span>
-          <span>Explore categories</span>
-        </button>
-      </div>
-      <nav class="navlinks" aria-label="Primary navigation">
-        <a href="/events">Events</a>
-        <a href="/directory">Directory</a>
-        <a href="/members">Members</a>
-        <a href="/merchants">Merchants</a>
-        <a href="/how-it-works">How it Works</a>
-        <a href="/contact-us">Contact Us</a>
-        <a href="/faq">FAQ</a>
-      </nav>
-      <div class="navcta"><a class="btn ghost" href="/login">Login</a></div>
-    </div>
-    <div class="mobileMenu" data-mobile-menu id="public-category-menu">
-      <div class="mobileMenuGrid">
-        <div class="mobileMenuGroup">
-          <div class="mobileMenuTitle">Lifestyle</div>
-          <a href="/events">Events</a>
-          <a href="/events#concerts">Concerts</a>
-          <a href="/events#sports">Sports</a>
-          <a href="/directory?q=community">Community</a>
-        </div>
-        <div class="mobileMenuGroup">
-          <div class="mobileMenuTitle">Food &amp; style</div>
-          <a href="/articles/dine-la-pasadena-2026">Food</a>
-          <a href="/#pasadena-reviews">Dining</a>
-          <a href="/articles/la-fashion-events-2026">Fashion</a>
-          <a href="/#crystal-jewelry">Shopping</a>
-        </div>
-        <div class="mobileMenuGroup">
-          <div class="mobileMenuTitle">Wellness &amp; discovery</div>
-          <a href="/#wellness-beauty">Wellness &amp; Beauty</a>
-          <a href="/directory?q=travel">Travel</a>
-          <a href="/#bond-collective">Workspace</a>
-          <a href="/directory">Directory</a>
-        </div>
-        <div class="mobileMenuGroup">
-          <div class="mobileMenuTitle">Perk Nation</div>
-          <a href="/members">Members</a>
-          <a href="/merchants">Merchants</a>
-          <a href="/how-it-works">How it Works</a>
-          <a href="/contact-us">Contact Us</a>
-          <a href="/faq">FAQ</a>
-          <a href="/login">Login</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</header>"""
-
-
-def _public_ai_category(path: str) -> str:
-    normalized = (path or "/").lower()
-    if normalized == "/nfl-2026-2027" or normalized.startswith("/events/") and any(
-        token in normalized for token in ("opener", "chargers", "rams", "49ers")
-    ):
-        return "nfl"
-    if normalized.startswith("/events"):
-        return "events"
-    if normalized.startswith("/articles/") and any(
-        token in normalized for token in ("warped", "festival", "concert", "long-beach")
-    ):
-        return "events"
-    if normalized.startswith(("/directory", "/business/")):
-        return "directory"
-    if normalized.startswith("/articles/") and any(
-        token in normalized for token in ("dine-", "restaurant", "food")
-    ):
-        return "dining"
-    if normalized.startswith("/articles/") and "fashion" in normalized:
-        return "fashion"
-    if normalized.startswith(("/jewelry", "/shopping")):
-        return "shopping"
-    if normalized.startswith("/promotions"):
-        return "promotions"
-    if normalized.startswith("/articles/") and any(
-        token in normalized for token in ("wellness", "beauty", "cosmetics")
-    ):
-        return "wellness"
-    return "discover"
-
-
-def _public_ai_rail(path: str) -> str:
-    category = _public_ai_category(path)
-    return f"""<section class="aiDiscoverySection aiRail" id="local-ai-assistant" data-ai-rail aria-label="Perk Nation AI local guide" data-ai-category="{category}">
-  <div class="aiRailShell">
-    <button class="aiRailTab" type="button" data-ai-rail-toggle aria-expanded="false" aria-controls="public-ai-rail-panel">
-      <span class="aiRailSpark" aria-hidden="true">✦</span><span>Ask Perk Nation AI</span>
-    </button>
-    <div class="card pad aiDiscoveryCard" id="public-ai-rail-panel">
-      <button class="aiRailClose" type="button" data-ai-rail-close aria-label="Hide Perk Nation AI">×</button>
-      <div class="aiDiscoveryHeader">
-        <div>
-          <div class="badge">AI Local Guide</div>
-          <h2 class="h2">Ask Perk Nation.</h2>
-          <p class="muted">Choose a category or ask about this page, events, current promotions, and nearby businesses.</p>
-        </div>
-        <div class="small aiDiscoveryMeta" data-home-ai-status>Ready for category questions and local plans.</div>
-      </div>
-      <div class="aiCategoryPicker" data-ai-category-picker aria-label="Assistant categories"></div>
-      <div class="aiQuestionChips" data-ai-question-chips aria-label="Suggested questions"></div>
-      <div class="aiDiscoveryMessages" data-home-ai-messages>
-        <div class="aiBubble assistant" data-ai-welcome>Ask me about this category or choose a suggested question below.</div>
-      </div>
-      <form class="aiDiscoveryComposer" data-home-ai-form>
-        <textarea data-home-ai-input placeholder="Example: What time do the Bills play in Week 1?" aria-label="Ask Perk Nation AI about football teams, events, and local recommendations" required></textarea>
-        <div class="aiDiscoveryActions">
-          <button class="btn primary" type="submit" data-home-ai-send>Ask AI</button>
-          <button class="btn" type="button" data-home-ai-clear>Clear</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</section>"""
-
-
-_PUBLIC_HEADER_RE = re.compile(
-    r'<header\b[^>]*class=["\'][^"\']*\bheader\b[^"\']*["\'][^>]*>.*?</header>',
-    flags=re.IGNORECASE | re.DOTALL,
-)
-_PUBLIC_ASSET_RE = re.compile(
-    r'(?P<attribute>\b(?:href|src)\s*=\s*)(?P<quote>["\'])'
-    r'(?P<path>(?:(?:\.\./)*|/)?(?:white/)?assets/(?P<asset>[^"\'>?]+\.(?:css|js)))'
-    r'(?:\?[^"\']*)?(?P=quote)',
-    flags=re.IGNORECASE,
-)
-
-
-def _inject_public_shell(document_html: str, *, path: str) -> str:
-    if not _is_public_html_path(path):
-        return document_html
-
-    header = _public_shell_header()
-    if _PUBLIC_HEADER_RE.search(document_html):
-        document_html = _PUBLIC_HEADER_RE.sub(header, document_html, count=1)
-    else:
-        document_html = re.sub(
-            r"(<body\b[^>]*>)",
-            lambda match: f"{match.group(1)}\n{header}",
-            document_html,
-            count=1,
-            flags=re.IGNORECASE,
-        )
-
-    def version_asset(match: re.Match[str]) -> str:
-        asset = match.group("asset")
-        return (
-            f'{match.group("attribute")}{match.group("quote")}'
-            f"/assets/{asset}?v={_PUBLIC_BUILD_ID}{match.group('quote')}"
-        )
-
-    document_html = _PUBLIC_ASSET_RE.sub(version_asset, document_html)
-    if not re.search(
-        r'<script\b[^>]*src=["\']/assets/app\.js\?v='
-        + re.escape(_PUBLIC_BUILD_ID)
-        + r'["\']',
-        document_html,
-        flags=re.IGNORECASE,
-    ):
-        app_script = f'<script src="/assets/app.js?v={_PUBLIC_BUILD_ID}" defer></script>'
-        if re.search(r"</body>", document_html, flags=re.IGNORECASE):
-            document_html = re.sub(
-                r"</body>",
-                f"{app_script}\n</body>",
-                document_html,
-                count=1,
-                flags=re.IGNORECASE,
-            )
-        else:
-            document_html = f"{document_html}\n{app_script}"
-    if "data-home-ai-form" not in document_html:
-        assistant = _public_ai_rail(path)
-        if re.search(r"</body>", document_html, flags=re.IGNORECASE):
-            document_html = re.sub(
-                r"</body>",
-                f"{assistant}\n</body>",
-                document_html,
-                count=1,
-                flags=re.IGNORECASE,
-            )
-        else:
-            document_html = f"{document_html}\n{assistant}"
-    return document_html
-
-
 @app.middleware("http")
 async def google_analytics_html_middleware(request: Request, call_next):
     response = await call_next(request)
@@ -380,22 +162,14 @@ async def google_analytics_html_middleware(request: Request, call_next):
 
     headers = dict(response.headers)
     headers.pop("content-length", None)
-    html = _inject_public_shell(html, path=request.url.path)
     html = _inject_social_meta(html)
     html = _inject_google_analytics(html)
-    html = _inject_google_adsense(html)
     return Response(
         content=html,
         status_code=response.status_code,
         headers=headers,
         media_type=None,
     )
-
-
-@app.get("/web/build", include_in_schema=False)
-def public_web_build() -> dict[str, str]:
-    return {"label": f"Build {_PUBLIC_BUILD_ID}", "id": _PUBLIC_BUILD_ID}
-
 
 _BASE_DIR = Path(__file__).resolve().parent
 _HOME_PORTAL_DIR = _BASE_DIR / "web" / "home_portal"
@@ -461,14 +235,12 @@ _WHITE_LEGACY_HTML_TO_CANONICAL = {
 }
 _LEGACY_STATIC_HTML_FILES = {"investors.html", "security.html", "contact.html", "privacy.html", "terms.html"}
 _ARTICLE_HTML_FILES = {
-    "d23-anaheim-2026-guide": "d23-anaheim-2026-guide.html",
     "dine-la-pasadena-2026": "dine-la-pasadena-2026.html",
     "la-fashion-events-2026": "la-fashion-events-2026.html",
     "vvs-cosmetics-victor-kuzmanovsky-wellness-beauty": "vvs-cosmetics-victor-kuzmanovsky-wellness-beauty.html",
     "southern-california-august-events-2026": "southern-california-august-events-2026.html",
-    "vans-warped-tour-long-beach-2026": "vans-warped-tour-long-beach-2026.html",
 }
-_BASE_EVENT_SLUGS = {
+_EVENT_SLUGS = {
     "kcon-la-2026",
     "mount-westmore-san-jose",
     "j-cole-los-angeles",
@@ -479,17 +251,6 @@ _BASE_EVENT_SLUGS = {
     "49ers-home-opener-2026",
     "rams-home-opener-2026",
 }
-_NFL_SCHEDULES_FILE = _HOME_ASSETS_DIR / "nfl-2026-schedules.json"
-try:
-    _NFL_TEAMS_BY_SLUG = {
-        str(team["slug"]): team
-        for team in json.loads(_NFL_SCHEDULES_FILE.read_text(encoding="utf-8")).get("teams", [])
-        if team.get("slug")
-    }
-except (OSError, ValueError, TypeError):
-    _NFL_TEAMS_BY_SLUG = {}
-_NFL_EVENT_SLUGS = set(_NFL_TEAMS_BY_SLUG)
-_EVENT_SLUGS = _BASE_EVENT_SLUGS | _NFL_EVENT_SLUGS
 _DINE_LA_CITY_GUIDES_FILE = _HOME_PORTAL_DIR / "assets" / "articles" / "dine-la-city-guides-2026.json"
 
 # Admin web portal (served from the same process for local testing).
@@ -503,75 +264,16 @@ if _HOME_STATIC_DIR.exists():
     app.mount("/site/static", StaticFiles(directory=str(_HOME_STATIC_DIR)), name="home-static")
 if _HOME_ASSETS_DIR.exists():
     app.mount("/assets", StaticFiles(directory=str(_HOME_ASSETS_DIR)), name="home-assets")
-if _HOME_STATIC_DIR.exists():
-    app.mount("/white/static", StaticFiles(directory=str(_HOME_STATIC_DIR)), name="home-white-static")
-if _HOME_ASSETS_DIR.exists():
-    app.mount("/white/assets", StaticFiles(directory=str(_HOME_ASSETS_DIR)), name="home-white-assets")
+if _HOME_WHITE_STATIC_DIR.exists():
+    app.mount("/white/static", StaticFiles(directory=str(_HOME_WHITE_STATIC_DIR)), name="home-white-static")
+if _HOME_WHITE_ASSETS_DIR.exists():
+    app.mount("/white/assets", StaticFiles(directory=str(_HOME_WHITE_ASSETS_DIR)), name="home-white-assets")
 
 
-def _read_html_or_missing(path: Path, name: str, *, theme: str = "dark") -> str:
+def _read_html_or_missing(path: Path, name: str) -> str:
     if not path.exists():
         raise HTTPException(status_code=404, detail=f"{name} not found")
-    content = path.read_text(encoding="utf-8")
-    normalized_theme = theme if theme in {"light", "dark"} else "dark"
-    return content.replace(
-        '<html lang="en">',
-        f'<html lang="en" data-theme="{normalized_theme}">',
-        1,
-    )
-
-
-def _render_event_article(event_slug: str, *, theme: str = "dark") -> str:
-    document_html = _read_html_or_missing(
-        _HOME_PORTAL_DIR / "event-detail.html",
-        "Event article",
-        theme=theme,
-    )
-    team = _NFL_TEAMS_BY_SLUG.get(event_slug)
-    if not team:
-        return document_html
-
-    opener = team.get("opener") if isinstance(team.get("opener"), dict) else {}
-    name = str(team.get("name") or "NFL team")
-    opponent = str(opener.get("opponent") or "its Week 1 opponent")
-    title = f"{name} 2026 Season Opener and Full Schedule | Perk Nation"
-    description = (
-        f"{name} opens the 2026 season against {opponent}. See all 18 weeks, "
-        "Pacific kickoff times, networks, venues, the bye, and the official NFL schedule."
-    )
-    canonical = f"/events/{event_slug}"
-    document_html = re.sub(
-        r"<title>.*?</title>",
-        f"<title>{_escape(title)}</title>",
-        document_html,
-        count=1,
-        flags=re.IGNORECASE | re.DOTALL,
-    )
-    document_html = re.sub(
-        r'<meta\s+name=["\']description["\']\s+content=["\'].*?["\']\s*/?>',
-        f'<meta name="description" content="{_escape(description)}" />',
-        document_html,
-        count=1,
-        flags=re.IGNORECASE | re.DOTALL,
-    )
-    document_html = re.sub(
-        r'<link\s+rel=["\']canonical["\']\s+href=["\'].*?["\']\s*/?>',
-        f'<link rel="canonical" href="{_escape(canonical)}" />',
-        document_html,
-        count=1,
-        flags=re.IGNORECASE | re.DOTALL,
-    )
-    noscript = (
-        "<noscript><article class=\"eventNotFound\">"
-        f"<span class=\"badge\">2026 NFL schedule</span><h1 class=\"h1\">{_escape(name)} season opener and full schedule</h1>"
-        f"<p>{_escape(description)}</p><a class=\"btn primary\" href=\"{_escape(team.get('officialUrl'))}\">Official NFL schedule</a>"
-        "</article></noscript>"
-    )
-    return document_html.replace(
-        '<div class="eventLoading">Loading event…</div>',
-        f'<div class="eventLoading">Loading event…</div>{noscript}',
-        1,
-    )
+    return path.read_text(encoding="utf-8")
 
 
 def _read_text_or_missing(path: Path, fallback: str = "") -> str:
@@ -673,8 +375,6 @@ def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> O
     restaurant_count = int(city.get("restaurant_count") or len(restaurants))
     route = city.get("route") or f"/articles/{article_slug}"
     canonical_url = _public_url(route)
-    share_route = city.get("white_route") if white else route
-    share_url = _public_url(share_route or route)
     directory_route = city.get("directory_route") or f"/directory?city={quote_plus(city_name)}"
     if white and directory_route.startswith("/"):
         directory_route = f"/white{directory_route}"
@@ -706,7 +406,7 @@ def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> O
         for other in all_cities[:10]
     )
     return f"""<!doctype html>
-<html lang="en" data-theme="{'light' if white else 'dark'}">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -761,19 +461,6 @@ def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> O
           <a class="btn primary" href="{_escape(source_url)}" target="_blank" rel="noopener noreferrer">Open Dine LA restaurant pages</a>
           <a class="btn" href="{_escape(directory_route)}">Search { _escape(city_name) } on Perk Nation</a>
         </div>
-        <div class="sharePanel" data-share-panel data-share-title="Dine LA { _escape(city_name) } guide" data-share-text="Share the Perk Nation Dine LA guide for { _escape(city_name) }." data-share-url="{_escape(share_url)}">
-          <div class="shareIntro"><span>Share this city guide</span><strong>Send the { _escape(city_name) } restaurant picks.</strong></div>
-          <div class="shareActions" aria-label="Share options">
-            <button type="button" data-share-action="instagram">Instagram</button>
-            <button type="button" data-share-action="facebook">Facebook</button>
-            <button type="button" data-share-action="tiktok">TikTok</button>
-            <button type="button" data-share-action="sms">SMS</button>
-            <button type="button" data-share-action="imessage">iMessage</button>
-            <button type="button" data-share-action="email">Email</button>
-            <button type="button" data-share-action="copy">Copy link</button>
-          </div>
-          <div class="shareStatus" data-share-status aria-live="polite"></div>
-        </div>
       </div>
       <figure class="articleHeroMedia">
         <img src="/assets/articles/dine-la-pasadena-2026.jpg" alt="Golden-hour restaurant table with spritz drinks, seasonal plates, and a city dining view" />
@@ -813,7 +500,6 @@ def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> O
   </article>
 </main>
 <footer class="footer"><div class="container"><div class="footerBottom"><span>© 2026 Perk Nation</span><span><a href="/directory">Directory</a> · <a href="/events">Events</a> · <a href="/privacy-policy">Privacy</a></span></div></div></footer>
-<script src="/assets/share.js" defer></script>
 </body>
 </html>"""
 
@@ -846,8 +532,8 @@ def _directory_page_path(*, white: bool, city_slug: Optional[str] = None, busine
 
 def _directory_shell(*, title: str, description: str, canonical_path: str, body: str, white: bool, json_ld: Optional[dict] = None) -> str:
     brand_href = "/white/" if white else "/"
-    style_href = f"{_asset_path('styles.css', white=white)}?v={_PUBLIC_BUILD_ID}"
-    script_href = f"{_asset_path('app.js', white=white)}?v={_PUBLIC_BUILD_ID}"
+    style_href = f"{_asset_path('styles.css', white=white)}?v=directory20260715-category-hierarchy"
+    script_href = f"{_asset_path('app.js', white=white)}?v=directory20260715-category-hierarchy"
     json_ld_html = ""
     if json_ld:
         json_ld_payload = json.dumps(json_ld, ensure_ascii=False).replace("</", "<\\/")
@@ -857,7 +543,7 @@ def _directory_shell(*, title: str, description: str, canonical_path: str, body:
             + "</script>"
         )
     return f"""<!doctype html>
-<html lang="en" data-theme="{'light' if white else 'dark'}">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -1715,33 +1401,43 @@ def home_portal_directory(
     q: str = "",
     city: Optional[str] = None,
     business_type: Optional[str] = None,
-) -> str:
-    return _render_directory_page(white=False, q=q, city=city, business_type=business_type)
+) -> HTMLResponse:
+    return HTMLResponse(
+        content=_render_directory_page(white=False, q=q, city=city, business_type=business_type),
+        headers=_PUBLIC_DIRECTORY_CACHE_HEADERS,
+    )
 
 
 @app.get("/directory/type/{business_type_slug}", response_class=HTMLResponse)
-def home_portal_directory_type(business_type_slug: str, q: str = "") -> str:
-    return _render_directory_page(white=False, q=q, business_type_slug=business_type_slug)
+def home_portal_directory_type(business_type_slug: str, q: str = "") -> HTMLResponse:
+    return HTMLResponse(
+        content=_render_directory_page(white=False, q=q, business_type_slug=business_type_slug),
+        headers=_PUBLIC_DIRECTORY_CACHE_HEADERS,
+    )
 
 
 @app.get("/directory/{city_slug}/{business_type_slug}", response_class=HTMLResponse)
-def home_portal_directory_city_type(city_slug: str, business_type_slug: str, q: str = "") -> str:
-    return _render_directory_page(white=False, q=q, city_slug=city_slug, business_type_slug=business_type_slug)
+def home_portal_directory_city_type(city_slug: str, business_type_slug: str, q: str = "") -> HTMLResponse:
+    return HTMLResponse(
+        content=_render_directory_page(white=False, q=q, city_slug=city_slug, business_type_slug=business_type_slug),
+        headers=_PUBLIC_DIRECTORY_CACHE_HEADERS,
+    )
 
 
 @app.get("/directory/{city_slug}", response_class=HTMLResponse)
-def home_portal_directory_city(city_slug: str, q: str = "") -> str:
-    return _render_directory_page(white=False, q=q, city_slug=city_slug)
+def home_portal_directory_city(city_slug: str, q: str = "") -> HTMLResponse:
+    return HTMLResponse(
+        content=_render_directory_page(white=False, q=q, city_slug=city_slug),
+        headers=_PUBLIC_DIRECTORY_CACHE_HEADERS,
+    )
 
 
 @app.get("/business/{business_slug}", response_class=HTMLResponse)
-def home_portal_business_directory_detail(business_slug: str) -> str:
-    return _render_business_page(slug=business_slug, white=False)
-
-
-@app.get("/jewelry", include_in_schema=False)
-def home_portal_jewelry_redirect() -> RedirectResponse:
-    return RedirectResponse(url="/#crystal-jewelry", status_code=308)
+def home_portal_business_directory_detail(business_slug: str) -> HTMLResponse:
+    return HTMLResponse(
+        content=_render_business_page(slug=business_slug, white=False),
+        headers=_PUBLIC_DIRECTORY_CACHE_HEADERS,
+    )
 
 
 @app.get("/jewelry/{product_slug}", response_class=HTMLResponse)
@@ -1759,39 +1455,11 @@ def home_portal_events() -> str:
     return _read_html_or_missing(_HOME_PORTAL_DIR / "events.html", "Events page")
 
 
-@app.get("/nfl", include_in_schema=False)
-def home_portal_nfl_short_redirect() -> RedirectResponse:
-    return RedirectResponse(url="/nfl-2026-2027", status_code=308)
-
-
-@app.get("/nfl-2026-2027", response_class=HTMLResponse)
-def home_portal_nfl_guide() -> str:
-    html = _read_text_or_missing(_HOME_PORTAL_DIR / "events.html")
-    replacements = {
-        "<title>Events | Perk Nation</title>": "<title>2026–2027 NFL Season Opener Guide | Perk Nation</title>",
-        '<link rel="canonical" href="/events" />': '<link rel="canonical" href="/nfl-2026-2027" />',
-        "Major California events plus all 32 NFL team season openers and complete 2026 schedules, organized by AFC and NFC.": "Plan the 2026–2027 NFL season with all 32 team openers, preseason games, full schedules, Pacific kickoff times, venues, and broadcast details.",
-        '<span class="badge">Perk Nation event guide</span><h1 class="h1">Big nights. Opening days. Every NFL team.</h1><p>Curated California events plus all 32 NFL season openers and complete announced schedules, organized by AFC and NFC with direct links to the official source.</p>': '<span class="badge">2026–2027 NFL guide</span><h1 class="h1">Every NFL team. One shareable season guide.</h1><p>Plan preseason and opening weekend, then explore the full announced schedule for every AFC and NFC team with Pacific kickoff times and official sources.</p>',
-        '<nav class="eventJumpNav" aria-label="Event categories"><a href="#concerts">Concerts</a><a href="#live-events">Live events</a><a href="#sports">Sports</a><a href="#season-openers">Season openers</a></nav>': '<nav class="eventJumpNav" aria-label="NFL guide sections"><a href="#season-openers">Featured teams</a><a href="#afc-teams">AFC</a><a href="#nfc-teams">NFC</a><a href="/events">All events</a></nav>',
-        'data-share-title="Perk Nation California events guide" data-share-text="Share the Perk Nation events hub for concerts, sports, and major California dates." data-share-url="https://perknation.app/events"': 'data-share-title="Perk Nation 2026–2027 NFL season opener guide" data-share-text="Plan preseason and opening weekend with all 32 NFL teams, game times, venues, and schedules." data-share-url="https://perknation.app/nfl-2026-2027"',
-        "<span>Share events</span><strong>Send the event hub.</strong>": "<span>Share the NFL guide</span><strong>Start the social push.</strong>",
-        'data-events-hub': 'data-events-hub data-nfl-guide',
-    }
-    for before, after in replacements.items():
-        html = html.replace(before, after)
-    social_meta = """<meta property="og:title" content="2026–2027 NFL Season Opener Guide | Perk Nation" />
-  <meta property="og:description" content="All 32 NFL teams, preseason games, opening weekend, Pacific kickoff times, venues, and complete announced schedules." />
-  <meta property="og:url" content="https://perknation.app/nfl-2026-2027" />
-  <meta property="og:image" content="https://static.clubs.nfl.com/image/upload/t_editorial_landscape_12_desktop/chargers/r5aw49chjba4pq2m4nvg" />
-  <meta name="twitter:card" content="summary_large_image" />"""
-    return html.replace("</head>", f"  {social_meta}\n</head>", 1)
-
-
 @app.get("/events/{event_slug}", response_class=HTMLResponse)
 def home_portal_event_article(event_slug: str) -> str:
     if event_slug not in _EVENT_SLUGS:
         raise HTTPException(status_code=404, detail="Event article not found")
-    return _render_event_article(event_slug)
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "event-detail.html", "Event article")
 
 
 @app.get("/articles/{article_slug}", response_class=HTMLResponse)
@@ -1857,37 +1525,37 @@ def home_portal_white_redirect() -> RedirectResponse:
 
 @app.get("/white/", response_class=HTMLResponse)
 def home_portal_white() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_DIR / "index.html", "Home portal", theme="light")
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "index.html", "Home portal (white)")
 
 
 @app.get("/white/login", response_class=HTMLResponse)
 def home_portal_white_login() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_DIR / "login.html", "Login page", theme="light")
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "login.html", "Login page (white)")
 
 
 @app.get("/white/redeem", response_class=HTMLResponse)
 def home_portal_white_redeem() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_DIR / "redeem.html", "Redeem page", theme="light")
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "redeem.html", "Redeem page (white)")
 
 
 @app.get("/white/invite", response_class=HTMLResponse)
 def home_portal_white_invite() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_DIR / "invite.html", "Invite page", theme="light")
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "invite.html", "Invite page (white)")
 
 
 @app.get("/white/reset-password", response_class=HTMLResponse)
 def home_portal_white_reset_password() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_DIR / "reset-password.html", "Reset-password page", theme="light")
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "reset-password.html", "Reset-password page (white)")
 
 
 @app.get("/white/create-account", response_class=HTMLResponse)
 def home_portal_white_create_account() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_DIR / "create-account.html", "Create-account page", theme="light")
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "create-account.html", "Create-account page (white)")
 
 
 @app.get("/white/members", response_class=HTMLResponse)
 def home_portal_white_members() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_DIR / "members.html", "Members page", theme="light")
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "members.html", "Members page (white)")
 
 
 @app.get("/white/directory", response_class=HTMLResponse)
@@ -1895,66 +1563,75 @@ def home_portal_white_directory(
     q: str = "",
     city: Optional[str] = None,
     business_type: Optional[str] = None,
-) -> str:
-    return _render_directory_page(white=True, q=q, city=city, business_type=business_type)
+) -> HTMLResponse:
+    return HTMLResponse(
+        content=_render_directory_page(white=True, q=q, city=city, business_type=business_type),
+        headers=_PUBLIC_DIRECTORY_CACHE_HEADERS,
+    )
 
 
 @app.get("/white/directory/type/{business_type_slug}", response_class=HTMLResponse)
-def home_portal_white_directory_type(business_type_slug: str, q: str = "") -> str:
-    return _render_directory_page(white=True, q=q, business_type_slug=business_type_slug)
+def home_portal_white_directory_type(business_type_slug: str, q: str = "") -> HTMLResponse:
+    return HTMLResponse(
+        content=_render_directory_page(white=True, q=q, business_type_slug=business_type_slug),
+        headers=_PUBLIC_DIRECTORY_CACHE_HEADERS,
+    )
 
 
 @app.get("/white/directory/{city_slug}/{business_type_slug}", response_class=HTMLResponse)
-def home_portal_white_directory_city_type(city_slug: str, business_type_slug: str, q: str = "") -> str:
-    return _render_directory_page(white=True, q=q, city_slug=city_slug, business_type_slug=business_type_slug)
+def home_portal_white_directory_city_type(city_slug: str, business_type_slug: str, q: str = "") -> HTMLResponse:
+    return HTMLResponse(
+        content=_render_directory_page(white=True, q=q, city_slug=city_slug, business_type_slug=business_type_slug),
+        headers=_PUBLIC_DIRECTORY_CACHE_HEADERS,
+    )
 
 
 @app.get("/white/directory/{city_slug}", response_class=HTMLResponse)
-def home_portal_white_directory_city(city_slug: str, q: str = "") -> str:
-    return _render_directory_page(white=True, q=q, city_slug=city_slug)
+def home_portal_white_directory_city(city_slug: str, q: str = "") -> HTMLResponse:
+    return HTMLResponse(
+        content=_render_directory_page(white=True, q=q, city_slug=city_slug),
+        headers=_PUBLIC_DIRECTORY_CACHE_HEADERS,
+    )
 
 
 @app.get("/white/business/{business_slug}", response_class=HTMLResponse)
-def home_portal_white_business_directory_detail(business_slug: str) -> str:
-    return _render_business_page(slug=business_slug, white=True)
-
-
-@app.get("/white/jewelry", include_in_schema=False)
-def home_portal_white_jewelry_redirect() -> RedirectResponse:
-    return RedirectResponse(url="/white/#crystal-jewelry", status_code=308)
+def home_portal_white_business_directory_detail(business_slug: str) -> HTMLResponse:
+    return HTMLResponse(
+        content=_render_business_page(slug=business_slug, white=True),
+        headers=_PUBLIC_DIRECTORY_CACHE_HEADERS,
+    )
 
 
 @app.get("/white/jewelry/{product_slug}", response_class=HTMLResponse)
 def home_portal_white_jewelry_product(product_slug: str) -> str:
-    return _read_html_or_missing(_HOME_PORTAL_DIR / "jewelry-product.html", "Jewelry product page", theme="light")
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "jewelry-product.html", "Jewelry product page (white)")
 
 
 @app.get("/white/hollywood-sports", response_class=HTMLResponse)
 def home_portal_white_hollywood_sports() -> str:
     return _read_html_or_missing(
-        _HOME_PORTAL_DIR / "hollywood-sports.html",
-        "Hollywood Sports landing page",
-        theme="light",
+        _HOME_PORTAL_WHITE_DIR / "hollywood-sports.html",
+        "Hollywood Sports landing page (white)",
     )
 
 
 @app.get("/white/events", response_class=HTMLResponse)
 def home_portal_white_events() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_DIR / "events.html", "Events page", theme="light")
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "events.html", "Events page (white)")
 
 
 @app.get("/white/events/{event_slug}", response_class=HTMLResponse)
 def home_portal_white_event_article(event_slug: str) -> str:
     if event_slug not in _EVENT_SLUGS:
         raise HTTPException(status_code=404, detail="Event article not found")
-    return _render_event_article(event_slug, theme="light")
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "event-detail.html", "Event article (white)")
 
 
 @app.get("/white/articles/{article_slug}", response_class=HTMLResponse)
 def home_portal_white_article(article_slug: str) -> str:
     filename = _ARTICLE_HTML_FILES.get(article_slug.strip().lower())
     if filename:
-        return _read_html_or_missing(_HOME_PORTAL_DIR / "articles" / filename, "Article", theme="light")
+        return _read_html_or_missing(_HOME_PORTAL_DIR / "articles" / filename, "Article")
     rendered_article = _render_dine_la_city_article(article_slug, white=True)
     if rendered_article:
         return rendered_article
@@ -1968,42 +1645,42 @@ def home_portal_white_guests_redirect() -> RedirectResponse:
 
 @app.get("/white/merchants", response_class=HTMLResponse)
 def home_portal_white_merchants() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_DIR / "merchants.html", "Merchants page", theme="light")
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "merchants.html", "Merchants page (white)")
 
 
 @app.get("/white/how-it-works", response_class=HTMLResponse)
 def home_portal_white_how_it_works() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_DIR / "how-it-works.html", "How-it-works page", theme="light")
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "how-it-works.html", "How-it-works page (white)")
 
 
 @app.get("/white/contact-us", response_class=HTMLResponse)
 def home_portal_white_contact_us() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_DIR / "contact-us.html", "Contact-us page", theme="light")
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "contact-us.html", "Contact-us page (white)")
 
 
 @app.get("/white/faq", response_class=HTMLResponse)
 def home_portal_white_faq() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_DIR / "faq.html", "FAQ page", theme="light")
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "faq.html", "FAQ page (white)")
 
 
 @app.get("/white/privacy-policy", response_class=HTMLResponse)
 def home_portal_white_privacy_policy() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_DIR / "privacy-policy.html", "Privacy-policy page", theme="light")
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "privacy-policy.html", "Privacy-policy page (white)")
 
 
 @app.get("/white/terms-of-use", response_class=HTMLResponse)
 def home_portal_white_terms_of_use() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_DIR / "terms-of-use.html", "Terms-of-use page", theme="light")
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "terms-of-use.html", "Terms-of-use page (white)")
 
 
 @app.get("/white/disclaimer", response_class=HTMLResponse)
 def home_portal_white_disclaimer() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_DIR / "disclaimer.html", "Disclaimer page", theme="light")
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "disclaimer.html", "Disclaimer page (white)")
 
 
 @app.get("/white/merchant-terms", response_class=HTMLResponse)
 def home_portal_white_merchant_terms() -> str:
-    return _read_html_or_missing(_HOME_PORTAL_DIR / "merchant-terms.html", "Merchant terms page", theme="light")
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / "merchant-terms.html", "Merchant terms page (white)")
 
 
 @app.get("/white/{page_name}.html", response_class=HTMLResponse)
@@ -2017,7 +1694,7 @@ def home_portal_white_page(page_name: str) -> Response:
         raise HTTPException(status_code=404, detail="Page not found")
     if filename not in _LEGACY_STATIC_HTML_FILES:
         raise HTTPException(status_code=404, detail="Legacy HTML route not available")
-    return _read_html_or_missing(_HOME_PORTAL_DIR / filename, "Home portal page", theme="light")
+    return _read_html_or_missing(_HOME_PORTAL_WHITE_DIR / filename, "Home portal page (white)")
 
 
 @app.get("/{page_name}.html", response_class=HTMLResponse)
@@ -2039,20 +1716,23 @@ def home_portal_robots() -> str:
     return _robots_txt()
 
 
-@app.get("/ads.txt", response_class=PlainTextResponse, include_in_schema=False)
-def home_portal_ads_txt() -> str:
-    return _ADS_TXT_CONTENT
-
-
 @app.get("/sitemap.xml")
 def home_portal_sitemap() -> Response:
     content = _read_text_or_missing(_HOME_PORTAL_DIR / "sitemap.xml", fallback="<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"/>")
-    return Response(content=_append_directory_sitemap(content), media_type="application/xml")
+    return Response(
+        content=_append_directory_sitemap(content),
+        media_type="application/xml",
+        headers=_PUBLIC_DIRECTORY_CACHE_HEADERS,
+    )
 
 
 @app.get("/business-directory-sitemap.xml")
 def home_portal_business_directory_sitemap() -> Response:
-    return Response(content=_directory_sitemap_xml(), media_type="application/xml")
+    return Response(
+        content=_directory_sitemap_xml(),
+        media_type="application/xml",
+        headers=_PUBLIC_DIRECTORY_CACHE_HEADERS,
+    )
 
 
 @app.get(_INDEXNOW_KEY_PATH, response_class=PlainTextResponse, include_in_schema=False)
@@ -2068,7 +1748,11 @@ def home_portal_white_robots() -> str:
 @app.get("/white/sitemap.xml")
 def home_portal_white_sitemap() -> Response:
     content = _read_text_or_missing(_HOME_PORTAL_WHITE_DIR / "sitemap.xml", fallback="<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"/>")
-    return Response(content=_append_directory_sitemap(content, white=True), media_type="application/xml")
+    return Response(
+        content=_append_directory_sitemap(content, white=True),
+        media_type="application/xml",
+        headers=_PUBLIC_DIRECTORY_CACHE_HEADERS,
+    )
 
 
 @app.get("/web/config")

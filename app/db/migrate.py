@@ -113,6 +113,42 @@ def run_migrations(engine: Engine) -> None:
                 if "logo_url" not in merchant_cols:
                     conn.execute(text("ALTER TABLE merchant_profiles ADD COLUMN logo_url VARCHAR(255)"))
 
+            conn.execute(
+                text(
+                    """
+                    DO $$
+                    DECLARE
+                        tbl record;
+                        role_name text;
+                    BEGIN
+                        FOR tbl IN
+                            SELECT schemaname, tablename
+                            FROM pg_tables
+                            WHERE schemaname = 'public'
+                        LOOP
+                            EXECUTE format('ALTER TABLE %I.%I ENABLE ROW LEVEL SECURITY', tbl.schemaname, tbl.tablename);
+                        END LOOP;
+
+                        EXECUTE 'REVOKE ALL ON ALL TABLES IN SCHEMA public FROM PUBLIC';
+                        EXECUTE 'REVOKE ALL ON ALL SEQUENCES IN SCHEMA public FROM PUBLIC';
+                        EXECUTE 'REVOKE CREATE ON SCHEMA public FROM PUBLIC';
+                        EXECUTE 'ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON TABLES FROM PUBLIC';
+                        EXECUTE 'ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON SEQUENCES FROM PUBLIC';
+
+                        FOREACH role_name IN ARRAY ARRAY['anon', 'authenticated']
+                        LOOP
+                            IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = role_name) THEN
+                                EXECUTE format('REVOKE ALL ON ALL TABLES IN SCHEMA public FROM %I', role_name);
+                                EXECUTE format('REVOKE ALL ON ALL SEQUENCES IN SCHEMA public FROM %I', role_name);
+                                EXECUTE format('ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON TABLES FROM %I', role_name);
+                                EXECUTE format('ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON SEQUENCES FROM %I', role_name);
+                            END IF;
+                        END LOOP;
+                    END $$;
+                    """
+                )
+            )
+
         return
 
     # Unknown database type: no-op.

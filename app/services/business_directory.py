@@ -5,6 +5,9 @@ from html.parser import HTMLParser
 import json
 import re
 import ssl
+import threading
+import time
+from collections import OrderedDict
 from typing import Any, Optional
 from urllib.parse import urljoin
 from urllib.request import Request, urlopen
@@ -18,6 +21,11 @@ from app.db.models import BusinessDirectoryEntry
 _BAD_CITY_VALUES = {"", "ca", "california", "n/a", "na", "none", "null", "-"}
 _SPACE_RE = re.compile(r"\s+")
 _SLUG_RE = re.compile(r"[^a-z0-9]+")
+_CACHE_MAX_ENTRIES = 2048
+_CACHE_TTL_SECONDS = 600
+_SITEMAP_CACHE_TTL_SECONDS = 3600
+_cache_lock = threading.RLock()
+_cache: "OrderedDict[tuple[Any, ...], tuple[float, Any]]" = OrderedDict()
 
 _BUSINESS_TYPE_ICON_KEYWORDS: tuple[tuple[tuple[str, ...], str], ...] = (
     (("pizza",), "🍕"),
@@ -79,6 +87,35 @@ class _MetadataParser(HTMLParser):
             cleaned = normalize_spaces(data)
             if cleaned:
                 self.title_parts.append(cleaned)
+
+
+def _cache_get(key: tuple[Any, ...]) -> Any:
+    now = time.monotonic()
+    with _cache_lock:
+        item = _cache.pop(key, None)
+        if item is None:
+            return None
+        expires_at, value = item
+        if expires_at <= now:
+            return None
+        _cache[key] = (expires_at, value)
+        return value
+
+
+def _cache_set(key: tuple[Any, ...], value: Any, *, ttl_seconds: int = _CACHE_TTL_SECONDS) -> None:
+    with _cache_lock:
+        _cache[key] = (time.monotonic() + ttl_seconds, value)
+        while len(_cache) > _CACHE_MAX_ENTRIES:
+            _cache.popitem(last=False)
+
+
+def clear_business_directory_caches() -> None:
+    with _cache_lock:
+        _cache.clear()
+
+
+def _clone_facets(facets: dict[str, list[dict[str, Any]]]) -> dict[str, list[dict[str, Any]]]:
+    return {key: [dict(item) for item in items] for key, items in facets.items()}
 
 
 def normalize_spaces(value: Any) -> str:
@@ -299,6 +336,7 @@ def upsert_business_directory_entry(
     row.raw_json = json.dumps(raw_record, ensure_ascii=False, sort_keys=True)
     row.is_active = True
     row.slug = ensure_unique_business_slug(db, base_slug=base_slug, existing_id=row.id)
+    clear_business_directory_caches()
     return row, created
 
 
@@ -428,6 +466,20 @@ def search_business_directory(
     )
     limit = max(1, min(int(limit), 100))
     offset = max(0, int(offset))
+    cache_key = (
+        "search",
+        normalize_spaces(query).lower(),
+        normalize_city(city).lower(),
+        slugify(city_slug, fallback="city") if city_slug else "",
+        normalize_spaces(business_type).lower(),
+        slugify(business_type_slug, fallback="business") if business_type_slug else "",
+        limit,
+        offset,
+    )
+    cached = _cache_get(cache_key)
+    if cached is not None:
+        cached_rows, cached_count = cached
+        return list(cached_rows), int(cached_count)
 
     count = int(db.scalar(select(func.count()).select_from(BusinessDirectoryEntry).where(*filters)) or 0)
     rows = list(
@@ -443,6 +495,7 @@ def search_business_directory(
             .limit(limit)
         )
     )
+    _cache_set(cache_key, (tuple(rows), count))
     return rows, count
 
 
@@ -485,6 +538,13 @@ def build_business_directory_filters(
 
 
 def directory_facets(db: Session, *, limit_types: int = 120, limit_cities: int = 200) -> dict[str, list[dict[str, Any]]]:
+    limit_types = max(1, min(int(limit_types), 500))
+    limit_cities = max(1, min(int(limit_cities), 500))
+    cache_key = ("facets", limit_types, limit_cities)
+    cached = _cache_get(cache_key)
+    if cached is not None:
+        return _clone_facets(cached)
+
     city_rows = db.execute(
         select(BusinessDirectoryEntry.search_city, BusinessDirectoryEntry.search_city_slug, func.count())
         .where(
@@ -494,7 +554,7 @@ def directory_facets(db: Session, *, limit_types: int = 120, limit_cities: int =
         )
         .group_by(BusinessDirectoryEntry.search_city, BusinessDirectoryEntry.search_city_slug)
         .order_by(desc(func.count()), BusinessDirectoryEntry.search_city.asc())
-        .limit(max(1, min(limit_cities, 500)))
+        .limit(limit_cities)
     ).all()
     type_rows = db.execute(
         select(
@@ -514,10 +574,10 @@ def directory_facets(db: Session, *, limit_types: int = 120, limit_cities: int =
             BusinessDirectoryEntry.business_type_icon,
         )
         .order_by(desc(func.count()), BusinessDirectoryEntry.business_type.asc())
-        .limit(max(1, min(limit_types, 500)))
+        .limit(limit_types)
     ).all()
 
-    return {
+    facets = {
         "cities": [
             {"label": label, "slug": slug, "count": int(count)}
             for label, slug, count in city_rows
@@ -529,22 +589,39 @@ def directory_facets(db: Session, *, limit_types: int = 120, limit_cities: int =
             if label and slug
         ],
     }
+    _cache_set(cache_key, _clone_facets(facets))
+    return facets
 
 
 def get_business_directory_entry(db: Session, slug: str) -> Optional[BusinessDirectoryEntry]:
-    return db.scalar(
+    normalized_slug = slugify(slug, fallback="")
+    cache_key = ("entry", normalized_slug)
+    cached = _cache_get(cache_key)
+    if cached is not None:
+        return cached
+    row = db.scalar(
         select(BusinessDirectoryEntry).where(
-            BusinessDirectoryEntry.slug == slug,
+            BusinessDirectoryEntry.slug == normalized_slug,
             BusinessDirectoryEntry.is_active.is_(True),
         )
     )
+    if row is not None:
+        _cache_set(cache_key, row)
+    return row
 
 
 def directory_sitemap_entries(db: Session, *, limit: int = 5000) -> list[str]:
+    limit = max(1, min(int(limit), 10_000))
+    cache_key = ("sitemap", limit)
+    cached = _cache_get(cache_key)
+    if cached is not None:
+        return list(cached)
     rows = db.scalars(
         select(BusinessDirectoryEntry.slug)
         .where(BusinessDirectoryEntry.is_active.is_(True))
         .order_by(BusinessDirectoryEntry.slug.asc())
-        .limit(max(1, min(limit, 10_000)))
+        .limit(limit)
     )
-    return [str(slug) for slug in rows if slug]
+    slugs = [str(slug) for slug in rows if slug]
+    _cache_set(cache_key, tuple(slugs), ttl_seconds=_SITEMAP_CACHE_TTL_SECONDS)
+    return slugs
