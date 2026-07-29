@@ -811,13 +811,26 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, and festivals",
         "city": "Southern California",
-        "title": "Fifteen Southern California summer plans",
+        "title": "Sixteen Southern California summer plans",
         "timing": "July 31-August 29, 2026",
         "route": "/articles/southern-california-august-events-2026",
         "details": (
             "Ranked planning guide covering the OC Fair, Burbank film week, Long Beach food and music, "
             "Santa Monica outdoor programs, Glendale park events, Pasadena POPS, West Hollywood Summer Sounds "
-            "on August 16, Noah Kahan at the Rose Bowl on August 15, and Just Like Heaven on August 22."
+            "on August 16, Noah Kahan at the Rose Bowl on August 15, Just Like Heaven on August 22, and Nisei Week "
+            "in Little Tokyo from August 15-23."
+        ),
+    },
+    {
+        "category": "Japanese American culture, family events, and traditional arts",
+        "city": "Los Angeles",
+        "title": "Nisei Week 2026 Little Tokyo guide",
+        "timing": "August 15-23, 2026",
+        "route": "/articles/nisei-week-little-tokyo-2026-guide",
+        "details": (
+            "Ranked guide to the free JANM Natsumatsuri Family Festival, JACCC's August 15-16 and 22-23 "
+            "traditional-arts programs, Plaza Festival, Little Tokyo Farmers' Market, pre-festival parade and "
+            "street-dance practices, transit planning, and Perk Nation's Los Angeles directory."
         ),
     },
     {
@@ -901,6 +914,10 @@ def _should_include_public_review_context(message: str, role_context: str) -> bo
             "fan events",
             "d23",
             "long beach",
+            "nisei week",
+            "little tokyo",
+            "cultural event",
+            "cultural events",
             "show",
             "shows",
             "sports",
@@ -1756,6 +1773,10 @@ def _is_public_review_query(text: str) -> bool:
             "fan events",
             "d23",
             "long beach",
+            "nisei week",
+            "little tokyo",
+            "cultural event",
+            "cultural events",
             "restaurant review",
             "restaurant reviews",
             "restaurants listed",
@@ -1778,9 +1799,10 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     wants_fashion = _contains_any(text, ("fashion", "style", "shopping", "sample sale", "market week"))
     wants_sports = _contains_any(text, ("sports", "game", "games", "stadium", "ufc", "chargers", "rams"))
     wants_concerts = _contains_any(text, ("concert", "concerts", "music", "festival", "festivals", "warped", "vans", "long beach", "kcon", "mount westmore"))
+    wants_culture = _contains_any(text, ("nisei week", "little tokyo", "cultural event", "cultural events", "traditional arts"))
     wants_restaurants = _contains_any(text, ("restaurant", "restaurants", "dining", "dine la"))
     wants_fan_events = _contains_any(text, ("fan event", "fan events", "convention", "conventions", "d23"))
-    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_restaurants, wants_fan_events))
+    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_culture, wants_restaurants, wants_fan_events))
 
     if wants_fashion and not any((wants_sports, wants_concerts, wants_restaurants)):
         return "\n".join(
@@ -1808,6 +1830,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
             or (wants_fashion and "fashion" in category)
             or (wants_sports and "sports" in category)
             or (wants_concerts and "concert" in category)
+            or (wants_culture and any(token in category for token in ("culture", "traditional arts")))
             or (wants_restaurants and "restaurant" in category)
             or (wants_fan_events and "fan event" in category)
         ):
