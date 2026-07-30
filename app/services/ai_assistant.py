@@ -1810,8 +1810,10 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     matching_items = []
     wants_fashion = _contains_any(text, ("fashion", "style", "shopping", "sample sale", "market week"))
     wants_sports = _contains_any(text, ("sports", "game", "games", "stadium", "ufc", "chargers", "rams"))
-    wants_concerts = _contains_any(text, ("concert", "concerts", "music", "festival", "festivals", "warped", "vans", "long beach", "kcon", "mount westmore"))
     wants_film = _contains_any(text, ("film", "films", "movie", "movies", "cinema", "burbank", "screening", "screenings", "q&a", "filmmaker"))
+    wants_concerts = _contains_any(text, ("concert", "concerts", "music", "warped", "vans", "long beach", "kcon", "mount westmore")) or (
+        not wants_film and _contains_any(text, ("festival", "festivals"))
+    )
     wants_culture = _contains_any(text, ("nisei week", "little tokyo", "cultural event", "cultural events", "traditional arts"))
     wants_restaurants = _contains_any(text, ("restaurant", "restaurants", "dining", "dine la"))
     wants_fan_events = _contains_any(text, ("fan event", "fan events", "convention", "conventions", "d23"))

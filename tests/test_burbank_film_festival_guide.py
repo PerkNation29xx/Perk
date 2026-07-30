@@ -88,3 +88,5 @@ def test_burbank_film_guide_is_cross_linked_and_available_to_public_answers() ->
     assert answer
     assert "Burbank International Film Festival 2026 practical guide" in answer
     assert "/articles/burbank-film-festival-2026-guide" in answer
+    assert "Warped Tour" not in answer
+    assert "Mount Westmore" not in answer
