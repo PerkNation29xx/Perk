@@ -809,6 +809,18 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         ),
     },
     {
+        "category": "Film festivals and creative industry",
+        "city": "Burbank",
+        "title": "Burbank International Film Festival 2026 practical guide",
+        "timing": "August 2-8, 2026",
+        "route": "/articles/burbank-film-festival-2026-guide",
+        "details": (
+            "Ranked guide to more than 120 screenings at AMC Burbank 16, filmmaker Q&As, industry panels, "
+            "downtown after-parties, the August 8 closing gala, city parking, hotels, dining, and Perk Nation's "
+            "968 Burbank directory listings."
+        ),
+    },
+    {
         "category": "Events, concerts, and festivals",
         "city": "Southern California",
         "title": "Sixteen Southern California summer plans",
@@ -1799,10 +1811,11 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     wants_fashion = _contains_any(text, ("fashion", "style", "shopping", "sample sale", "market week"))
     wants_sports = _contains_any(text, ("sports", "game", "games", "stadium", "ufc", "chargers", "rams"))
     wants_concerts = _contains_any(text, ("concert", "concerts", "music", "festival", "festivals", "warped", "vans", "long beach", "kcon", "mount westmore"))
+    wants_film = _contains_any(text, ("film", "films", "movie", "movies", "cinema", "burbank", "screening", "screenings", "q&a", "filmmaker"))
     wants_culture = _contains_any(text, ("nisei week", "little tokyo", "cultural event", "cultural events", "traditional arts"))
     wants_restaurants = _contains_any(text, ("restaurant", "restaurants", "dining", "dine la"))
     wants_fan_events = _contains_any(text, ("fan event", "fan events", "convention", "conventions", "d23"))
-    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_culture, wants_restaurants, wants_fan_events))
+    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_film, wants_culture, wants_restaurants, wants_fan_events))
 
     if wants_fashion and not any((wants_sports, wants_concerts, wants_restaurants)):
         return "\n".join(
@@ -1830,6 +1843,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
             or (wants_fashion and "fashion" in category)
             or (wants_sports and "sports" in category)
             or (wants_concerts and "concert" in category)
+            or (wants_film and "film" in category)
             or (wants_culture and any(token in category for token in ("culture", "traditional arts")))
             or (wants_restaurants and "restaurant" in category)
             or (wants_fan_events and "fan event" in category)
