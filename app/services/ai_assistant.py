@@ -797,6 +797,19 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     },
 
     {
+        "category": "Restaurants, festivals, concerts, movies, and family events",
+        "city": "Long Beach",
+        "title": "Long Beach August 2026 food, music, and beach guide",
+        "timing": "July 31-August 22, 2026",
+        "route": "/articles/long-beach-august-2026-guide",
+        "details": (
+            "Nine ranked plans led by Food Scene Week's 100-plus participants from July 31-August 9, "
+            "plus Long Beach Jazz Fest, Stroll and Savor, Taste of Downtown, Moonlight Movies, city summer "
+            "programs, Jazz on the Bay, the Queen Mary movie night, Little Earth Cinema, and Perk Nation's "
+            "208 Long Beach directory listings."
+        ),
+    },
+    {
         "category": "Concerts, festivals, and local culture",
         "city": "Long Beach",
         "title": "Vans Warped Tour Long Beach 2026 recap",
@@ -828,7 +841,8 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "route": "/articles/southern-california-august-events-2026",
         "details": (
             "Ranked planning guide covering the OC Fair, Burbank film week, Long Beach food and music, "
-            "Santa Monica outdoor programs, Glendale park events, Pasadena POPS, West Hollywood Summer Sounds "
+            "with a dedicated nine-plan Long Beach guide, Santa Monica outdoor programs, Glendale park events, "
+            "Pasadena POPS, West Hollywood Summer Sounds "
             "on August 16, Noah Kahan at the Rose Bowl on August 15, Just Like Heaven on August 22, and Nisei Week "
             "in Little Tokyo from August 15-23."
         ),
@@ -926,6 +940,10 @@ def _should_include_public_review_context(message: str, role_context: str) -> bo
             "fan events",
             "d23",
             "long beach",
+            "food scene",
+            "food week",
+            "august event",
+            "august events",
             "nisei week",
             "little tokyo",
             "cultural event",
@@ -1815,7 +1833,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         not wants_film and _contains_any(text, ("festival", "festivals"))
     )
     wants_culture = _contains_any(text, ("nisei week", "little tokyo", "cultural event", "cultural events", "traditional arts"))
-    wants_restaurants = _contains_any(text, ("restaurant", "restaurants", "dining", "dine la"))
+    wants_restaurants = _contains_any(text, ("restaurant", "restaurants", "dining", "dine la", "food", "food scene"))
     wants_fan_events = _contains_any(text, ("fan event", "fan events", "convention", "conventions", "d23"))
     wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_film, wants_culture, wants_restaurants, wants_fan_events))
 
