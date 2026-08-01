@@ -77,7 +77,7 @@ def test_burbank_film_routes_image_homepage_cards_and_sitemaps() -> None:
 
 def test_burbank_film_guide_is_cross_linked_and_available_to_public_answers() -> None:
     august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
-    assert 'dateModified": "2026-07-31"' in august_html
+    assert 'dateModified": "2026-08-01"' in august_html
     assert "/articles/burbank-film-festival-2026-guide" in august_html
 
     answer = _public_review_live_query_response(

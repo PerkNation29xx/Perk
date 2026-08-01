@@ -797,6 +797,18 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     },
 
     {
+        "category": "Concerts, markets, museums, architecture, and fan events",
+        "city": "Pasadena and nearby Arcadia / San Marino",
+        "title": "Pasadena August 2026 concerts, markets, and culture guide",
+        "timing": "August 6-30, 2026",
+        "route": "/articles/pasadena-august-2026-guide",
+        "details": (
+            "Ten ranked plans covering Head In The Clouds, Noah Kahan at the Rose Bowl, the Rose Bowl Flea Market, "
+            "two Pasadena POPS nights, Free Day at The Huntington, Friday Nights at The Gamble House, Sunset Sessions, "
+            "America's Got Talent tapings, goat yoga, Power Morphicon, and Perk Nation's 563 Pasadena listings."
+        ),
+    },
+    {
         "category": "Restaurants, festivals, concerts, movies, and family events",
         "city": "Long Beach",
         "title": "Long Beach August 2026 food, music, and beach guide",
@@ -842,7 +854,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "details": (
             "Ranked planning guide covering the OC Fair, Burbank film week, Long Beach food and music, "
             "with a dedicated nine-plan Long Beach guide, Santa Monica outdoor programs, Glendale park events, "
-            "Pasadena POPS, West Hollywood Summer Sounds "
+            "Pasadena POPS and a dedicated ten-plan Pasadena August guide, West Hollywood Summer Sounds "
             "on August 16, Noah Kahan at the Rose Bowl on August 15, Just Like Heaven on August 22, and Nisei Week "
             "in Little Tokyo from August 15-23."
         ),
@@ -1803,6 +1815,9 @@ def _is_public_review_query(text: str) -> bool:
             "fan events",
             "d23",
             "long beach",
+            "pasadena event",
+            "pasadena august",
+            "rose bowl",
             "nisei week",
             "little tokyo",
             "cultural event",
@@ -1822,6 +1837,7 @@ def _is_public_review_query(text: str) -> bool:
 
 
 def _public_review_live_query_response(text: str, role_context: str) -> Optional[str]:
+    text = _normalize_user_text(text)
     if role_context not in {"public", "home_local_guide"} or not _is_public_review_query(text):
         return None
 
@@ -1829,7 +1845,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     wants_fashion = _contains_any(text, ("fashion", "style", "shopping", "sample sale", "market week"))
     wants_sports = _contains_any(text, ("sports", "game", "games", "stadium", "ufc", "chargers", "rams"))
     wants_film = _contains_any(text, ("film", "films", "movie", "movies", "cinema", "burbank", "screening", "screenings", "q&a", "filmmaker"))
-    wants_concerts = _contains_any(text, ("concert", "concerts", "music", "warped", "vans", "long beach", "kcon", "mount westmore")) or (
+    wants_concerts = _contains_any(text, ("concert", "concerts", "music", "warped", "vans", "long beach", "pasadena", "rose bowl", "kcon", "mount westmore")) or (
         not wants_film and _contains_any(text, ("festival", "festivals"))
     )
     wants_culture = _contains_any(text, ("nisei week", "little tokyo", "cultural event", "cultural events", "traditional arts"))
