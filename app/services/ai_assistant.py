@@ -1848,6 +1848,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     wants_concerts = _contains_any(text, ("concert", "concerts", "music", "warped", "vans", "long beach", "pasadena", "rose bowl", "kcon", "mount westmore")) or (
         not wants_film and _contains_any(text, ("festival", "festivals"))
     )
+    wants_pasadena = _contains_any(text, ("pasadena", "rose bowl"))
     wants_culture = _contains_any(text, ("nisei week", "little tokyo", "cultural event", "cultural events", "traditional arts"))
     wants_restaurants = _contains_any(text, ("restaurant", "restaurants", "dining", "dine la", "food", "food scene"))
     wants_fan_events = _contains_any(text, ("fan event", "fan events", "convention", "conventions", "d23"))
@@ -1869,6 +1870,17 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
                 "Copenhagen, London, and Tokyo for emerging perspectives, and Miami for international, resort, "
                 "culture, and technology crossover. Read the rankings, access notes, and official-source links at "
                 "/articles/la-fashion-events-2026.",
+            )
+        )
+
+    if wants_pasadena and not wants_restaurants:
+        return "\n".join(
+            (
+                "The current PerkNation Pasadena guide ranks ten August plans from August 6-30, 2026:",
+                "- Head In The Clouds, Noah Kahan at the Rose Bowl, and the Rose Bowl Flea Market.",
+                "- Two Pasadena POPS nights, Free Day at The Huntington, Friday Nights at The Gamble House, and Sunset Sessions.",
+                "- America's Got Talent tapings, goat yoga, and Power Morphicon.",
+                "Open /articles/pasadena-august-2026-guide for best-for notes, current access guidance, official sources, and links into 563 Pasadena directory listings.",
             )
         )
 

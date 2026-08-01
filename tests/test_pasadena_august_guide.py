@@ -87,5 +87,6 @@ def test_pasadena_guide_is_cross_linked_and_available_to_public_answers() -> Non
     )
 
     assert answer
-    assert "Pasadena August 2026 concerts, markets, and culture guide" in answer
+    assert "ranks ten August plans" in answer
     assert "/articles/pasadena-august-2026-guide" in answer
+    assert "Long Beach" not in answer
