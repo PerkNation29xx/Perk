@@ -14,7 +14,7 @@ def test_august_guide_has_sixteen_ranked_source_backed_plans() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Sixteen Southern California summer plans" in html
-    assert 'dateModified": "2026-08-01"' in html
+    assert 'dateModified": "2026-08-02"' in html
     for expected in (
         "West Hollywood Summer Sounds",
         "Just Like Heaven in Pasadena",

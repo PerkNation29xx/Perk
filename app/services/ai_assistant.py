@@ -809,6 +809,18 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         ),
     },
     {
+        "category": "Concerts, trails, family events, markets, and outdoor culture",
+        "city": "Glendale",
+        "title": "Glendale August 2026 concerts, trails, and culture guide",
+        "timing": "August 4-30, 2026",
+        "route": "/articles/glendale-august-2026-guide",
+        "details": (
+            "Nine ranked plans covering Night Sky Adventures, two summer concerts, the free Wander the "
+            "Wilderness Bus, Classic Film Under the Stars, Glendale Outdoors, the Nature's Teamwork campfire, "
+            "National Night Out, Wilderness Workday, Montrose Harvest Market, and Perk Nation's 100 Glendale listings."
+        ),
+    },
+    {
         "category": "Restaurants, festivals, concerts, movies, and family events",
         "city": "Long Beach",
         "title": "Long Beach August 2026 food, music, and beach guide",
@@ -1818,6 +1830,11 @@ def _is_public_review_query(text: str) -> bool:
             "pasadena event",
             "pasadena august",
             "rose bowl",
+            "glendale event",
+            "glendale events",
+            "glendale august",
+            "deukmejian",
+            "brand park",
             "nisei week",
             "little tokyo",
             "cultural event",
@@ -1849,10 +1866,11 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         not wants_film and _contains_any(text, ("festival", "festivals"))
     )
     wants_pasadena = _contains_any(text, ("pasadena", "rose bowl"))
+    wants_glendale = _contains_any(text, ("glendale", "deukmejian", "brand park"))
     wants_culture = _contains_any(text, ("nisei week", "little tokyo", "cultural event", "cultural events", "traditional arts"))
     wants_restaurants = _contains_any(text, ("restaurant", "restaurants", "dining", "dine la", "food", "food scene"))
     wants_fan_events = _contains_any(text, ("fan event", "fan events", "convention", "conventions", "d23"))
-    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_film, wants_culture, wants_restaurants, wants_fan_events))
+    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_film, wants_pasadena, wants_glendale, wants_culture, wants_restaurants, wants_fan_events))
 
     if wants_fashion and not any((wants_sports, wants_concerts, wants_restaurants)):
         return "\n".join(
@@ -1881,6 +1899,17 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
                 "- Two Pasadena POPS nights, Free Day at The Huntington, Friday Nights at The Gamble House, and Sunset Sessions.",
                 "- America's Got Talent tapings, goat yoga, and Power Morphicon.",
                 "Open /articles/pasadena-august-2026-guide for best-for notes, current access guidance, official sources, and links into 563 Pasadena directory listings.",
+            )
+        )
+
+    if wants_glendale and not wants_restaurants:
+        return "\n".join(
+            (
+                "The current PerkNation Glendale guide ranks nine August plans from August 4-30, 2026:",
+                "- Night Sky Adventures, two summer concerts, and the free Wander the Wilderness Bus.",
+                "- Classic Film Under the Stars, Glendale Outdoors, and the Nature's Teamwork campfire.",
+                "- National Night Out, Wilderness Workday, and Montrose Harvest Market.",
+                "Open /articles/glendale-august-2026-guide for best-for notes, RSVP and weather guidance, official city sources, and links into 100 Glendale directory listings.",
             )
         )
 
