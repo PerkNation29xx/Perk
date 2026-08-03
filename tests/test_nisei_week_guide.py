@@ -67,9 +67,11 @@ def test_nisei_week_routes_image_homepage_cards_and_sitemaps() -> None:
         assert "Nisei Week brings two weekends of culture to Little Tokyo." in response.text
 
     root_sitemap = client.get("/sitemap.xml")
-    white_sitemap = client.get("/white/sitemap.xml")
+    white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
     assert "<loc>https://perknation.app/articles/nisei-week-little-tokyo-2026-guide</loc>" in root_sitemap.text
-    assert "<loc>https://perknation.app/white/articles/nisei-week-little-tokyo-2026-guide</loc>" in white_sitemap.text
+    assert white_sitemap.status_code == 308
+    assert white_sitemap.headers["location"] == "/sitemap.xml"
+    assert "<loc>https://perknation.app/white/articles/nisei-week-little-tokyo-2026-guide</loc>" not in root_sitemap.text
 
 
 def test_nisei_week_is_available_to_public_review_answers() -> None:

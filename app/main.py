@@ -193,6 +193,33 @@ async def google_analytics_html_middleware(request: Request, call_next):
         media_type=None,
     )
 
+
+def _canonical_url_for_white_path(request: Request) -> str:
+    request_path = request.url.path
+    if request_path in {"/white", "/white/"}:
+        target_path = "/"
+    elif request_path == "/white/sitemap.xml":
+        target_path = "/sitemap.xml"
+    elif request_path == "/white/robots.txt":
+        target_path = "/robots.txt"
+    elif request_path.startswith("/white/"):
+        target_path = request_path.removeprefix("/white") or "/"
+    else:
+        target_path = request_path
+
+    query = request.url.query
+    if query:
+        return f"{target_path}?{query}"
+    return target_path
+
+
+@app.middleware("http")
+async def canonical_white_path_middleware(request: Request, call_next):
+    request_path = request.url.path
+    if request_path == "/white" or request_path.startswith("/white/"):
+        return RedirectResponse(url=_canonical_url_for_white_path(request), status_code=308)
+    return await call_next(request)
+
 _BASE_DIR = Path(__file__).resolve().parent
 _HOME_PORTAL_DIR = _BASE_DIR / "web" / "home_portal"
 _HOME_STATIC_DIR = _HOME_PORTAL_DIR / "static"
@@ -408,8 +435,6 @@ def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> O
     route = city.get("route") or f"/articles/{article_slug}"
     canonical_url = _public_url(route)
     directory_route = city.get("directory_route") or f"/directory?city={quote_plus(city_name)}"
-    if white and directory_route.startswith("/"):
-        directory_route = f"/white{directory_route}"
     source_url = data.get("source") or "https://www.discoverlosangeles.com/dinela"
     cuisines = ", ".join(city.get("top_cuisines", [])[:5]) or "local dining"
     price_ranges = city.get("price_ranges", [])[:4]
@@ -434,7 +459,7 @@ def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> O
     )
     all_cities = [other for other in data.get("cities", []) if other.get("article_slug") != article_slug]
     related_items = "\n".join(
-        f"          <li><a href=\"{_escape(other.get('white_route') if white else other.get('route'))}\">{_escape(other.get('city'))} Dine LA guide</a> · {int(other.get('restaurant_count') or 0)} listings</li>"
+        f"          <li><a href=\"{_escape(other.get('route'))}\">{_escape(other.get('city'))} Dine LA guide</a> · {int(other.get('restaurant_count') or 0)} listings</li>"
         for other in all_cities[:10]
     )
     return f"""<!doctype html>
@@ -538,14 +563,11 @@ def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> O
 
 def _theme_path(path: str, *, white: bool) -> str:
     normalized = path if path.startswith("/") else f"/{path}"
-    if not white:
-        return normalized
-    return f"/white{normalized}" if normalized != "/" else "/white/"
+    return normalized
 
 
 def _asset_path(asset: str, *, white: bool) -> str:
-    prefix = "/white/assets" if white else "/assets"
-    return f"{prefix}/{asset.lstrip('/')}"
+    return f"/assets/{asset.lstrip('/')}"
 
 
 def _business_page_path(slug: str, *, white: bool) -> str:
@@ -563,7 +585,7 @@ def _directory_page_path(*, white: bool, city_slug: Optional[str] = None, busine
 
 
 def _directory_shell(*, title: str, description: str, canonical_path: str, body: str, white: bool, json_ld: Optional[dict] = None) -> str:
-    brand_href = "/white/" if white else "/"
+    brand_href = "/"
     style_href = f"{_asset_path('styles.css', white=white)}?v=directory20260715-category-hierarchy"
     script_href = f"{_asset_path('app.js', white=white)}?v=directory20260715-category-hierarchy"
     json_ld_html = ""
@@ -1314,13 +1336,13 @@ def _canonical_sitemap_url(raw_loc: str, *, white: bool) -> str:
     if path != "/" and path.endswith("/"):
         path = path.rstrip("/")
 
+    if path == "/white":
+        path = "/"
+    elif path.startswith("/white/"):
+        path = path.removeprefix("/white") or "/"
+
     if path in _SITEMAP_SKIP_PATHS:
         return ""
-    if path.startswith("/white/") or path == "/white":
-        if not white:
-            return ""
-    elif white:
-        path = _theme_path(path, white=True)
 
     if not _sitemap_path_is_routeable(path):
         return ""
@@ -1375,23 +1397,13 @@ def _build_sitemap_snapshot_payloads() -> dict[str, str]:
         _HOME_PORTAL_DIR / "sitemap.xml",
         fallback="<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"/>",
     )
-    white_sitemap_content = _read_text_or_missing(
-        _HOME_PORTAL_WHITE_DIR / "sitemap.xml",
-        fallback="<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"/>",
-    )
     business_directory_xml = _directory_sitemap_xml()
-    white_business_directory_xml = _directory_sitemap_xml(white=True)
     return {
         "home": _append_directory_sitemap(
             home_sitemap_content,
             directory_xml=business_directory_xml,
         ),
         "business_directory": business_directory_xml,
-        "white": _append_directory_sitemap(
-            white_sitemap_content,
-            white=True,
-            directory_xml=white_business_directory_xml,
-        ),
     }
 
 
@@ -1458,7 +1470,6 @@ def _sitemap_snapshot_response(key: str, fallback_builder) -> Response:
 
 
 def _robots_txt(*, white: bool = False) -> str:
-    sitemap_path = "/white/sitemap.xml" if white else "/sitemap.xml"
     lines = [
         "User-agent: *",
         "Allow: /",
@@ -1475,7 +1486,7 @@ def _robots_txt(*, white: bool = False) -> str:
     if not white:
         lines.append("Disallow: /white/")
         lines.append("Sitemap: https://perknation.app/business-directory-sitemap.xml")
-    lines.append(f"Sitemap: {_public_url(sitemap_path)}")
+    lines.append(f"Sitemap: {_public_url('/sitemap.xml')}")
     return "\n".join(lines) + "\n"
 
 
@@ -1882,23 +1893,14 @@ def home_portal_indexnow_key() -> str:
     return _INDEXNOW_KEY
 
 
-@app.get("/white/robots.txt", response_class=PlainTextResponse)
-def home_portal_white_robots() -> str:
-    return _robots_txt(white=True)
+@app.get("/white/robots.txt", include_in_schema=False)
+def home_portal_white_robots() -> RedirectResponse:
+    return RedirectResponse(url="/robots.txt", status_code=308)
 
 
-@app.get("/white/sitemap.xml")
+@app.get("/white/sitemap.xml", include_in_schema=False)
 def home_portal_white_sitemap() -> Response:
-    return _sitemap_snapshot_response(
-        "white",
-        lambda: _append_directory_sitemap(
-            _read_text_or_missing(
-                _HOME_PORTAL_WHITE_DIR / "sitemap.xml",
-                fallback="<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"/>",
-            ),
-            white=True,
-        ),
-    )
+    return RedirectResponse(url="/sitemap.xml", status_code=308)
 
 
 @app.get("/web/config")

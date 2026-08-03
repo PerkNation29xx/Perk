@@ -56,4 +56,5 @@ def test_city_menu_uses_wrapping_grid_instead_of_horizontal_rail():
     assert 'class="directoryCityPanel"' in html
     assert 'class="directoryCityGrid"' in html
     assert "directoryCityRail" not in html
-    assert "/white/directory/pasadena" in html
+    assert "/directory/pasadena" in html
+    assert "/white/directory/pasadena" not in html

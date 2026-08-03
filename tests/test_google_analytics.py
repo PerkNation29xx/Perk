@@ -77,6 +77,7 @@ def test_sitemap_output_uses_absolute_perknation_app_urls(monkeypatch):
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>index.html</loc></url>
   <url><loc>how-it-works.html</loc></url>
+  <url><loc>/white/how-it-works</loc></url>
   <url><loc>/jewelry/christian-dior-necklace</loc></url>
   <url><loc>https://perknation.net/business/example</loc></url>
   <url><loc>login.html</loc></url>
@@ -89,6 +90,7 @@ def test_sitemap_output_uses_absolute_perknation_app_urls(monkeypatch):
     assert "<loc>https://perknation.app/jewelry/christian-dior-necklace</loc>" in sitemap
     assert "<loc>https://perknation.app/business/example</loc>" in sitemap
     assert "perknation.net" not in sitemap
+    assert "https://perknation.app/white/" not in sitemap
     assert "index.html" not in sitemap
     assert "login" not in sitemap
 
@@ -109,3 +111,19 @@ def test_indexnow_key_file_is_served_from_root():
     assert response.status_code == 200
     assert response.text == _INDEXNOW_KEY
     assert response.headers["content-type"].startswith("text/plain")
+
+
+def test_white_namespace_redirects_to_canonical_routes():
+    with TestClient(app) as client:
+        checks = {
+            "/white": "/",
+            "/white/": "/",
+            "/white/sitemap.xml": "/sitemap.xml",
+            "/white/robots.txt": "/robots.txt",
+            "/white/articles/pasadena-august-2026-guide": "/articles/pasadena-august-2026-guide",
+            "/white/directory/pasadena?category=food": "/directory/pasadena?category=food",
+        }
+        for request_path, expected_location in checks.items():
+            response = client.get(request_path, follow_redirects=False)
+            assert response.status_code == 308
+            assert response.headers["location"] == expected_location

@@ -64,9 +64,11 @@ def test_d23_guide_routes_image_homepage_cards_and_sitemaps() -> None:
         assert "/articles/d23-anaheim-2026-guide" in response.text
 
     root_sitemap = client.get("/sitemap.xml")
-    white_sitemap = client.get("/white/sitemap.xml")
+    white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
     assert "<loc>https://perknation.app/articles/d23-anaheim-2026-guide</loc>" in root_sitemap.text
-    assert "<loc>https://perknation.app/white/articles/d23-anaheim-2026-guide</loc>" in white_sitemap.text
+    assert white_sitemap.status_code == 308
+    assert white_sitemap.headers["location"] == "/sitemap.xml"
+    assert "<loc>https://perknation.app/white/articles/d23-anaheim-2026-guide</loc>" not in root_sitemap.text
 
 
 def test_d23_guide_is_available_to_public_review_answers() -> None:

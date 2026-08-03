@@ -70,9 +70,11 @@ def test_burbank_film_routes_image_homepage_cards_and_sitemaps() -> None:
         assert "Burbank film week has 120-plus screenings. Start with the right few." in response.text
 
     root_sitemap = client.get("/sitemap.xml")
-    white_sitemap = client.get("/white/sitemap.xml")
+    white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
     assert "<loc>https://perknation.app/articles/burbank-film-festival-2026-guide</loc>" in root_sitemap.text
-    assert "<loc>https://perknation.app/white/articles/burbank-film-festival-2026-guide</loc>" in white_sitemap.text
+    assert white_sitemap.status_code == 308
+    assert white_sitemap.headers["location"] == "/sitemap.xml"
+    assert "<loc>https://perknation.app/white/articles/burbank-film-festival-2026-guide</loc>" not in root_sitemap.text
 
 
 def test_burbank_film_guide_is_cross_linked_and_available_to_public_answers() -> None:

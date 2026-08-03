@@ -55,11 +55,12 @@ def test_august_guide_stays_in_sitemaps_and_public_ai_context() -> None:
     client = TestClient(app)
 
     root_sitemap = client.get("/sitemap.xml")
-    white_sitemap = client.get("/white/sitemap.xml")
+    white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
     assert root_sitemap.status_code == 200
-    assert white_sitemap.status_code == 200
+    assert white_sitemap.status_code == 308
+    assert white_sitemap.headers["location"] == "/sitemap.xml"
     assert "<loc>https://perknation.app/articles/southern-california-august-events-2026</loc>" in root_sitemap.text
-    assert "<loc>https://perknation.app/white/articles/southern-california-august-events-2026</loc>" in white_sitemap.text
+    assert "<loc>https://perknation.app/white/articles/southern-california-august-events-2026</loc>" not in root_sitemap.text
 
     answer = _public_review_live_query_response(
         "What current events are covered in Southern California?",
