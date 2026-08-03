@@ -821,6 +821,17 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         ),
     },
     {
+        "category": "Night markets, garden concerts, community events, and local dining",
+        "city": "Arcadia",
+        "title": "Arcadia August 2026 night market and concert guide",
+        "timing": "August 4-29, 2026",
+        "route": "/articles/arcadia-august-2026-guide",
+        "details": (
+            "Six ranked outings covering National Night Out, two Arboretum Summer Nights dates, "
+            "626 Night Market, two Pasadena POPS concerts, and Perk Nation's 40 Arcadia listings."
+        ),
+    },
+    {
         "category": "Restaurants, festivals, concerts, movies, and family events",
         "city": "Long Beach",
         "title": "Long Beach August 2026 food, music, and beach guide",
@@ -1835,6 +1846,11 @@ def _is_public_review_query(text: str) -> bool:
             "glendale august",
             "deukmejian",
             "brand park",
+            "arcadia event",
+            "arcadia events",
+            "arcadia august",
+            "626 night market",
+            "arboretum",
             "nisei week",
             "little tokyo",
             "cultural event",
@@ -1862,15 +1878,16 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     wants_fashion = _contains_any(text, ("fashion", "style", "shopping", "sample sale", "market week"))
     wants_sports = _contains_any(text, ("sports", "game", "games", "stadium", "ufc", "chargers", "rams"))
     wants_film = _contains_any(text, ("film", "films", "movie", "movies", "cinema", "burbank", "screening", "screenings", "q&a", "filmmaker"))
-    wants_concerts = _contains_any(text, ("concert", "concerts", "music", "warped", "vans", "long beach", "pasadena", "rose bowl", "kcon", "mount westmore")) or (
+    wants_concerts = _contains_any(text, ("concert", "concerts", "music", "warped", "vans", "long beach", "pasadena", "arcadia", "arboretum", "rose bowl", "kcon", "mount westmore")) or (
         not wants_film and _contains_any(text, ("festival", "festivals"))
     )
     wants_pasadena = _contains_any(text, ("pasadena", "rose bowl"))
     wants_glendale = _contains_any(text, ("glendale", "deukmejian", "brand park"))
+    wants_arcadia = _contains_any(text, ("arcadia", "626 night market", "santa anita", "arboretum"))
     wants_culture = _contains_any(text, ("nisei week", "little tokyo", "cultural event", "cultural events", "traditional arts"))
     wants_restaurants = _contains_any(text, ("restaurant", "restaurants", "dining", "dine la", "food", "food scene"))
     wants_fan_events = _contains_any(text, ("fan event", "fan events", "convention", "conventions", "d23"))
-    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_film, wants_pasadena, wants_glendale, wants_culture, wants_restaurants, wants_fan_events))
+    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_film, wants_pasadena, wants_glendale, wants_arcadia, wants_culture, wants_restaurants, wants_fan_events))
 
     if wants_fashion and not any((wants_sports, wants_concerts, wants_restaurants)):
         return "\n".join(
@@ -1910,6 +1927,17 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
                 "- Classic Film Under the Stars, Glendale Outdoors, and the Nature's Teamwork campfire.",
                 "- National Night Out, Wilderness Workday, and Montrose Harvest Market.",
                 "Open /articles/glendale-august-2026-guide for best-for notes, RSVP and weather guidance, official city sources, and links into 100 Glendale directory listings.",
+            )
+        )
+
+    if wants_arcadia and not wants_restaurants:
+        return "\n".join(
+            (
+                "The current PerkNation Arcadia guide ranks six August outings from August 4-29, 2026:",
+                "- 626 Night Market at Santa Anita Park from August 14-16.",
+                "- Arboretum Summer Nights on August 7 and 21.",
+                "- Pasadena POPS at the Arboretum on August 15 and 29, plus Arcadia National Night Out on August 4.",
+                "Open /articles/arcadia-august-2026-guide for best-for notes, parking, picnic, heat, and transit guidance, official sources, and links into 40 Arcadia directory listings.",
             )
         )
 

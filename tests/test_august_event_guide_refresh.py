@@ -14,13 +14,15 @@ def test_august_guide_has_sixteen_ranked_source_backed_plans() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Sixteen Southern California summer plans" in html
-    assert 'dateModified": "2026-08-02"' in html
+    assert 'dateModified": "2026-08-03"' in html
     for expected in (
         "West Hollywood Summer Sounds",
         "Just Like Heaven in Pasadena",
         "Noah Kahan at the Rose Bowl",
         "Nisei Week in Little Tokyo",
         "/articles/nisei-week-little-tokyo-2026-guide",
+        "/articles/arcadia-august-2026-guide",
+        "626 Night Market in Arcadia",
         "Best for:",
         "/articles/dine-la-city-west-hollywood-2026",
         "/directory?city=Pasadena",
@@ -45,7 +47,7 @@ def test_august_guide_card_is_current_on_both_homepages() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated August 1" in response.text
+        assert "Updated August 3" in response.text
         assert "Sixteen Southern California summer plans, ranked." in response.text
 
 
