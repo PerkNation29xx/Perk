@@ -832,6 +832,18 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         ),
     },
     {
+        "category": "Concerts, coastal art, wellness, movies, markets, and local history",
+        "city": "Santa Monica",
+        "title": "Santa Monica August 2026 coastal events guide",
+        "timing": "August 7-September 27, 2026",
+        "route": "/articles/santa-monica-august-2026-guide",
+        "details": (
+            "Seven ranked plans covering Art on Ocean, two Sunset Swims, Cinema by the Sea, "
+            "Wellness & Waves, a Pier history talk, Downtown farmers markets, and the inaugural "
+            "Ocean Way Festival, with transit, street-closure, weather, and reservation guidance."
+        ),
+    },
+    {
         "category": "Restaurants, festivals, concerts, movies, and family events",
         "city": "Long Beach",
         "title": "Long Beach August 2026 food, music, and beach guide",
@@ -1851,6 +1863,12 @@ def _is_public_review_query(text: str) -> bool:
             "arcadia august",
             "626 night market",
             "arboretum",
+            "santa monica event",
+            "santa monica events",
+            "santa monica august",
+            "wellness & waves",
+            "art on ocean",
+            "ocean way festival",
             "nisei week",
             "little tokyo",
             "cultural event",
@@ -1878,16 +1896,28 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     wants_fashion = _contains_any(text, ("fashion", "style", "shopping", "sample sale", "market week"))
     wants_sports = _contains_any(text, ("sports", "game", "games", "stadium", "ufc", "chargers", "rams"))
     wants_film = _contains_any(text, ("film", "films", "movie", "movies", "cinema", "burbank", "screening", "screenings", "q&a", "filmmaker"))
-    wants_concerts = _contains_any(text, ("concert", "concerts", "music", "warped", "vans", "long beach", "pasadena", "arcadia", "arboretum", "rose bowl", "kcon", "mount westmore")) or (
+    wants_concerts = _contains_any(text, ("concert", "concerts", "music", "warped", "vans", "long beach", "pasadena", "arcadia", "arboretum", "santa monica", "ocean way", "rose bowl", "kcon", "mount westmore")) or (
         not wants_film and _contains_any(text, ("festival", "festivals"))
     )
     wants_pasadena = _contains_any(text, ("pasadena", "rose bowl"))
     wants_glendale = _contains_any(text, ("glendale", "deukmejian", "brand park"))
     wants_arcadia = _contains_any(text, ("arcadia", "626 night market", "santa anita", "arboretum"))
+    wants_santa_monica = _contains_any(text, ("santa monica", "wellness & waves", "art on ocean", "ocean way festival"))
     wants_culture = _contains_any(text, ("nisei week", "little tokyo", "cultural event", "cultural events", "traditional arts"))
     wants_restaurants = _contains_any(text, ("restaurant", "restaurants", "dining", "dine la", "food", "food scene"))
     wants_fan_events = _contains_any(text, ("fan event", "fan events", "convention", "conventions", "d23"))
-    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_film, wants_pasadena, wants_glendale, wants_arcadia, wants_culture, wants_restaurants, wants_fan_events))
+    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_film, wants_pasadena, wants_glendale, wants_arcadia, wants_santa_monica, wants_culture, wants_restaurants, wants_fan_events))
+
+    if wants_santa_monica and not wants_restaurants:
+        return "\n".join(
+            (
+                "The current PerkNation Santa Monica guide ranks seven late-summer plans from August 7-September 27, 2026:",
+                "- Art on Ocean on August 8 and Sunset Swim on August 7 and 21.",
+                "- Cinema by the Sea, free Wellness & Waves mornings, a free Pier history talk, and Downtown farmers markets.",
+                "- Ocean Way Festival on September 26-27, with ticket and car-free arrival guidance to decide in August.",
+                "Open /articles/santa-monica-august-2026-guide for best-for notes, reservations, coastal weather, street closures, transit, and official sources.",
+            )
+        )
 
     if wants_fashion and not any((wants_sports, wants_concerts, wants_restaurants)):
         return "\n".join(
