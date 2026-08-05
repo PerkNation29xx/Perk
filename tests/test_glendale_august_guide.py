@@ -15,11 +15,11 @@ AUGUST_GUIDE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-cal
 def test_glendale_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Glendale has nine August plans" in html
-    assert 'dateModified": "2026-08-02"' in html
-    assert html.count("<h2>") >= 13
+    assert "Glendale has eight August plans" in html
+    assert 'dateModified": "2026-08-05"' in html
+    assert html.count("<h2>") >= 12
     for expected in (
-        "9 ranked plans",
+        "8 ranked plans",
         "100 Glendale listings",
         "Night Sky Adventures",
         "Summer Concerts in the Park",
@@ -27,7 +27,6 @@ def test_glendale_guide_is_substantial_source_backed_and_reader_facing() -> None
         "Classic Film Under the Stars",
         "Glendale Outdoors!",
         "Nature's Teamwork",
-        "National Night Out",
         "Wilderness Workday",
         "Montrose Harvest Market",
         "Best for:",
@@ -57,7 +56,7 @@ def test_glendale_routes_image_homepage_cards_and_sitemaps() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "9 ranked plans" in response.text
+        assert "8 ranked plans" in response.text
 
     image = client.get("/assets/articles/glendale-august-2026-guide.jpg")
     assert image.status_code == 200
@@ -69,7 +68,7 @@ def test_glendale_routes_image_homepage_cards_and_sitemaps() -> None:
         response = client.get(route)
         assert response.status_code == 200
         assert response.text.count("New August 2 · Glendale") == 1
-        assert "Glendale has nine August plans that make the foothills feel close." in response.text
+        assert "Glendale has eight August plans that make the foothills feel close." in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
@@ -82,6 +81,7 @@ def test_glendale_routes_image_homepage_cards_and_sitemaps() -> None:
 def test_glendale_guide_is_cross_linked_and_available_to_public_answers() -> None:
     august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
     assert "/articles/glendale-august-2026-guide" in august_html
+    assert "National Night Out" not in ARTICLE.read_text(encoding="utf-8")
 
     answer = _public_review_live_query_response(
         "what current Glendale August events guide is covered?",
@@ -89,6 +89,6 @@ def test_glendale_guide_is_cross_linked_and_available_to_public_answers() -> Non
     )
 
     assert answer
-    assert "ranks nine August plans" in answer
+    assert "ranks eight August plans" in answer
     assert "/articles/glendale-august-2026-guide" in answer
     assert "Pasadena" not in answer

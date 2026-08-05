@@ -15,7 +15,9 @@ def test_d23_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "D23 turns Anaheim into a nine-day fan itinerary" in html
-    assert 'dateModified": "2026-07-28"' in html
+    assert 'dateModified": "2026-08-05"' in html
+    assert "full-day Sunday passes" in html
+    assert "overnight queuing is not available" in html
     assert html.count("<h2>") >= 12
     for expected in (
         "Afternoon Only Fan Pass",

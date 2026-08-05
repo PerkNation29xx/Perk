@@ -812,23 +812,35 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, trails, family events, markets, and outdoor culture",
         "city": "Glendale",
         "title": "Glendale August 2026 concerts, trails, and culture guide",
-        "timing": "August 4-30, 2026",
+        "timing": "August 5-30, 2026",
         "route": "/articles/glendale-august-2026-guide",
         "details": (
-            "Nine ranked plans covering Night Sky Adventures, two summer concerts, the free Wander the "
+            "Eight ranked plans covering Night Sky Adventures, two summer concerts, the free Wander the "
             "Wilderness Bus, Classic Film Under the Stars, Glendale Outdoors, the Nature's Teamwork campfire, "
-            "National Night Out, Wilderness Workday, Montrose Harvest Market, and Perk Nation's 100 Glendale listings."
+            "Wilderness Workday, Montrose Harvest Market, and Perk Nation's 100 Glendale listings."
         ),
     },
     {
         "category": "Night markets, garden concerts, community events, and local dining",
         "city": "Arcadia",
         "title": "Arcadia August 2026 night market and concert guide",
-        "timing": "August 4-29, 2026",
+        "timing": "August 7-29, 2026",
         "route": "/articles/arcadia-august-2026-guide",
         "details": (
-            "Six ranked outings covering National Night Out, two Arboretum Summer Nights dates, "
+            "Five ranked outings covering two Arboretum Summer Nights dates, "
             "626 Night Market, two Pasadena POPS concerts, and Perk Nation's 40 Arcadia listings."
+        ),
+    },
+    {
+        "category": "Art festivals, museums, galleries, concerts, and coastal culture",
+        "city": "Laguna Beach and Orange County",
+        "title": "Laguna Beach August 2026 arts and festival guide",
+        "timing": "August 6-September 6, 2026",
+        "route": "/articles/laguna-beach-august-2026-guide",
+        "details": (
+            "Nine ranked plans covering Pageant of the Masters, Sawdust Art Festival, the Passport to the Arts, "
+            "First Thursdays Art Walk, Festival of Arts, Laguna Art-A-Fair, Laguna Art Museum, Music in the Park, "
+            "Music at the Promenade, trolley planning, and Perk Nation's 24 Laguna Beach listings."
         ),
     },
     {
@@ -883,11 +895,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, and festivals",
         "city": "Southern California",
-        "title": "Sixteen Southern California summer plans",
+        "title": "Seventeen Southern California summer plans",
         "timing": "July 31-August 29, 2026",
         "route": "/articles/southern-california-august-events-2026",
         "details": (
-            "Ranked planning guide covering the OC Fair, Burbank film week, Long Beach food and music, "
+            "Ranked planning guide covering the OC Fair, Laguna Beach arts season, Burbank film week, Long Beach food and music, "
             "with a dedicated nine-plan Long Beach guide, Santa Monica outdoor programs, Glendale park events, "
             "Pasadena POPS and a dedicated ten-plan Pasadena August guide, West Hollywood Summer Sounds "
             "on August 16, Noah Kahan at the Rose Bowl on August 15, Just Like Heaven on August 22, and Nisei Week "
@@ -1869,6 +1881,12 @@ def _is_public_review_query(text: str) -> bool:
             "wellness & waves",
             "art on ocean",
             "ocean way festival",
+            "laguna beach event",
+            "laguna beach events",
+            "laguna beach august",
+            "pageant of the masters",
+            "passport to the arts",
+            "laguna art museum",
             "nisei week",
             "little tokyo",
             "cultural event",
@@ -1896,17 +1914,29 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     wants_fashion = _contains_any(text, ("fashion", "style", "shopping", "sample sale", "market week"))
     wants_sports = _contains_any(text, ("sports", "game", "games", "stadium", "ufc", "chargers", "rams"))
     wants_film = _contains_any(text, ("film", "films", "movie", "movies", "cinema", "burbank", "screening", "screenings", "q&a", "filmmaker"))
-    wants_concerts = _contains_any(text, ("concert", "concerts", "music", "warped", "vans", "long beach", "pasadena", "arcadia", "arboretum", "santa monica", "ocean way", "rose bowl", "kcon", "mount westmore")) or (
+    wants_concerts = _contains_any(text, ("concert", "concerts", "music", "warped", "vans", "long beach", "pasadena", "arcadia", "arboretum", "santa monica", "laguna beach", "pageant", "sawdust", "art walk", "ocean way", "rose bowl", "kcon", "mount westmore")) or (
         not wants_film and _contains_any(text, ("festival", "festivals"))
     )
     wants_pasadena = _contains_any(text, ("pasadena", "rose bowl"))
     wants_glendale = _contains_any(text, ("glendale", "deukmejian", "brand park"))
     wants_arcadia = _contains_any(text, ("arcadia", "626 night market", "santa anita", "arboretum"))
     wants_santa_monica = _contains_any(text, ("santa monica", "wellness & waves", "art on ocean", "ocean way festival"))
+    wants_laguna_beach = _contains_any(text, ("laguna beach", "pageant of the masters", "sawdust", "passport to the arts", "laguna art museum"))
     wants_culture = _contains_any(text, ("nisei week", "little tokyo", "cultural event", "cultural events", "traditional arts"))
     wants_restaurants = _contains_any(text, ("restaurant", "restaurants", "dining", "dine la", "food", "food scene"))
     wants_fan_events = _contains_any(text, ("fan event", "fan events", "convention", "conventions", "d23"))
-    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_film, wants_pasadena, wants_glendale, wants_arcadia, wants_santa_monica, wants_culture, wants_restaurants, wants_fan_events))
+    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_film, wants_pasadena, wants_glendale, wants_arcadia, wants_santa_monica, wants_laguna_beach, wants_culture, wants_restaurants, wants_fan_events))
+
+    if wants_laguna_beach and not wants_restaurants:
+        return "\n".join(
+            (
+                "The current PerkNation Laguna Beach guide ranks nine late-summer arts plans from August 6-September 6, 2026:",
+                "- Pageant of the Masters, Sawdust Art Festival, Festival of Arts, and Laguna Art-A-Fair.",
+                "- The three-festival Passport to the Arts, which does not include the Pageant.",
+                "- First Thursdays Art Walk, Laguna Art Museum, Music in the Park, and Music at the Promenade.",
+                "Open /articles/laguna-beach-august-2026-guide for best-for notes, ticket distinctions, trolley and parking guidance, official sources, and links into 24 Laguna Beach directory listings.",
+            )
+        )
 
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
@@ -1952,10 +1982,10 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_glendale and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Glendale guide ranks nine August plans from August 4-30, 2026:",
+                "The current PerkNation Glendale guide ranks eight August plans from August 5-30, 2026:",
                 "- Night Sky Adventures, two summer concerts, and the free Wander the Wilderness Bus.",
                 "- Classic Film Under the Stars, Glendale Outdoors, and the Nature's Teamwork campfire.",
-                "- National Night Out, Wilderness Workday, and Montrose Harvest Market.",
+                "- Wilderness Workday and Montrose Harvest Market.",
                 "Open /articles/glendale-august-2026-guide for best-for notes, RSVP and weather guidance, official city sources, and links into 100 Glendale directory listings.",
             )
         )
@@ -1963,10 +1993,10 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_arcadia and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Arcadia guide ranks six August outings from August 4-29, 2026:",
+                "The current PerkNation Arcadia guide ranks five August outings from August 7-29, 2026:",
                 "- 626 Night Market at Santa Anita Park from August 14-16.",
                 "- Arboretum Summer Nights on August 7 and 21.",
-                "- Pasadena POPS at the Arboretum on August 15 and 29, plus Arcadia National Night Out on August 4.",
+                "- Pasadena POPS at the Arboretum on August 15 and 29.",
                 "Open /articles/arcadia-august-2026-guide for best-for notes, parking, picnic, heat, and transit guidance, official sources, and links into 40 Arcadia directory listings.",
             )
         )

@@ -10,11 +10,11 @@ ROOT = Path(__file__).resolve().parents[1]
 ARTICLE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-california-august-events-2026.html"
 
 
-def test_august_guide_has_sixteen_ranked_source_backed_plans() -> None:
+def test_august_guide_has_seventeen_ranked_source_backed_plans() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Sixteen Southern California summer plans" in html
-    assert 'dateModified": "2026-08-04"' in html
+    assert "Seventeen Southern California summer plans" in html
+    assert 'dateModified": "2026-08-05"' in html
     for expected in (
         "West Hollywood Summer Sounds",
         "Just Like Heaven in Pasadena",
@@ -23,6 +23,7 @@ def test_august_guide_has_sixteen_ranked_source_backed_plans() -> None:
         "/articles/nisei-week-little-tokyo-2026-guide",
         "/articles/arcadia-august-2026-guide",
         "/articles/santa-monica-august-2026-guide",
+        "/articles/laguna-beach-august-2026-guide",
         "626 Night Market in Arcadia",
         "Best for:",
         "/articles/dine-la-city-west-hollywood-2026",
@@ -48,8 +49,8 @@ def test_august_guide_card_is_current_on_both_homepages() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated August 4" in response.text
-        assert "Sixteen Southern California summer plans, ranked." in response.text
+        assert "Updated August 5" in response.text
+        assert "Seventeen Southern California summer plans, ranked." in response.text
 
 
 def test_august_guide_stays_in_sitemaps_and_public_ai_context() -> None:
@@ -68,5 +69,5 @@ def test_august_guide_stays_in_sitemaps_and_public_ai_context() -> None:
         "home_local_guide",
     )
     assert answer
-    assert "Sixteen Southern California summer plans" in answer
+    assert "Seventeen Southern California summer plans" in answer
     assert "/articles/southern-california-august-events-2026" in answer
