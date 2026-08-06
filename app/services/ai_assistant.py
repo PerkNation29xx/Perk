@@ -832,6 +832,18 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         ),
     },
     {
+        "category": "Adaptive surfing, open-water swimming, nature programs, markets, and surf culture",
+        "city": "Huntington Beach and Orange County",
+        "title": "Huntington Beach August 2026 coastal events guide",
+        "timing": "August 7-29, 2026",
+        "route": "/articles/huntington-beach-august-2026-guide",
+        "details": (
+            "Seven ranked plans covering Life Rolls On adaptive surfing, the Huntington Beach Pier Swim, "
+            "two Bolsa Chica Grunion Runs, the WSL50 surf-history exhibition, Surf City Nights, Junior Rangers, "
+            "Litter Getters, the Bolsa Chica Barefoot Ball, and Perk Nation's 43 Huntington Beach listings."
+        ),
+    },
+    {
         "category": "Art festivals, museums, galleries, concerts, and coastal culture",
         "city": "Laguna Beach and Orange County",
         "title": "Laguna Beach August 2026 arts and festival guide",
@@ -895,11 +907,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, and festivals",
         "city": "Southern California",
-        "title": "Seventeen Southern California summer plans",
+        "title": "Eighteen Southern California summer plans",
         "timing": "July 31-August 29, 2026",
         "route": "/articles/southern-california-august-events-2026",
         "details": (
-            "Ranked planning guide covering the OC Fair, Laguna Beach arts season, Burbank film week, Long Beach food and music, "
+            "Ranked planning guide covering the OC Fair, Huntington Beach surf, swim, and nature programs, Laguna Beach arts season, Burbank film week, Long Beach food and music, "
             "with a dedicated nine-plan Long Beach guide, Santa Monica outdoor programs, Glendale park events, "
             "Pasadena POPS and a dedicated ten-plan Pasadena August guide, West Hollywood Summer Sounds "
             "on August 16, Noah Kahan at the Rose Bowl on August 15, Just Like Heaven on August 22, and Nisei Week "
@@ -1887,6 +1899,13 @@ def _is_public_review_query(text: str) -> bool:
             "pageant of the masters",
             "passport to the arts",
             "laguna art museum",
+            "huntington beach event",
+            "huntington beach events",
+            "huntington beach august",
+            "surf city nights",
+            "life rolls on",
+            "pier swim",
+            "bolsa chica",
             "nisei week",
             "little tokyo",
             "cultural event",
@@ -1914,7 +1933,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     wants_fashion = _contains_any(text, ("fashion", "style", "shopping", "sample sale", "market week"))
     wants_sports = _contains_any(text, ("sports", "game", "games", "stadium", "ufc", "chargers", "rams"))
     wants_film = _contains_any(text, ("film", "films", "movie", "movies", "cinema", "burbank", "screening", "screenings", "q&a", "filmmaker"))
-    wants_concerts = _contains_any(text, ("concert", "concerts", "music", "warped", "vans", "long beach", "pasadena", "arcadia", "arboretum", "santa monica", "laguna beach", "pageant", "sawdust", "art walk", "ocean way", "rose bowl", "kcon", "mount westmore")) or (
+    wants_concerts = _contains_any(text, ("concert", "concerts", "music", "warped", "vans", "long beach", "pasadena", "arcadia", "arboretum", "santa monica", "laguna beach", "huntington beach", "pageant", "sawdust", "art walk", "ocean way", "rose bowl", "kcon", "mount westmore")) or (
         not wants_film and _contains_any(text, ("festival", "festivals"))
     )
     wants_pasadena = _contains_any(text, ("pasadena", "rose bowl"))
@@ -1922,10 +1941,22 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     wants_arcadia = _contains_any(text, ("arcadia", "626 night market", "santa anita", "arboretum"))
     wants_santa_monica = _contains_any(text, ("santa monica", "wellness & waves", "art on ocean", "ocean way festival"))
     wants_laguna_beach = _contains_any(text, ("laguna beach", "pageant of the masters", "sawdust", "passport to the arts", "laguna art museum"))
+    wants_huntington_beach = _contains_any(text, ("huntington beach", "surf city", "life rolls on", "pier swim", "bolsa chica", "grunion"))
     wants_culture = _contains_any(text, ("nisei week", "little tokyo", "cultural event", "cultural events", "traditional arts"))
     wants_restaurants = _contains_any(text, ("restaurant", "restaurants", "dining", "dine la", "food", "food scene"))
     wants_fan_events = _contains_any(text, ("fan event", "fan events", "convention", "conventions", "d23"))
-    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_film, wants_pasadena, wants_glendale, wants_arcadia, wants_santa_monica, wants_laguna_beach, wants_culture, wants_restaurants, wants_fan_events))
+    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_film, wants_pasadena, wants_glendale, wants_arcadia, wants_santa_monica, wants_laguna_beach, wants_huntington_beach, wants_culture, wants_restaurants, wants_fan_events))
+
+    if wants_huntington_beach and not wants_restaurants:
+        return "\n".join(
+            (
+                "The current PerkNation Huntington Beach guide ranks seven coastal plans from August 7-29, 2026:",
+                "- Life Rolls On adaptive surfing on August 22 and the Huntington Beach Pier Swim on August 29.",
+                "- Bolsa Chica Grunion Runs, Junior Rangers, Litter Getters, and the Barefoot Ball conservation fundraiser.",
+                "- The WSL50 surf-history exhibition and Tuesday Surf City Nights market evenings.",
+                "Open /articles/huntington-beach-august-2026-guide for best-for notes, registration roles, ocean safety, late-night planning, official sources, and links into 43 Huntington Beach directory listings.",
+            )
+        )
 
     if wants_laguna_beach and not wants_restaurants:
         return "\n".join(
