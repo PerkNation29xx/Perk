@@ -832,6 +832,19 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         ),
     },
     {
+        "category": "Fairs, festivals, arts, concerts, movies, fitness, and coastal events",
+        "city": "Orange County",
+        "title": "Orange County August 2026 events and outings guide",
+        "timing": "August 7-September 6, 2026",
+        "route": "/articles/orange-county-august-2026-guide",
+        "details": (
+            "Ten ranked plans covering the OC Fair, D23 Anaheim week, Laguna Beach arts season, OC Parks free "
+            "concerts and movies, Huntington Beach surf and nature programs, Sea Country Festival, La Habra Corn "
+            "Festival, TheFitExpo Anaheim, San Clemente Fiesta, Orange International Street Fair planning, and "
+            "Perk Nation directory links across Orange County cities."
+        ),
+    },
+    {
         "category": "Adaptive surfing, open-water swimming, nature programs, markets, and surf culture",
         "city": "Huntington Beach and Orange County",
         "title": "Huntington Beach August 2026 coastal events guide",
@@ -1899,6 +1912,13 @@ def _is_public_review_query(text: str) -> bool:
             "pageant of the masters",
             "passport to the arts",
             "laguna art museum",
+            "orange county event",
+            "orange county events",
+            "orange county august",
+            "oc fair",
+            "sea country festival",
+            "corn festival",
+            "thefitexpo",
             "huntington beach event",
             "huntington beach events",
             "huntington beach august",
@@ -1939,13 +1959,25 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     wants_pasadena = _contains_any(text, ("pasadena", "rose bowl"))
     wants_glendale = _contains_any(text, ("glendale", "deukmejian", "brand park"))
     wants_arcadia = _contains_any(text, ("arcadia", "626 night market", "santa anita", "arboretum"))
+    wants_orange_county = _contains_any(text, ("orange county", "oc fair", "sea country festival", "corn festival", "thefitexpo"))
     wants_santa_monica = _contains_any(text, ("santa monica", "wellness & waves", "art on ocean", "ocean way festival"))
     wants_laguna_beach = _contains_any(text, ("laguna beach", "pageant of the masters", "sawdust", "passport to the arts", "laguna art museum"))
     wants_huntington_beach = _contains_any(text, ("huntington beach", "surf city", "life rolls on", "pier swim", "bolsa chica", "grunion"))
     wants_culture = _contains_any(text, ("nisei week", "little tokyo", "cultural event", "cultural events", "traditional arts"))
     wants_restaurants = _contains_any(text, ("restaurant", "restaurants", "dining", "dine la", "food", "food scene"))
     wants_fan_events = _contains_any(text, ("fan event", "fan events", "convention", "conventions", "d23"))
-    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_film, wants_pasadena, wants_glendale, wants_arcadia, wants_santa_monica, wants_laguna_beach, wants_huntington_beach, wants_culture, wants_restaurants, wants_fan_events))
+    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_film, wants_pasadena, wants_glendale, wants_arcadia, wants_orange_county, wants_santa_monica, wants_laguna_beach, wants_huntington_beach, wants_culture, wants_restaurants, wants_fan_events))
+
+    if wants_orange_county and not wants_restaurants:
+        return "\n".join(
+            (
+                "The current PerkNation Orange County guide ranks ten late-summer plans from August 7-September 6, 2026:",
+                "- The OC Fair final stretch, D23 Anaheim week, and Laguna Beach's overlapping arts season.",
+                "- Free OC Parks concerts and movies, Huntington Beach surf and nature programs, Sea Country Festival, and the La Habra Corn Festival.",
+                "- TheFitExpo Anaheim, San Clemente Fiesta, and Orange International Street Fair planning.",
+                "Open /articles/orange-county-august-2026-guide for best-for rankings, admission and parking notes, official sources, ready-made itineraries, and links into current Orange County city directories.",
+            )
+        )
 
     if wants_huntington_beach and not wants_restaurants:
         return "\n".join(

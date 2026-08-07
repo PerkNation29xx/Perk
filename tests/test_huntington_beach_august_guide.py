@@ -71,7 +71,7 @@ def test_huntington_beach_routes_image_homepages_and_sitemap() -> None:
         assert response.status_code == 200
         assert response.text.count("New August 6 · Huntington Beach") == 1
         assert "Huntington Beach has seven August plans that go beyond a beach day." in response.text
-        assert "Updated August 6" in response.text
+        assert "Updated August 7" in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     assert "<loc>https://perknation.app/articles/huntington-beach-august-2026-guide</loc>" in root_sitemap.text
@@ -81,7 +81,7 @@ def test_huntington_beach_roundup_link_and_public_answer_are_scoped() -> None:
     august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
     assert "/articles/huntington-beach-august-2026-guide" in august_html
     assert "Huntington Beach late-August surf, swim, and nature" in august_html
-    assert 'dateModified": "2026-08-06"' in august_html
+    assert 'dateModified": "2026-08-07"' in august_html
 
     answer = _public_review_live_query_response(
         "what current Huntington Beach August events guide is covered?",
