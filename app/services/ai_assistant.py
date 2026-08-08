@@ -1965,8 +1965,20 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     wants_huntington_beach = _contains_any(text, ("huntington beach", "surf city", "life rolls on", "pier swim", "bolsa chica", "grunion"))
     wants_culture = _contains_any(text, ("nisei week", "little tokyo", "cultural event", "cultural events", "traditional arts"))
     wants_restaurants = _contains_any(text, ("restaurant", "restaurants", "dining", "dine la", "food", "food scene"))
+    wants_d23 = _contains_any(text, ("d23", "anaheim fan event", "anaheim fan events", "anaheim convention"))
     wants_fan_events = _contains_any(text, ("fan event", "fan events", "convention", "conventions", "d23"))
-    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_film, wants_pasadena, wants_glendale, wants_arcadia, wants_orange_county, wants_santa_monica, wants_laguna_beach, wants_huntington_beach, wants_culture, wants_restaurants, wants_fan_events))
+    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_film, wants_pasadena, wants_glendale, wants_arcadia, wants_orange_county, wants_santa_monica, wants_laguna_beach, wants_huntington_beach, wants_culture, wants_restaurants, wants_d23, wants_fan_events))
+
+    if wants_d23 and not wants_restaurants:
+        return "\n".join(
+            (
+                "The current PerkNation D23 Anaheim guide covers the August 8-16, 2026 fan-event week:",
+                "- D23 currently lists Sunday full-day passes plus Saturday and Sunday afternoon-only passes starting at $49.",
+                "- Reservation assignments are being emailed August 7-10; standby is available for most Convention Center programming, but not Honda Center presentations.",
+                "- The guide ranks the August 14-16 Ultimate Disney Fan Event, Muzeo's Walt Disney Archives exhibition, Bottle Logic, the Anaheim Packing District, Angel Stadium, Disneyland Resort, and a no-pass Anaheim fallback.",
+                "Open /articles/d23-anaheim-2026-guide for best-for rankings, entry and bag guidance, official sources, ready-made plans, and links into 35 Anaheim directory listings.",
+            )
+        )
 
     if wants_orange_county and not wants_restaurants:
         return "\n".join(

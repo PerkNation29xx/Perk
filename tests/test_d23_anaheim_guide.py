@@ -81,5 +81,9 @@ def test_d23_guide_is_available_to_public_review_answers() -> None:
     )
 
     assert answer
-    assert "D23 Anaheim 2026 practical guide" in answer
+    assert "D23 Anaheim guide" in answer
+    assert "Sunday full-day passes" in answer
+    assert "Reservation assignments are being emailed August 7-10" in answer
     assert "/articles/d23-anaheim-2026-guide" in answer
+    assert "KCON" not in answer
+    assert "Pasadena" not in answer
