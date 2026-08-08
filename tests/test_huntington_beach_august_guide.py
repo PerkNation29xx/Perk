@@ -15,11 +15,11 @@ AUGUST_GUIDE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-cal
 def test_huntington_beach_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Huntington Beach has seven August plans" in html
-    assert 'dateModified": "2026-08-06"' in html
-    assert html.count("<h2>") >= 12
+    assert "Huntington Beach has six late-August plans" in html
+    assert 'dateModified": "2026-08-08"' in html
+    assert html.count("<h2>") >= 11
     for expected in (
-        "7 ranked plans",
+        "6 ranked plans",
         "43 Huntington Beach listings",
         "Life Rolls On",
         "Huntington Beach Pier Swim",
@@ -28,7 +28,6 @@ def test_huntington_beach_guide_is_substantial_source_backed_and_reader_facing()
         "Surf City Nights",
         "Junior Rangers",
         "Litter Getters",
-        "Barefoot Ball",
         "Best for:",
         "/directory?city=Huntington%20Beach",
         "/articles/southern-california-august-events-2026",
@@ -58,7 +57,7 @@ def test_huntington_beach_routes_image_homepages_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "7 ranked plans" in response.text
+        assert "6 ranked plans" in response.text
 
     image = client.get("/assets/articles/huntington-beach-august-2026-guide.jpg")
     assert image.status_code == 200
@@ -69,9 +68,9 @@ def test_huntington_beach_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("New August 6 · Huntington Beach") == 1
-        assert "Huntington Beach has seven August plans that go beyond a beach day." in response.text
-        assert "Updated August 7" in response.text
+        assert response.text.count("Updated August 8 · Huntington Beach") == 1
+        assert "Huntington Beach has six late-August plans that go beyond a beach day." in response.text
+        assert "Updated August 8" in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     assert "<loc>https://perknation.app/articles/huntington-beach-august-2026-guide</loc>" in root_sitemap.text
@@ -81,7 +80,7 @@ def test_huntington_beach_roundup_link_and_public_answer_are_scoped() -> None:
     august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
     assert "/articles/huntington-beach-august-2026-guide" in august_html
     assert "Huntington Beach late-August surf, swim, and nature" in august_html
-    assert 'dateModified": "2026-08-07"' in august_html
+    assert 'dateModified": "2026-08-08"' in august_html
 
     answer = _public_review_live_query_response(
         "what current Huntington Beach August events guide is covered?",
@@ -89,6 +88,7 @@ def test_huntington_beach_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "ranks seven coastal plans" in answer
+    assert "ranks six coastal plans" in answer
+    assert "Barefoot Ball" not in answer
     assert "/articles/huntington-beach-august-2026-guide" in answer
     assert "Laguna Beach" not in answer

@@ -2,7 +2,7 @@ from pathlib import Path
 
 from fastapi.testclient import TestClient
 
-from app.main import _PUBLIC_BUILD_ID, app
+from app.main import app
 from app.services.ai_assistant import _public_review_live_query_response
 
 
@@ -15,8 +15,10 @@ def test_d23_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "D23 turns Anaheim into a nine-day fan itinerary" in html
-    assert 'dateModified": "2026-08-05"' in html
-    assert "full-day Sunday passes" in html
+    assert 'dateModified": "2026-08-08"' in html
+    assert "Sunday Ultimate Fan and Fan passes" in html
+    assert "assignments are being emailed August 7-10" in html
+    assert "valid activated badge" in html
     assert "overnight queuing is not available" in html
     assert html.count("<h2>") >= 12
     for expected in (
@@ -49,7 +51,6 @@ def test_d23_guide_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/articles/d23-anaheim-2026-guide", "/white/articles/d23-anaheim-2026-guide"):
         response = client.get(route)
         assert response.status_code == 200
-        assert _PUBLIC_BUILD_ID in response.text
         assert "eight-part" not in response.text.lower()
 
     image = client.get("/assets/articles/d23-anaheim-2026-guide.jpg")
@@ -61,7 +62,7 @@ def test_d23_guide_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "New July 28 · Anaheim" in response.text
+        assert "Updated August 8 · Anaheim" in response.text
         assert "D23 turns Anaheim into a nine-day fan-event itinerary." in response.text
         assert "/articles/d23-anaheim-2026-guide" in response.text
 

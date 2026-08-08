@@ -15,11 +15,11 @@ AUGUST_GUIDE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-cal
 def test_arcadia_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Arcadia has five August outings" in html
-    assert 'dateModified": "2026-08-05"' in html
-    assert html.count("<h2>") >= 10
+    assert "Arcadia has four current August outings" in html
+    assert 'dateModified": "2026-08-08"' in html
+    assert html.count("<h2>") >= 9
     for expected in (
-        "5 ranked outings",
+        "4 ranked outings",
         "40 Arcadia listings",
         "626 Night Market",
         "Pasadena POPS",
@@ -53,7 +53,7 @@ def test_arcadia_routes_image_homepage_cards_and_sitemaps() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "5 ranked outings" in response.text
+        assert "4 ranked outings" in response.text
 
     image = client.get("/assets/articles/arcadia-august-2026-guide.jpg")
     assert image.status_code == 200
@@ -64,9 +64,9 @@ def test_arcadia_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("New August 3 · Arcadia") == 1
-        assert "Arcadia has five August outings worth building an evening around." in response.text
-        assert "Updated August 7" in response.text
+        assert response.text.count("Updated August 8 · Arcadia") == 1
+        assert "Arcadia has four current August outings worth building an evening around." in response.text
+        assert "Updated August 8" in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
@@ -81,7 +81,7 @@ def test_arcadia_guide_replaces_expired_roundup_copy_and_scopes_public_answer() 
     assert "/articles/arcadia-august-2026-guide" in august_html
     assert "626 Night Market in Arcadia" in august_html
     assert "Thursday evenings through August at the City Hall Lawn" not in august_html
-    assert 'dateModified": "2026-08-07"' in august_html
+    assert 'dateModified": "2026-08-08"' in august_html
     assert "National Night Out" not in ARTICLE.read_text(encoding="utf-8")
 
     answer = _public_review_live_query_response(
@@ -90,6 +90,7 @@ def test_arcadia_guide_replaces_expired_roundup_copy_and_scopes_public_answer() 
     )
 
     assert answer
-    assert "ranks five August outings" in answer
+    assert "ranks four August outings" in answer
+    assert "August 7" not in answer
     assert "/articles/arcadia-august-2026-guide" in answer
     assert "Glendale" not in answer

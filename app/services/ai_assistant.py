@@ -824,10 +824,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Night markets, garden concerts, community events, and local dining",
         "city": "Arcadia",
         "title": "Arcadia August 2026 night market and concert guide",
-        "timing": "August 7-29, 2026",
+        "timing": "August 8-29, 2026",
         "route": "/articles/arcadia-august-2026-guide",
         "details": (
-            "Five ranked outings covering two Arboretum Summer Nights dates, "
+            "Four ranked outings covering the August 21 Arboretum Summer Night, "
             "626 Night Market, two Pasadena POPS concerts, and Perk Nation's 40 Arcadia listings."
         ),
     },
@@ -835,7 +835,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Fairs, festivals, arts, concerts, movies, fitness, and coastal events",
         "city": "Orange County",
         "title": "Orange County August 2026 events and outings guide",
-        "timing": "August 7-September 6, 2026",
+        "timing": "August 8-September 6, 2026",
         "route": "/articles/orange-county-august-2026-guide",
         "details": (
             "Ten ranked plans covering the OC Fair, D23 Anaheim week, Laguna Beach arts season, OC Parks free "
@@ -848,12 +848,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Adaptive surfing, open-water swimming, nature programs, markets, and surf culture",
         "city": "Huntington Beach and Orange County",
         "title": "Huntington Beach August 2026 coastal events guide",
-        "timing": "August 7-29, 2026",
+        "timing": "August 8-29, 2026",
         "route": "/articles/huntington-beach-august-2026-guide",
         "details": (
-            "Seven ranked plans covering Life Rolls On adaptive surfing, the Huntington Beach Pier Swim, "
+            "Six ranked plans covering Life Rolls On adaptive surfing, the Huntington Beach Pier Swim, "
             "two Bolsa Chica Grunion Runs, the WSL50 surf-history exhibition, Surf City Nights, Junior Rangers, "
-            "Litter Getters, the Bolsa Chica Barefoot Ball, and Perk Nation's 43 Huntington Beach listings."
+            "Litter Getters, and Perk Nation's 43 Huntington Beach listings."
         ),
     },
     {
@@ -872,10 +872,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, coastal art, wellness, movies, markets, and local history",
         "city": "Santa Monica",
         "title": "Santa Monica August 2026 coastal events guide",
-        "timing": "August 7-September 27, 2026",
+        "timing": "August 8-September 27, 2026",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Seven ranked plans covering Art on Ocean, two Sunset Swims, Cinema by the Sea, "
+            "Seven ranked plans covering Art on Ocean, the August 21 Sunset Swim, Cinema by the Sea, "
             "Wellness & Waves, a Pier history talk, Downtown farmers markets, and the inaugural "
             "Ocean Way Festival, with transit, street-closure, weather, and reservation guidance."
         ),
@@ -950,7 +950,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "timing": "August 8-16, 2026",
         "route": "/articles/d23-anaheim-2026-guide",
         "details": (
-            "Ranked guide to D23's Anaheim week, including current pass and standby guidance, the August 14-16 "
+            "Ranked guide to D23's Anaheim week, including August 8 ticket inventory, August 7-10 reservation-email timing, standby guidance, the August 14-16 "
             "Ultimate Disney Fan Event, Muzeo's Walt Disney Archives exhibition, Bottle Logic, the Anaheim "
             "Packing District, Angel Stadium, Disneyland Resort, and Perk Nation's Anaheim directory."
         ),
@@ -1971,7 +1971,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_orange_county and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Orange County guide ranks ten late-summer plans from August 7-September 6, 2026:",
+                "The current PerkNation Orange County guide ranks ten late-summer plans from August 8-September 6, 2026:",
                 "- The OC Fair final stretch, D23 Anaheim week, and Laguna Beach's overlapping arts season.",
                 "- Free OC Parks concerts and movies, Huntington Beach surf and nature programs, Sea Country Festival, and the La Habra Corn Festival.",
                 "- TheFitExpo Anaheim, San Clemente Fiesta, and Orange International Street Fair planning.",
@@ -1982,9 +1982,9 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_huntington_beach and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Huntington Beach guide ranks seven coastal plans from August 7-29, 2026:",
+                "The current PerkNation Huntington Beach guide ranks six coastal plans from August 8-29, 2026:",
                 "- Life Rolls On adaptive surfing on August 22 and the Huntington Beach Pier Swim on August 29.",
-                "- Bolsa Chica Grunion Runs, Junior Rangers, Litter Getters, and the Barefoot Ball conservation fundraiser.",
+                "- Bolsa Chica Grunion Runs, Junior Rangers, and Litter Getters.",
                 "- The WSL50 surf-history exhibition and Tuesday Surf City Nights market evenings.",
                 "Open /articles/huntington-beach-august-2026-guide for best-for notes, registration roles, ocean safety, late-night planning, official sources, and links into 43 Huntington Beach directory listings.",
             )
@@ -2004,8 +2004,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks seven late-summer plans from August 7-September 27, 2026:",
-                "- Art on Ocean on August 8 and Sunset Swim on August 7 and 21.",
+                "The current PerkNation Santa Monica guide ranks seven late-summer plans from August 8-September 27, 2026:",
+                "- Art on Ocean on August 8 and the remaining Sunset Swim on August 21.",
                 "- Cinema by the Sea, free Wellness & Waves mornings, a free Pier history talk, and Downtown farmers markets.",
                 "- Ocean Way Festival on September 26-27, with ticket and car-free arrival guidance to decide in August.",
                 "Open /articles/santa-monica-august-2026-guide for best-for notes, reservations, coastal weather, street closures, transit, and official sources.",
@@ -2056,9 +2056,9 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_arcadia and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Arcadia guide ranks five August outings from August 7-29, 2026:",
+                "The current PerkNation Arcadia guide ranks four August outings from August 8-29, 2026:",
                 "- 626 Night Market at Santa Anita Park from August 14-16.",
-                "- Arboretum Summer Nights on August 7 and 21.",
+                "- Arboretum Summer Nights on August 21.",
                 "- Pasadena POPS at the Arboretum on August 15 and 29.",
                 "Open /articles/arcadia-august-2026-guide for best-for notes, parking, picnic, heat, and transit guidance, official sources, and links into 40 Arcadia directory listings.",
             )
