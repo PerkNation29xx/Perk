@@ -46,7 +46,7 @@ def test_burbank_film_guide_is_substantial_source_backed_and_reader_facing() -> 
         assert forbidden.lower() not in html.lower()
 
 
-def test_burbank_film_routes_image_homepage_cards_and_sitemaps() -> None:
+def test_burbank_film_routes_image_expired_surface_cleanup_and_sitemaps() -> None:
     client = TestClient(app)
 
     for route in (
@@ -66,8 +66,8 @@ def test_burbank_film_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("New July 30 · Burbank") == 1
-        assert "Burbank film week has 120-plus screenings. Start with the right few." in response.text
+        assert "New July 30 · Burbank" not in response.text
+        assert "Burbank film week has 120-plus screenings. Start with the right few." not in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
@@ -77,10 +77,10 @@ def test_burbank_film_routes_image_homepage_cards_and_sitemaps() -> None:
     assert "<loc>https://perknation.app/white/articles/burbank-film-festival-2026-guide</loc>" not in root_sitemap.text
 
 
-def test_burbank_film_guide_is_cross_linked_and_available_to_public_answers() -> None:
+def test_burbank_film_guide_is_removed_from_current_roundup_and_marked_concluded_in_answers() -> None:
     august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
-    assert 'dateModified": "2026-08-08"' in august_html
-    assert "/articles/burbank-film-festival-2026-guide" in august_html
+    assert 'dateModified": "2026-08-09"' in august_html
+    assert "/articles/burbank-film-festival-2026-guide" not in august_html
 
     answer = _public_review_live_query_response(
         "What current Burbank film festival guide is covered?",
@@ -88,7 +88,7 @@ def test_burbank_film_guide_is_cross_linked_and_available_to_public_answers() ->
     )
 
     assert answer
-    assert "Burbank International Film Festival 2026 practical guide" in answer
+    assert "concluded on August 8" in answer
     assert "/articles/burbank-film-festival-2026-guide" in answer
     assert "Warped Tour" not in answer
     assert "Mount Westmore" not in answer

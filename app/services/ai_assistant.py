@@ -797,14 +797,26 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     },
 
     {
+        "category": "Concerts, markets, local performances, family programs, and small businesses",
+        "city": "South Pasadena",
+        "title": "South Pasadena August 2026 local events guide",
+        "timing": "August 13-28, 2026",
+        "route": "/articles/south-pasadena-august-2026-guide",
+        "details": (
+            "Seven ranked plans covering the August 16 New Romantics concert in Garfield Park, three Thursday "
+            "farmers-market nights, a two-day Tournament of Roses fundraiser, weekly singer-songwriter and "
+            "musical-theater open mics, two family library activities, and Perk Nation's 97 South Pasadena listings."
+        ),
+    },
+    {
         "category": "Concerts, markets, museums, architecture, and fan events",
         "city": "Pasadena and nearby Arcadia / San Marino",
         "title": "Pasadena August 2026 concerts, markets, and culture guide",
-        "timing": "August 6-30, 2026",
+        "timing": "August 9-30, 2026",
         "route": "/articles/pasadena-august-2026-guide",
         "details": (
-            "Ten ranked plans covering Head In The Clouds, Noah Kahan at the Rose Bowl, the Rose Bowl Flea Market, "
-            "two Pasadena POPS nights, Free Day at The Huntington, Friday Nights at The Gamble House, Sunset Sessions, "
+            "Eight current ranked plans covering Noah Kahan at the Rose Bowl, the Rose Bowl Flea Market, "
+            "two Pasadena POPS nights, Friday Nights at The Gamble House, Sunset Sessions, "
             "America's Got Talent tapings, goat yoga, Power Morphicon, and Perk Nation's 563 Pasadena listings."
         ),
     },
@@ -812,11 +824,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, trails, family events, markets, and outdoor culture",
         "city": "Glendale",
         "title": "Glendale August 2026 concerts, trails, and culture guide",
-        "timing": "August 5-30, 2026",
+        "timing": "August 12-30, 2026",
         "route": "/articles/glendale-august-2026-guide",
         "details": (
-            "Eight ranked plans covering Night Sky Adventures, two summer concerts, the free Wander the "
-            "Wilderness Bus, Classic Film Under the Stars, Glendale Outdoors, the Nature's Teamwork campfire, "
+            "Six current ranked plans covering the final summer concert, the free Wander the "
+            "Wilderness Bus, Classic Film Under the Stars, the Nature's Teamwork campfire, "
             "Wilderness Workday, Montrose Harvest Market, and Perk Nation's 100 Glendale listings."
         ),
     },
@@ -835,12 +847,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Fairs, festivals, arts, concerts, movies, fitness, and coastal events",
         "city": "Orange County",
         "title": "Orange County August 2026 events and outings guide",
-        "timing": "August 8-September 6, 2026",
+        "timing": "August 9-September 6, 2026",
         "route": "/articles/orange-county-august-2026-guide",
         "details": (
-            "Ten ranked plans covering the OC Fair, D23 Anaheim week, Laguna Beach arts season, OC Parks free "
+            "Nine current ranked plans covering the OC Fair, D23 Anaheim week, Laguna Beach arts season, OC Parks free "
             "concerts and movies, Huntington Beach surf and nature programs, Sea Country Festival, La Habra Corn "
-            "Festival, TheFitExpo Anaheim, San Clemente Fiesta, Orange International Street Fair planning, and "
+            "Festival, TheFitExpo Anaheim, Orange International Street Fair planning, and "
             "Perk Nation directory links across Orange County cities."
         ),
     },
@@ -872,10 +884,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, coastal art, wellness, movies, markets, and local history",
         "city": "Santa Monica",
         "title": "Santa Monica August 2026 coastal events guide",
-        "timing": "August 8-September 27, 2026",
+        "timing": "August 15-September 27, 2026",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Seven ranked plans covering Art on Ocean, the August 21 Sunset Swim, Cinema by the Sea, "
+            "Six current ranked plans covering the August 21 Sunset Swim, Cinema by the Sea, "
             "Wellness & Waves, a Pier history talk, Downtown farmers markets, and the inaugural "
             "Ocean Way Festival, with transit, street-closure, weather, and reservation guidance."
         ),
@@ -906,27 +918,15 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         ),
     },
     {
-        "category": "Film festivals and creative industry",
-        "city": "Burbank",
-        "title": "Burbank International Film Festival 2026 practical guide",
-        "timing": "August 2-8, 2026",
-        "route": "/articles/burbank-film-festival-2026-guide",
-        "details": (
-            "Ranked guide to more than 120 screenings at AMC Burbank 16, filmmaker Q&As, industry panels, "
-            "downtown after-parties, the August 8 closing gala, city parking, hotels, dining, and Perk Nation's "
-            "968 Burbank directory listings."
-        ),
-    },
-    {
         "category": "Events, concerts, and festivals",
         "city": "Southern California",
         "title": "Eighteen Southern California summer plans",
-        "timing": "July 31-August 29, 2026",
+        "timing": "August 9-29, 2026",
         "route": "/articles/southern-california-august-events-2026",
         "details": (
-            "Ranked planning guide covering the OC Fair, Huntington Beach surf, swim, and nature programs, Laguna Beach arts season, Burbank film week, Long Beach food and music, "
+            "Ranked planning guide covering the OC Fair, Huntington Beach surf, swim, and nature programs, Laguna Beach arts season, South Pasadena concerts and markets, and Long Beach food and music, "
             "with a dedicated nine-plan Long Beach guide, Santa Monica outdoor programs, Glendale park events, "
-            "Pasadena POPS and a dedicated ten-plan Pasadena August guide, West Hollywood Summer Sounds "
+            "Pasadena POPS and a dedicated eight-plan Pasadena August guide, West Hollywood Summer Sounds "
             "on August 16, Noah Kahan at the Rose Bowl on August 15, Just Like Heaven on August 22, and Nisei Week "
             "in Little Tokyo from August 15-23."
         ),
@@ -1953,10 +1953,12 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     wants_fashion = _contains_any(text, ("fashion", "style", "shopping", "sample sale", "market week"))
     wants_sports = _contains_any(text, ("sports", "game", "games", "stadium", "ufc", "chargers", "rams"))
     wants_film = _contains_any(text, ("film", "films", "movie", "movies", "cinema", "burbank", "screening", "screenings", "q&a", "filmmaker"))
-    wants_concerts = _contains_any(text, ("concert", "concerts", "music", "warped", "vans", "long beach", "pasadena", "arcadia", "arboretum", "santa monica", "laguna beach", "huntington beach", "pageant", "sawdust", "art walk", "ocean way", "rose bowl", "kcon", "mount westmore")) or (
+    wants_concerts = _contains_any(text, ("concert", "concerts", "music", "warped", "vans", "long beach", "pasadena", "south pasadena", "arcadia", "arboretum", "santa monica", "laguna beach", "huntington beach", "pageant", "sawdust", "art walk", "ocean way", "rose bowl", "kcon", "mount westmore")) or (
         not wants_film and _contains_any(text, ("festival", "festivals"))
     )
     wants_pasadena = _contains_any(text, ("pasadena", "rose bowl"))
+    wants_south_pasadena = _contains_any(text, ("south pasadena", "garfield park", "mission street", "new romantics"))
+    wants_burbank = _contains_any(text, ("burbank", "burbank film festival"))
     wants_glendale = _contains_any(text, ("glendale", "deukmejian", "brand park"))
     wants_arcadia = _contains_any(text, ("arcadia", "626 night market", "santa anita", "arboretum"))
     wants_orange_county = _contains_any(text, ("orange county", "oc fair", "sea country festival", "corn festival", "thefitexpo"))
@@ -1967,7 +1969,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     wants_restaurants = _contains_any(text, ("restaurant", "restaurants", "dining", "dine la", "food", "food scene"))
     wants_d23 = _contains_any(text, ("d23", "anaheim fan event", "anaheim fan events", "anaheim convention"))
     wants_fan_events = _contains_any(text, ("fan event", "fan events", "convention", "conventions", "d23"))
-    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_film, wants_pasadena, wants_glendale, wants_arcadia, wants_orange_county, wants_santa_monica, wants_laguna_beach, wants_huntington_beach, wants_culture, wants_restaurants, wants_d23, wants_fan_events))
+    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_film, wants_pasadena, wants_south_pasadena, wants_burbank, wants_glendale, wants_arcadia, wants_orange_county, wants_santa_monica, wants_laguna_beach, wants_huntington_beach, wants_culture, wants_restaurants, wants_d23, wants_fan_events))
 
     if wants_d23 and not wants_restaurants:
         return "\n".join(
@@ -1983,10 +1985,10 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_orange_county and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Orange County guide ranks ten late-summer plans from August 8-September 6, 2026:",
+                "The current PerkNation Orange County guide ranks nine late-summer plans from August 9-September 6, 2026:",
                 "- The OC Fair final stretch, D23 Anaheim week, and Laguna Beach's overlapping arts season.",
                 "- Free OC Parks concerts and movies, Huntington Beach surf and nature programs, Sea Country Festival, and the La Habra Corn Festival.",
-                "- TheFitExpo Anaheim, San Clemente Fiesta, and Orange International Street Fair planning.",
+                "- TheFitExpo Anaheim and Orange International Street Fair planning.",
                 "Open /articles/orange-county-august-2026-guide for best-for rankings, admission and parking notes, official sources, ready-made itineraries, and links into current Orange County city directories.",
             )
         )
@@ -2016,8 +2018,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks seven late-summer plans from August 8-September 27, 2026:",
-                "- Art on Ocean on August 8 and the remaining Sunset Swim on August 21.",
+                "The current PerkNation Santa Monica guide ranks six late-summer plans from August 15-September 27, 2026:",
+                "- The remaining Sunset Swim on August 21.",
                 "- Cinema by the Sea, free Wellness & Waves mornings, a free Pier history talk, and Downtown farmers markets.",
                 "- Ocean Way Festival on September 26-27, with ticket and car-free arrival guidance to decide in August.",
                 "Open /articles/santa-monica-august-2026-guide for best-for notes, reservations, coastal weather, street closures, transit, and official sources.",
@@ -2043,12 +2045,32 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
             )
         )
 
+    if wants_south_pasadena and not wants_restaurants:
+        return "\n".join(
+            (
+                "The current PerkNation South Pasadena guide ranks seven local plans from August 13-28, 2026:",
+                "- The free New Romantics concert at Garfield Park on August 16.",
+                "- Thursday farmers-market nights plus weekly singer-songwriter and musical-theater open mics.",
+                "- The August 14-15 Tournament of Roses Yard Sale and August 17 and 21 family library activities.",
+                "Open /articles/south-pasadena-august-2026-guide for best-for notes, current official sources, compact itineraries, and links into 97 South Pasadena directory listings.",
+            )
+        )
+
+    if wants_burbank and not wants_restaurants:
+        return "\n".join(
+            (
+                "The 2026 Burbank International Film Festival concluded on August 8, so PerkNation no longer presents it as an active event.",
+                "The planning article remains available at /articles/burbank-film-festival-2026-guide as a reference to the completed screening week.",
+                "For current local choices, browse /directory?city=Burbank for 968 Burbank listings and confirm new event dates with Visit Burbank or the event organizer.",
+            )
+        )
+
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Pasadena guide ranks ten August plans from August 6-30, 2026:",
-                "- Head In The Clouds, Noah Kahan at the Rose Bowl, and the Rose Bowl Flea Market.",
-                "- Two Pasadena POPS nights, Free Day at The Huntington, Friday Nights at The Gamble House, and Sunset Sessions.",
+                "The current PerkNation Pasadena guide ranks eight August plans from August 9-30, 2026:",
+                "- Noah Kahan at the Rose Bowl and the Rose Bowl Flea Market.",
+                "- Two Pasadena POPS nights, Friday Nights at The Gamble House, and Sunset Sessions.",
                 "- America's Got Talent tapings, goat yoga, and Power Morphicon.",
                 "Open /articles/pasadena-august-2026-guide for best-for notes, current access guidance, official sources, and links into 563 Pasadena directory listings.",
             )
@@ -2057,9 +2079,9 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_glendale and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Glendale guide ranks eight August plans from August 5-30, 2026:",
-                "- Night Sky Adventures, two summer concerts, and the free Wander the Wilderness Bus.",
-                "- Classic Film Under the Stars, Glendale Outdoors, and the Nature's Teamwork campfire.",
+                "The current PerkNation Glendale guide ranks six August plans from August 12-30, 2026:",
+                "- The final summer concert and the free Wander the Wilderness Bus.",
+                "- Classic Film Under the Stars and the Nature's Teamwork campfire.",
                 "- Wilderness Workday and Montrose Harvest Market.",
                 "Open /articles/glendale-august-2026-guide for best-for notes, RSVP and weather guidance, official city sources, and links into 100 Glendale directory listings.",
             )

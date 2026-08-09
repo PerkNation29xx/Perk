@@ -15,12 +15,11 @@ AUGUST_GUIDE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-cal
 def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Santa Monica has seven late-summer plans" in html
-    assert 'dateModified": "2026-08-08"' in html
-    assert html.count("<h2>") >= 12
+    assert "Santa Monica has six current late-summer plans" in html
+    assert 'dateModified": "2026-08-09"' in html
+    assert html.count("<h2>") >= 11
     for expected in (
-        "7 ranked plans",
-        "Art on Ocean",
+        "6 ranked plans",
         "Sunset Swim",
         "Cinema by the Sea",
         "Wellness &amp; Waves",
@@ -56,7 +55,7 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "7 ranked plans" in response.text
+        assert "6 ranked plans" in response.text
 
     image = client.get("/assets/articles/santa-monica-august-2026-guide.jpg")
     assert image.status_code == 200
@@ -67,9 +66,9 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 8 · Santa Monica") == 1
-        assert "Santa Monica has seven late-summer plans that work from morning through night." in response.text
-        assert "Updated August 8" in response.text
+        assert response.text.count("Updated August 9 · Santa Monica") == 1
+        assert "Santa Monica has six current late-summer plans that work from morning through night." in response.text
+        assert "Updated August 9" in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
@@ -82,8 +81,8 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
 def test_santa_monica_roundup_link_and_public_answer_are_scoped() -> None:
     august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
     assert "/articles/santa-monica-august-2026-guide" in august_html
-    assert "Art on Ocean, swims, and movies" in august_html
-    assert 'dateModified": "2026-08-08"' in august_html
+    assert "Santa Monica swims, movies, and Pier mornings" in august_html
+    assert 'dateModified": "2026-08-09"' in august_html
 
     answer = _public_review_live_query_response(
         "what current Santa Monica August events guide is covered?",
@@ -91,7 +90,7 @@ def test_santa_monica_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "ranks seven late-summer plans" in answer
+    assert "ranks six late-summer plans" in answer
     assert "August 7" not in answer
     assert "/articles/santa-monica-august-2026-guide" in answer
     assert "Glendale" not in answer

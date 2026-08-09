@@ -17,11 +17,11 @@ WHITE_HOME = ROOT / "app" / "web" / "home_portal_white" / "index.html"
 def test_orange_county_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Orange County has ten late-summer plans" in html
-    assert 'dateModified": "2026-08-08"' in html
-    assert html.count("<h2>") >= 14
+    assert "Orange County has nine current late-summer plans" in html
+    assert 'dateModified": "2026-08-09"' in html
+    assert html.count("<h2>") >= 13
     for expected in (
-        "10 ranked plans",
+        "9 ranked plans",
         "OC Fair",
         "D23 Anaheim week",
         "Laguna Beach arts season",
@@ -30,7 +30,6 @@ def test_orange_county_guide_is_substantial_source_backed_and_reader_facing() ->
         "Sea Country Festival",
         "La Habra Corn Festival",
         "TheFitExpo Anaheim",
-        "San Clemente Fiesta",
         "Orange International Street Fair",
         "Best for:",
         "/directory?city=Orange",
@@ -62,7 +61,7 @@ def test_orange_county_routes_image_homepages_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "10 ranked plans" in response.text
+        assert "9 ranked plans" in response.text
 
     image = client.get("/assets/articles/orange-county-august-2026-guide.jpg")
     assert image.status_code == 200
@@ -72,10 +71,10 @@ def test_orange_county_routes_image_homepages_and_sitemap() -> None:
 
     home_html = HOME.read_text(encoding="utf-8")
     white_html = WHITE_HOME.read_text(encoding="utf-8")
-    assert home_html.count("New August 7 · Orange County") == 1
-    assert white_html.count("New August 7 · Orange County") == 1
-    assert "Orange County has ten late-summer plans worth building a day around." in home_html
-    assert "Orange County has ten late-summer plans worth building a day around." in white_html
+    assert home_html.count("Updated August 9 · Orange County") == 1
+    assert white_html.count("Updated August 9 · Orange County") == 1
+    assert "Orange County has nine current late-summer plans worth building a day around." in home_html
+    assert "Orange County has nine current late-summer plans worth building a day around." in white_html
     assert "/white/articles/orange-county-august-2026-guide" in white_html
 
     root_sitemap = client.get("/sitemap.xml")
@@ -85,7 +84,7 @@ def test_orange_county_routes_image_homepages_and_sitemap() -> None:
 def test_orange_county_roundup_link_and_public_answer_are_scoped() -> None:
     august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
     assert "/articles/orange-county-august-2026-guide" in august_html
-    assert 'dateModified": "2026-08-08"' in august_html
+    assert 'dateModified": "2026-08-09"' in august_html
 
     answer = _public_review_live_query_response(
         "what current Orange County August events guide is covered?",
@@ -93,6 +92,6 @@ def test_orange_county_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "ranks ten late-summer plans" in answer
+    assert "ranks nine late-summer plans" in answer
     assert "/articles/orange-county-august-2026-guide" in answer
     assert "Pasadena" not in answer
