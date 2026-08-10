@@ -15,16 +15,15 @@ AUGUST_GUIDE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-cal
 def test_laguna_beach_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Laguna Beach has nine late-summer arts plans" in html
-    assert 'dateModified": "2026-08-05"' in html
+    assert "Laguna Beach has eight current late-summer arts plans" in html
+    assert 'dateModified": "2026-08-10"' in html
     assert html.count("<h2>") >= 13
     for expected in (
-        "9 ranked plans",
+        "8 ranked plans",
         "24 Laguna Beach listings",
         "Pageant of the Masters",
         "Sawdust Art Festival",
         "Passport to the Arts",
-        "First Thursdays Art Walk",
         "Festival of Arts Fine Art Show",
         "Laguna Art-A-Fair",
         "Laguna Art Museum",
@@ -39,6 +38,7 @@ def test_laguna_beach_guide_is_substantial_source_backed_and_reader_facing() -> 
         assert expected in html
 
     for forbidden in (
+        "First Thursdays Art Walk",
         "Examples from the official listing",
         "editorial image generated",
         "generated for this guide",
@@ -58,7 +58,7 @@ def test_laguna_beach_routes_image_homepage_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "9 ranked plans" in response.text
+        assert "8 ranked plans" in response.text
 
     image = client.get("/assets/articles/laguna-beach-august-2026-guide.jpg")
     assert image.status_code == 200
@@ -69,8 +69,8 @@ def test_laguna_beach_routes_image_homepage_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("New August 5 · Laguna Beach") == 1
-        assert "Laguna Beach has nine late-summer arts plans worth the trip." in response.text
+        assert response.text.count("Updated August 10 · Laguna Beach") == 1
+        assert "Laguna Beach has eight current late-summer arts plans worth the trip." in response.text
         assert "Updated August 8" in response.text
 
     root_sitemap = client.get("/sitemap.xml")
@@ -81,7 +81,7 @@ def test_laguna_beach_roundup_link_and_public_answer_are_scoped() -> None:
     august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
     assert "/articles/laguna-beach-august-2026-guide" in august_html
     assert "Laguna Beach summer arts season" in august_html
-    assert 'dateModified": "2026-08-09"' in august_html
+    assert 'dateModified": "2026-08-10"' in august_html
 
     answer = _public_review_live_query_response(
         "what current Laguna Beach August events guide is covered?",
@@ -89,6 +89,7 @@ def test_laguna_beach_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "ranks nine late-summer arts plans" in answer
+    assert "ranks eight current late-summer arts plans" in answer
+    assert "First Thursdays Art Walk" not in answer
     assert "/articles/laguna-beach-august-2026-guide" in answer
     assert "Santa Monica" not in answer

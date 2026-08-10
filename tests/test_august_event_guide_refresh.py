@@ -14,7 +14,7 @@ def test_august_guide_has_eighteen_ranked_source_backed_plans() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Eighteen Southern California summer plans" in html
-    assert 'dateModified": "2026-08-09"' in html
+    assert 'dateModified": "2026-08-10"' in html
     for expected in (
         "West Hollywood Summer Sounds",
         "Just Like Heaven in Pasadena",
@@ -51,7 +51,7 @@ def test_august_guide_card_is_current_on_both_homepages() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated August 9" in response.text
+        assert "Updated August 10" in response.text
         assert "Eighteen Southern California summer plans, ranked." in response.text
 
 

@@ -812,11 +812,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, markets, museums, architecture, and fan events",
         "city": "Pasadena and nearby Arcadia / San Marino",
         "title": "Pasadena August 2026 concerts, markets, and culture guide",
-        "timing": "August 9-30, 2026",
+        "timing": "August 14-30, 2026",
         "route": "/articles/pasadena-august-2026-guide",
         "details": (
-            "Eight current ranked plans covering Noah Kahan at the Rose Bowl, the Rose Bowl Flea Market, "
-            "two Pasadena POPS nights, Friday Nights at The Gamble House, Sunset Sessions, "
+            "Seven current ranked plans covering Noah Kahan at the Rose Bowl, two Pasadena POPS nights, "
+            "Friday Nights at The Gamble House, Sunset Sessions, "
             "America's Got Talent tapings, goat yoga, Power Morphicon, and Perk Nation's 563 Pasadena listings."
         ),
     },
@@ -847,7 +847,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Fairs, festivals, arts, concerts, movies, fitness, and coastal events",
         "city": "Orange County",
         "title": "Orange County August 2026 events and outings guide",
-        "timing": "August 9-September 6, 2026",
+        "timing": "August 10-September 6, 2026",
         "route": "/articles/orange-county-august-2026-guide",
         "details": (
             "Nine current ranked plans covering the OC Fair, D23 Anaheim week, Laguna Beach arts season, OC Parks free "
@@ -872,11 +872,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Art festivals, museums, galleries, concerts, and coastal culture",
         "city": "Laguna Beach and Orange County",
         "title": "Laguna Beach August 2026 arts and festival guide",
-        "timing": "August 6-September 6, 2026",
+        "timing": "August 10-September 6, 2026",
         "route": "/articles/laguna-beach-august-2026-guide",
         "details": (
-            "Nine ranked plans covering Pageant of the Masters, Sawdust Art Festival, the Passport to the Arts, "
-            "First Thursdays Art Walk, Festival of Arts, Laguna Art-A-Fair, Laguna Art Museum, Music in the Park, "
+            "Eight current ranked plans covering Pageant of the Masters, Sawdust Art Festival, the Passport to the Arts, "
+            "Festival of Arts, Laguna Art-A-Fair, Laguna Art Museum, Music in the Park, "
             "Music at the Promenade, trolley planning, and Perk Nation's 24 Laguna Beach listings."
         ),
     },
@@ -896,12 +896,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Restaurants, festivals, concerts, movies, and family events",
         "city": "Long Beach",
         "title": "Long Beach August 2026 food, music, and beach guide",
-        "timing": "July 31-August 22, 2026",
+        "timing": "August 10-30, 2026",
         "route": "/articles/long-beach-august-2026-guide",
         "details": (
-            "Nine ranked plans led by Food Scene Week's 100-plus participants from July 31-August 9, "
-            "plus Long Beach Jazz Fest, Stroll and Savor, Taste of Downtown, Moonlight Movies, city summer "
-            "programs, Jazz on the Bay, the Queen Mary movie night, Little Earth Cinema, and Perk Nation's "
+            "Eight current ranked plans covering Stroll and Savor, Taste of Downtown, the New Blues Festival, "
+            "Moonlight Movies, city summer programs, Jazz on the Bay, the Queen Mary movie night, Little Earth Cinema, and Perk Nation's "
             "208 Long Beach directory listings."
         ),
     },
@@ -921,12 +920,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Events, concerts, and festivals",
         "city": "Southern California",
         "title": "Eighteen Southern California summer plans",
-        "timing": "August 9-29, 2026",
+        "timing": "August 10-30, 2026",
         "route": "/articles/southern-california-august-events-2026",
         "details": (
             "Ranked planning guide covering the OC Fair, Huntington Beach surf, swim, and nature programs, Laguna Beach arts season, South Pasadena concerts and markets, and Long Beach food and music, "
-            "with a dedicated nine-plan Long Beach guide, Santa Monica outdoor programs, Glendale park events, "
-            "Pasadena POPS and a dedicated eight-plan Pasadena August guide, West Hollywood Summer Sounds "
+            "with a dedicated eight-plan Long Beach guide, Santa Monica outdoor programs, Glendale park events, "
+            "Pasadena POPS and a dedicated seven-plan Pasadena August guide, West Hollywood Summer Sounds "
             "on August 16, Noah Kahan at the Rose Bowl on August 15, Just Like Heaven on August 22, and Nisei Week "
             "in Little Tokyo from August 15-23."
         ),
@@ -1024,6 +1023,10 @@ def _should_include_public_review_context(message: str, role_context: str) -> bo
             "fan events",
             "d23",
             "long beach",
+            "stroll & savor",
+            "taste of downtown",
+            "jazz on the bay",
+            "new blues festival",
             "food scene",
             "food week",
             "august event",
@@ -1909,6 +1912,7 @@ def _is_public_review_query(text: str) -> bool:
             "laguna beach event",
             "laguna beach events",
             "laguna beach august",
+            "laguna beach arts",
             "pageant of the masters",
             "passport to the arts",
             "laguna art museum",
@@ -1964,12 +1968,13 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     wants_orange_county = _contains_any(text, ("orange county", "oc fair", "sea country festival", "corn festival", "thefitexpo"))
     wants_santa_monica = _contains_any(text, ("santa monica", "wellness & waves", "art on ocean", "ocean way festival"))
     wants_laguna_beach = _contains_any(text, ("laguna beach", "pageant of the masters", "sawdust", "passport to the arts", "laguna art museum"))
+    wants_long_beach = _contains_any(text, ("long beach", "stroll & savor", "taste of downtown", "jazz on the bay", "new blues festival"))
     wants_huntington_beach = _contains_any(text, ("huntington beach", "surf city", "life rolls on", "pier swim", "bolsa chica", "grunion"))
     wants_culture = _contains_any(text, ("nisei week", "little tokyo", "cultural event", "cultural events", "traditional arts"))
     wants_restaurants = _contains_any(text, ("restaurant", "restaurants", "dining", "dine la", "food", "food scene"))
     wants_d23 = _contains_any(text, ("d23", "anaheim fan event", "anaheim fan events", "anaheim convention"))
     wants_fan_events = _contains_any(text, ("fan event", "fan events", "convention", "conventions", "d23"))
-    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_film, wants_pasadena, wants_south_pasadena, wants_burbank, wants_glendale, wants_arcadia, wants_orange_county, wants_santa_monica, wants_laguna_beach, wants_huntington_beach, wants_culture, wants_restaurants, wants_d23, wants_fan_events))
+    wants_all = not any((wants_fashion, wants_sports, wants_concerts, wants_film, wants_pasadena, wants_south_pasadena, wants_burbank, wants_glendale, wants_arcadia, wants_orange_county, wants_santa_monica, wants_laguna_beach, wants_long_beach, wants_huntington_beach, wants_culture, wants_restaurants, wants_d23, wants_fan_events))
 
     if wants_d23 and not wants_restaurants:
         return "\n".join(
@@ -1985,7 +1990,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_orange_county and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Orange County guide ranks nine late-summer plans from August 9-September 6, 2026:",
+                "The current PerkNation Orange County guide ranks nine late-summer plans from August 10-September 6, 2026:",
                 "- The OC Fair final stretch, D23 Anaheim week, and Laguna Beach's overlapping arts season.",
                 "- Free OC Parks concerts and movies, Huntington Beach surf and nature programs, Sea Country Festival, and the La Habra Corn Festival.",
                 "- TheFitExpo Anaheim and Orange International Street Fair planning.",
@@ -2004,13 +2009,24 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
             )
         )
 
+    if wants_long_beach:
+        return "\n".join(
+            (
+                "The current PerkNation Long Beach guide ranks eight late-August plans from August 10-30, 2026:",
+                "- Stroll & Savor on August 19-20 and Taste of Downtown with KCRW on August 22.",
+                "- The New Blues Festival on August 29-30, Jazz on the Bay, Moonlight Movies, and city summer programs.",
+                "- Jaws on the Queen Mary and Little Earth Cinema, plus links into 208 Long Beach directory listings.",
+                "Open /articles/long-beach-august-2026-guide for best-for rankings, ticket and parking notes, official sources, and ready-made local itineraries.",
+            )
+        )
+
     if wants_laguna_beach and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Laguna Beach guide ranks nine late-summer arts plans from August 6-September 6, 2026:",
+                "The current PerkNation Laguna Beach guide ranks eight current late-summer arts plans from August 10-September 6, 2026:",
                 "- Pageant of the Masters, Sawdust Art Festival, Festival of Arts, and Laguna Art-A-Fair.",
                 "- The three-festival Passport to the Arts, which does not include the Pageant.",
-                "- First Thursdays Art Walk, Laguna Art Museum, Music in the Park, and Music at the Promenade.",
+                "- Laguna Art Museum, the final Music in the Park concert, and Music at the Promenade.",
                 "Open /articles/laguna-beach-august-2026-guide for best-for notes, ticket distinctions, trolley and parking guidance, official sources, and links into 24 Laguna Beach directory listings.",
             )
         )
@@ -2068,9 +2084,9 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Pasadena guide ranks eight August plans from August 9-30, 2026:",
-                "- Noah Kahan at the Rose Bowl and the Rose Bowl Flea Market.",
-                "- Two Pasadena POPS nights, Friday Nights at The Gamble House, and Sunset Sessions.",
+                "The current PerkNation Pasadena guide ranks seven August plans from August 14-30, 2026:",
+                "- Noah Kahan at the Rose Bowl plus two Pasadena POPS nights.",
+                "- Friday Nights at The Gamble House and Sunset Sessions.",
                 "- America's Got Talent tapings, goat yoga, and Power Morphicon.",
                 "Open /articles/pasadena-august-2026-guide for best-for notes, current access guidance, official sources, and links into 563 Pasadena directory listings.",
             )

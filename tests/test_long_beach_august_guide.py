@@ -15,28 +15,27 @@ AUGUST_GUIDE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-cal
 def test_long_beach_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Long Beach has more than a month of summer plans" in html
-    assert 'dateModified": "2026-07-31"' in html
-    assert html.count("<h2>") >= 13
+    assert "Long Beach has eight late-August plans" in html
+    assert 'dateModified": "2026-08-10"' in html
+    assert html.count("<h2>") >= 12
     for expected in (
-        "9 ranked plans",
-        "100 restaurants",
-        "Food Scene Week",
-        "Long Beach Jazz Festival",
+        "8 ranked plans",
         "Stroll &amp; Savor",
         "Taste of Downtown",
+        "New Blues Festival",
         "Moonlight Movies",
         "Best for:",
         "/directory?city=Long%20Beach",
         "/articles/dine-la-city-long-beach-2026",
         "/articles/southern-california-august-events-2026",
-        "https://lbfoodsceneweek.com/explore/",
         "https://www.visitlongbeach.com/blog/long-beach-summer-event-series/",
         "https://www.longbeach.gov/press-releases/",
     ):
         assert expected in html
 
     for forbidden in (
+        "Food Scene Week",
+        "Long Beach Jazz Festival",
         "Examples from the official listing",
         "editorial image generated",
         "generated for this guide",
@@ -56,7 +55,7 @@ def test_long_beach_routes_image_homepage_cards_and_sitemaps() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "9 ranked plans" in response.text
+        assert "8 ranked plans" in response.text
 
     image = client.get("/assets/articles/long-beach-august-2026-guide.jpg")
     assert image.status_code == 200
@@ -67,8 +66,8 @@ def test_long_beach_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("New July 31 · Long Beach") == 1
-        assert "Long Beach has nine August plans worth building a day around." in response.text
+        assert response.text.count("Updated August 10 · Long Beach") == 1
+        assert "Long Beach has eight late-August plans worth building a day around." in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
@@ -88,6 +87,9 @@ def test_long_beach_guide_is_cross_linked_and_available_to_public_answers() -> N
     )
 
     assert answer
-    assert "Long Beach August 2026 food, music, and beach guide" in answer
+    assert "ranks eight late-August plans" in answer
     assert "/articles/long-beach-august-2026-guide" in answer
+    assert "New Blues Festival" in answer
+    assert "Food Scene Week" not in answer
     assert "Burbank International Film Festival" not in answer
+    assert "Pasadena" not in answer
