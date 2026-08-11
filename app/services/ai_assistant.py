@@ -946,11 +946,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Fan events, conventions, and Anaheim",
         "city": "Anaheim",
         "title": "D23 Anaheim 2026 practical guide",
-        "timing": "August 8-16, 2026",
+        "timing": "August 11-16, 2026",
         "route": "/articles/d23-anaheim-2026-guide",
         "details": (
-            "Ranked guide to D23's Anaheim week, including August 8 ticket inventory, August 7-10 reservation-email timing, standby guidance, the August 14-16 "
-            "Ultimate Disney Fan Event, Muzeo's Walt Disney Archives exhibition, Bottle Logic, the Anaheim "
+            "Seven-plan guide to D23's active Anaheim week, including August 11 ticket inventory, post-assignment standby guidance, the August 14-16 "
+            "Ultimate Disney Fan Event, Muzeo's Walt Disney Archives exhibition, the Anaheim "
             "Packing District, Angel Stadium, Disneyland Resort, and Perk Nation's Anaheim directory."
         ),
     },
@@ -1979,10 +1979,11 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_d23 and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation D23 Anaheim guide covers the August 8-16, 2026 fan-event week:",
+                "The current PerkNation D23 Anaheim guide covers seven priorities from August 11-16, 2026:",
                 "- D23 currently lists Sunday full-day passes plus Saturday and Sunday afternoon-only passes starting at $49.",
-                "- Reservation assignments are being emailed August 7-10; standby is available for most Convention Center programming, but not Honda Center presentations.",
-                "- The guide ranks the August 14-16 Ultimate Disney Fan Event, Muzeo's Walt Disney Archives exhibition, Bottle Logic, the Anaheim Packing District, Angel Stadium, Disneyland Resort, and a no-pass Anaheim fallback.",
+                "- The August 7-10 reservation-assignment window has ended; standby is available for most Convention Center programming, but not Honda Center presentations.",
+                "- Tonight's free Anaheim Packing District gathering runs 5-9 p.m.; Angel Stadium follows August 12, Disneyland Resort August 13, and the Ultimate Disney Fan Event August 14-16.",
+                "- The guide also covers Muzeo's Walt Disney Archives exhibition and a flexible no-pass Anaheim fallback.",
                 "Open /articles/d23-anaheim-2026-guide for best-for rankings, entry and bag guidance, official sources, ready-made plans, and links into 35 Anaheim directory listings.",
             )
         )
