@@ -836,7 +836,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Night markets, garden concerts, community events, and local dining",
         "city": "Arcadia",
         "title": "Arcadia August 2026 night market and concert guide",
-        "timing": "August 8-29, 2026",
+        "timing": "August 12-29, 2026",
         "route": "/articles/arcadia-august-2026-guide",
         "details": (
             "Four ranked outings covering the August 21 Arboretum Summer Night, "
@@ -860,7 +860,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Adaptive surfing, open-water swimming, nature programs, markets, and surf culture",
         "city": "Huntington Beach and Orange County",
         "title": "Huntington Beach August 2026 coastal events guide",
-        "timing": "August 8-29, 2026",
+        "timing": "August 12-29, 2026",
         "route": "/articles/huntington-beach-august-2026-guide",
         "details": (
             "Six ranked plans covering Life Rolls On adaptive surfing, the Huntington Beach Pier Swim, "
@@ -896,7 +896,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Restaurants, festivals, concerts, movies, and family events",
         "city": "Long Beach",
         "title": "Long Beach August 2026 food, music, and beach guide",
-        "timing": "August 10-30, 2026",
+        "timing": "August 12-30, 2026",
         "route": "/articles/long-beach-august-2026-guide",
         "details": (
             "Eight current ranked plans covering Stroll and Savor, Taste of Downtown, the New Blues Festival, "
@@ -920,7 +920,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Events, concerts, and festivals",
         "city": "Southern California",
         "title": "Eighteen Southern California summer plans",
-        "timing": "August 10-30, 2026",
+        "timing": "August 12-30, 2026",
         "route": "/articles/southern-california-august-events-2026",
         "details": (
             "Ranked planning guide covering the OC Fair, Huntington Beach surf, swim, and nature programs, Laguna Beach arts season, South Pasadena concerts and markets, and Long Beach food and music, "
@@ -946,12 +946,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Fan events, conventions, and Anaheim",
         "city": "Anaheim",
         "title": "D23 Anaheim 2026 practical guide",
-        "timing": "August 11-16, 2026",
+        "timing": "August 12-16, 2026",
         "route": "/articles/d23-anaheim-2026-guide",
         "details": (
-            "Seven-plan guide to D23's active Anaheim week, including August 11 ticket inventory, post-assignment standby guidance, the August 14-16 "
-            "Ultimate Disney Fan Event, Muzeo's Walt Disney Archives exhibition, the Anaheim "
-            "Packing District, Angel Stadium, Disneyland Resort, and Perk Nation's Anaheim directory."
+            "Six-plan guide to D23's active Anaheim week, including August 12 ticket inventory, post-assignment standby guidance, the August 14-16 "
+            "Ultimate Disney Fan Event, Muzeo's Walt Disney Archives exhibition, Angel Stadium, "
+            "Disneyland Resort, and Perk Nation's Anaheim directory."
         ),
     },
     {
@@ -1979,10 +1979,10 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_d23 and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation D23 Anaheim guide covers seven priorities from August 11-16, 2026:",
+                "The current PerkNation D23 Anaheim guide covers six priorities from August 12-16, 2026:",
                 "- D23 currently lists Sunday full-day passes plus Saturday and Sunday afternoon-only passes starting at $49.",
                 "- The August 7-10 reservation-assignment window has ended; standby is available for most Convention Center programming, but not Honda Center presentations.",
-                "- Tonight's free Anaheim Packing District gathering runs 5-9 p.m.; Angel Stadium follows August 12, Disneyland Resort August 13, and the Ultimate Disney Fan Event August 14-16.",
+                "- Tonight's Angel Stadium event is followed by Disneyland Resort on August 13 and the Ultimate Disney Fan Event on August 14-16.",
                 "- The guide also covers Muzeo's Walt Disney Archives exhibition and a flexible no-pass Anaheim fallback.",
                 "Open /articles/d23-anaheim-2026-guide for best-for rankings, entry and bag guidance, official sources, ready-made plans, and links into 35 Anaheim directory listings.",
             )
@@ -2002,7 +2002,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_huntington_beach and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Huntington Beach guide ranks six coastal plans from August 8-29, 2026:",
+                "The current PerkNation Huntington Beach guide ranks six coastal plans from August 12-29, 2026:",
                 "- Life Rolls On adaptive surfing on August 22 and the Huntington Beach Pier Swim on August 29.",
                 "- Bolsa Chica Grunion Runs, Junior Rangers, and Litter Getters.",
                 "- The WSL50 surf-history exhibition and Tuesday Surf City Nights market evenings.",

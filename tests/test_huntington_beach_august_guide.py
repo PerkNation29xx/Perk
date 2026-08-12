@@ -16,7 +16,9 @@ def test_huntington_beach_guide_is_substantial_source_backed_and_reader_facing()
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Huntington Beach has six late-August plans" in html
-    assert 'dateModified": "2026-08-08"' in html
+    assert 'dateModified": "2026-08-12"' in html
+    assert "remaining August dates are August 18 and 25" in html
+    assert "remaining August dates are August 11" not in html
     assert html.count("<h2>") >= 11
     for expected in (
         "6 ranked plans",
@@ -68,9 +70,9 @@ def test_huntington_beach_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 8 · Huntington Beach") == 1
+        assert response.text.count("Updated August 12 · Huntington Beach") == 1
         assert "Huntington Beach has six late-August plans that go beyond a beach day." in response.text
-        assert "Updated August 8" in response.text
+        assert "Updated August 12" in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     assert "<loc>https://perknation.app/articles/huntington-beach-august-2026-guide</loc>" in root_sitemap.text
@@ -80,7 +82,7 @@ def test_huntington_beach_roundup_link_and_public_answer_are_scoped() -> None:
     august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
     assert "/articles/huntington-beach-august-2026-guide" in august_html
     assert "Huntington Beach late-August surf, swim, and nature" in august_html
-    assert 'dateModified": "2026-08-11"' in august_html
+    assert 'dateModified": "2026-08-12"' in august_html
 
     answer = _public_review_live_query_response(
         "what current Huntington Beach August events guide is covered?",
