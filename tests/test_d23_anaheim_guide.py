@@ -15,24 +15,24 @@ def test_d23_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "D23's Anaheim run is active now" in html
-    assert 'dateModified": "2026-08-12"' in html
-    assert "Sunday Ultimate Fan and Fan passes" in html
+    assert 'dateModified": "2026-08-13"' in html
+    assert "Sunday D23 Fan Pass and Sunday Afternoon Only Fan Pass" in html
     assert "August 7-10 assignment window have ended" in html
     assert "valid activated badge" in html
     assert "overnight queuing is not available" in html
-    assert html.count("<h2>") >= 11
+    assert html.count("<h2>") >= 10
     for expected in (
         "Afternoon Only Fan Pass",
         "The Ultimate Disney Fan Event",
         "Capturing Life, Creating Character at Muzeo",
         "D23 Day at Disneyland Resort",
-        "D23 Night at Angel Stadium",
-        "August 12, Angels vs. Texas Rangers",
+        "5 ranked priorities",
         "Best for:",
         "/directory?city=Anaheim",
         "/articles/southern-california-august-events-2026",
     ):
         assert expected in html
+    assert "Angel Stadium" not in html
     for forbidden in (
         "Examples from the official listing",
         "editorial image generated",
@@ -61,8 +61,8 @@ def test_d23_guide_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated August 12 · Anaheim" in response.text
-        assert "D23's Anaheim run is active now, with six plans worth prioritizing." in response.text
+        assert "Updated August 13 · Anaheim" in response.text
+        assert "D23's Anaheim run is active now, with five remaining plans worth prioritizing." in response.text
         assert "/articles/d23-anaheim-2026-guide" in response.text
 
     root_sitemap = client.get("/sitemap.xml")
@@ -81,9 +81,10 @@ def test_d23_guide_is_available_to_public_review_answers() -> None:
 
     assert answer
     assert "D23 Anaheim guide" in answer
-    assert "Sunday full-day passes" in answer
+    assert "Sunday D23 Fan Pass" in answer
     assert "reservation-assignment window has ended" in answer
-    assert "Tonight's Angel Stadium event" in answer
+    assert "Today's Disneyland Resort celebration" in answer
+    assert "Angel Stadium" not in answer
     assert "/articles/d23-anaheim-2026-guide" in answer
     assert "KCON" not in answer
     assert "Pasadena" not in answer

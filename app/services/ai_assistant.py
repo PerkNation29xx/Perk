@@ -824,11 +824,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, trails, family events, markets, and outdoor culture",
         "city": "Glendale",
         "title": "Glendale August 2026 concerts, trails, and culture guide",
-        "timing": "August 12-30, 2026",
+        "timing": "August 15-30, 2026",
         "route": "/articles/glendale-august-2026-guide",
         "details": (
-            "Six current ranked plans covering the final summer concert, the free Wander the "
-            "Wilderness Bus, Classic Film Under the Stars, the Nature's Teamwork campfire, "
+            "Five remaining ranked plans covering the free Wander the Wilderness Bus, "
+            "Classic Film Under the Stars, the Nature's Teamwork campfire, "
             "Wilderness Workday, Montrose Harvest Market, and Perk Nation's 100 Glendale listings."
         ),
     },
@@ -847,7 +847,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Fairs, festivals, arts, concerts, movies, fitness, and coastal events",
         "city": "Orange County",
         "title": "Orange County August 2026 events and outings guide",
-        "timing": "August 10-September 6, 2026",
+        "timing": "August 13-September 6, 2026",
         "route": "/articles/orange-county-august-2026-guide",
         "details": (
             "Nine current ranked plans covering the OC Fair, D23 Anaheim week, Laguna Beach arts season, OC Parks free "
@@ -920,7 +920,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Events, concerts, and festivals",
         "city": "Southern California",
         "title": "Eighteen Southern California summer plans",
-        "timing": "August 12-30, 2026",
+        "timing": "August 13-30, 2026",
         "route": "/articles/southern-california-august-events-2026",
         "details": (
             "Ranked planning guide covering the OC Fair, Huntington Beach surf, swim, and nature programs, Laguna Beach arts season, South Pasadena concerts and markets, and Long Beach food and music, "
@@ -937,21 +937,21 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "timing": "August 15-23, 2026",
         "route": "/articles/nisei-week-little-tokyo-2026-guide",
         "details": (
-            "Ranked guide to the free JANM Natsumatsuri Family Festival, JACCC's August 15-16 and 22-23 "
-            "traditional-arts programs, Plaza Festival, Little Tokyo Farmers' Market, pre-festival parade and "
-            "street-dance practices, transit planning, and Perk Nation's Los Angeles directory."
+            "Eight-plan guide to the August 16 Grand Parade, free JANM Natsumatsuri Family Festival, "
+            "JACCC traditional arts, August 22 Plaza Festival, August 23 Ondo finale, Coronation, "
+            "Little Tokyo Farmers' Market, Rilakkuma appearances, transit planning, and the Los Angeles directory."
         ),
     },
     {
         "category": "Fan events, conventions, and Anaheim",
         "city": "Anaheim",
         "title": "D23 Anaheim 2026 practical guide",
-        "timing": "August 12-16, 2026",
+        "timing": "August 13-16, 2026",
         "route": "/articles/d23-anaheim-2026-guide",
         "details": (
-            "Six-plan guide to D23's active Anaheim week, including August 12 ticket inventory, post-assignment standby guidance, the August 14-16 "
-            "Ultimate Disney Fan Event, Muzeo's Walt Disney Archives exhibition, Angel Stadium, "
-            "Disneyland Resort, and Perk Nation's Anaheim directory."
+            "Five-plan guide to D23's active Anaheim week, including current Sunday pass inventory, post-assignment standby guidance, the August 14-16 "
+            "Ultimate Disney Fan Event, Muzeo's Walt Disney Archives exhibition, today's Disneyland Resort celebration, "
+            "and Perk Nation's Anaheim directory."
         ),
     },
     {
@@ -1979,10 +1979,10 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_d23 and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation D23 Anaheim guide covers six priorities from August 12-16, 2026:",
-                "- D23 currently lists Sunday full-day passes plus Saturday and Sunday afternoon-only passes starting at $49.",
+                "The current PerkNation D23 Anaheim guide covers five priorities from August 13-16, 2026:",
+                "- D23 currently lists a Sunday D23 Fan Pass and Sunday Afternoon Only Fan Pass starting at $49.",
                 "- The August 7-10 reservation-assignment window has ended; standby is available for most Convention Center programming, but not Honda Center presentations.",
-                "- Tonight's Angel Stadium event is followed by Disneyland Resort on August 13 and the Ultimate Disney Fan Event on August 14-16.",
+                "- Today's Disneyland Resort celebration is followed by the Ultimate Disney Fan Event on August 14-16.",
                 "- The guide also covers Muzeo's Walt Disney Archives exhibition and a flexible no-pass Anaheim fallback.",
                 "Open /articles/d23-anaheim-2026-guide for best-for rankings, entry and bag guidance, official sources, ready-made plans, and links into 35 Anaheim directory listings.",
             )
@@ -1991,7 +1991,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_orange_county and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Orange County guide ranks nine late-summer plans from August 10-September 6, 2026:",
+                "The current PerkNation Orange County guide ranks nine late-summer plans from August 13-September 6, 2026:",
                 "- The OC Fair final stretch, D23 Anaheim week, and Laguna Beach's overlapping arts season.",
                 "- Free OC Parks concerts and movies, Huntington Beach surf and nature programs, Sea Country Festival, and the La Habra Corn Festival.",
                 "- TheFitExpo Anaheim and Orange International Street Fair planning.",
@@ -2096,8 +2096,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_glendale and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Glendale guide ranks six August plans from August 12-30, 2026:",
-                "- The final summer concert and the free Wander the Wilderness Bus.",
+                "The current PerkNation Glendale guide ranks five remaining August plans from August 15-30, 2026:",
+                "- The free Wander the Wilderness Bus.",
                 "- Classic Film Under the Stars and the Nature's Teamwork campfire.",
                 "- Wilderness Workday and Montrose Harvest Market.",
                 "Open /articles/glendale-august-2026-guide for best-for notes, RSVP and weather guidance, official city sources, and links into 100 Glendale directory listings.",
