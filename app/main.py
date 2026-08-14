@@ -222,6 +222,7 @@ async def canonical_white_path_middleware(request: Request, call_next):
 
 _BASE_DIR = Path(__file__).resolve().parent
 _HOME_PORTAL_DIR = _BASE_DIR / "web" / "home_portal"
+_PUBLIC_BUILD_ID = "20260726-unified-public-shell"
 _HOME_STATIC_DIR = _HOME_PORTAL_DIR / "static"
 _HOME_ASSETS_DIR = _HOME_PORTAL_DIR / "assets"
 _HOME_PORTAL_WHITE_DIR = _BASE_DIR / "web" / "home_portal_white"

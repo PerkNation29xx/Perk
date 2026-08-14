@@ -800,10 +800,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, markets, local performances, family programs, and small businesses",
         "city": "South Pasadena",
         "title": "South Pasadena August 2026 local events guide",
-        "timing": "August 13-28, 2026",
+        "timing": "August 14-28, 2026",
         "route": "/articles/south-pasadena-august-2026-guide",
         "details": (
-            "Seven ranked plans covering the August 16 New Romantics concert in Garfield Park, three Thursday "
+            "Seven ranked plans covering the August 16 New Romantics concert in Garfield Park, two remaining Thursday "
             "farmers-market nights, a two-day Tournament of Roses fundraiser, weekly singer-songwriter and "
             "musical-theater open mics, two family library activities, and Perk Nation's 97 South Pasadena listings."
         ),
@@ -847,7 +847,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Fairs, festivals, arts, concerts, movies, fitness, and coastal events",
         "city": "Orange County",
         "title": "Orange County August 2026 events and outings guide",
-        "timing": "August 13-September 6, 2026",
+        "timing": "August 14-September 6, 2026",
         "route": "/articles/orange-county-august-2026-guide",
         "details": (
             "Nine current ranked plans covering the OC Fair, D23 Anaheim week, Laguna Beach arts season, OC Parks free "
@@ -896,11 +896,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Restaurants, festivals, concerts, movies, and family events",
         "city": "Long Beach",
         "title": "Long Beach August 2026 food, music, and beach guide",
-        "timing": "August 12-30, 2026",
+        "timing": "August 14-30, 2026",
         "route": "/articles/long-beach-august-2026-guide",
         "details": (
-            "Eight current ranked plans covering Stroll and Savor, Taste of Downtown, the New Blues Festival, "
-            "Moonlight Movies, city summer programs, Jazz on the Bay, the Queen Mary movie night, Little Earth Cinema, and Perk Nation's "
+            "Seven current ranked plans covering Stroll and Savor, Taste of Downtown, the New Blues Festival, "
+            "Moonlight Movies, city summer programs, Jazz on the Bay, Little Earth Cinema, and Perk Nation's "
             "208 Long Beach directory listings."
         ),
     },
@@ -920,11 +920,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Events, concerts, and festivals",
         "city": "Southern California",
         "title": "Eighteen Southern California summer plans",
-        "timing": "August 13-30, 2026",
+        "timing": "August 14-30, 2026",
         "route": "/articles/southern-california-august-events-2026",
         "details": (
             "Ranked planning guide covering the OC Fair, Huntington Beach surf, swim, and nature programs, Laguna Beach arts season, South Pasadena concerts and markets, and Long Beach food and music, "
-            "with a dedicated eight-plan Long Beach guide, Santa Monica outdoor programs, Glendale park events, "
+            "with a dedicated seven-plan Long Beach guide, Santa Monica outdoor programs, Glendale park events, "
             "Pasadena POPS and a dedicated seven-plan Pasadena August guide, West Hollywood Summer Sounds "
             "on August 16, Noah Kahan at the Rose Bowl on August 15, Just Like Heaven on August 22, and Nisei Week "
             "in Little Tokyo from August 15-23."
@@ -946,11 +946,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Fan events, conventions, and Anaheim",
         "city": "Anaheim",
         "title": "D23 Anaheim 2026 practical guide",
-        "timing": "August 13-16, 2026",
+        "timing": "August 14-16, 2026",
         "route": "/articles/d23-anaheim-2026-guide",
         "details": (
-            "Five-plan guide to D23's active Anaheim week, including current Sunday pass inventory, post-assignment standby guidance, the August 14-16 "
-            "Ultimate Disney Fan Event, Muzeo's Walt Disney Archives exhibition, today's Disneyland Resort celebration, "
+            "Four-plan guide to D23's active Anaheim convention weekend, including current Sunday pass inventory, post-assignment standby guidance, the August 14-16 "
+            "Ultimate Disney Fan Event, Muzeo's Walt Disney Archives exhibition, "
             "and Perk Nation's Anaheim directory."
         ),
     },
@@ -992,7 +992,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "title": "Dine LA 2026 city guides",
         "timing": "August 14-28, 2026",
         "route": "/articles/dine-la-pasadena-2026",
-        "details": "City-specific Dine LA planning, including Pasadena ranked picks and internal links into nearby directory searches.",
+        "details": "Open August 14-28 with 495 restaurants across 54 cities, including city-specific rankings, price and cuisine comparisons, practical notes, and nearby directory searches.",
     },
 )
 
@@ -1979,10 +1979,10 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_d23 and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation D23 Anaheim guide covers five priorities from August 13-16, 2026:",
+                "The current PerkNation D23 Anaheim guide covers four priorities from August 14-16, 2026:",
                 "- D23 currently lists a Sunday D23 Fan Pass and Sunday Afternoon Only Fan Pass starting at $49.",
                 "- The August 7-10 reservation-assignment window has ended; standby is available for most Convention Center programming, but not Honda Center presentations.",
-                "- Today's Disneyland Resort celebration is followed by the Ultimate Disney Fan Event on August 14-16.",
+                "- The Ultimate Disney Fan Event is active August 14-16 at the Anaheim Convention Center, with applicable evening programming at Honda Center.",
                 "- The guide also covers Muzeo's Walt Disney Archives exhibition and a flexible no-pass Anaheim fallback.",
                 "Open /articles/d23-anaheim-2026-guide for best-for rankings, entry and bag guidance, official sources, ready-made plans, and links into 35 Anaheim directory listings.",
             )
@@ -1991,8 +1991,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_orange_county and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Orange County guide ranks nine late-summer plans from August 13-September 6, 2026:",
-                "- The OC Fair final stretch, D23 Anaheim week, and Laguna Beach's overlapping arts season.",
+                "The current PerkNation Orange County guide ranks nine late-summer plans from August 14-September 6, 2026:",
+                "- The OC Fair final stretch, D23 Anaheim convention weekend, and Laguna Beach's overlapping arts season.",
                 "- Free OC Parks concerts and movies, Huntington Beach surf and nature programs, Sea Country Festival, and the La Habra Corn Festival.",
                 "- TheFitExpo Anaheim and Orange International Street Fair planning.",
                 "Open /articles/orange-county-august-2026-guide for best-for rankings, admission and parking notes, official sources, ready-made itineraries, and links into current Orange County city directories.",
@@ -2013,10 +2013,10 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation Long Beach guide ranks eight late-August plans from August 10-30, 2026:",
+                "The current PerkNation Long Beach guide ranks seven late-August plans from August 14-30, 2026:",
                 "- Stroll & Savor on August 19-20 and Taste of Downtown with KCRW on August 22.",
                 "- The New Blues Festival on August 29-30, Jazz on the Bay, Moonlight Movies, and city summer programs.",
-                "- Jaws on the Queen Mary and Little Earth Cinema, plus links into 208 Long Beach directory listings.",
+                "- Little Earth Cinema and links into 208 Long Beach directory listings.",
                 "Open /articles/long-beach-august-2026-guide for best-for rankings, ticket and parking notes, official sources, and ready-made local itineraries.",
             )
         )
@@ -2065,7 +2065,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_south_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation South Pasadena guide ranks seven local plans from August 13-28, 2026:",
+                "The current PerkNation South Pasadena guide ranks seven local plans from August 14-28, 2026:",
                 "- The free New Romantics concert at Garfield Park on August 16.",
                 "- Thursday farmers-market nights plus weekly singer-songwriter and musical-theater open mics.",
                 "- The August 14-15 Tournament of Roses Yard Sale and August 17 and 21 family library activities.",
