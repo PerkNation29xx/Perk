@@ -14,8 +14,8 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "nisei-we
 def test_nisei_week_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Nisei Week brings two weekends of Japanese American culture" in html
-    assert 'dateModified": "2026-08-14"' in html
+    assert "Nisei Week opens today with two weekends of Japanese American culture" in html
+    assert 'dateModified": "2026-08-15"' in html
     assert html.count("<h2>") >= 11
     for expected in (
         "JANM's Natsumatsuri Family Festival",
@@ -67,8 +67,8 @@ def test_nisei_week_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated August 14 · Los Angeles" in response.text
-        assert "Nisei Week's Grand Parade, Plaza Festival, and Ondo finale" in response.text
+        assert "Updated August 15 · Los Angeles" in response.text
+        assert "Nisei Week opens today before the Grand Parade, Plaza Festival, and Ondo finale." in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)

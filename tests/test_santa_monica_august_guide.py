@@ -82,7 +82,7 @@ def test_santa_monica_roundup_link_and_public_answer_are_scoped() -> None:
     august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
     assert "/articles/santa-monica-august-2026-guide" in august_html
     assert "Santa Monica swims, movies, and Pier mornings" in august_html
-    assert 'dateModified": "2026-08-14"' in august_html
+    assert 'dateModified": "2026-08-15"' in august_html
 
     answer = _public_review_live_query_response(
         "what current Santa Monica August events guide is covered?",
