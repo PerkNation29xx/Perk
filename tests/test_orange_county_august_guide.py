@@ -18,12 +18,12 @@ def test_orange_county_guide_is_substantial_source_backed_and_reader_facing() ->
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Orange County has nine current late-summer plans" in html
-    assert 'dateModified": "2026-08-15"' in html
+    assert 'dateModified": "2026-08-16"' in html
     assert html.count("<h2>") >= 13
     for expected in (
         "9 ranked plans",
         "OC Fair",
-        "D23 Anaheim weekend",
+        "D23 Anaheim finale",
         "Laguna Beach arts season",
         "OC Parks concerts and movies",
         "Huntington Beach surf and nature",
@@ -71,8 +71,8 @@ def test_orange_county_routes_image_homepages_and_sitemap() -> None:
 
     home_html = HOME.read_text(encoding="utf-8")
     white_html = WHITE_HOME.read_text(encoding="utf-8")
-    assert home_html.count("Updated August 15 · Orange County") == 1
-    assert white_html.count("Updated August 15 · Orange County") == 1
+    assert home_html.count("Updated August 16 · Orange County") == 1
+    assert white_html.count("Updated August 16 · Orange County") == 1
     assert "Orange County has nine current late-summer plans worth building a day around." in home_html
     assert "Orange County has nine current late-summer plans worth building a day around." in white_html
     assert "/white/articles/orange-county-august-2026-guide" in white_html
@@ -84,7 +84,7 @@ def test_orange_county_routes_image_homepages_and_sitemap() -> None:
 def test_orange_county_roundup_link_and_public_answer_are_scoped() -> None:
     august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
     assert "/articles/orange-county-august-2026-guide" in august_html
-    assert 'dateModified": "2026-08-15"' in august_html
+    assert 'dateModified": "2026-08-16"' in august_html
 
     answer = _public_review_live_query_response(
         "what current Orange County August events guide is covered?",

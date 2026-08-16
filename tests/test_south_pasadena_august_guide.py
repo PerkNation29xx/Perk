@@ -15,15 +15,14 @@ AUGUST_GUIDE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-cal
 def test_south_pasadena_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "South Pasadena has seven August plans" in html
-    assert 'dateModified": "2026-08-15"' in html
-    assert html.count("<h2>") >= 11
+    assert "South Pasadena has six August plans" in html
+    assert 'dateModified": "2026-08-16"' in html
+    assert html.count("<h2>") >= 10
     for expected in (
-        "7 ranked plans",
+        "6 ranked plans",
         "97 South Pasadena listings",
         "New Romantics",
         "South Pasadena Farmers Market",
-        "Tournament of Roses Yard Sale",
         "Open Mic on Mission",
         "Broadway on Mission",
         "Toddler Dance Party",
@@ -57,7 +56,7 @@ def test_south_pasadena_routes_image_homepages_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "7 ranked plans" in response.text
+        assert "6 ranked plans" in response.text
 
     image = client.get("/assets/articles/south-pasadena-august-2026-guide.jpg")
     assert image.status_code == 200
@@ -68,8 +67,8 @@ def test_south_pasadena_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 15 · South Pasadena") == 1
-        assert "South Pasadena has seven August plans that make a small city feel full." in response.text
+        assert response.text.count("Updated August 16 · South Pasadena") == 1
+        assert "South Pasadena has six August plans that make a small city feel full." in response.text
         assert "New July 30 · Burbank" not in response.text
 
     root_sitemap = client.get("/sitemap.xml")
@@ -89,7 +88,7 @@ def test_south_pasadena_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "ranks seven local plans" in answer
+    assert "ranks six local plans" in answer
     assert "/articles/south-pasadena-august-2026-guide" in answer
     assert "97 South Pasadena directory listings" in answer
     assert "Glendale" not in answer

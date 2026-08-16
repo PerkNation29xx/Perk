@@ -14,10 +14,10 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "d23-anah
 def test_d23_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "D23's final two convention days are active now" in html
-    assert 'dateModified": "2026-08-15"' in html
+    assert "D23's final convention day is active today" in html
+    assert 'dateModified": "2026-08-16"' in html
     assert "Sunday D23 Ultimate Fan Pass, a Sunday D23 Fan Pass" in html
-    assert "Saturday and Sunday Afternoon Only Fan Passes" in html
+    assert "Sunday Afternoon Only Fan Pass" in html
     assert "August 7-10 assignment window have ended" in html
     assert "valid activated badge" in html
     assert "overnight queuing is not available" in html
@@ -62,8 +62,8 @@ def test_d23_guide_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated August 15 · Anaheim" in response.text
-        assert "D23's final two convention days are active now, with four plans worth prioritizing." in response.text
+        assert "Updated August 16 · Anaheim" in response.text
+        assert "D23's final convention day is active today, with four plans worth prioritizing." in response.text
         assert "/articles/d23-anaheim-2026-guide" in response.text
 
     root_sitemap = client.get("/sitemap.xml")
@@ -84,7 +84,7 @@ def test_d23_guide_is_available_to_public_review_answers() -> None:
     assert "D23 Anaheim guide" in answer
     assert "Sunday Ultimate and Fan Passes" in answer
     assert "reservation-assignment window has ended" in answer
-    assert "Ultimate Disney Fan Event remains active August 15-16" in answer
+    assert "Ultimate Disney Fan Event remains active today" in answer
     assert "Angel Stadium" not in answer
     assert "/articles/d23-anaheim-2026-guide" in answer
     assert "KCON" not in answer

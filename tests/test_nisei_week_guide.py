@@ -14,16 +14,14 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "nisei-we
 def test_nisei_week_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Nisei Week opens today with two weekends of Japanese American culture" in html
-    assert 'dateModified": "2026-08-15"' in html
-    assert html.count("<h2>") >= 11
+    assert "Nisei Week's Grand Parade takes over Little Tokyo today" in html
+    assert 'dateModified": "2026-08-16"' in html
+    assert html.count("<h2>") >= 9
     for expected in (
-        "JANM's Natsumatsuri Family Festival",
-        "JACCC's August 15-16 arts weekend",
+        "JACCC's August 16 arts program",
         "Grand Parade",
         "Plaza Festival",
         "Ondo and Closing Ceremony",
-        "Nisei Week Coronation",
         "Rilakkuma at Okayama Kobo",
         "Little Tokyo Farmers' Market",
         "Best for:",
@@ -31,7 +29,6 @@ def test_nisei_week_guide_is_substantial_source_backed_and_reader_facing() -> No
         "/articles/southern-california-august-events-2026",
         "https://niseiweek.org/",
         "https://jaccc.org/events/84th-annual-nisei-week-jaccc/",
-        "https://www.janm.org/events/2026-08-15/2026-natsumatsuri-family-festival",
     ):
         assert expected in html
     assert "Parade and street-dance practice" not in html
@@ -56,7 +53,7 @@ def test_nisei_week_routes_image_homepage_cards_and_sitemaps() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "8 ranked priorities" in response.text
+        assert "6 ranked priorities" in response.text
 
     image = client.get("/assets/articles/nisei-week-little-tokyo-2026-guide.jpg")
     assert image.status_code == 200
@@ -67,8 +64,8 @@ def test_nisei_week_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated August 15 · Los Angeles" in response.text
-        assert "Nisei Week opens today before the Grand Parade, Plaza Festival, and Ondo finale." in response.text
+        assert "Updated August 16 · Los Angeles" in response.text
+        assert "Nisei Week's Grand Parade is today before the Plaza Festival and Ondo finale." in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)

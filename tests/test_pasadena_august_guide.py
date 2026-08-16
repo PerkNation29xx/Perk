@@ -15,13 +15,12 @@ AUGUST_GUIDE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-cal
 def test_pasadena_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Pasadena has seven current August plans" in html
-    assert 'dateModified": "2026-08-10"' in html
-    assert html.count("<h2>") >= 11
+    assert "Pasadena has six current August plans" in html
+    assert 'dateModified": "2026-08-16"' in html
+    assert html.count("<h2>") >= 10
     for expected in (
-        "7 ranked plans",
+        "6 ranked plans",
         "563 Pasadena listings",
-        "Noah Kahan",
         "Pasadena POPS",
         "Friday Nights at The Gamble House",
         "America's Got Talent",
@@ -55,7 +54,7 @@ def test_pasadena_routes_image_homepage_cards_and_sitemaps() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "7 ranked plans" in response.text
+        assert "6 ranked plans" in response.text
 
     image = client.get("/assets/articles/pasadena-august-2026-guide.jpg")
     assert image.status_code == 200
@@ -66,8 +65,8 @@ def test_pasadena_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 10 · Pasadena") == 1
-        assert "Pasadena has seven current August plans worth putting on the calendar." in response.text
+        assert response.text.count("Updated August 16 · Pasadena") == 1
+        assert "Pasadena has six current August plans worth putting on the calendar." in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
@@ -87,7 +86,7 @@ def test_pasadena_guide_is_cross_linked_and_available_to_public_answers() -> Non
     )
 
     assert answer
-    assert "ranks seven August plans" in answer
+    assert "ranks six August plans" in answer
     assert "/articles/pasadena-august-2026-guide" in answer
     assert "Rose Bowl Flea Market" not in answer
     assert "Long Beach" not in answer
