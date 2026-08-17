@@ -10,13 +10,12 @@ ROOT = Path(__file__).resolve().parents[1]
 ARTICLE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-california-august-events-2026.html"
 
 
-def test_august_guide_has_seventeen_ranked_source_backed_plans() -> None:
+def test_august_guide_has_fourteen_ranked_source_backed_plans() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Seventeen Southern California summer plans" in html
-    assert 'dateModified": "2026-08-16"' in html
+    assert "Fourteen Southern California summer plans" in html
+    assert 'dateModified": "2026-08-17"' in html
     for expected in (
-        "West Hollywood Summer Sounds",
         "Just Like Heaven in Pasadena",
         "Nisei Week in Little Tokyo",
         "/articles/nisei-week-little-tokyo-2026-guide",
@@ -25,12 +24,13 @@ def test_august_guide_has_seventeen_ranked_source_backed_plans() -> None:
         "/articles/laguna-beach-august-2026-guide",
         "/articles/huntington-beach-august-2026-guide",
         "/articles/south-pasadena-august-2026-guide",
-        "626 Night Market in Arcadia",
         "Best for:",
-        "/articles/dine-la-city-west-hollywood-2026",
         "/directory?city=Pasadena",
     ):
         assert expected in html
+    assert "West Hollywood Summer Sounds" not in html
+    assert "626 Night Market in Arcadia" not in html
+    assert "OC Fair in Costa Mesa" not in html
     for forbidden in (
         "Examples from the official listing",
         "editorial image generated",
@@ -50,8 +50,8 @@ def test_august_guide_card_is_current_on_both_homepages() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated August 16" in response.text
-        assert "Seventeen Southern California summer plans, ranked." in response.text
+        assert "Updated August 17" in response.text
+        assert "Fourteen Southern California summer plans, ranked." in response.text
 
 
 def test_august_guide_stays_in_sitemaps_and_public_ai_context() -> None:
@@ -70,5 +70,5 @@ def test_august_guide_stays_in_sitemaps_and_public_ai_context() -> None:
         "home_local_guide",
     )
     assert answer
-    assert "Seventeen Southern California summer plans" in answer
+    assert "Fourteen Southern California summer plans" in answer
     assert "/articles/southern-california-august-events-2026" in answer

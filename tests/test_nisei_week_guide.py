@@ -14,12 +14,10 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "nisei-we
 def test_nisei_week_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Nisei Week's Grand Parade takes over Little Tokyo today" in html
-    assert 'dateModified": "2026-08-16"' in html
-    assert html.count("<h2>") >= 9
+    assert "Nisei Week returns for a full Little Tokyo closing weekend" in html
+    assert 'dateModified": "2026-08-17"' in html
+    assert html.count("<h2>") >= 7
     for expected in (
-        "JACCC's August 16 arts program",
-        "Grand Parade",
         "Plaza Festival",
         "Ondo and Closing Ceremony",
         "Rilakkuma at Okayama Kobo",
@@ -31,6 +29,7 @@ def test_nisei_week_guide_is_substantial_source_backed_and_reader_facing() -> No
         "https://jaccc.org/events/84th-annual-nisei-week-jaccc/",
     ):
         assert expected in html
+    assert "Grand Parade" not in html
     assert "Parade and street-dance practice" not in html
 
     for forbidden in (
@@ -53,7 +52,7 @@ def test_nisei_week_routes_image_homepage_cards_and_sitemaps() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "6 ranked priorities" in response.text
+        assert "4 ranked priorities" in response.text
 
     image = client.get("/assets/articles/nisei-week-little-tokyo-2026-guide.jpg")
     assert image.status_code == 200
@@ -64,8 +63,8 @@ def test_nisei_week_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated August 16 · Los Angeles" in response.text
-        assert "Nisei Week's Grand Parade is today before the Plaza Festival and Ondo finale." in response.text
+        assert "Updated August 17 · Los Angeles" in response.text
+        assert "Nisei Week returns for the Plaza Festival and Ondo closing weekend." in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)

@@ -15,16 +15,15 @@ AUGUST_GUIDE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-cal
 def test_glendale_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Glendale has five remaining August plans" in html
-    assert 'dateModified": "2026-08-16"' in html
-    assert html.count("<h2>") >= 9
+    assert "Glendale has four remaining August plans" in html
+    assert 'dateModified": "2026-08-17"' in html
+    assert html.count("<h2>") >= 8
     for expected in (
-        "5 ranked plans",
+        "4 ranked plans",
         "100 Glendale listings",
         "Wander the Wilderness Bus",
         "Classic Film Under the Stars",
         "Nature's Teamwork",
-        "Ikebana workshop",
         "Montrose Harvest Market",
         "Best for:",
         "/directory?city=Glendale",
@@ -32,6 +31,7 @@ def test_glendale_guide_is_substantial_source_backed_and_reader_facing() -> None
         "https://www.glendaleca.gov/",
     ):
         assert expected in html
+    assert "Ikebana workshop" not in html
     assert "Wednesday, August 12" not in html
 
     for forbidden in (
@@ -54,7 +54,7 @@ def test_glendale_routes_image_homepage_cards_and_sitemaps() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "5 ranked plans" in response.text
+        assert "4 ranked plans" in response.text
 
     image = client.get("/assets/articles/glendale-august-2026-guide.jpg")
     assert image.status_code == 200
@@ -65,8 +65,8 @@ def test_glendale_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 16 · Glendale") == 1
-        assert "Glendale has five remaining August plans that make the foothills feel close." in response.text
+        assert response.text.count("Updated August 17 · Glendale") == 1
+        assert "Glendale has four remaining August plans that make the foothills feel close." in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
@@ -87,6 +87,6 @@ def test_glendale_guide_is_cross_linked_and_available_to_public_answers() -> Non
     )
 
     assert answer
-    assert "ranks five remaining August plans" in answer
+    assert "ranks four remaining August plans" in answer
     assert "/articles/glendale-august-2026-guide" in answer
     assert "Pasadena" not in answer
