@@ -164,14 +164,14 @@ class Settings(BaseSettings):
 
     # Public Spark gateway fallback/direct path (example: http://47.51.26.74).
     spark_public_base_url: Optional[str] = "http://chat.neonflux.co"
-    # "spark" or "mini" host lane exposed by the Spark dual chat gateway.
-    spark_chat_host_id: str = "mini"
+    # Production host lane exposed by the public YetiClaw gateway.
+    spark_chat_host_id: str = "spark-nemotron"
     spark_timeout_seconds: int = 90
     # Public homepage AI Local Guide can target the larger Nemotron lane without
     # changing private admin/member assistants.
     home_local_guide_spark_base_url: Optional[str] = "http://chat.neonflux.co"
     home_local_guide_model: str = "nvidia/nemotron-3-super"
-    home_local_guide_spark_host_id: str = "spark"
+    home_local_guide_spark_host_id: str = "spark-nemotron"
 
     # Hosted AI (OpenAI-compatible REST API).
     openai_base_url: str = "https://api.openai.com/v1"

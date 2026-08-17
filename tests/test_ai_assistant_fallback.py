@@ -505,6 +505,8 @@ def test_spark_messages_are_compacted_under_input_budget(monkeypatch) -> None:
     def _fake_urlopen(req, timeout):
         payload = json.loads(req.data.decode("utf-8"))
         captured["messages"] = payload["messages"]
+        captured["host_id"] = payload["hostId"]
+        captured["model"] = payload["model"]
         captured["timeout"] = timeout
         return _FakeResponse()
 
@@ -531,6 +533,8 @@ def test_spark_messages_are_compacted_under_input_budget(monkeypatch) -> None:
     sent_messages = captured["messages"]
     assert model == "spark-model"
     assert answer == "ok"
+    assert captured["host_id"] == "spark-nemotron"
+    assert captured["model"] == "nvidia/nemotron-3-super"
     assert isinstance(sent_messages, list)
     assert ai_assistant._estimate_prompt_tokens(sent_messages) <= ai_assistant._SPARK_INPUT_TOKEN_BUDGET
     assert sent_messages[-1]["content"] == "Final current fashion events question"

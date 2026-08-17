@@ -51,6 +51,12 @@ class AIChatResult:
 _ALLOWED_CONTEXTS = {"consumer", "merchant", "admin", "public", "home_local_guide"}
 _DETERMINISTIC_MODEL_NAME = "perk-deterministic"
 _NEMOTRON_SPARK_CONTEXTS = {"home_local_guide", "public", "consumer", "merchant", "admin"}
+_NEMOTRON_MODEL_IDS = {
+    "nvidia/nemotron-3-super",
+    "nemotron-3-super",
+    "nvidia/nvidia-nemotron-3-super-120b-a12b-nvfp4",
+}
+_PUBLIC_SPARK_HOST_IDS = {"spark", "spark-nemotron", "lil-beastly", "glm-52"}
 _SPARK_INPUT_TOKEN_BUDGET = 3600
 _SPARK_MESSAGE_OVERHEAD_TOKENS = 8
 _NFL_SCHEDULE_DATA_FILE = (
@@ -453,10 +459,17 @@ def _request_spark_chat(
             "AI service is unreachable. SPARK_PUBLIC_BASE_URL is not configured on this backend."
         )
 
-    host_id = (host_id_override or settings.spark_chat_host_id or "mini").strip().lower()
-    if host_id not in {"spark", "mini"}:
-        host_id = "mini"
+    host_id = (host_id_override or settings.spark_chat_host_id or "spark-nemotron").strip().lower()
     model_name = (model_override or settings.ollama_model).strip() or settings.ollama_model
+    normalized_model = model_name.lower()
+    is_nemotron = normalized_model in _NEMOTRON_MODEL_IDS or "nemotron-3-super-120b" in normalized_model
+
+    # Retired Mini/Chewbacuh settings and the old generic Spark alias must not
+    # send Nemotron traffic to a removed host or the Qwen text endpoint.
+    if is_nemotron and host_id in {"spark", "mini", "chewbacuh"}:
+        host_id = "spark-nemotron"
+    elif host_id not in _PUBLIC_SPARK_HOST_IDS:
+        host_id = "spark-nemotron"
     request_messages = _compact_messages_for_spark(messages)
 
     body = {

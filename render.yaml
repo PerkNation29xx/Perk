@@ -53,9 +53,13 @@ services:
       - key: SPARK_PUBLIC_BASE_URL
         value: http://47.51.26.74
       - key: SPARK_CHAT_HOST_ID
-        value: mini
+        value: spark-nemotron
       - key: OLLAMA_MODEL
         value: qwen3:30b
+      - key: HOME_LOCAL_GUIDE_MODEL
+        value: nvidia/nemotron-3-super
+      - key: HOME_LOCAL_GUIDE_SPARK_HOST_ID
+        value: spark-nemotron
       - key: WALLET_PASS_SERVICE_URL
         sync: false
       - key: WALLET_PASS_TYPE_IDENTIFIER
