@@ -155,7 +155,7 @@ def test_home_local_guide_includes_review_context_for_current_events(monkeypatch
         captured["system_context"] = "\n\n".join(
             item["content"] for item in messages if item.get("role") == "system"
         )
-        return str(model_override), "Use the LA fashion guide, KCON, UFC, SoFi openers, and Dine LA coverage."
+        return str(model_override), "Use the LA fashion guide, Mount Westmore, UFC, SoFi openers, and Dine LA coverage."
 
     monkeypatch.setattr(settings, "ai_enabled", True)
     monkeypatch.setattr(settings, "ai_provider", "spark")
@@ -178,7 +178,8 @@ def test_home_local_guide_includes_review_context_for_current_events(monkeypatch
     assert result.role_context == "home_local_guide"
     assert "PUBLIC REVIEW COVERAGE CONTEXT" in system_context
     assert "2026 Fashion Week calendar: LA, New York, Miami and the world" in system_context
-    assert "KCON LA 2026" in system_context
+    assert "Mount Westmore" in system_context
+    assert "KCON LA 2026" not in system_context
     assert "UFC Fight Night" in system_context
     assert "Dine LA 2026 city guides" in system_context
     assert "not active PerkNation promotions" in system_context
@@ -205,7 +206,8 @@ def test_home_local_guide_review_listing_question_answers_directly(monkeypatch) 
     answer = result.answer.lower()
     assert result.model == "nvidia/nemotron-3-super"
     assert "2026 fashion week calendar" in answer
-    assert "kcon la 2026" in answer
+    assert "mount westmore" in answer
+    assert "kcon la 2026" not in answer
     assert "ufc fight night" in answer
     assert "dine la 2026" in answer
     assert "current perknation guides and events" in answer

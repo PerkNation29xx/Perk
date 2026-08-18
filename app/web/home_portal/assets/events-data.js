@@ -1,26 +1,5 @@
 window.PERK_NATION_EVENTS = [
   {
-    slug: "kcon-la-2026",
-    category: "Live events",
-    title: "KCON LA 2026 takes over downtown Los Angeles",
-    eventName: "KCON LA 2026 M Countdown",
-    date: "August 14–16, 2026",
-    time: "8:00 PM nightly; doors at 6:30 PM",
-    city: "Los Angeles",
-    venue: "Crypto.com Arena",
-    image: "https://www.cryptoarena.com/assets/img/KCONLA2026_Crypto.com-Arena-Web-Banner_1130x665-42621624e4.png",
-    imageAlt: "KCON LA 2026 lineup artwork",
-    officialUrl: "https://www.cryptoarena.com/events/detail/kcon26",
-    summary: "Three nights of K-pop headline performances anchor one of Los Angeles’ biggest fan weekends.",
-    intro: "KCON returns to downtown Los Angeles with three separate M Countdown lineups and festival activity at the neighboring LA Convention Center.",
-    paragraphs: [
-      "Friday’s bill is led by NCT 127, with Saturday featuring ZEROBASEONE and Sunday closing with TOMORROW X TOGETHER. Each night brings a different mix of established acts and emerging performers.",
-      "The arena event and convention programming use separate admission rules, so fans should review package details carefully on the official event page before purchasing. The published lineup remains subject to change."
-    ],
-    highlights: ["Three nights and three lineups", "Downtown LA festival weekend", "Arena and convention programming"],
-    credit: "Official promotional artwork via Crypto.com Arena"
-  },
-  {
     slug: "mount-westmore-san-jose",
     category: "Concerts",
     title: "West Coast icons unite for Mount Westmore in San Jose",

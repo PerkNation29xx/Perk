@@ -8,78 +8,35 @@ from app.services.ai_assistant import _public_review_live_query_response
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTICLE = ROOT / "app" / "web" / "home_portal" / "articles" / "burbank-film-festival-2026-guide.html"
-IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "burbank-film-festival-2026-guide.jpg"
 AUGUST_GUIDE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-california-august-events-2026.html"
 
 
-def test_burbank_film_guide_is_substantial_source_backed_and_reader_facing() -> None:
-    html = ARTICLE.read_text(encoding="utf-8")
-
-    assert "Burbank film week has more than 120 screenings" in html
-    assert 'dateModified": "2026-07-30"' in html
-    assert html.count("<h2>") >= 12
-    for expected in (
-        "7 ranked priorities",
-        "AMC Burbank 16",
-        "filmmaker Q&amp;A",
-        "industry panel",
-        "closing gala",
-        "Best for:",
-        "/directory?city=Burbank",
-        "/articles/dine-la-city-burbank-2026",
-        "/articles/southern-california-august-events-2026",
-        "https://www.burbankfilmfest.org/",
-        "https://burbankinternationalfilmfestival.eventive.org/schedule",
-        "https://visitburbank.com/events/burbank-international-film-festival-2/",
-        "https://www.burbankca.gov/web/community-development/public-parking",
-    ):
-        assert expected in html
-
-    for forbidden in (
-        "Examples from the official listing",
-        "editorial image generated",
-        "generated for this guide",
-        "Measure next",
-        "publishing workflow",
-        "SEO workflow",
-    ):
-        assert forbidden.lower() not in html.lower()
-
-
-def test_burbank_film_routes_image_expired_surface_cleanup_and_sitemaps() -> None:
+def test_expired_burbank_film_guide_is_removed_from_public_surfaces() -> None:
     client = TestClient(app)
 
+    assert not ARTICLE.exists()
     for route in (
         "/articles/burbank-film-festival-2026-guide",
         "/white/articles/burbank-film-festival-2026-guide",
     ):
         response = client.get(route)
-        assert response.status_code == 200
-        assert "7 ranked priorities" in response.text
-
-    image = client.get("/assets/articles/burbank-film-festival-2026-guide.jpg")
-    assert image.status_code == 200
-    assert image.headers["content-type"] == "image/jpeg"
-    assert len(image.content) > 500_000
-    assert IMAGE.stat().st_size == len(image.content)
+        assert response.status_code == 404
 
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "New July 30 · Burbank" not in response.text
-        assert "Burbank film week has 120-plus screenings. Start with the right few." not in response.text
+        assert "/articles/burbank-film-festival-2026-guide" not in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
-    assert "<loc>https://perknation.app/articles/burbank-film-festival-2026-guide</loc>" in root_sitemap.text
+    assert "burbank-film-festival-2026-guide" not in root_sitemap.text
     assert white_sitemap.status_code == 308
     assert white_sitemap.headers["location"] == "/sitemap.xml"
-    assert "<loc>https://perknation.app/white/articles/burbank-film-festival-2026-guide</loc>" not in root_sitemap.text
 
 
 def test_burbank_film_guide_is_removed_from_current_roundup_and_marked_concluded_in_answers() -> None:
     august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
-    assert 'dateModified": "2026-08-17"' in august_html
+    assert 'dateModified": "2026-08-18"' in august_html
     assert "/articles/burbank-film-festival-2026-guide" not in august_html
 
     answer = _public_review_live_query_response(
@@ -89,6 +46,22 @@ def test_burbank_film_guide_is_removed_from_current_roundup_and_marked_concluded
 
     assert answer
     assert "concluded on August 8" in answer
-    assert "/articles/burbank-film-festival-2026-guide" in answer
+    assert "planning article has been retired" in answer
+    assert "/articles/burbank-film-festival-2026-guide" not in answer
+    assert "/directory?city=Burbank" in answer
     assert "Warped Tour" not in answer
     assert "Mount Westmore" not in answer
+
+
+def test_expired_kcon_event_is_removed_from_homepages_events_and_sitemap() -> None:
+    client = TestClient(app)
+
+    for route in ("/events/kcon-la-2026", "/white/events/kcon-la-2026"):
+        assert client.get(route).status_code == 404
+
+    for route in ("/", "/white/", "/events", "/white/events"):
+        response = client.get(route)
+        assert response.status_code == 200
+        assert "kcon-la-2026" not in response.text.lower()
+
+    assert "kcon-la-2026" not in client.get("/sitemap.xml").text.lower()

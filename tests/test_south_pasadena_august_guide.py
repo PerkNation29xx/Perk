@@ -16,7 +16,7 @@ def test_south_pasadena_guide_is_substantial_source_backed_and_reader_facing() -
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "South Pasadena has five August plans" in html
-    assert 'dateModified": "2026-08-17"' in html
+    assert 'dateModified": "2026-08-18"' in html
     assert html.count("<h2>") >= 9
     for expected in (
         "5 ranked plans",
@@ -24,7 +24,7 @@ def test_south_pasadena_guide_is_substantial_source_backed_and_reader_facing() -
         "South Pasadena Farmers Market",
         "Open Mic on Mission",
         "Broadway on Mission",
-        "Toddler Dance Party",
+        "Eat! Shop! Enjoy! South Pasadena Crawl",
         "LEGO Free Play",
         "Best for:",
         "/directory?city=South%20Pasadena",
@@ -67,7 +67,7 @@ def test_south_pasadena_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 17 · South Pasadena") == 1
+        assert response.text.count("Updated August 18 · South Pasadena") == 1
         assert "South Pasadena has five August plans that make a small city feel full." in response.text
         assert "New July 30 · Burbank" not in response.text
 
@@ -80,7 +80,7 @@ def test_south_pasadena_routes_image_homepages_and_sitemap() -> None:
 def test_south_pasadena_roundup_link_and_public_answer_are_scoped() -> None:
     august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
     assert "/articles/south-pasadena-august-2026-guide" in august_html
-    assert "South Pasadena market and performance nights" in august_html
+    assert "South Pasadena crawl, market, and performance nights" in august_html
 
     answer = _public_review_live_query_response(
         "what current South Pasadena August events guide is covered?",
