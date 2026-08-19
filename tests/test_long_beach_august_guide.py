@@ -16,14 +16,14 @@ def test_long_beach_guide_is_substantial_source_backed_and_reader_facing() -> No
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Long Beach has seven late-August plans" in html
-    assert 'dateModified": "2026-08-18"' in html
+    assert 'dateModified": "2026-08-19"' in html
     assert html.count("<h2>") >= 11
     for expected in (
         "7 ranked plans",
         "Stroll &amp; Savor",
         "Taste of Downtown",
         "New Blues Festival",
-        "Moonlight Movies",
+        "Beachside Beats Fest",
         "Best for:",
         "/directory?city=Long%20Beach",
         "/articles/dine-la-city-long-beach-2026",
@@ -34,6 +34,7 @@ def test_long_beach_guide_is_substantial_source_backed_and_reader_facing() -> No
         assert expected in html
     assert "Queen Mary movie night" not in html
     assert "Jaws</em> on the Queen Mary" not in html
+    assert "August 18 at Granada Beach" not in html
 
     for forbidden in (
         "Food Scene Week",
@@ -68,7 +69,7 @@ def test_long_beach_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 18 · Long Beach") == 1
+        assert response.text.count("Updated August 19 · Long Beach") == 1
         assert "Long Beach has seven late-August plans worth building a day around." in response.text
 
     root_sitemap = client.get("/sitemap.xml")
