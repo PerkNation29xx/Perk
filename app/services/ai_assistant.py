@@ -813,7 +813,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, markets, local performances, family programs, and small businesses",
         "city": "South Pasadena",
         "title": "South Pasadena August 2026 local events guide",
-        "timing": "August 19-28, 2026",
+        "timing": "August 20-28, 2026",
         "route": "/articles/south-pasadena-august-2026-guide",
         "details": (
             "Five ranked plans covering the August 22-23 Eat! Shop! Enjoy! citywide crawl, two remaining Thursday "
@@ -825,7 +825,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, markets, museums, architecture, and fan events",
         "city": "Pasadena and nearby Arcadia / San Marino",
         "title": "Pasadena August 2026 concerts, markets, and culture guide",
-        "timing": "August 19-30, 2026",
+        "timing": "August 20-30, 2026",
         "route": "/articles/pasadena-august-2026-guide",
         "details": (
             "Six current ranked plans covering the August 29 Pasadena POPS finale, "
@@ -837,10 +837,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, trails, family events, markets, and outdoor culture",
         "city": "Glendale",
         "title": "Glendale August 2026 concerts, trails, and culture guide",
-        "timing": "August 22-30, 2026",
+        "timing": "August 21-30, 2026",
         "route": "/articles/glendale-august-2026-guide",
         "details": (
-            "Four remaining ranked plans covering the free Wander the Wilderness Bus, "
+            "Five remaining ranked plans covering the free Brand Summer Concert Series, Wander the Wilderness Bus, "
             "Classic Film Under the Stars, the Nature's Teamwork campfire, "
             "Montrose Harvest Market, and Perk Nation's 100 Glendale listings."
         ),
@@ -873,7 +873,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Adaptive surfing, open-water swimming, nature programs, markets, and surf culture",
         "city": "Huntington Beach and Orange County",
         "title": "Huntington Beach August 2026 coastal events guide",
-        "timing": "August 19-29, 2026",
+        "timing": "August 20-29, 2026",
         "route": "/articles/huntington-beach-august-2026-guide",
         "details": (
             "Six ranked plans covering Life Rolls On adaptive surfing, the Huntington Beach Pier Swim, "
@@ -885,7 +885,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Art festivals, museums, galleries, concerts, and coastal culture",
         "city": "Laguna Beach and Orange County",
         "title": "Laguna Beach August 2026 arts and festival guide",
-        "timing": "August 19-September 6, 2026",
+        "timing": "August 20-September 6, 2026",
         "route": "/articles/laguna-beach-august-2026-guide",
         "details": (
             "Seven current ranked plans covering Pageant of the Masters, Sawdust Art Festival, the Passport to the Arts, "
@@ -897,7 +897,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, coastal art, wellness, movies, markets, and local history",
         "city": "Santa Monica",
         "title": "Santa Monica August 2026 coastal events guide",
-        "timing": "August 19-September 27, 2026",
+        "timing": "August 20-September 27, 2026",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
             "Six current ranked plans covering the August 21 Sunset Swim, Cinema by the Sea, "
@@ -909,11 +909,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Restaurants, festivals, concerts, movies, and family events",
         "city": "Long Beach",
         "title": "Long Beach August 2026 food, music, and beach guide",
-        "timing": "August 19-30, 2026",
+        "timing": "August 20-30, 2026",
         "route": "/articles/long-beach-august-2026-guide",
         "details": (
-            "Seven current ranked plans covering Stroll and Savor, Taste of Downtown, the New Blues Festival, "
-            "Beachside Beats, city summer programs, Jazz on the Bay, Little Earth Cinema, and Perk Nation's "
+            "Seven current ranked plans covering final-night Stroll and Savor, Taste of Downtown, the New Blues Festival, "
+            "Beachside Beats, city summer programs, Jazz on the Bay, the El Dorado Nature Center concert, and Perk Nation's "
             "208 Long Beach directory listings."
         ),
     },
@@ -933,11 +933,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Events, concerts, and festivals",
         "city": "Southern California",
         "title": "Fourteen Southern California summer plans",
-        "timing": "August 19-30, 2026",
+        "timing": "August 20-30, 2026",
         "route": "/articles/southern-california-august-events-2026",
         "details": (
             "Ranked planning guide covering Huntington Beach surf, swim, and nature programs, Laguna Beach arts season, South Pasadena markets and performances, and Long Beach food and music, "
-            "with a dedicated seven-plan Long Beach guide, Santa Monica outdoor programs, Glendale park events, "
+            "with a dedicated seven-plan Long Beach guide, Santa Monica outdoor programs, Glendale concerts and park events, "
             "Pasadena POPS and a dedicated six-plan Pasadena August guide, Just Like Heaven on August 22, "
             "and Nisei Week's Little Tokyo closing weekend on August 22-23."
         ),
@@ -946,7 +946,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Japanese American culture, family events, and traditional arts",
         "city": "Los Angeles",
         "title": "Nisei Week 2026 Little Tokyo guide",
-        "timing": "August 15-23, 2026",
+        "timing": "August 22-23, 2026",
         "route": "/articles/nisei-week-little-tokyo-2026-guide",
         "details": (
             "Four-plan guide to the August 22 Plaza Festival, August 23 Ondo finale, "
@@ -1989,7 +1989,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_huntington_beach and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Huntington Beach guide ranks six coastal plans from August 19-29, 2026:",
+                "The current PerkNation Huntington Beach guide ranks six coastal plans from August 20-29, 2026:",
                 "- Life Rolls On adaptive surfing on August 22, now open to spectators because athlete and volunteer registration is closed, and the Huntington Beach Pier Swim on August 29.",
                 "- Bolsa Chica Grunion Runs, Junior Rangers, and Litter Getters.",
                 "- The WSL50 surf-history exhibition and Tuesday Surf City Nights market evenings.",
@@ -2000,10 +2000,10 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation Long Beach guide ranks seven late-August plans from August 19-30, 2026:",
-                "- Stroll & Savor on August 19-20 and Taste of Downtown with KCRW on August 22.",
-                "- The New Blues Festival on August 29-30, Jazz on the Bay, Beachside Beats, and city summer programs.",
-                "- Little Earth Cinema and links into 208 Long Beach directory listings.",
+                "The current PerkNation Long Beach guide ranks seven late-August plans from August 20-30, 2026:",
+                "- Final-night Stroll & Savor, Beachside Beats, and Sligo Rags at El Dorado Nature Center on August 20.",
+                "- Taste of Downtown and Jazz on the Bay on August 22, plus the New Blues Festival on August 29-30.",
+                "- City summer programs and links into 208 Long Beach directory listings.",
                 "Open /articles/long-beach-august-2026-guide for best-for rankings, ticket and parking notes, official sources, and ready-made local itineraries.",
             )
         )
@@ -2011,7 +2011,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_laguna_beach and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Laguna Beach guide ranks seven current late-summer arts plans from August 19-September 6, 2026:",
+                "The current PerkNation Laguna Beach guide ranks seven current late-summer arts plans from August 20-September 6, 2026:",
                 "- Pageant of the Masters, Sawdust Art Festival, Festival of Arts, and Laguna Art-A-Fair.",
                 "- The three-festival Passport to the Arts, which does not include the Pageant.",
                 "- Laguna Art Museum and Music at the Promenade.",
@@ -2022,7 +2022,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks six late-summer plans from August 19-September 27, 2026:",
+                "The current PerkNation Santa Monica guide ranks six late-summer plans from August 20-September 27, 2026:",
                 "- The remaining Sunset Swim on August 21.",
                 "- Cinema by the Sea, free Wellness & Waves mornings, a free Pier history talk, and Downtown farmers markets.",
                 "- Ocean Way Festival on September 26-27, with ticket and car-free arrival guidance to decide in August.",
@@ -2052,7 +2052,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_south_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation South Pasadena guide ranks five local plans from August 19-28, 2026:",
+                "The current PerkNation South Pasadena guide ranks five local plans from August 20-28, 2026:",
                 "- The August 22-23 Eat! Shop! Enjoy! citywide crawl.",
                 "- Thursday farmers-market nights plus weekly singer-songwriter and musical-theater open mics.",
                 "- August 21 LEGO Free Play at the library.",
@@ -2072,7 +2072,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Pasadena guide ranks six August plans from August 19-30, 2026:",
+                "The current PerkNation Pasadena guide ranks six August plans from August 20-30, 2026:",
                 "- The August 29 Pasadena POPS finale.",
                 "- Friday Nights at The Gamble House and Sunset Sessions.",
                 "- America's Got Talent tapings, goat yoga, and Power Morphicon.",
@@ -2083,7 +2083,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_glendale and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Glendale guide ranks four remaining August plans from August 22-30, 2026:",
+                "The current PerkNation Glendale guide ranks five remaining August plans from August 21-30, 2026:",
+                "- The free Brand Summer Concert Series on August 21 and 28.",
                 "- The free Wander the Wilderness Bus.",
                 "- Classic Film Under the Stars and the Nature's Teamwork campfire.",
                 "- Montrose Harvest Market on Sunday mornings.",

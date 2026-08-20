@@ -16,7 +16,7 @@ def test_arcadia_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Arcadia has two remaining August outings" in html
-    assert 'dateModified": "2026-08-19"' in html
+    assert 'dateModified": "2026-08-20"' in html
     assert html.count("<h2>") >= 7
     for expected in (
         "2 ranked outings",
@@ -63,9 +63,9 @@ def test_arcadia_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 19 · Arcadia") == 1
+        assert response.text.count("Updated August 20 · Arcadia") == 1
         assert "Arcadia has two remaining August outings worth building an evening around." in response.text
-        assert "Updated August 19" in response.text
+        assert "Updated August 20" in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
@@ -80,7 +80,7 @@ def test_arcadia_guide_replaces_expired_roundup_copy_and_scopes_public_answer() 
     assert "/articles/arcadia-august-2026-guide" in august_html
     assert "626 Night Market in Arcadia" not in august_html
     assert "Thursday evenings through August at the City Hall Lawn" not in august_html
-    assert 'dateModified": "2026-08-19"' in august_html
+    assert 'dateModified": "2026-08-20"' in august_html
     assert "National Night Out" not in ARTICLE.read_text(encoding="utf-8")
 
     answer = _public_review_live_query_response(

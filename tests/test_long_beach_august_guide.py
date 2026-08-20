@@ -16,7 +16,7 @@ def test_long_beach_guide_is_substantial_source_backed_and_reader_facing() -> No
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Long Beach has seven late-August plans" in html
-    assert 'dateModified": "2026-08-19"' in html
+    assert 'dateModified": "2026-08-20"' in html
     assert html.count("<h2>") >= 11
     for expected in (
         "7 ranked plans",
@@ -24,6 +24,7 @@ def test_long_beach_guide_is_substantial_source_backed_and_reader_facing() -> No
         "Taste of Downtown",
         "New Blues Festival",
         "Beachside Beats Fest",
+        "Sligo Rags at El Dorado Nature Center",
         "Best for:",
         "/directory?city=Long%20Beach",
         "/articles/dine-la-city-long-beach-2026",
@@ -35,6 +36,7 @@ def test_long_beach_guide_is_substantial_source_backed_and_reader_facing() -> No
     assert "Queen Mary movie night" not in html
     assert "Jaws</em> on the Queen Mary" not in html
     assert "August 18 at Granada Beach" not in html
+    assert "Little Earth Cinema" not in html
 
     for forbidden in (
         "Food Scene Week",
@@ -69,7 +71,7 @@ def test_long_beach_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 19 · Long Beach") == 1
+        assert response.text.count("Updated August 20 · Long Beach") == 1
         assert "Long Beach has seven late-August plans worth building a day around." in response.text
 
     root_sitemap = client.get("/sitemap.xml")
@@ -93,6 +95,8 @@ def test_long_beach_guide_is_cross_linked_and_available_to_public_answers() -> N
     assert "ranks seven late-August plans" in answer
     assert "/articles/long-beach-august-2026-guide" in answer
     assert "New Blues Festival" in answer
+    assert "Sligo Rags" in answer
+    assert "Little Earth Cinema" not in answer
     assert "Food Scene Week" not in answer
     assert "Burbank International Film Festival" not in answer
     assert "Pasadena" not in answer
