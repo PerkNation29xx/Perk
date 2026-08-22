@@ -1,26 +1,5 @@
 window.PERK_NATION_EVENTS = [
   {
-    slug: "mount-westmore-san-jose",
-    category: "Concerts",
-    title: "West Coast icons unite for Mount Westmore in San Jose",
-    eventName: "Mount Westmore",
-    date: "August 21, 2026",
-    time: "8:00 PM",
-    city: "San Jose",
-    venue: "SAP Center",
-    image: "https://www.sapcenter.com/assets/img/Mount-Westmore-SAP-CENTER-a2c2c92625.jpg",
-    imageAlt: "Mount Westmore concert artwork featuring Snoop Dogg, Ice Cube, E-40 and Too Short",
-    officialUrl: "https://www.sapcenter.com/events/detail/mount-westmore",
-    summary: "Snoop Dogg, Ice Cube, E-40 and Too Short share one Bay Area arena stage.",
-    intro: "Mount Westmore brings four defining voices of West Coast hip-hop together at SAP Center for a single Friday-night arena show.",
-    paragraphs: [
-      "The billing joins Los Angeles legends Snoop Dogg and Ice Cube with Bay Area pillars E-40 and Too Short, making this one of Northern California’s most regionally relevant concert dates of the summer.",
-      "SAP Center lists the show for 8:00 PM. Fans should use the venue’s official page for current ticket inventory, entry requirements and transportation information."
-    ],
-    highlights: ["Four West Coast headliners", "One-night Bay Area stop", "Friday night at SAP Center"],
-    credit: "Official promotional artwork via SAP Center"
-  },
-  {
     slug: "j-cole-los-angeles",
     category: "Concerts",
     title: "J. Cole brings The Fall-Off World Tour to Los Angeles",

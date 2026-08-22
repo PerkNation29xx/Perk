@@ -52,3 +52,17 @@ def test_season_opener_routes_load_the_new_versioned_assets() -> None:
         response = client.get(f"/events/{slug}")
         assert response.status_code == 200
         assert _PUBLIC_BUILD_ID in response.text
+
+
+def test_expired_mount_westmore_is_removed_from_current_event_surfaces() -> None:
+    source = EVENTS_DATA.read_text(encoding="utf-8")
+    assert "mount-westmore-san-jose" not in source
+
+    client = TestClient(app)
+    assert client.get("/events/mount-westmore-san-jose").status_code == 404
+    assert "mount-westmore-san-jose" not in client.get("/sitemap.xml").text
+
+    for route in ("/", "/white/", "/events"):
+        response = client.get(route)
+        assert response.status_code == 200
+        assert "Mount Westmore" not in response.text

@@ -15,22 +15,20 @@ AUGUST_GUIDE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-cal
 def test_south_pasadena_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "South Pasadena has five August plans" in html
-    assert 'dateModified": "2026-08-21"' in html
+    assert "South Pasadena has four August plans" in html
+    assert 'dateModified": "2026-08-22"' in html
     assert html.count("<h2>") >= 9
     for expected in (
-        "5 ranked plans",
+        "4 ranked plans",
         "97 South Pasadena listings",
         "South Pasadena Farmers Market",
         "Open Mic on Mission",
         "Broadway on Mission",
         "Eat! Shop! Enjoy! South Pasadena Crawl",
-        "LEGO Free Play",
         "Best for:",
         "/directory?city=South%20Pasadena",
         "/articles/dine-la-city-south-pasadena-2026",
         "/articles/southern-california-august-events-2026",
-        "https://www.southpasadenaca.gov/",
         "https://southpasadena.net/",
     ):
         assert expected in html
@@ -56,7 +54,7 @@ def test_south_pasadena_routes_image_homepages_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "5 ranked plans" in response.text
+        assert "4 ranked plans" in response.text
 
     image = client.get("/assets/articles/south-pasadena-august-2026-guide.jpg")
     assert image.status_code == 200
@@ -67,8 +65,8 @@ def test_south_pasadena_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 21 · South Pasadena") == 1
-        assert "South Pasadena has five August plans that make a small city feel full." in response.text
+        assert response.text.count("Updated August 22 · South Pasadena") == 1
+        assert "South Pasadena has four August plans that make a small city feel full." in response.text
         assert "New July 30 · Burbank" not in response.text
 
     root_sitemap = client.get("/sitemap.xml")
@@ -88,7 +86,7 @@ def test_south_pasadena_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "ranks five local plans" in answer
+    assert "ranks four local plans" in answer
     assert "/articles/south-pasadena-august-2026-guide" in answer
     assert "97 South Pasadena directory listings" in answer
     assert "Glendale" not in answer
