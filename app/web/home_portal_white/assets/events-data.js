@@ -1,26 +1,5 @@
 window.PERK_NATION_EVENTS = [
   {
-    slug: "mount-westmore-san-jose",
-    category: "Concerts",
-    title: "West Coast icons unite for Mount Westmore in San Jose",
-    eventName: "Mount Westmore",
-    date: "August 21, 2026",
-    time: "8:00 PM",
-    city: "San Jose",
-    venue: "SAP Center",
-    image: "https://www.sapcenter.com/assets/img/Mount-Westmore-SAP-CENTER-a2c2c92625.jpg",
-    imageAlt: "Mount Westmore concert artwork featuring Snoop Dogg, Ice Cube, E-40 and Too Short",
-    officialUrl: "https://www.sapcenter.com/events/detail/mount-westmore",
-    summary: "Snoop Dogg, Ice Cube, E-40 and Too Short share one Bay Area arena stage.",
-    intro: "Mount Westmore brings four defining voices of West Coast hip-hop together at SAP Center for a single Friday-night arena show.",
-    paragraphs: [
-      "The billing joins Los Angeles legends Snoop Dogg and Ice Cube with Bay Area pillars E-40 and Too Short, making this one of Northern California’s most regionally relevant concert dates of the summer.",
-      "SAP Center lists the show for 8:00 PM. Fans should use the venue’s official page for current ticket inventory, entry requirements and transportation information."
-    ],
-    highlights: ["Four West Coast headliners", "One-night Bay Area stop", "Friday night at SAP Center"],
-    credit: "Official promotional artwork via SAP Center"
-  },
-  {
     slug: "j-cole-los-angeles",
     category: "Concerts",
     title: "J. Cole brings The Fall-Off World Tour to Los Angeles",
@@ -61,27 +40,6 @@ window.PERK_NATION_EVENTS = [
     ],
     highlights: ["Major Latin arena tour", "Southern California stop", "Thursday night performance"],
     credit: "Official promotional artwork via Pechanga Arena San Diego"
-  },
-  {
-    slug: "ufc-sacramento-2026",
-    category: "Sports",
-    title: "UFC returns to Sacramento with a pivotal middleweight main event",
-    eventName: "UFC Fight Night: Hernandez vs. Rodrigues",
-    date: "August 22, 2026",
-    time: "Prelims 2:00 PM; main card 5:00 PM PT",
-    city: "Sacramento",
-    venue: "Golden 1 Center",
-    image: "https://www.golden1center.com/wp-content/uploads/2026/06/12317395024_08-22_CityAnnouncement_1920x1080.jpg",
-    imageAlt: "UFC Sacramento Hernandez versus Rodrigues fight announcement",
-    officialUrl: "https://www.golden1center.com/events/detail/ufc/",
-    summary: "Anthony Hernandez faces Gregory Rodrigues when UFC Fight Night returns to Golden 1 Center.",
-    intro: "Sacramento hosts a high-stakes UFC middleweight matchup between No. 6 contender Anthony Hernandez and No. 12 Gregory Rodrigues.",
-    paragraphs: [
-      "The card also includes a featured light heavyweight contest between Roman Dolidze and Reinier de Ridder. UFC’s announcement lists prelims at 2:00 PM PT and the main card at 5:00 PM PT on Paramount+.",
-      "Golden 1 Center’s event listing contains the latest ticket, door, bag and accessibility information for attending in person."
-    ],
-    highlights: ["Hernandez vs. Rodrigues", "UFC’s return to Sacramento", "Live from Golden 1 Center"],
-    credit: "Official event artwork via Golden 1 Center"
   },
   {
     slug: "ringling-san-diego-2026",

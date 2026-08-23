@@ -16,7 +16,7 @@ def test_south_pasadena_guide_is_substantial_source_backed_and_reader_facing() -
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "South Pasadena has four August plans" in html
-    assert 'dateModified": "2026-08-22"' in html
+    assert 'dateModified": "2026-08-23"' in html
     assert html.count("<h2>") >= 9
     for expected in (
         "4 ranked plans",
@@ -65,7 +65,7 @@ def test_south_pasadena_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 22 · South Pasadena") == 1
+        assert response.text.count("Updated August 23 · South Pasadena") == 1
         assert "South Pasadena has four August plans that make a small city feel full." in response.text
         assert "New July 30 · Burbank" not in response.text
 

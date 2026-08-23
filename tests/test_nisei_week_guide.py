@@ -14,14 +14,12 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "nisei-we
 def test_nisei_week_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Nisei Week returns for a full Little Tokyo closing weekend" in html
-    assert 'dateModified": "2026-08-22"' in html
+    assert "Nisei Week closes with a participatory Little Tokyo finale" in html
+    assert 'dateModified": "2026-08-23"' in html
     assert html.count("<h2>") >= 7
     for expected in (
-        "Plaza Festival",
         "Ondo and Closing Ceremony",
         "Rilakkuma at Okayama Kobo",
-        "Little Tokyo Farmers' Market",
         "Best for:",
         "/directory?city=Los%20Angeles",
         "/articles/southern-california-august-events-2026",
@@ -52,7 +50,7 @@ def test_nisei_week_routes_image_homepage_cards_and_sitemaps() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "4 ranked priorities" in response.text
+        assert "2 ranked priorities" in response.text
 
     image = client.get("/assets/articles/nisei-week-little-tokyo-2026-guide.jpg")
     assert image.status_code == 200
@@ -63,8 +61,9 @@ def test_nisei_week_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated August 22 · Los Angeles" in response.text
-        assert "Nisei Week returns for the Plaza Festival and Ondo closing weekend." in response.text
+        assert "Updated August 23 · Los Angeles" in response.text
+        assert "Nisei Week returns for the Plaza Festival and Ondo closing weekend." not in response.text
+        assert "Plan today's Ondo and Closing Ceremony" in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)

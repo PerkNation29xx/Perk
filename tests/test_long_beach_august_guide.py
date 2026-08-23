@@ -16,14 +16,15 @@ def test_long_beach_guide_is_substantial_source_backed_and_reader_facing() -> No
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Long Beach has five late-August plans" in html
-    assert 'dateModified": "2026-08-22"' in html
+    assert 'dateModified": "2026-08-23"' in html
     assert html.count("<h2>") >= 9
     for expected in (
         "5 ranked plans",
-        "Taste of Downtown",
         "New Blues Festival",
-        "Three Pianos",
         "Nas &amp; The Roots",
+        "Long Beach Film Festival",
+        "Naples Island Concert in the Park",
+        "Conscience",
         "Best for:",
         "/directory?city=Long%20Beach",
         "/articles/dine-la-city-long-beach-2026",
@@ -69,7 +70,7 @@ def test_long_beach_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 22 · Long Beach") == 1
+        assert response.text.count("Updated August 23 · Long Beach") == 1
         assert "Long Beach has five late-August plans worth building a day around." in response.text
 
     root_sitemap = client.get("/sitemap.xml")
@@ -93,7 +94,8 @@ def test_long_beach_guide_is_cross_linked_and_available_to_public_answers() -> N
     assert "ranks five late-August plans" in answer
     assert "/articles/long-beach-august-2026-guide" in answer
     assert "New Blues Festival" in answer
-    assert "Three Pianos" in answer
+    assert "Long Beach Film Festival" in answer
+    assert "Three Pianos" not in answer
     assert "Little Earth Cinema" not in answer
     assert "Food Scene Week" not in answer
     assert "Burbank International Film Festival" not in answer

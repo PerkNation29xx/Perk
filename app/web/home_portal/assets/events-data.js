@@ -42,27 +42,6 @@ window.PERK_NATION_EVENTS = [
     credit: "Official promotional artwork via Pechanga Arena San Diego"
   },
   {
-    slug: "ufc-sacramento-2026",
-    category: "Sports",
-    title: "UFC returns to Sacramento with a pivotal middleweight main event",
-    eventName: "UFC Fight Night: Hernandez vs. Rodrigues",
-    date: "August 22, 2026",
-    time: "Prelims 2:00 PM; main card 5:00 PM PT",
-    city: "Sacramento",
-    venue: "Golden 1 Center",
-    image: "https://www.golden1center.com/wp-content/uploads/2026/06/12317395024_08-22_CityAnnouncement_1920x1080.jpg",
-    imageAlt: "UFC Sacramento Hernandez versus Rodrigues fight announcement",
-    officialUrl: "https://www.golden1center.com/events/detail/ufc/",
-    summary: "Anthony Hernandez faces Gregory Rodrigues when UFC Fight Night returns to Golden 1 Center.",
-    intro: "Sacramento hosts a high-stakes UFC middleweight matchup between No. 6 contender Anthony Hernandez and No. 12 Gregory Rodrigues.",
-    paragraphs: [
-      "The card also includes a featured light heavyweight contest between Roman Dolidze and Reinier de Ridder. UFC’s announcement lists prelims at 2:00 PM PT and the main card at 5:00 PM PT on Paramount+.",
-      "Golden 1 Center’s event listing contains the latest ticket, door, bag and accessibility information for attending in person."
-    ],
-    highlights: ["Hernandez vs. Rodrigues", "UFC’s return to Sacramento", "Live from Golden 1 Center"],
-    credit: "Official event artwork via Golden 1 Center"
-  },
-  {
     slug: "ringling-san-diego-2026",
     category: "Live events",
     title: "The Greatest Show on Earth returns to San Diego",

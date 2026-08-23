@@ -16,16 +16,17 @@ def test_pasadena_guide_is_substantial_source_backed_and_reader_facing() -> None
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Pasadena has seven current August plans" in html
-    assert 'dateModified": "2026-08-22"' in html
+    assert 'dateModified": "2026-08-23"' in html
     assert html.count("<h2>") >= 10
     for expected in (
         "7 ranked plans",
-        "Just Like Heaven",
         "563 Pasadena listings",
         "Pasadena POPS",
         "Friday Nights at The Gamble House",
         "America's Got Talent",
         "Power Morphicon",
+        "This Land Is",
+        "Kidspace Campout",
         "Best for:",
         "/directory?city=Pasadena",
         "/articles/dine-la-city-pasadena-2026",
@@ -33,6 +34,8 @@ def test_pasadena_guide_is_substantial_source_backed_and_reader_facing() -> None
         "https://www.visitpasadena.com/events/summer-guide/",
     ):
         assert expected in html
+    assert "Just Like Heaven" not in html
+    assert "Goat Yoga" not in html
 
     for forbidden in (
         "Rose Bowl Flea Market",
@@ -66,7 +69,7 @@ def test_pasadena_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 22 · Pasadena") == 1
+        assert response.text.count("Updated August 23 · Pasadena") == 1
         assert "Pasadena has seven current August plans worth putting on the calendar." in response.text
 
     root_sitemap = client.get("/sitemap.xml")
