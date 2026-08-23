@@ -21,7 +21,6 @@ from app.db.migrate import run_migrations
 from app.db.session import SessionLocal, engine
 from app.services.business_directory import (
     directory_facets,
-    directory_sitemap_entries,
     get_business_directory_entry,
     normalize_spaces,
     search_business_directory,
@@ -247,6 +246,8 @@ _HOME_HTML_FILES = {
     "how-it-works.html",
     "merchants.html",
     "faq.html",
+    "about.html",
+    "editorial-standards.html",
     "contact-us.html",
     "privacy-policy.html",
     "terms-of-use.html",
@@ -272,6 +273,8 @@ _LEGACY_HTML_TO_CANONICAL = {
     "guests": "/members",
     "merchants": "/merchants",
     "how-it-works": "/how-it-works",
+    "about": "/about",
+    "editorial-standards": "/editorial-standards",
     "contact-us": "/contact-us",
     "faq": "/faq",
     "privacy-policy": "/privacy-policy",
@@ -287,6 +290,35 @@ _LEGACY_STATIC_HTML_FILES = {"investors.html", "security.html", "contact.html", 
 _ARTICLES_DIR = _HOME_PORTAL_DIR / "articles"
 _DINE_LA_CITY_GUIDES_FILE = _HOME_PORTAL_DIR / "assets" / "articles" / "dine-la-city-guides-2026.json"
 _EVENTS_DATA_FILE = _HOME_PORTAL_DIR / "assets" / "events-data.js"
+_MIN_INDEXABLE_DINE_LA_RESTAURANTS = 10
+_MIN_INDEXABLE_DIRECTORY_CITY_LISTINGS = 20
+_INDEXABLE_DIRECTORY_CITY_SLUGS = frozenset(
+    {
+        "alhambra",
+        "altadena",
+        "anaheim",
+        "arcadia",
+        "burbank",
+        "costa-mesa",
+        "el-monte",
+        "fullerton",
+        "glendale",
+        "glendora",
+        "huntington-beach",
+        "laguna-beach",
+        "long-beach",
+        "los-angeles",
+        "montebello",
+        "monterey-park",
+        "newport-beach",
+        "orange",
+        "pasadena",
+        "san-clemente",
+        "san-gabriel",
+        "santa-ana",
+        "south-pasadena",
+    }
+)
 
 
 def _discover_article_html_files() -> dict[str, str]:
@@ -433,6 +465,7 @@ def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> O
     city_name = city.get("city", "")
     restaurants = city.get("restaurants", [])
     restaurant_count = int(city.get("restaurant_count") or len(restaurants))
+    is_indexable = restaurant_count >= _MIN_INDEXABLE_DINE_LA_RESTAURANTS
     route = city.get("route") or f"/articles/{article_slug}"
     canonical_url = _public_url(route)
     directory_route = city.get("directory_route") or f"/directory?city={quote_plus(city_name)}"
@@ -458,7 +491,13 @@ def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> O
         )
         for item in restaurants
     )
-    all_cities = [other for other in data.get("cities", []) if other.get("article_slug") != article_slug]
+    all_cities = [
+        other
+        for other in data.get("cities", [])
+        if other.get("article_slug") != article_slug
+        and int(other.get("restaurant_count") or len(other.get("restaurants", [])))
+        >= _MIN_INDEXABLE_DINE_LA_RESTAURANTS
+    ]
     related_items = "\n".join(
         f"          <li><a href=\"{_escape(other.get('route'))}\">{_escape(other.get('city'))} Dine LA guide</a> · {int(other.get('restaurant_count') or 0)} listings</li>"
         for other in all_cities[:10]
@@ -469,6 +508,7 @@ def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> O
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Dine LA { _escape(city_name) } guide with ranked restaurant picks, review notes, price tiers, cuisines, and Perk Nation local discovery links." />
+  <meta name="robots" content="{'index,follow' if is_indexable else 'noindex,follow'}" />
   <meta name="theme-color" content="#0d0d0d" />
   <title>Dine LA { _escape(city_name) } guide: {restaurant_count} restaurants | Perk Nation</title>
   <link rel="canonical" href="{_escape(canonical_url)}" />
@@ -508,6 +548,7 @@ def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> O
       <div class="articleHeroCopy">
         <div class="badge">Dine LA by city</div>
         <h1>Dine LA { _escape(city_name) } guide: ranked picks from {restaurant_count} restaurants.</h1>
+        <p class="articleByline">Reviewed by Perk Nation Editorial · Source checked July 25, 2026 · <a href="/editorial-standards">How we rank and verify recommendations</a></p>
         <p>{_escape(city_name)} has {restaurant_count} Dine LA restaurants to choose from. Use this city guide to compare ranked picks, cuisines, price tiers, and nearby Perk Nation discovery paths before booking.</p>
         <div class="articleFactGrid">
           <div><span>Dates</span><strong>{_escape(data.get('dates') or 'August 14-28, 2026')}</strong></div>
@@ -557,7 +598,7 @@ def _render_dine_la_city_article(article_slug: str, *, white: bool = False) -> O
     </section>
   </article>
 </main>
-<footer class="footer"><div class="container"><div class="footerBottom"><span>© 2026 Perk Nation</span><span><a href="/directory">Directory</a> · <a href="/events">Events</a> · <a href="/privacy-policy">Privacy</a></span></div></div></footer>
+<footer class="footer"><div class="container"><div class="footerBottom"><span>© 2026 Perk Nation</span><span><a href="/about">About</a> · <a href="/editorial-standards">Editorial Standards</a> · <a href="/privacy-policy">Privacy</a></span></div></div></footer>
 </body>
 </html>"""
 
@@ -585,7 +626,16 @@ def _directory_page_path(*, white: bool, city_slug: Optional[str] = None, busine
     return _theme_path("/directory", white=white)
 
 
-def _directory_shell(*, title: str, description: str, canonical_path: str, body: str, white: bool, json_ld: Optional[dict] = None) -> str:
+def _directory_shell(
+    *,
+    title: str,
+    description: str,
+    canonical_path: str,
+    body: str,
+    white: bool,
+    json_ld: Optional[dict] = None,
+    robots: str = "index,follow",
+) -> str:
     brand_href = "/"
     style_href = f"{_asset_path('styles.css', white=white)}?v=directory20260715-category-hierarchy"
     script_href = f"{_asset_path('app.js', white=white)}?v=directory20260715-category-hierarchy"
@@ -603,6 +653,7 @@ def _directory_shell(*, title: str, description: str, canonical_path: str, body:
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="{_escape(description)}" />
+  <meta name="robots" content="{_escape(robots)}" />
   <meta name="theme-color" content="{'#ffffff' if white else '#0d0d0d'}" />
   <title>{_escape(title)}</title>
   <link rel="canonical" href="{_escape(_public_url(canonical_path))}" />
@@ -638,7 +689,7 @@ def _directory_shell(*, title: str, description: str, canonical_path: str, body:
   <div class="container">
     <div class="footerGrid">
       <div><strong>Perk Nation</strong><p class="small">Local business directory, rewards, offers, and neighborhood discovery.</p></div>
-      <div><a href="{_escape(_theme_path('/directory', white=white))}">Business Directory</a><a href="{_escape(_theme_path('/contact-us', white=white))}">Contact Us</a></div>
+      <div><a href="{_escape(_theme_path('/directory', white=white))}">Business Directory</a><a href="{_escape(_theme_path('/about', white=white))}">About</a><a href="{_escape(_theme_path('/editorial-standards', white=white))}">Editorial Standards</a><a href="{_escape(_theme_path('/contact-us', white=white))}">Contact Us</a></div>
     </div>
   </div>
 </footer>
@@ -1086,6 +1137,14 @@ def _render_directory_page(
     canonical_path = _directory_page_path(white=False, city_slug=city_slug, business_type_slug=business_type_slug)
     if business_type_slug and not city_slug:
         canonical_path = _directory_page_path(white=False, business_type_slug=business_type_slug)
+    is_unfiltered_root = not any((q.strip(), city, business_type, city_slug, business_type_slug))
+    is_indexable_city = (
+        not any((q.strip(), city, business_type, business_type_slug))
+        and bool(city_slug)
+        and city_slug in _INDEXABLE_DIRECTORY_CITY_SLUGS
+        and total >= _MIN_INDEXABLE_DIRECTORY_CITY_LISTINGS
+    )
+    robots = "index,follow" if is_unfiltered_root or is_indexable_city else "noindex,follow"
 
     cards_html = "".join(_directory_result_card(row, white=white) for row in rows)
     empty_html = ""
@@ -1116,7 +1175,7 @@ def _render_directory_page(
         <div class="container">
           <div class="directoryResultsHeader">
             <h2 class="h2">Business results</h2>
-            <p class="muted">Listings are sourced from the imported chamber and city directory spreadsheets, with website metadata added when available.</p>
+            <p class="muted">Compare available business details, open directions, and contact each business directly to confirm current services, hours, and availability.</p>
           </div>
           {_directory_map_panel(rows)}
           <div class="directoryResultsGrid" data-directory-results>{cards_html}</div>
@@ -1131,6 +1190,7 @@ def _render_directory_page(
         body=body,
         white=white,
         json_ld=_directory_item_list_json_ld(rows, white=white),
+        robots=robots,
     )
 
 
@@ -1254,8 +1314,8 @@ def _render_business_page(*, slug: str, white: bool = False) -> str:
               {media_html}
               {map_html}
               <div class="directorySourceBox">
-                <strong>Directory source</strong>
-                <p>Imported from {_escape(row.source_file)} / {_escape(row.source_sheet)} row {_escape(row.source_row)}.</p>
+                <strong>Listing information</strong>
+                <p>{_escape(row.data_source or 'Public business information')}. Contact the business directly to confirm current details.</p>
               </div>
               <div class="directoryRelated">
                 <strong>Related listings</strong>
@@ -1275,6 +1335,7 @@ def _render_business_page(*, slug: str, white: bool = False) -> str:
         body=body,
         white=white,
         json_ld=_business_json_ld(row),
+        robots="noindex,follow",
     )
 
 
@@ -1285,14 +1346,12 @@ def _directory_sitemap_xml(*, white: bool = False) -> str:
             facets = directory_facets(db)
             for city in facets["cities"]:
                 slug = str(city.get("slug") or "")
-                if slug:
+                count = int(city.get("count") or 0)
+                if (
+                    slug in _INDEXABLE_DIRECTORY_CITY_SLUGS
+                    and count >= _MIN_INDEXABLE_DIRECTORY_CITY_LISTINGS
+                ):
                     urls.add(_directory_page_path(white=white, city_slug=slug))
-            for business_type in facets["business_types"]:
-                slug = str(business_type.get("slug") or "")
-                if slug:
-                    urls.add(_directory_page_path(white=white, business_type_slug=slug))
-            for slug in directory_sitemap_entries(db):
-                urls.add(_business_page_path(slug, white=white))
     except Exception:
         logger.exception("Unable to build business directory sitemap")
 
@@ -1400,10 +1459,7 @@ def _build_sitemap_snapshot_payloads() -> dict[str, str]:
     )
     business_directory_xml = _directory_sitemap_xml()
     return {
-        "home": _append_directory_sitemap(
-            home_sitemap_content,
-            directory_xml=business_directory_xml,
-        ),
+        "home": _sitemap_xml_from_urls(_sitemap_urls_from_xml(home_sitemap_content, white=False)),
         "business_directory": business_directory_xml,
     }
 
@@ -1648,6 +1704,16 @@ def home_portal_contact_us() -> str:
     return _read_html_or_missing(_HOME_PORTAL_DIR / "contact-us.html", "Contact-us page")
 
 
+@app.get("/about", response_class=HTMLResponse)
+def home_portal_about() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "about.html", "About page")
+
+
+@app.get("/editorial-standards", response_class=HTMLResponse)
+def home_portal_editorial_standards() -> str:
+    return _read_html_or_missing(_HOME_PORTAL_DIR / "editorial-standards.html", "Editorial standards page")
+
+
 @app.get("/faq", response_class=HTMLResponse)
 def home_portal_faq() -> str:
     return _read_html_or_missing(_HOME_PORTAL_DIR / "faq.html", "FAQ page")
@@ -1875,10 +1941,13 @@ def home_portal_robots() -> str:
 def home_portal_sitemap() -> Response:
     return _sitemap_snapshot_response(
         "home",
-        lambda: _append_directory_sitemap(
-            _read_text_or_missing(
-                _HOME_PORTAL_DIR / "sitemap.xml",
-                fallback="<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"/>",
+        lambda: _sitemap_xml_from_urls(
+            _sitemap_urls_from_xml(
+                _read_text_or_missing(
+                    _HOME_PORTAL_DIR / "sitemap.xml",
+                    fallback="<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"/>",
+                ),
+                white=False,
             )
         ),
     )

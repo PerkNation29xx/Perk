@@ -27,7 +27,7 @@ def test_south_pasadena_guide_is_substantial_source_backed_and_reader_facing() -
         "Eat! Shop! Enjoy! South Pasadena Crawl",
         "Best for:",
         "/directory?city=South%20Pasadena",
-        "/articles/dine-la-city-south-pasadena-2026",
+        "/articles/dine-la-pasadena-2026",
         "/articles/southern-california-august-events-2026",
         "https://southpasadena.net/",
     ):

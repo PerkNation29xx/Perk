@@ -2845,6 +2845,15 @@ label{display:block; margin: 10px 0 6px; font-weight: 850}
 .homeArticleCopy p{max-width:760px}
 .homeArticleLinks{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px}
 
+.articleByline{
+  margin:12px 0 16px;
+  color:var(--muted);
+  font-size:14px;
+  font-weight:750;
+  line-height:1.55;
+}
+.articleByline a{color:var(--gold2); text-decoration:underline; text-underline-offset:3px}
+
 .sharePanel{
   display:grid;
   gap:14px;
