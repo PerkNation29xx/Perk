@@ -14,11 +14,12 @@ def test_august_guide_has_fourteen_ranked_source_backed_plans() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Fourteen Southern California summer plans" in html
-    assert 'dateModified": "2026-08-23"' in html
+    assert 'dateModified": "2026-08-24"' in html
     for expected in (
         "Kidspace Campout",
-        "Nisei Week in Little Tokyo",
-        "/articles/nisei-week-little-tokyo-2026-guide",
+        "Dine LA Restaurant Week",
+        "TheFitExpo Anaheim",
+        "Leimert Park Jazz Festival",
         "/articles/arcadia-august-2026-guide",
         "/articles/santa-monica-august-2026-guide",
         "/articles/laguna-beach-august-2026-guide",
@@ -31,6 +32,7 @@ def test_august_guide_has_fourteen_ranked_source_backed_plans() -> None:
     assert "West Hollywood Summer Sounds" not in html
     assert "626 Night Market in Arcadia" not in html
     assert "OC Fair in Costa Mesa" not in html
+    assert "Nisei Week in Little Tokyo" not in html
     for forbidden in (
         "Examples from the official listing",
         "editorial image generated",
@@ -50,7 +52,7 @@ def test_august_guide_card_is_current_on_both_homepages() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated August 23" in response.text
+        assert "Updated August 24" in response.text
         assert "Fourteen Southern California summer plans, ranked." in response.text
 
 
