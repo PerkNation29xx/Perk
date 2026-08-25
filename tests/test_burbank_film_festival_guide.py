@@ -34,9 +34,9 @@ def test_expired_burbank_film_guide_is_removed_from_public_surfaces() -> None:
     assert white_sitemap.headers["location"] == "/sitemap.xml"
 
 
-def test_burbank_film_guide_is_removed_from_current_roundup_and_marked_concluded_in_answers() -> None:
+def test_burbank_film_guide_stays_retired_while_current_burbank_guide_is_answered() -> None:
     august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
-    assert 'dateModified": "2026-08-24"' in august_html
+    assert 'dateModified": "2026-08-25"' in august_html
     assert "/articles/burbank-film-festival-2026-guide" not in august_html
 
     answer = _public_review_live_query_response(
@@ -45,10 +45,10 @@ def test_burbank_film_guide_is_removed_from_current_roundup_and_marked_concluded
     )
 
     assert answer
-    assert "concluded on August 8" in answer
-    assert "planning article has been retired" in answer
+    assert "rescheduled Fab Four concert" in answer
+    assert "/articles/burbank-august-2026-guide" in answer
     assert "/articles/burbank-film-festival-2026-guide" not in answer
-    assert "/directory?city=Burbank" in answer
+    assert "968 Burbank directory listings" in answer
     assert "Warped Tour" not in answer
     assert "Mount Westmore" not in answer
 

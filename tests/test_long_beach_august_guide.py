@@ -16,7 +16,7 @@ def test_long_beach_guide_is_substantial_source_backed_and_reader_facing() -> No
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Long Beach has five late-August plans" in html
-    assert 'dateModified": "2026-08-24"' in html
+    assert 'dateModified": "2026-08-25"' in html
     assert html.count("<h2>") >= 9
     for expected in (
         "5 ranked plans",
@@ -70,7 +70,7 @@ def test_long_beach_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 24 · Long Beach") == 1
+        assert response.text.count("Updated August 25 · Long Beach") == 1
         assert "Long Beach has five late-August plans worth building a day around." in response.text
 
     root_sitemap = client.get("/sitemap.xml")

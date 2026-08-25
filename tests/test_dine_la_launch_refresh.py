@@ -12,7 +12,7 @@ ARTICLE = ROOT / "app" / "web" / "home_portal" / "articles" / "dine-la-pasadena-
 def test_dine_la_launch_copy_is_current_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert 'dateModified": "2026-08-24"' in html
+    assert 'dateModified": "2026-08-25"' in html
     assert "Dine LA is open now, organized by Southern California city." in html
     assert "495 restaurants across 54 Southern California cities" in html
     assert "Compare menus, reserve, add nearby plans" in html
