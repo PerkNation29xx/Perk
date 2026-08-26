@@ -16,7 +16,7 @@ def test_pasadena_guide_is_substantial_source_backed_and_reader_facing() -> None
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Pasadena has seven current August plans" in html
-    assert 'dateModified": "2026-08-25"' in html
+    assert 'dateModified": "2026-08-26"' in html
     assert html.count("<h2>") >= 10
     for expected in (
         "7 ranked plans",
@@ -69,7 +69,7 @@ def test_pasadena_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 25 · Pasadena") == 1
+        assert response.text.count("Updated August 26 · Pasadena") == 1
         assert "Pasadena has seven current August plans worth putting on the calendar." in response.text
 
     root_sitemap = client.get("/sitemap.xml")

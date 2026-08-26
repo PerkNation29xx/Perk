@@ -16,7 +16,7 @@ def test_glendale_guide_is_substantial_source_backed_and_reader_facing() -> None
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Glendale has four remaining August plans" in html
-    assert 'dateModified": "2026-08-25"' in html
+    assert 'dateModified": "2026-08-26"' in html
     assert html.count("<h2>") >= 8
     for expected in (
         "4 ranked plans",
@@ -67,7 +67,7 @@ def test_glendale_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 25 · Glendale") == 1
+        assert response.text.count("Updated August 26 · Glendale") == 1
         assert "Glendale has four remaining August plans that make the foothills feel close." in response.text
 
     root_sitemap = client.get("/sitemap.xml")
