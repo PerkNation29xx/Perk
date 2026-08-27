@@ -15,7 +15,7 @@ AUGUST_GUIDE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-cal
 def test_burbank_guide_has_rankings_sources_and_directory_context() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert 'dateModified": "2026-08-26"' in html
+    assert 'dateModified": "2026-08-27"' in html
     for expected in (
         "The Fab Four at Starlight Bowl",
         "Magnolia Park Food Truck Fridays",
@@ -63,7 +63,7 @@ def test_burbank_guide_route_image_and_homepage_cards_are_live() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 26 · Burbank") == 1
+        assert response.text.count("Updated August 27 · Burbank") == 1
         assert response.text.count("/articles/burbank-august-2026-guide") >= 1
 
 

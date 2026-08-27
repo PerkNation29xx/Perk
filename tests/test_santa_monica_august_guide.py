@@ -16,7 +16,7 @@ def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> 
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Santa Monica has five current late-summer plans" in html
-    assert 'dateModified": "2026-08-26"' in html
+    assert 'dateModified": "2026-08-27"' in html
     assert html.count("<h2>") >= 10
     for expected in (
         "5 ranked plans",
@@ -66,9 +66,10 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 26 · Santa Monica") == 1
+        assert response.text.count("Updated August 27 · Santa Monica") == 1
         assert "Santa Monica has five current late-summer plans that work from morning through night." in response.text
-        assert "Updated August 26" in response.text
+        assert "Start with tonight's free Pier-history talk" in response.text
+        assert "Updated August 27" in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
@@ -82,7 +83,7 @@ def test_santa_monica_roundup_link_and_public_answer_are_scoped() -> None:
     august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
     assert "/articles/santa-monica-august-2026-guide" in august_html
     assert "Santa Monica wellness, movies, and Pier mornings" in august_html
-    assert 'dateModified": "2026-08-26"' in august_html
+    assert 'dateModified": "2026-08-27"' in august_html
 
     answer = _public_review_live_query_response(
         "what current Santa Monica August events guide is covered?",
