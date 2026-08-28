@@ -36,7 +36,7 @@ def test_expired_burbank_film_guide_is_removed_from_public_surfaces() -> None:
 
 def test_burbank_film_guide_stays_retired_while_current_burbank_guide_is_answered() -> None:
     august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
-    assert 'dateModified": "2026-08-27"' in august_html
+    assert 'dateModified": "2026-08-28"' in august_html
     assert "/articles/burbank-film-festival-2026-guide" not in august_html
 
     answer = _public_review_live_query_response(

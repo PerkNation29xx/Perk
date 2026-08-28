@@ -16,7 +16,7 @@ def test_laguna_beach_guide_is_substantial_source_backed_and_reader_facing() -> 
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Laguna Beach has seven current late-summer arts plans" in html
-    assert 'dateModified": "2026-08-27"' in html
+    assert 'dateModified": "2026-08-28"' in html
     assert html.count("<h2>") >= 12
     for expected in (
         "7 ranked plans",
@@ -69,9 +69,9 @@ def test_laguna_beach_routes_image_homepage_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 27 · Laguna Beach") == 1
+        assert response.text.count("Updated August 28 · Laguna Beach") == 1
         assert "Laguna Beach has seven current late-summer arts plans worth the trip." in response.text
-        assert "Updated August 27" in response.text
+        assert "Updated August 28" in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     assert "<loc>https://perknation.app/articles/laguna-beach-august-2026-guide</loc>" in root_sitemap.text
@@ -81,7 +81,7 @@ def test_laguna_beach_roundup_link_and_public_answer_are_scoped() -> None:
     august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
     assert "/articles/laguna-beach-august-2026-guide" in august_html
     assert "Laguna Beach summer arts season" in august_html
-    assert 'dateModified": "2026-08-27"' in august_html
+    assert 'dateModified": "2026-08-28"' in august_html
 
     answer = _public_review_live_query_response(
         "what current Laguna Beach August events guide is covered?",

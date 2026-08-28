@@ -12,8 +12,8 @@ ARTICLE = ROOT / "app" / "web" / "home_portal" / "articles" / "dine-la-pasadena-
 def test_dine_la_launch_copy_is_current_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert 'dateModified": "2026-08-27"' in html
-    assert "Dine LA is open now, organized by Southern California city." in html
+    assert 'dateModified": "2026-08-28"' in html
+    assert "Dine LA's final day is organized by Southern California city." in html
     assert "495 restaurants across 54 Southern California cities" in html
     assert "Compare menus, reserve, add nearby plans" in html
     for forbidden in (
@@ -35,13 +35,13 @@ def test_dine_la_launch_is_visible_on_public_surfaces_and_sitemap() -> None:
     for route in ("/articles/dine-la-pasadena-2026", "/white/articles/dine-la-pasadena-2026"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Dine LA is open now" in response.text
+        assert "Dine LA's final day" in response.text
 
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Open now · August 14-28") == 1
-        assert "Dine LA is open now, organized by Southern California city." in response.text
+        assert response.text.count("Final day · August 28") == 1
+        assert "Dine LA's final day is organized by Southern California city." in response.text
 
     sitemap = client.get("/sitemap.xml")
     assert sitemap.status_code == 200
