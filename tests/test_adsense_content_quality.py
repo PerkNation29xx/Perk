@@ -39,13 +39,14 @@ def test_thin_dine_la_pages_are_noindex_and_strong_guides_remain_indexable() -> 
     assert '<meta name="robots" content="index,follow"' in strong
 
 
-def test_primary_sitemap_keeps_only_substantial_dine_la_city_guides() -> None:
+def test_primary_sitemap_retires_expired_dine_la_city_guides() -> None:
     content = (main._HOME_PORTAL_DIR / "sitemap.xml").read_text(encoding="utf-8")
 
-    assert "/articles/dine-la-city-los-angeles-2026" in content
-    assert "/articles/dine-la-city-long-beach-2026" in content
+    assert "/articles/dine-la-city-los-angeles-2026" not in content
+    assert "/articles/dine-la-city-long-beach-2026" not in content
     assert "/articles/dine-la-city-agoura-hills-2026" not in content
     assert "/articles/dine-la-city-south-pasadena-2026" not in content
+    assert "/articles/southern-california-september-events-2026" in content
     assert "/about" in content
     assert "/editorial-standards" in content
 

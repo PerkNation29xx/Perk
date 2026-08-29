@@ -29,7 +29,7 @@ def test_dine_la_launch_copy_is_current_and_reader_facing() -> None:
         assert forbidden.lower() not in html.lower()
 
 
-def test_dine_la_launch_is_visible_on_public_surfaces_and_sitemap() -> None:
+def test_dine_la_launch_is_archived_off_homepages_and_sitemap() -> None:
     client = TestClient(app)
 
     for route in ("/articles/dine-la-pasadena-2026", "/white/articles/dine-la-pasadena-2026"):
@@ -40,9 +40,10 @@ def test_dine_la_launch_is_visible_on_public_surfaces_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Final day · August 28") == 1
-        assert "Dine LA's final day is organized by Southern California city." in response.text
+        assert "Final day · August 28" not in response.text
+        assert "Dine LA's final day is organized by Southern California city." not in response.text
 
     sitemap = client.get("/sitemap.xml")
     assert sitemap.status_code == 200
-    assert "<loc>https://perknation.app/articles/dine-la-pasadena-2026</loc>" in sitemap.text
+    assert "dine-la-pasadena-2026" not in sitemap.text
+    assert "dine-la-city-" not in sitemap.text

@@ -47,7 +47,7 @@ def test_august_guide_has_fourteen_ranked_source_backed_plans() -> None:
         assert forbidden.lower() not in html.lower()
 
 
-def test_august_guide_card_is_current_on_both_homepages() -> None:
+def test_august_guide_remains_available_but_is_replaced_on_homepages() -> None:
     client = TestClient(app)
 
     article = client.get("/articles/southern-california-august-events-2026")
@@ -56,7 +56,8 @@ def test_august_guide_card_is_current_on_both_homepages() -> None:
         response = client.get(route)
         assert response.status_code == 200
         assert "Updated August 28" in response.text
-        assert "Fourteen Southern California summer plans, ranked." in response.text
+        assert "Fourteen Southern California summer plans, ranked." not in response.text
+        assert "Ten Southern California September plans, ranked." in response.text
 
 
 def test_august_guide_stays_in_sitemaps_and_public_ai_context() -> None:

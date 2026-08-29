@@ -74,8 +74,10 @@ def test_orange_county_routes_image_homepages_and_sitemap() -> None:
     assert white_html.count("Updated August 28 · Orange County") == 1
     assert "Orange County has five current late-summer plans worth building a day around." in home_html
     assert "Orange County has five current late-summer plans worth building a day around." in white_html
-    assert "Start with tonight's free <em>Top Gun</em> finale" in home_html
-    assert "Start with tonight's free <em>Top Gun</em> finale" in white_html
+    assert "Orange International Street Fair" in home_html
+    assert "tonight's free <em>Top Gun</em> finale" not in home_html
+    assert "Orange International Street Fair" in white_html
+    assert "tonight's free <em>Top Gun</em> finale" not in white_html
     assert "Dream Like Taylor" not in home_html
     assert "Dream Like Taylor" not in white_html
     assert "/white/articles/orange-county-august-2026-guide" in white_html

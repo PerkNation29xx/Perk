@@ -90,7 +90,8 @@ def test_pasadena_guide_is_cross_linked_and_available_to_public_answers() -> Non
     )
 
     assert answer
-    assert "ranks seven August plans" in answer
+    assert "ranks the remaining August plans" in answer
+    assert "Sunset Sessions today" not in answer
     assert "/articles/pasadena-august-2026-guide" in answer
     assert "Rose Bowl Flea Market" not in answer
     assert "Long Beach" not in answer

@@ -67,7 +67,8 @@ def test_south_pasadena_routes_image_homepages_and_sitemap() -> None:
         assert response.status_code == 200
         assert response.text.count("Updated August 28 · South Pasadena") == 1
         assert "South Pasadena has four late-summer plans that make a small city feel full." in response.text
-        assert "Start with tonight's Broadway on Mission room" in response.text
+        assert "Use active Eat! Shop! Enjoy! VIP perks through August 30" in response.text
+        assert "tonight's Broadway on Mission room" not in response.text
         assert "New July 30 · Burbank" not in response.text
 
     root_sitemap = client.get("/sitemap.xml")
@@ -87,7 +88,8 @@ def test_south_pasadena_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "ranks four local plans" in answer
+    assert "ranks three remaining local plans" in answer
+    assert "Broadway on Mission tonight" not in answer
     assert "/articles/south-pasadena-august-2026-guide" in answer
     assert "97 South Pasadena directory listings" in answer
     assert "Glendale" not in answer

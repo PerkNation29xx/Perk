@@ -89,7 +89,8 @@ def test_glendale_guide_is_cross_linked_and_available_to_public_answers() -> Non
     )
 
     assert answer
-    assert "ranks four remaining August plans" in answer
-    assert "Brand Summer Concert Series" in answer
+    assert "ranks three remaining August plans" in answer
+    assert "Brand Summer Concert Series finale today" not in answer
+    assert "Classic Film Under the Stars" in answer
     assert "/articles/glendale-august-2026-guide" in answer
     assert "Pasadena" not in answer

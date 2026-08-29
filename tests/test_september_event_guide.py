@@ -1,0 +1,86 @@
+from pathlib import Path
+
+from fastapi.testclient import TestClient
+
+from app.main import app
+from app.services.ai_assistant import _public_review_live_query_response
+
+
+ROOT = Path(__file__).resolve().parents[1]
+ARTICLE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-california-september-events-2026.html"
+IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern-california-september-events-2026.png"
+
+
+def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
+    html = ARTICLE.read_text(encoding="utf-8")
+
+    assert "Ten Southern California September plans" in html
+    assert 'dateModified": "2026-08-29"' in html
+    assert html.count("<h2") >= 12
+    for expected in (
+        "Orange International Street Fair",
+        "Long Beach Greek Festival",
+        "BlizzCon in Anaheim",
+        "Pasadena ARTWalk",
+        "Ocean Way Festival",
+        "Burbank Career Transitions Expo",
+        "Best for:",
+        "/directory?city=Burbank",
+        "/directory?city=Pasadena",
+        "/directory?city=Long%20Beach",
+    ):
+        assert expected in html
+    for forbidden in (
+        "Examples from the official listing",
+        "editorial image generated",
+        "generated for this guide",
+        "Measure next",
+        "publishing workflow",
+        "SEO workflow",
+    ):
+        assert forbidden.lower() not in html.lower()
+
+
+def test_september_guide_routes_image_homepages_and_sitemap() -> None:
+    client = TestClient(app)
+
+    for route in (
+        "/articles/southern-california-september-events-2026",
+        "/white/articles/southern-california-september-events-2026",
+    ):
+        response = client.get(route)
+        assert response.status_code == 200
+
+    image = client.get("/assets/articles/southern-california-september-events-2026.png")
+    assert image.status_code == 200
+    assert image.headers["content-type"] == "image/png"
+    assert len(image.content) > 500_000
+    assert IMAGE.stat().st_size == len(image.content)
+
+    for route in ("/", "/white/"):
+        response = client.get(route)
+        assert response.status_code == 200
+        assert "New August 29 · September guide" in response.text
+        assert "Ten Southern California September plans, ranked." in response.text
+        assert "Dine LA's final day is organized" not in response.text
+        assert "Fourteen Southern California summer plans, ranked." not in response.text
+        assert "Orange International Street Fair opens Labor Day weekend" in response.text
+
+    root_sitemap = client.get("/sitemap.xml")
+    white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
+    assert root_sitemap.status_code == 200
+    assert white_sitemap.status_code == 308
+    assert white_sitemap.headers["location"] == "/sitemap.xml"
+    assert "<loc>https://perknation.app/articles/southern-california-september-events-2026</loc>" in root_sitemap.text
+
+
+def test_september_guide_is_current_in_public_review_answers() -> None:
+    answer = _public_review_live_query_response(
+        "What current events are covered in Southern California?",
+        "home_local_guide",
+    )
+
+    assert answer
+    assert "Ten Southern California September plans" in answer
+    assert "/articles/southern-california-september-events-2026" in answer
+    assert "Dine LA 2026 city guides" not in answer

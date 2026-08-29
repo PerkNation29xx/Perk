@@ -84,6 +84,7 @@ def test_burbank_guide_is_in_roundup_sitemap_and_public_answers() -> None:
     )
     assert answer
     assert "rescheduled Fab Four concert" in answer
-    assert "Magnolia Park Food Truck Fridays" in answer
+    assert "Magnolia Park Food Truck Fridays" not in answer
+    assert "Dine LA" not in answer
     assert "/articles/burbank-august-2026-guide" in answer
     assert "968 Burbank directory listings" in answer

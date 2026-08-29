@@ -782,7 +782,7 @@ def _home_local_guide_context(*, db: Optional[Session]) -> str:
             "Editorial/review coverage examples currently surfaced or planned for PerkNation readers:",
             "- Los Angeles fashion guide: LA Market Week, CMC sample-sale Fridays, Fashion District shopping, LA Vintage warehouse sale, and The Grove K-beauty pop-up.",
             "- Events coverage: J. Cole in Los Angeles, Ringling San Diego, and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
-            "- Restaurant coverage: Dine LA 2026 city guides, Pasadena restaurant picks, and broader local dining discovery.",
+            "- Restaurant coverage: current local directory listings, Pasadena restaurant picks, and broader dining discovery.",
             "",
             "Answering rules:",
             "- Keep offer counts separate from business-directory listing counts.",
@@ -810,14 +810,27 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     },
 
     {
+        "category": "Events, concerts, festivals, arts, sports, and local culture",
+        "city": "Southern California",
+        "title": "Ten Southern California September plans",
+        "timing": "September 4-27, 2026",
+        "route": "/articles/southern-california-september-events-2026",
+        "details": (
+            "Ranked guide to Orange International Street Fair, Long Beach Greek Festival, BlizzCon, "
+            "Pasadena ARTWalk, Ocean Way, UCLA's Rose Bowl home opener, Burbank's Career Transitions Expo, "
+            "Tongva Twilight, the Hollywood Bowl fireworks finale, and The Great Outdoors at Greystone."
+        ),
+    },
+
+    {
         "category": "Concerts, markets, local performances, family programs, and small businesses",
         "city": "South Pasadena",
         "title": "South Pasadena August 2026 local events guide",
         "timing": "August 28-September 3, 2026",
         "route": "/articles/south-pasadena-august-2026-guide",
         "details": (
-            "Four ranked plans covering active Eat! Shop! Enjoy! VIP perks through August 30, "
-            "August 28 Broadway on Mission, the September 3 farmers market and singer-songwriter open mic, "
+            "Three remaining plans covering active Eat! Shop! Enjoy! VIP perks through August 30, "
+            "the September 3 farmers market and singer-songwriter open mic, "
             "and Perk Nation's 97 South Pasadena listings."
         ),
     },
@@ -828,8 +841,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "timing": "August 28-30, 2026",
         "route": "/articles/burbank-august-2026-guide",
         "details": (
-            "Three ranked plans covering the August 30 Fab Four concert at Starlight Bowl, "
-            "Magnolia Park Food Truck Fridays on August 28, Dine LA's Burbank finale, "
+            "The August 30 Fab Four concert at Starlight Bowl, with current planning guidance "
             "and Perk Nation's 968 Burbank listings."
         ),
     },
@@ -840,9 +852,8 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "timing": "August 28-30, 2026",
         "route": "/articles/pasadena-august-2026-guide",
         "details": (
-            "Seven current ranked plans covering the August 29 Pasadena POPS finale, Friday Nights at The Gamble House, "
-            "Sunset Sessions, America's Got Talent tapings, The Huntington's This Land Is exhibition, "
-            "Kidspace Campout, Power Morphicon, and Perk Nation's 563 Pasadena listings."
+            "Current ranked plans covering the August 29 Pasadena POPS finale, America's Got Talent tapings, "
+            "The Huntington's This Land Is exhibition, Kidspace Campout, and Perk Nation's 563 Pasadena listings."
         ),
     },
     {
@@ -852,8 +863,8 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "timing": "August 28-30, 2026",
         "route": "/articles/glendale-august-2026-guide",
         "details": (
-            "Four remaining ranked plans covering Montrose Harvest Market, the free Brand Summer Concert Series, "
-            "Classic Film Under the Stars, the August 30 Wander the Wilderness Bus, "
+            "Three remaining ranked plans covering Montrose Harvest Market, Classic Film Under the Stars, "
+            "the August 30 Wander the Wilderness Bus, "
             "and Perk Nation's 100 Glendale listings."
         ),
     },
@@ -923,7 +934,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "timing": "August 28-30, 2026",
         "route": "/articles/long-beach-august-2026-guide",
         "details": (
-            "Four current ranked plans covering Nas and The Roots, the New Blues Festival, the Long Beach Film Festival, "
+            "Three current ranked plans covering the New Blues Festival, the Long Beach Film Festival, "
             "Conscience, and Perk Nation's "
             "208 Long Beach directory listings."
         ),
@@ -947,10 +958,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "timing": "August 28-30, 2026",
         "route": "/articles/southern-california-august-events-2026",
         "details": (
-            "Ranked planning guide covering Burbank food trucks and the rescheduled Fab Four concert, Huntington Beach surf, swim, and nature programs, Laguna Beach arts season, South Pasadena markets and performances, and Long Beach food and music, "
+            "Ranked planning guide covering Burbank's rescheduled Fab Four concert, Huntington Beach surf, swim, and nature programs, Laguna Beach arts season, South Pasadena markets and performances, and Long Beach food and music, "
             "with a dedicated five-plan Long Beach guide, Santa Monica outdoor programs, Glendale concerts and park events, "
             "Pasadena POPS and a dedicated seven-plan Pasadena August guide, current Pasadena museum and family programs, "
-            "Dine LA's final day, TheFitExpo Anaheim, and the Leimert Park Jazz Festival."
+            "TheFitExpo Anaheim and the Leimert Park Jazz Festival."
         ),
     },
     {
@@ -960,14 +971,6 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "timing": "September 9, 2026 through Week 18",
         "route": "/events",
         "details": "AFC/NFC league guide with full 18-week schedules, Pacific kickoff times, networks, venues, and byes; Chargers, Rams, and 49ers are featured.",
-    },
-    {
-        "category": "Restaurants",
-        "city": "Los Angeles and Pasadena",
-        "title": "Dine LA 2026 city guides",
-        "timing": "August 14-28, 2026",
-        "route": "/articles/dine-la-pasadena-2026",
-        "details": "Final day August 28 with 495 restaurants across 54 cities, including city-specific rankings, price and cuisine comparisons, practical notes, and nearby directory searches.",
     },
 )
 
@@ -1969,7 +1972,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "Nisei Week's 2026 Little Tokyo festival concluded on August 23, so PerkNation no longer presents its event guide as active.",
-                "For current Los Angeles planning, browse /directory?city=Los%20Angeles for 61 listings or open /articles/southern-california-august-events-2026 for current late-August events.",
+                "For current Los Angeles planning, browse /directory?city=Los%20Angeles for 61 listings or open /articles/southern-california-september-events-2026 for upcoming September events.",
             )
         )
 
@@ -1977,7 +1980,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "The current PerkNation Orange County guide ranks five late-summer plans from August 28-September 6, 2026:",
-                "- Laguna Beach's overlapping arts season plus tonight's Top Gun screening and the September 3 Family Style concert from OC Parks.",
+                "- Laguna Beach's overlapping arts season plus the September 3 Family Style concert from OC Parks.",
                 "- Huntington Beach surf and nature programs.",
                 "- TheFitExpo Anaheim and Orange International Street Fair planning.",
                 "Open /articles/orange-county-august-2026-guide for best-for rankings, admission and parking notes, official sources, ready-made itineraries, and links into current Orange County city directories.",
@@ -1998,8 +2001,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation Long Beach guide ranks four late-August plans from August 28-30, 2026:",
-                "- Nas and The Roots tonight, followed by the New Blues Festival and Long Beach Film Festival.",
+                "The current PerkNation Long Beach guide ranks three remaining late-August plans through August 30, 2026:",
+                "- The New Blues Festival and Long Beach Film Festival.",
                 "- Conscience and links into 208 Long Beach directory listings.",
                 "Open /articles/long-beach-august-2026-guide for best-for rankings, ticket and parking notes, official sources, and ready-made local itineraries.",
             )
@@ -2048,9 +2051,9 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_south_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation South Pasadena guide ranks four local plans from August 28-September 3, 2026:",
+                "The current PerkNation South Pasadena guide ranks three remaining local plans through September 3, 2026:",
                 "- Active Eat! Shop! Enjoy! VIP perks through August 30.",
-                "- Broadway on Mission tonight, plus the next farmers market and singer-songwriter open mic on September 3.",
+                "- The next farmers market and singer-songwriter open mic on September 3.",
                 "Open /articles/south-pasadena-august-2026-guide for best-for notes, current official sources, compact itineraries, and links into 97 South Pasadena directory listings.",
             )
         )
@@ -2058,9 +2061,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_burbank and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Burbank guide ranks three late-August plans from August 28-30, 2026:",
+                "The current PerkNation Burbank guide centers one remaining August plan:",
                 "- The rescheduled Fab Four concert at Starlight Bowl on August 30.",
-                "- Magnolia Park Food Truck Fridays and Dine LA's Burbank finale today.",
                 "Open /articles/burbank-august-2026-guide for best-for rankings, parking and ticket notes, official sources, and links into 968 Burbank directory listings.",
             )
         )
@@ -2068,9 +2070,9 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Pasadena guide ranks seven August plans from August 28-30, 2026:",
-                "- The August 29 Pasadena POPS finale, plus Friday Nights at The Gamble House and Sunset Sessions today.",
-                "- America's Got Talent tapings, The Huntington's This Land Is exhibition, Kidspace Campout, and Power Morphicon.",
+                "The current PerkNation Pasadena guide ranks the remaining August plans through August 30, 2026:",
+                "- The August 29 Pasadena POPS finale and Power Morphicon weekend.",
+                "- America's Got Talent tapings, The Huntington's This Land Is exhibition, and Kidspace Campout.",
                 "Open /articles/pasadena-august-2026-guide for best-for notes, current access guidance, official sources, and links into 563 Pasadena directory listings.",
             )
         )
@@ -2078,8 +2080,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_glendale and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Glendale guide ranks four remaining August plans from August 28-30, 2026:",
-                "- The free Brand Summer Concert Series finale today.",
+                "The current PerkNation Glendale guide ranks three remaining August plans through August 30, 2026:",
                 "- The free Wander the Wilderness Bus on August 30.",
                 "- Classic Film Under the Stars and the August 30 Montrose Harvest Market.",
                 "Open /articles/glendale-august-2026-guide for best-for notes, RSVP and weather guidance, official city sources, and links into 100 Glendale directory listings.",

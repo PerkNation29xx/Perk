@@ -91,7 +91,8 @@ def test_long_beach_guide_is_cross_linked_and_available_to_public_answers() -> N
     )
 
     assert answer
-    assert "ranks four late-August plans" in answer
+    assert "ranks three remaining late-August plans" in answer
+    assert "Nas and The Roots tonight" not in answer
     assert "/articles/long-beach-august-2026-guide" in answer
     assert "New Blues Festival" in answer
     assert "Long Beach Film Festival" in answer
