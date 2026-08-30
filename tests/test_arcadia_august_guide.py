@@ -42,7 +42,7 @@ def test_arcadia_guide_is_substantial_source_backed_and_reader_facing() -> None:
         assert forbidden.lower() not in html.lower()
 
 
-def test_arcadia_routes_image_homepage_cards_and_sitemaps() -> None:
+def test_arcadia_archive_routes_and_image_remain_but_visible_cards_retire() -> None:
     client = TestClient(app)
 
     for route in (
@@ -62,19 +62,19 @@ def test_arcadia_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 28 · Arcadia") == 1
-        assert "Arcadia's August finale pairs Broadway music with a garden picnic." in response.text
-        assert "Updated August 28" in response.text
+        assert "Updated August 28 · Arcadia" not in response.text
+        assert "Arcadia's August finale pairs Broadway music with a garden picnic." not in response.text
+        assert "Arcadia wellness" in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
-    assert "<loc>https://perknation.app/articles/arcadia-august-2026-guide</loc>" in root_sitemap.text
+    assert "<loc>https://perknation.app/articles/arcadia-august-2026-guide</loc>" not in root_sitemap.text
     assert white_sitemap.status_code == 308
     assert white_sitemap.headers["location"] == "/sitemap.xml"
     assert "<loc>https://perknation.app/white/articles/arcadia-august-2026-guide</loc>" not in root_sitemap.text
 
 
-def test_arcadia_guide_replaces_expired_roundup_copy_and_scopes_public_answer() -> None:
+def test_arcadia_archive_is_replaced_by_current_health_fair_in_public_answer() -> None:
     august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
     assert "/articles/arcadia-august-2026-guide" in august_html
     assert "626 Night Market in Arcadia" not in august_html
@@ -88,7 +88,7 @@ def test_arcadia_guide_replaces_expired_roundup_copy_and_scopes_public_answer() 
     )
 
     assert answer
-    assert "centers one marquee August outing" in answer
+    assert "annual health fair" in answer
     assert "August 7" not in answer
-    assert "/articles/arcadia-august-2026-guide" in answer
+    assert "/articles/southern-california-september-events-2026#arcadia-health-fair" in answer
     assert "Glendale" not in answer

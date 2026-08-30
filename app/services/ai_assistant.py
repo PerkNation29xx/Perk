@@ -812,13 +812,15 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Ten Southern California September plans",
+        "title": "Fifteen Southern California September plans",
         "timing": "September 4-27, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to Orange International Street Fair, Long Beach Greek Festival, BlizzCon, "
-            "Pasadena ARTWalk, Ocean Way, UCLA's Rose Bowl home opener, Burbank's Career Transitions Expo, "
-            "Tongva Twilight, the Hollywood Bowl fireworks finale, and The Great Outdoors at Greystone."
+            "Ranked guide to Orange International Street Fair, Long Beach Greek Festival, Fiesta Hermosa, "
+            "BlizzCon, Pasadena ARTWalk and Chalk Festival, Ocean Way, UCLA's Rose Bowl home opener, "
+            "Glendale's Southern California Open chess tournament, Burbank's Career Transitions Expo, "
+            "Arcadia's health fair, Americana in the Park, Tongva Twilight, the Hollywood Bowl fireworks finale, "
+            "and The Great Outdoors at Greystone."
         ),
     },
 
@@ -866,17 +868,6 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
             "Three remaining ranked plans covering Montrose Harvest Market, Classic Film Under the Stars, "
             "the August 30 Wander the Wilderness Bus, "
             "and Perk Nation's 100 Glendale listings."
-        ),
-    },
-    {
-        "category": "Garden concerts, community events, and local dining",
-        "city": "Arcadia",
-        "title": "Arcadia August 2026 garden concert guide",
-        "timing": "August 28-29, 2026",
-        "route": "/articles/arcadia-august-2026-guide",
-        "details": (
-            "One marquee outing covering the August 29 Pasadena POPS finale, plus Perk Nation's 40 Arcadia listings "
-            "for dining, hotels, and local services."
         ),
     },
     {
@@ -2090,9 +2081,9 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_arcadia and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Arcadia guide centers one marquee August outing:",
-                "- The Pasadena POPS finale at the Arboretum on August 29, supported by 40 Arcadia directory listings.",
-                "Open /articles/arcadia-august-2026-guide for best-for notes, parking, picnic, heat, and transit guidance, official sources, and links into 40 Arcadia directory listings.",
+                "The current PerkNation September guide includes Arcadia's annual health fair:",
+                "- September 12 from 9 a.m.-noon, with free flu shots while supplies last, consultations, information booths, and health screenings; some screenings require advance registration.",
+                "Open /articles/southern-california-september-events-2026#arcadia-health-fair for practical notes, the official city source, and links into 40 Arcadia directory listings.",
             )
         )
 

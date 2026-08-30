@@ -14,16 +14,21 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Ten Southern California September plans" in html
-    assert 'dateModified": "2026-08-29"' in html
-    assert html.count("<h2") >= 12
+    assert "Fifteen Southern California September plans" in html
+    assert 'dateModified": "2026-08-30"' in html
+    assert html.count("<h2") >= 17
     for expected in (
         "Orange International Street Fair",
         "Long Beach Greek Festival",
+        "Fiesta Hermosa",
         "BlizzCon in Anaheim",
         "Pasadena ARTWalk",
+        "Pasadena Chalk Festival",
         "Ocean Way Festival",
+        "Southern California Open in Glendale",
         "Burbank Career Transitions Expo",
+        "Arcadia Health Fair",
+        "Americana in the Park",
         "Best for:",
         "/directory?city=Burbank",
         "/directory?city=Pasadena",
@@ -60,11 +65,12 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "New August 29 · September guide" in response.text
-        assert "Ten Southern California September plans, ranked." in response.text
+        assert "Updated August 30 · September guide" in response.text
+        assert "Fifteen Southern California September plans, ranked." in response.text
         assert "Dine LA's final day is organized" not in response.text
         assert "Fourteen Southern California summer plans, ranked." not in response.text
         assert "Orange International Street Fair opens Labor Day weekend" in response.text
+        assert "Arcadia's August finale pairs Broadway music with a garden picnic." not in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
@@ -81,6 +87,6 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     )
 
     assert answer
-    assert "Ten Southern California September plans" in answer
+    assert "Fifteen Southern California September plans" in answer
     assert "/articles/southern-california-september-events-2026" in answer
     assert "Dine LA 2026 city guides" not in answer
