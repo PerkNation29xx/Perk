@@ -45,10 +45,10 @@ def test_burbank_film_guide_stays_retired_while_current_burbank_guide_is_answere
     )
 
     assert answer
-    assert "rescheduled Fab Four concert" in answer
-    assert "/articles/burbank-august-2026-guide" in answer
+    assert "Career Transitions Expo" in answer
+    assert "/articles/burbank-august-2026-guide" not in answer
     assert "/articles/burbank-film-festival-2026-guide" not in answer
-    assert "968 Burbank directory listings" in answer
+    assert "968 local listings" in answer
     assert "Warped Tour" not in answer
     assert "Mount Westmore" not in answer
 

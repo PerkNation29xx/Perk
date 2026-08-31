@@ -779,9 +779,9 @@ def _home_local_guide_context(*, db: Optional[Session]) -> str:
             "Restaurant guide examples currently surfaced on the homepage:",
             "- Union, Agnes, Fishwives, Perle, Bone Kettle, Osawa, Panda Inn, and Pez Coastal Kitchen are Pasadena restaurant recommendations, not discount offers unless another promo says so.",
             "",
-            "Editorial/review coverage examples currently surfaced or planned for PerkNation readers:",
+            "Editorial/review coverage currently surfaced for PerkNation readers:",
             "- Los Angeles fashion guide: LA Market Week, CMC sample-sale Fridays, Fashion District shopping, LA Vintage warehouse sale, and The Grove K-beauty pop-up.",
-            "- Events coverage: J. Cole in Los Angeles, Ringling San Diego, and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
+            "- Events coverage: the ranked September Southern California guide, J. Cole in Los Angeles, and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
             "- Restaurant coverage: current local directory listings, Pasadena restaurant picks, and broader dining discovery.",
             "",
             "Answering rules:",
@@ -965,6 +965,26 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     },
 )
 
+_RETIRED_PUBLIC_REVIEW_ROUTES = frozenset(
+    {
+        "/articles/southern-california-august-events-2026",
+        "/articles/burbank-august-2026-guide",
+        "/articles/glendale-august-2026-guide",
+        "/articles/huntington-beach-august-2026-guide",
+        "/articles/long-beach-august-2026-guide",
+        "/articles/pasadena-august-2026-guide",
+        "/articles/south-pasadena-august-2026-guide",
+    }
+)
+
+
+def _current_public_review_coverage_items() -> tuple[dict[str, object], ...]:
+    return tuple(
+        item
+        for item in _PUBLIC_REVIEW_COVERAGE_ITEMS
+        if str(item["route"]) not in _RETIRED_PUBLIC_REVIEW_ROUTES
+    )
+
 
 def _should_include_public_review_context(message: str, role_context: str) -> bool:
     if role_context not in {"public", "home_local_guide"}:
@@ -1032,7 +1052,7 @@ def _public_review_coverage_context() -> str:
         "Use these items when the visitor asks what fashion events, sports, concerts, restaurants, or reviews are current/listed on the website.",
         "coverage_items:",
     ]
-    for item in _PUBLIC_REVIEW_COVERAGE_ITEMS:
+    for item in _current_public_review_coverage_items():
         lines.append(
             "- "
             f"category={item['category']}; city={item['city']}; title={item['title']}; "
@@ -1981,21 +2001,18 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_huntington_beach and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Huntington Beach guide ranks four coastal plans from August 28-29, 2026:",
-                "- The Huntington Beach Pier Swim and remaining Bolsa Chica Grunion Run on August 29.",
-                "- The final listed Junior Rangers date today and the weekly Litter Getters service program.",
-                "- The WSL50 surf-history exhibition for a lower-commitment cultural stop.",
-                "Open /articles/huntington-beach-august-2026-guide for best-for notes, registration roles, ocean safety, late-night planning, official sources, and links into 43 Huntington Beach directory listings.",
+                "PerkNation's late-August Huntington Beach event coverage has concluded and is no longer presented as current.",
+                "Browse /directory?city=Huntington%20Beach for 43 local listings, and confirm new coastal programs with the city or official organizer.",
             )
         )
 
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation Long Beach guide ranks three remaining late-August plans through August 30, 2026:",
-                "- The New Blues Festival and Long Beach Film Festival.",
-                "- Conscience and links into 208 Long Beach directory listings.",
-                "Open /articles/long-beach-august-2026-guide for best-for rankings, ticket and parking notes, official sources, and ready-made local itineraries.",
+                "The current PerkNation September guide includes the Long Beach Greek Festival:",
+                "- September 5-7, opening at noon daily, with $5 admission plus free parking and continuous shuttle service from the nearby VA lot.",
+                "Open /articles/southern-california-september-events-2026#long-beach-labor-day for planning notes and links into 208 Long Beach directory listings.",
+                "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )
 
@@ -2042,39 +2059,32 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_south_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation South Pasadena guide ranks three remaining local plans through September 3, 2026:",
-                "- Active Eat! Shop! Enjoy! VIP perks through August 30.",
-                "- The next farmers market and singer-songwriter open mic on September 3.",
-                "Open /articles/south-pasadena-august-2026-guide for best-for notes, current official sources, compact itineraries, and links into 97 South Pasadena directory listings.",
+                "South Pasadena's Eat! Shop! Enjoy! VIP promotion ended August 30 and is no longer presented as active.",
+                "For current planning, browse /directory?city=South%20Pasadena for 97 local listings and confirm the September 3 farmers market or open mic with the organizer.",
             )
         )
 
     if wants_burbank and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Burbank guide centers one remaining August plan:",
-                "- The rescheduled Fab Four concert at Starlight Bowl on August 30.",
-                "Open /articles/burbank-august-2026-guide for best-for rankings, parking and ticket notes, official sources, and links into 968 Burbank directory listings.",
+                "The current PerkNation September guide includes Burbank's Career Transitions Expo on September 18 from 12:30-4:30 p.m.",
+                "Open /articles/southern-california-september-events-2026#burbank-careers for registration and networking notes, or browse /directory?city=Burbank for 968 local listings.",
             )
         )
 
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Pasadena guide ranks the remaining August plans through August 30, 2026:",
-                "- The August 29 Pasadena POPS finale and Power Morphicon weekend.",
-                "- America's Got Talent tapings, The Huntington's This Land Is exhibition, and Kidspace Campout.",
-                "Open /articles/pasadena-august-2026-guide for best-for notes, current access guidance, official sources, and links into 563 Pasadena directory listings.",
+                "The current PerkNation September guide includes Pasadena ARTWalk, the Pasadena Chalk Festival, and UCLA's Rose Bowl home opener.",
+                "Open /articles/southern-california-september-events-2026 for ranked best-for and transit notes, or browse /directory?city=Pasadena for 563 local listings.",
             )
         )
 
     if wants_glendale and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Glendale guide ranks three remaining August plans through August 30, 2026:",
-                "- The free Wander the Wilderness Bus on August 30.",
-                "- Classic Film Under the Stars and the August 30 Montrose Harvest Market.",
-                "Open /articles/glendale-august-2026-guide for best-for notes, RSVP and weather guidance, official city sources, and links into 100 Glendale directory listings.",
+                "The current PerkNation September guide includes the Southern California Open chess tournament in Glendale from September 4-7.",
+                "Open /articles/southern-california-september-events-2026#glendale-chess for registration and schedule notes, or browse /directory?city=Glendale for 100 local listings.",
             )
         )
 
@@ -2087,7 +2097,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
             )
         )
 
-    for item in _PUBLIC_REVIEW_COVERAGE_ITEMS:
+    current_items = _current_public_review_coverage_items()
+    for item in current_items:
         category = str(item["category"]).lower()
         if (
             wants_all
@@ -2102,7 +2113,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
             matching_items.append(item)
 
     if not matching_items:
-        matching_items = list(_PUBLIC_REVIEW_COVERAGE_ITEMS)
+        matching_items = list(current_items)
 
     lines = ["Here are the current PerkNation guides and events that match your question:"]
     for item in matching_items:

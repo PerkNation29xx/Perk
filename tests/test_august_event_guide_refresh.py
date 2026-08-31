@@ -60,7 +60,7 @@ def test_august_guide_remains_available_but_is_replaced_on_homepages() -> None:
         assert "Fifteen Southern California September plans, ranked." in response.text
 
 
-def test_august_guide_stays_in_sitemaps_and_public_ai_context() -> None:
+def test_august_guide_leaves_sitemaps_and_current_public_ai_context() -> None:
     client = TestClient(app)
 
     root_sitemap = client.get("/sitemap.xml")
@@ -68,7 +68,7 @@ def test_august_guide_stays_in_sitemaps_and_public_ai_context() -> None:
     assert root_sitemap.status_code == 200
     assert white_sitemap.status_code == 308
     assert white_sitemap.headers["location"] == "/sitemap.xml"
-    assert "<loc>https://perknation.app/articles/southern-california-august-events-2026</loc>" in root_sitemap.text
+    assert "<loc>https://perknation.app/articles/southern-california-august-events-2026</loc>" not in root_sitemap.text
     assert "<loc>https://perknation.app/white/articles/southern-california-august-events-2026</loc>" not in root_sitemap.text
 
     answer = _public_review_live_query_response(
@@ -76,5 +76,5 @@ def test_august_guide_stays_in_sitemaps_and_public_ai_context() -> None:
         "home_local_guide",
     )
     assert answer
-    assert "Fourteen Southern California summer plans" in answer
-    assert "/articles/southern-california-august-events-2026" in answer
+    assert "Fifteen Southern California September plans" in answer
+    assert "/articles/southern-california-august-events-2026" not in answer

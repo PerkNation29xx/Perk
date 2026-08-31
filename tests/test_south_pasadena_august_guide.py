@@ -72,9 +72,7 @@ def test_south_pasadena_routes_image_homepages_and_sitemap() -> None:
         assert "New July 30 · Burbank" not in response.text
 
     root_sitemap = client.get("/sitemap.xml")
-    assert root_sitemap.text.count(
-        "<loc>https://perknation.app/articles/south-pasadena-august-2026-guide</loc>"
-    ) == 1
+    assert "<loc>https://perknation.app/articles/south-pasadena-august-2026-guide</loc>" not in root_sitemap.text
 
 
 def test_south_pasadena_roundup_link_and_public_answer_are_scoped() -> None:
@@ -88,8 +86,8 @@ def test_south_pasadena_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "ranks three remaining local plans" in answer
+    assert "ended August 30" in answer
     assert "Broadway on Mission tonight" not in answer
-    assert "/articles/south-pasadena-august-2026-guide" in answer
-    assert "97 South Pasadena directory listings" in answer
+    assert "/articles/south-pasadena-august-2026-guide" not in answer
+    assert "97 local listings" in answer
     assert "Glendale" not in answer

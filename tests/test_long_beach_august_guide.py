@@ -75,7 +75,7 @@ def test_long_beach_routes_image_homepage_cards_and_sitemaps() -> None:
 
     root_sitemap = client.get("/sitemap.xml")
     white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
-    assert "<loc>https://perknation.app/articles/long-beach-august-2026-guide</loc>" in root_sitemap.text
+    assert "<loc>https://perknation.app/articles/long-beach-august-2026-guide</loc>" not in root_sitemap.text
     assert white_sitemap.status_code == 308
     assert white_sitemap.headers["location"] == "/sitemap.xml"
     assert "<loc>https://perknation.app/white/articles/long-beach-august-2026-guide</loc>" not in root_sitemap.text
@@ -91,11 +91,11 @@ def test_long_beach_guide_is_cross_linked_and_available_to_public_answers() -> N
     )
 
     assert answer
-    assert "ranks three remaining late-August plans" in answer
+    assert "Long Beach Greek Festival" in answer
     assert "Nas and The Roots tonight" not in answer
-    assert "/articles/long-beach-august-2026-guide" in answer
-    assert "New Blues Festival" in answer
-    assert "Long Beach Film Festival" in answer
+    assert "/articles/long-beach-august-2026-guide" not in answer
+    assert "New Blues Festival" not in answer
+    assert "Long Beach Film Festival" not in answer
     assert "Three Pianos" not in answer
     assert "Little Earth Cinema" not in answer
     assert "Food Scene Week" not in answer

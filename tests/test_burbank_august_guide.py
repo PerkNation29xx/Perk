@@ -67,7 +67,7 @@ def test_burbank_guide_route_image_and_homepage_cards_are_live() -> None:
         assert response.text.count("/articles/burbank-august-2026-guide") >= 1
 
 
-def test_burbank_guide_is_in_roundup_sitemap_and_public_answers() -> None:
+def test_burbank_guide_is_archived_from_sitemap_and_public_answers() -> None:
     august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
     assert "/articles/burbank-august-2026-guide" in august_html
     assert "Burbank's final August weekend" in august_html
@@ -75,7 +75,7 @@ def test_burbank_guide_is_in_roundup_sitemap_and_public_answers() -> None:
     client = TestClient(app)
     sitemap = client.get("/sitemap.xml")
     assert sitemap.status_code == 200
-    assert sitemap.text.count("<loc>https://perknation.app/articles/burbank-august-2026-guide</loc>") == 1
+    assert "<loc>https://perknation.app/articles/burbank-august-2026-guide</loc>" not in sitemap.text
     assert "https://perknation.app/white/articles/burbank-august-2026-guide" not in sitemap.text
 
     answer = _public_review_live_query_response(
@@ -83,8 +83,8 @@ def test_burbank_guide_is_in_roundup_sitemap_and_public_answers() -> None:
         "home_local_guide",
     )
     assert answer
-    assert "rescheduled Fab Four concert" in answer
+    assert "Career Transitions Expo" in answer
     assert "Magnolia Park Food Truck Fridays" not in answer
     assert "Dine LA" not in answer
-    assert "/articles/burbank-august-2026-guide" in answer
-    assert "968 Burbank directory listings" in answer
+    assert "/articles/burbank-august-2026-guide" not in answer
+    assert "968 local listings" in answer

@@ -15,7 +15,7 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Fifteen Southern California September plans" in html
-    assert 'dateModified": "2026-08-30"' in html
+    assert 'dateModified": "2026-08-31"' in html
     assert html.count("<h2") >= 17
     for expected in (
         "Orange International Street Fair",
@@ -65,7 +65,7 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated August 30 · September guide" in response.text
+        assert "Updated August 31 · September guide" in response.text
         assert "Fifteen Southern California September plans, ranked." in response.text
         assert "Dine LA's final day is organized" not in response.text
         assert "Fourteen Southern California summer plans, ranked." not in response.text

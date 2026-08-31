@@ -73,7 +73,7 @@ def test_huntington_beach_routes_image_homepages_and_sitemap() -> None:
         assert "Updated August 28" in response.text
 
     root_sitemap = client.get("/sitemap.xml")
-    assert "<loc>https://perknation.app/articles/huntington-beach-august-2026-guide</loc>" in root_sitemap.text
+    assert "<loc>https://perknation.app/articles/huntington-beach-august-2026-guide</loc>" not in root_sitemap.text
 
 
 def test_huntington_beach_roundup_link_and_public_answer_are_scoped() -> None:
@@ -88,8 +88,8 @@ def test_huntington_beach_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "ranks four coastal plans" in answer
+    assert "has concluded" in answer
     assert "Surf City Nights" not in answer
     assert "Barefoot Ball" not in answer
-    assert "/articles/huntington-beach-august-2026-guide" in answer
+    assert "/articles/huntington-beach-august-2026-guide" not in answer
     assert "Laguna Beach" not in answer
