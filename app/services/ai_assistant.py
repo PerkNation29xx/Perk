@@ -812,15 +812,15 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Fifteen Southern California September plans",
-        "timing": "September 4-27, 2026",
+        "title": "Sixteen Southern California September plans",
+        "timing": "September 4-October 1, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to Orange International Street Fair, Long Beach Greek Festival, Fiesta Hermosa, "
             "BlizzCon, Pasadena ARTWalk and Chalk Festival, Ocean Way, UCLA's Rose Bowl home opener, "
             "Glendale's Southern California Open chess tournament, Burbank's Career Transitions Expo, "
             "Arcadia's health fair, Americana in the Park, Tongva Twilight, the Hollywood Bowl fireworks finale, "
-            "and The Great Outdoors at Greystone."
+            "The Great Outdoors at Greystone, and Design West Hollywood."
         ),
     },
 
