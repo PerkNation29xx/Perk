@@ -873,13 +873,13 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Fairs, festivals, arts, concerts, movies, fitness, and coastal events",
         "city": "Orange County",
-        "title": "Orange County August 2026 events and outings guide",
+        "title": "Orange County Labor Day 2026 events and outings guide",
         "timing": "August 28-September 6, 2026",
         "route": "/articles/orange-county-august-2026-guide",
         "details": (
-            "Five current ranked plans covering Laguna Beach arts season, OC Parks free concerts and movies, "
-            "Huntington Beach surf and nature programs, TheFitExpo Anaheim, Orange International Street Fair planning, and "
-            "Perk Nation directory links across Orange County cities."
+            "Three current plans covering Laguna Beach arts season through September 6, the September 3 OC Parks "
+            "concert finale, Orange International Street Fair September 4-6, and Perk Nation directory links across "
+            "Orange County cities."
         ),
     },
     {
@@ -909,12 +909,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Concerts, coastal art, wellness, movies, markets, and local history",
         "city": "Santa Monica",
-        "title": "Santa Monica August 2026 coastal events guide",
+        "title": "Santa Monica September 2026 coastal events guide",
         "timing": "August 28-September 27, 2026",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Five current ranked plans covering Cinema by the Sea, Wellness & Waves, "
-            "Tongva Twilight, Downtown farmers markets, and the inaugural "
+            "Four current plans covering Wellness & Waves, Tongva Twilight through September 12, "
+            "Downtown farmers markets, and the inaugural "
             "Ocean Way Festival, with transit, street-closure, weather, and reservation guidance."
         ),
     },
@@ -1990,10 +1990,10 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_orange_county and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Orange County guide ranks five late-summer plans from August 28-September 6, 2026:",
-                "- Laguna Beach's overlapping arts season plus the September 3 Family Style concert from OC Parks.",
-                "- Huntington Beach surf and nature programs.",
-                "- TheFitExpo Anaheim and Orange International Street Fair planning.",
+                "The PerkNation Orange County guide spans August 28-September 6; its current September 2 options are:",
+                "- Laguna Beach's overlapping arts season through September 6.",
+                "- The September 3 Family Style concert finale from OC Parks.",
+                "- Orange International Street Fair from September 4-6.",
                 "- Orange County Burger Week follows September 20-26 with $10-$25 menu filters and participating restaurants across cities including Orange, Huntington Beach, Costa Mesa, Santa Ana, Irvine, Laguna Beach, and Fullerton.",
                 "Open /articles/orange-county-august-2026-guide for the plans through September 6, then use /articles/southern-california-september-events-2026#orange-county-burger-week for the later restaurant-week comparison and current city-directory links.",
             )
@@ -2032,9 +2032,9 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks five late-summer plans from August 28-September 27, 2026:",
-                "- The Downtown farmers market, free Tongva Twilight program, Cinema by the Sea, and Wellness & Waves on August 29.",
-                "- Ocean Way Festival on September 26-27, with ticket and car-free arrival guidance to decide in August.",
+                "The current PerkNation Santa Monica guide has four September plans:",
+                "- Downtown farmers markets, Saturday Wellness & Waves at the Pier, and free Tongva Twilight programs through September 12.",
+                "- Ocean Way Festival on September 26-27, with ticket and car-free arrival guidance.",
                 "Open /articles/santa-monica-august-2026-guide for best-for notes, reservations, coastal weather, street closures, transit, and official sources.",
             )
         )

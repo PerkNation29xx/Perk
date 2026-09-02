@@ -66,9 +66,10 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 28 · Santa Monica") == 1
-        assert "Santa Monica has five current late-summer plans that work from morning through night." in response.text
-        assert "Compare Saturday's free Pier workout" in response.text
+        assert response.text.count("Updated September 2 · Santa Monica") == 1
+        assert "Santa Monica has four current September plans from morning through night." in response.text
+        assert "Compare Saturday Pier wellness" in response.text
+        assert "Tongva Twilight through September 12" in response.text
         assert "Updated August 28" in response.text
 
     root_sitemap = client.get("/sitemap.xml")
@@ -91,7 +92,7 @@ def test_santa_monica_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "ranks five late-summer plans" in answer
+    assert "has four September plans" in answer
     assert "August 7" not in answer
     assert "Pier history talk" not in answer
     assert "Tongva Twilight" in answer
