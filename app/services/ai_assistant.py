@@ -812,7 +812,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Sixteen Southern California September plans",
+        "title": "Eighteen Southern California September plans",
         "timing": "September 4-October 1, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
@@ -820,7 +820,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
             "BlizzCon, Pasadena ARTWalk and Chalk Festival, Ocean Way, UCLA's Rose Bowl home opener, "
             "Glendale's Southern California Open chess tournament, Burbank's Career Transitions Expo, "
             "Arcadia's health fair, Americana in the Park, Tongva Twilight, the Hollywood Bowl fireworks finale, "
-            "The Great Outdoors at Greystone, and Design West Hollywood."
+            "Long Beach Burger Week, Orange County Burger Week, The Great Outdoors at Greystone, and Design West Hollywood."
         ),
     },
 
@@ -1994,7 +1994,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
                 "- Laguna Beach's overlapping arts season plus the September 3 Family Style concert from OC Parks.",
                 "- Huntington Beach surf and nature programs.",
                 "- TheFitExpo Anaheim and Orange International Street Fair planning.",
-                "Open /articles/orange-county-august-2026-guide for best-for rankings, admission and parking notes, official sources, ready-made itineraries, and links into current Orange County city directories.",
+                "- Orange County Burger Week follows September 20-26 with $10-$25 menu filters and participating restaurants across cities including Orange, Huntington Beach, Costa Mesa, Santa Ana, Irvine, Laguna Beach, and Fullerton.",
+                "Open /articles/orange-county-august-2026-guide for the plans through September 6, then use /articles/southern-california-september-events-2026#orange-county-burger-week for the later restaurant-week comparison and current city-directory links.",
             )
         )
 
@@ -2009,9 +2010,10 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation September guide includes the Long Beach Greek Festival:",
+                "The current PerkNation September guide includes the Long Beach Greek Festival and Long Beach Burger Week:",
                 "- September 5-7, opening at noon daily, with $5 admission plus free parking and continuous shuttle service from the nearby VA lot.",
-                "Open /articles/southern-california-september-events-2026#long-beach-labor-day for planning notes and links into 208 Long Beach directory listings.",
+                "- Burger Week runs September 13-20 with published $5-$20 menu filters and more than 20 participating restaurants, food trucks, breweries, bars, and pop-ups.",
+                "Open /articles/southern-california-september-events-2026#long-beach-burger-week for price, neighborhood, and format planning notes plus links into 208 Long Beach directory listings.",
                 "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )

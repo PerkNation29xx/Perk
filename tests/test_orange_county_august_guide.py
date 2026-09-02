@@ -99,4 +99,6 @@ def test_orange_county_roundup_link_and_public_answer_are_scoped() -> None:
     assert answer
     assert "ranks five late-summer plans" in answer
     assert "/articles/orange-county-august-2026-guide" in answer
+    assert "Orange County Burger Week" in answer
+    assert "/articles/southern-california-september-events-2026#orange-county-burger-week" in answer
     assert "Pasadena" not in answer
