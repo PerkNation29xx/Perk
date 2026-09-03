@@ -14,9 +14,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Eighteen Southern California September plans" in html
-    assert 'dateModified": "2026-09-02"' in html
-    assert html.count("<h2") >= 20
+    assert "Nineteen Southern California September plans" in html
+    assert 'dateModified": "2026-09-03"' in html
+    assert html.count("<h2") >= 21
     for expected in (
         "Orange International Street Fair",
         "Long Beach Greek Festival",
@@ -25,6 +25,9 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Pasadena ARTWalk",
         "Pasadena Chalk Festival",
         "Ocean Way Festival",
+        "Lucas Museum opening in Los Angeles",
+        "https://lucasmuseum.org/about/tickets",
+        "/directory?q=restaurants&amp;city=Los%20Angeles",
         "Southern California Open in Glendale",
         "Burbank Career Transitions Expo",
         "Arcadia Health Fair",
@@ -71,8 +74,9 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated September 2 · September guide" in response.text
-        assert "Eighteen Southern California September plans, ranked." in response.text
+        assert "Updated September 3 · September guide" in response.text
+        assert "Nineteen Southern California September plans, ranked." in response.text
+        assert "the Lucas Museum opening" in response.text
         assert "Dine LA's final day is organized" not in response.text
         assert "Fourteen Southern California summer plans, ranked." not in response.text
         assert "Orange International Street Fair opens Labor Day weekend" in response.text
@@ -93,6 +97,7 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     )
 
     assert answer
-    assert "Eighteen Southern California September plans" in answer
+    assert "Nineteen Southern California September plans" in answer
+    assert "Lucas Museum" in answer
     assert "/articles/southern-california-september-events-2026" in answer
     assert "Dine LA 2026 city guides" not in answer

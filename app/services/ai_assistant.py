@@ -812,12 +812,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Eighteen Southern California September plans",
+        "title": "Nineteen Southern California September plans",
         "timing": "September 4-October 1, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to Orange International Street Fair, Long Beach Greek Festival, Fiesta Hermosa, "
-            "BlizzCon, Pasadena ARTWalk and Chalk Festival, Ocean Way, UCLA's Rose Bowl home opener, "
+            "BlizzCon, Pasadena ARTWalk and Chalk Festival, Ocean Way, the Lucas Museum's September 22 opening, UCLA's Rose Bowl home opener, "
             "Glendale's Southern California Open chess tournament, Burbank's Career Transitions Expo, "
             "Arcadia's health fair, Americana in the Park, Tongva Twilight, the Hollywood Bowl fireworks finale, "
             "Long Beach Burger Week, Orange County Burger Week, The Great Outdoors at Greystone, and Design West Hollywood."
