@@ -812,15 +812,15 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Nineteen Southern California September plans",
+        "title": "Twenty-one Southern California September plans",
         "timing": "September 4-October 1, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to Orange International Street Fair, Long Beach Greek Festival, Fiesta Hermosa, "
-            "BlizzCon, Pasadena ARTWalk and Chalk Festival, Ocean Way, the Lucas Museum's September 22 opening, UCLA's Rose Bowl home opener, "
+            "Long Beach Comic Con, BlizzCon, Pasadena ARTWalk and Chalk Festival, Ocean Way, the Lucas Museum's September 22 opening, UCLA's Rose Bowl home opener, "
             "Glendale's Southern California Open chess tournament, Burbank's Career Transitions Expo, "
             "Arcadia's health fair, Americana in the Park, Tongva Twilight, the Hollywood Bowl fireworks finale, "
-            "Long Beach Burger Week, Orange County Burger Week, The Great Outdoors at Greystone, and Design West Hollywood."
+            "Long Beach Burger Week, Orange County Burger Week, Taste of Arcadia, The Great Outdoors at Greystone, and Design West Hollywood."
         ),
     },
 
@@ -877,9 +877,8 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "timing": "August 28-September 6, 2026",
         "route": "/articles/orange-county-august-2026-guide",
         "details": (
-            "Three current plans covering Laguna Beach arts season through September 6, the September 3 OC Parks "
-            "concert finale, Orange International Street Fair September 4-6, and Perk Nation directory links across "
-            "Orange County cities."
+            "Two current plans covering Orange International Street Fair September 4-6, Laguna Beach's closing "
+            "arts-festival weekend through September 6, and Perk Nation directory links across Orange County cities."
         ),
     },
     {
@@ -1990,10 +1989,9 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_orange_county and not wants_restaurants:
         return "\n".join(
             (
-                "The PerkNation Orange County guide spans August 28-September 6; its current September 2 options are:",
-                "- Laguna Beach's overlapping arts season through September 6.",
-                "- The September 3 Family Style concert finale from OC Parks.",
-                "- Orange International Street Fair from September 4-6.",
+                "The PerkNation Orange County guide has two current Labor Day weekend options through September 6:",
+                "- Orange International Street Fair for food, music, and community traditions in Old Towne Orange.",
+                "- Laguna Beach's closing arts-festival weekend for art browsing and a coastal break.",
                 "- Orange County Burger Week follows September 20-26 with $10-$25 menu filters and participating restaurants across cities including Orange, Huntington Beach, Costa Mesa, Santa Ana, Irvine, Laguna Beach, and Fullerton.",
                 "Open /articles/orange-county-august-2026-guide for the plans through September 6, then use /articles/southern-california-september-events-2026#orange-county-burger-week for the later restaurant-week comparison and current city-directory links.",
             )
@@ -2010,10 +2008,11 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation September guide includes the Long Beach Greek Festival and Long Beach Burger Week:",
+                "The current PerkNation September guide includes Long Beach Comic Con, Long Beach Greek Festival, and Long Beach Burger Week:",
+                "- Comic Con runs September 5-6 at the Long Beach Convention Center, with exhibit-floor hours, panels, workshops, guests, and ticket guidance.",
                 "- September 5-7, opening at noon daily, with $5 admission plus free parking and continuous shuttle service from the nearby VA lot.",
                 "- Burger Week runs September 13-20 with published $5-$20 menu filters and more than 20 participating restaurants, food trucks, breweries, bars, and pop-ups.",
-                "Open /articles/southern-california-september-events-2026#long-beach-burger-week for price, neighborhood, and format planning notes plus links into 208 Long Beach directory listings.",
+                "Open /articles/southern-california-september-events-2026#long-beach-comic-con for this weekend or #long-beach-burger-week for restaurant-week planning, with links into 208 Long Beach directory listings.",
                 "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )
@@ -2062,7 +2061,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "South Pasadena's Eat! Shop! Enjoy! VIP promotion ended August 30 and is no longer presented as active.",
-                "For current planning, browse /directory?city=South%20Pasadena for 97 local listings and confirm the September 3 farmers market or open mic with the organizer.",
+                "The September 3 market and open-mic listings have also passed; browse /directory?city=South%20Pasadena for 97 local listings and confirm the next recurring date with the organizer.",
             )
         )
 
@@ -2093,9 +2092,10 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_arcadia and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation September guide includes Arcadia's annual health fair:",
+                "The current PerkNation September guide includes Arcadia's annual health fair and Taste of Arcadia:",
                 "- September 12 from 9 a.m.-noon, with free flu shots while supplies last, consultations, information booths, and health screenings; some screenings require advance registration.",
-                "Open /articles/southern-california-september-events-2026#arcadia-health-fair for practical notes, the official city source, and links into 40 Arcadia directory listings.",
+                "- Taste of Arcadia runs September 19 from 2-6 p.m. at Santa Anita Park, with 1 p.m. VIP entry, food and beverage sampling, live entertainment, and a business showcase; it is ticketed and 21 and over.",
+                "Open /articles/southern-california-september-events-2026#arcadia-health-fair or #taste-of-arcadia for practical notes, official sources, and links into 40 Arcadia directory listings.",
             )
         )
 

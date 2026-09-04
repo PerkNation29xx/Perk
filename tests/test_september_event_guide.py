@@ -14,12 +14,14 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Nineteen Southern California September plans" in html
-    assert 'dateModified": "2026-09-03"' in html
-    assert html.count("<h2") >= 21
+    assert "Twenty-one Southern California September plans" in html
+    assert 'dateModified": "2026-09-04"' in html
+    assert html.count("<h2") >= 23
     for expected in (
         "Orange International Street Fair",
         "Long Beach Greek Festival",
+        "Long Beach Comic Con",
+        "https://longbeachcomiccon.com/",
         "Fiesta Hermosa",
         "BlizzCon in Anaheim",
         "Pasadena ARTWalk",
@@ -31,6 +33,8 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Southern California Open in Glendale",
         "Burbank Career Transitions Expo",
         "Arcadia Health Fair",
+        "Taste of Arcadia",
+        "https://tasteofarcadia.com/",
         "Americana in the Park",
         "Design West Hollywood",
         "Long Beach Burger Week",
@@ -74,8 +78,10 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated September 3 · September guide" in response.text
-        assert "Nineteen Southern California September plans, ranked." in response.text
+        assert "Updated September 4 · September guide" in response.text
+        assert "Twenty-one Southern California September plans, ranked." in response.text
+        assert "Long Beach Comic Con" in response.text
+        assert "Taste of Arcadia" in response.text
         assert "the Lucas Museum opening" in response.text
         assert "Dine LA's final day is organized" not in response.text
         assert "Fourteen Southern California summer plans, ranked." not in response.text
@@ -97,7 +103,9 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     )
 
     assert answer
-    assert "Nineteen Southern California September plans" in answer
+    assert "Twenty-one Southern California September plans" in answer
+    assert "Long Beach Comic Con" in answer
+    assert "Taste of Arcadia" in answer
     assert "Lucas Museum" in answer
     assert "/articles/southern-california-september-events-2026" in answer
     assert "Dine LA 2026 city guides" not in answer

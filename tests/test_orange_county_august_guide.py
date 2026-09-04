@@ -17,28 +17,27 @@ WHITE_HOME = ROOT / "app" / "web" / "home_portal_white" / "index.html"
 def test_orange_county_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Orange County has five current late-summer plans" in html
-    assert 'dateModified": "2026-08-28"' in html
-    assert html.count("<h2>") >= 9
+    assert "Orange County has two current Labor Day plans" in html
+    assert 'dateModified": "2026-09-04"' in html
+    assert html.count("<h2>") >= 7
     for expected in (
-        "5 ranked plans",
+        "2 ranked plans",
         "Laguna Beach arts season",
-        "OC Parks movie and concert finales",
-        "Huntington Beach surf and nature",
-        "TheFitExpo Anaheim",
         "Orange International Street Fair",
         "Best for:",
         "/directory?city=Orange",
-        "/articles/southern-california-august-events-2026",
-        "https://www.ocparks.com/",
-        "https://www.thefitexpo.com/",
+        "/articles/southern-california-september-events-2026",
         "https://www.optevents.org/orangeinternationalstreetfair",
+        "https://www.visitlagunabeach.com/events/annual-events/laguna-art-a-fair/",
     ):
         assert expected in html
     assert "OC Fair" not in html
     assert "D23" not in html
     assert "Sea Country Festival" not in html
     assert "La Habra Corn Festival" not in html
+    assert "OC Parks movie and concert finales" not in html
+    assert "TheFitExpo Anaheim" not in html
+    assert "Huntington Beach Pier Swim" not in html
 
     for forbidden in (
         "Examples from the official listing",
@@ -60,7 +59,7 @@ def test_orange_county_routes_image_homepages_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "5 ranked plans" in response.text
+        assert "2 ranked plans" in response.text
 
     image = client.get("/assets/articles/orange-county-august-2026-guide.jpg")
     assert image.status_code == 200
@@ -70,10 +69,10 @@ def test_orange_county_routes_image_homepages_and_sitemap() -> None:
 
     home_html = HOME.read_text(encoding="utf-8")
     white_html = WHITE_HOME.read_text(encoding="utf-8")
-    assert home_html.count("Updated September 2 · Orange County") == 1
-    assert white_html.count("Updated September 2 · Orange County") == 1
-    assert "Orange County has three current Labor Day plans worth building a day around." in home_html
-    assert "Orange County has three current Labor Day plans worth building a day around." in white_html
+    assert home_html.count("Updated September 4 · Orange County") == 1
+    assert white_html.count("Updated September 4 · Orange County") == 1
+    assert "Orange County has two current Labor Day plans worth building a day around." in home_html
+    assert "Orange County has two current Labor Day plans worth building a day around." in white_html
     assert "Orange International Street Fair" in home_html
     assert "tonight's free <em>Top Gun</em> finale" not in home_html
     assert "Orange International Street Fair" in white_html
@@ -97,7 +96,8 @@ def test_orange_county_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "current September 2 options" in answer
+    assert "two current Labor Day weekend options" in answer
+    assert "September 3 Family Style" not in answer
     assert "/articles/orange-county-august-2026-guide" in answer
     assert "Orange County Burger Week" in answer
     assert "/articles/southern-california-september-events-2026#orange-county-burger-week" in answer

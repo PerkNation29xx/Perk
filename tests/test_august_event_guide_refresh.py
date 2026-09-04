@@ -57,7 +57,7 @@ def test_august_guide_remains_available_but_is_replaced_on_homepages() -> None:
         assert response.status_code == 200
         assert "Updated August 28" in response.text
         assert "Fourteen Southern California summer plans, ranked." not in response.text
-        assert "Nineteen Southern California September plans, ranked." in response.text
+        assert "Twenty-one Southern California September plans, ranked." in response.text
 
 
 def test_august_guide_leaves_sitemaps_and_current_public_ai_context() -> None:
@@ -76,5 +76,5 @@ def test_august_guide_leaves_sitemaps_and_current_public_ai_context() -> None:
         "home_local_guide",
     )
     assert answer
-    assert "Nineteen Southern California September plans" in answer
+    assert "Twenty-one Southern California September plans" in answer
     assert "/articles/southern-california-august-events-2026" not in answer
