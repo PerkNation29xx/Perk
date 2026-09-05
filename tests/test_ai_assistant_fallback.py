@@ -183,7 +183,7 @@ def test_home_local_guide_includes_review_context_for_current_events(monkeypatch
     assert "KCON LA 2026" not in system_context
     assert "UFC Fight Night" not in system_context
     assert "Dine LA 2026 city guides" not in system_context
-    assert "Twenty-one Southern California September plans" in system_context
+    assert "Twenty-two Southern California September plans" in system_context
     assert "not active PerkNation promotions" in system_context
 
 
@@ -212,7 +212,7 @@ def test_home_local_guide_review_listing_question_answers_directly(monkeypatch) 
     assert "ufc fight night" not in answer
     assert "kcon la 2026" not in answer
     assert "dine la 2026" not in answer
-    assert "twenty-one southern california september plans" in answer
+    assert "twenty-two southern california september plans" in answer
     assert "current perknation guides and events" in answer
     assert "ask for current promotions" in answer
 

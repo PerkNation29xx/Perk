@@ -812,14 +812,14 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Twenty-one Southern California September plans",
+        "title": "Twenty-two Southern California September plans",
         "timing": "September 4-October 1, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to Orange International Street Fair, Long Beach Greek Festival, Fiesta Hermosa, "
             "Long Beach Comic Con, BlizzCon, Pasadena ARTWalk and Chalk Festival, Ocean Way, the Lucas Museum's September 22 opening, UCLA's Rose Bowl home opener, "
             "Glendale's Southern California Open chess tournament, Burbank's Career Transitions Expo, "
-            "Arcadia's health fair, Americana in the Park, Tongva Twilight, the Hollywood Bowl fireworks finale, "
+            "Arcadia's health fair, Americana in the Park, Arcadia's Mid-Autumn Moon Festival, Tongva Twilight, the Hollywood Bowl fireworks finale, "
             "Long Beach Burger Week, Orange County Burger Week, Taste of Arcadia, The Great Outdoors at Greystone, and Design West Hollywood."
         ),
     },
@@ -2092,10 +2092,11 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_arcadia and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation September guide includes Arcadia's annual health fair and Taste of Arcadia:",
+                "The current PerkNation September guide includes Arcadia's annual health fair, Taste of Arcadia, and the Mid-Autumn Moon Festival:",
                 "- September 12 from 9 a.m.-noon, with free flu shots while supplies last, consultations, information booths, and health screenings; some screenings require advance registration.",
                 "- Taste of Arcadia runs September 19 from 2-6 p.m. at Santa Anita Park, with 1 p.m. VIP entry, food and beverage sampling, live entertainment, and a business showcase; it is ticketed and 21 and over.",
-                "Open /articles/southern-california-september-events-2026#arcadia-health-fair or #taste-of-arcadia for practical notes, official sources, and links into 40 Arcadia directory listings.",
+                "- The free Mid-Autumn Moon Festival runs September 26 from 5-8:30 p.m. on the City Hall Lawn, with live entertainment, children's activities, vendors, food, mooncake making, and parking at City Hall or Santa Anita Park Gate 5.",
+                "Open /articles/southern-california-september-events-2026#arcadia-health-fair, #taste-of-arcadia, or #arcadia-moon-festival for practical notes, official sources, and links into 40 Arcadia directory listings.",
             )
         )
 
