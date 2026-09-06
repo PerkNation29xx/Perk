@@ -15,29 +15,27 @@ AUGUST_GUIDE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-cal
 def test_laguna_beach_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Laguna Beach has seven current late-summer arts plans" in html
-    assert 'dateModified": "2026-08-28"' in html
-    assert html.count("<h2>") >= 12
+    assert "Two Laguna Beach summer art festivals close tonight" in html
+    assert 'dateModified": "2026-09-06"' in html
+    assert html.count("<h2>") >= 7
     for expected in (
-        "7 ranked plans",
+        "2 ranked plans",
         "24 Laguna Beach listings",
-        "Pageant of the Masters",
         "Sawdust Art Festival",
-        "Passport to the Arts",
-        "Festival of Arts Fine Art Show",
         "Laguna Art-A-Fair",
-        "Laguna Art Museum",
-        "Music at the Promenade",
         "Best for:",
         "/directory?city=Laguna%20Beach",
-        "/articles/southern-california-august-events-2026",
-        "https://www.foapom.com/",
+        "/articles/southern-california-september-events-2026",
         "https://www.lagunabeachcity.net/",
     ):
         assert expected in html
     assert "Music in the Park" not in html
 
     for forbidden in (
+        "Pageant of the Masters",
+        "Passport to the Arts",
+        "Festival of Arts Fine Art Show",
+        "Music at the Promenade",
         "First Thursdays Art Walk",
         "Examples from the official listing",
         "editorial image generated",
@@ -58,7 +56,7 @@ def test_laguna_beach_routes_image_homepage_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "7 ranked plans" in response.text
+        assert "2 ranked plans" in response.text
 
     image = client.get("/assets/articles/laguna-beach-august-2026-guide.jpg")
     assert image.status_code == 200
@@ -69,9 +67,8 @@ def test_laguna_beach_routes_image_homepage_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated August 28 · Laguna Beach") == 1
-        assert "Laguna Beach has seven current late-summer arts plans worth the trip." in response.text
-        assert "Updated August 28" in response.text
+        assert response.text.count("Final day September 6 · Laguna Beach") == 1
+        assert "Laguna Beach's summer festival season closes tonight." in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     assert "<loc>https://perknation.app/articles/laguna-beach-august-2026-guide</loc>" in root_sitemap.text
@@ -89,7 +86,10 @@ def test_laguna_beach_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "ranks seven current late-summer arts plans" in answer
+    assert "covers the final September 6 day" in answer
+    assert "Sawdust Art Festival" in answer
+    assert "Laguna Art-A-Fair" in answer
+    assert "Pageant of the Masters" not in answer
     assert "First Thursdays Art Walk" not in answer
     assert "/articles/laguna-beach-august-2026-guide" in answer
     assert "Santa Monica" not in answer

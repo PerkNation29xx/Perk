@@ -17,8 +17,8 @@ WHITE_HOME = ROOT / "app" / "web" / "home_portal_white" / "index.html"
 def test_orange_county_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Orange County has two current Labor Day plans" in html
-    assert 'dateModified": "2026-09-04"' in html
+    assert "Two Orange County Labor Day plans close tonight" in html
+    assert 'dateModified": "2026-09-06"' in html
     assert html.count("<h2>") >= 7
     for expected in (
         "2 ranked plans",
@@ -69,10 +69,10 @@ def test_orange_county_routes_image_homepages_and_sitemap() -> None:
 
     home_html = HOME.read_text(encoding="utf-8")
     white_html = WHITE_HOME.read_text(encoding="utf-8")
-    assert home_html.count("Updated September 4 · Orange County") == 1
-    assert white_html.count("Updated September 4 · Orange County") == 1
-    assert "Orange County has two current Labor Day plans worth building a day around." in home_html
-    assert "Orange County has two current Labor Day plans worth building a day around." in white_html
+    assert home_html.count("Final day September 6 · Orange County") == 1
+    assert white_html.count("Final day September 6 · Orange County") == 1
+    assert "Two Orange County arts and food plans close tonight." in home_html
+    assert "Two Orange County arts and food plans close tonight." in white_html
     assert "Orange International Street Fair" in home_html
     assert "tonight's free <em>Top Gun</em> finale" not in home_html
     assert "Orange International Street Fair" in white_html
@@ -96,7 +96,7 @@ def test_orange_county_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "two current Labor Day weekend options" in answer
+    assert "two final-day Labor Day options" in answer
     assert "September 3 Family Style" not in answer
     assert "/articles/orange-county-august-2026-guide" in answer
     assert "Orange County Burger Week" in answer

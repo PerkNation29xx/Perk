@@ -812,13 +812,13 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Twenty-two Southern California September plans",
+        "title": "Twenty-six Southern California September plans",
         "timing": "September 4-October 1, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to Orange International Street Fair, Long Beach Greek Festival, Fiesta Hermosa, "
-            "Long Beach Comic Con, BlizzCon, Pasadena ARTWalk and Chalk Festival, Ocean Way, the Lucas Museum's September 22 opening, UCLA's Rose Bowl home opener, "
-            "Glendale's Southern California Open chess tournament, Burbank's Career Transitions Expo, "
+            "Long Beach Comic Con, Maker Faire Orange County, BlizzCon, Pasadena ARTWalk, Greek Festival and Chalk Festival, Ocean Way, the Lucas Museum's September 22 opening, UCLA's Rose Bowl home opener, "
+            "Glendale's Southern California Open chess tournament, Armenian Film Festival and Jewel City Concert Series, Burbank's Career Transitions Expo, "
             "Arcadia's health fair, Americana in the Park, Arcadia's Mid-Autumn Moon Festival, Tongva Twilight, the Hollywood Bowl fireworks finale, "
             "Long Beach Burger Week, Orange County Burger Week, Taste of Arcadia, The Great Outdoors at Greystone, and Design West Hollywood."
         ),
@@ -877,8 +877,8 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "timing": "August 28-September 6, 2026",
         "route": "/articles/orange-county-august-2026-guide",
         "details": (
-            "Two current plans covering Orange International Street Fair September 4-6, Laguna Beach's closing "
-            "arts-festival weekend through September 6, and Perk Nation directory links across Orange County cities."
+            "Two final-day plans covering Orange International Street Fair and Laguna Beach's closing "
+            "arts-festival day on September 6, plus Perk Nation directory links across Orange County cities."
         ),
     },
     {
@@ -900,9 +900,8 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "timing": "August 28-September 6, 2026",
         "route": "/articles/laguna-beach-august-2026-guide",
         "details": (
-            "Seven current ranked plans covering Pageant of the Masters, Sawdust Art Festival, the Passport to the Arts, "
-            "Festival of Arts, Laguna Art-A-Fair, Laguna Art Museum, Music at the Promenade, "
-            "trolley planning, and Perk Nation's 24 Laguna Beach listings."
+            "Two final-day plans covering Sawdust Art Festival and Laguna Art-A-Fair on September 6, "
+            "with admission distinctions, trolley planning, and Perk Nation's 24 Laguna Beach listings."
         ),
     },
     {
@@ -1989,7 +1988,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_orange_county and not wants_restaurants:
         return "\n".join(
             (
-                "The PerkNation Orange County guide has two current Labor Day weekend options through September 6:",
+                "The PerkNation Orange County guide has two final-day Labor Day options on September 6:",
                 "- Orange International Street Fair for food, music, and community traditions in Old Towne Orange.",
                 "- Laguna Beach's closing arts-festival weekend for art browsing and a coastal break.",
                 "- Orange County Burger Week follows September 20-26 with $10-$25 menu filters and participating restaurants across cities including Orange, Huntington Beach, Costa Mesa, Santa Ana, Irvine, Laguna Beach, and Fullerton.",
@@ -2020,11 +2019,10 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_laguna_beach and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Laguna Beach guide ranks seven current late-summer arts plans from August 28-September 6, 2026:",
-                "- Pageant of the Masters, Sawdust Art Festival, Festival of Arts, and Laguna Art-A-Fair.",
-                "- The three-festival Passport to the Arts, which does not include the Pageant.",
-                "- Laguna Art Museum and Music at the Promenade.",
-                "Open /articles/laguna-beach-august-2026-guide for best-for notes, ticket distinctions, trolley and parking guidance, official sources, and links into 24 Laguna Beach directory listings.",
+                "The PerkNation Laguna Beach guide covers the final September 6 day of the 2026 summer arts season:",
+                "- Sawdust Art Festival for local makers, demonstrations, workshops, and family-friendly browsing.",
+                "- Laguna Art-A-Fair for a wider mix of local, national, and international artists.",
+                "Other summer programs previously covered there have ended and are no longer presented as current recommendations. Open /articles/laguna-beach-august-2026-guide for final-day best-for notes, admission distinctions, trolley and parking guidance, official sources, and links into 24 Laguna Beach directory listings.",
             )
         )
 
@@ -2076,7 +2074,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation September guide includes Pasadena ARTWalk, the Pasadena Chalk Festival, and UCLA's Rose Bowl home opener.",
+                "The current PerkNation September guide includes Pasadena ARTWalk, Pasadena Greek Festival, the Pasadena Chalk Festival, and UCLA's Rose Bowl home opener.",
                 "Open /articles/southern-california-september-events-2026 for ranked best-for and transit notes, or browse /directory?city=Pasadena for 563 local listings.",
             )
         )
@@ -2084,8 +2082,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_glendale and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation September guide includes the Southern California Open chess tournament in Glendale from September 4-7.",
-                "Open /articles/southern-california-september-events-2026#glendale-chess for registration and schedule notes, or browse /directory?city=Glendale for 100 local listings.",
+                "The current PerkNation September guide includes the Southern California Open chess tournament, Armenian Film Festival, and free Jewel City Concert Series in Glendale.",
+                "Open /articles/southern-california-september-events-2026#glendale-chess, #armenian-film-festival, or #jewel-city-concerts for practical notes, or browse /directory?city=Glendale for 100 local listings.",
             )
         )
 
