@@ -67,11 +67,10 @@ def test_laguna_beach_routes_image_homepage_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Final day September 6 · Laguna Beach") == 1
-        assert "Laguna Beach's summer festival season closes tonight." in response.text
+        assert '<section class="section homeArticleSection" id="laguna-beach-august-2026-guide">' not in response.text
 
     root_sitemap = client.get("/sitemap.xml")
-    assert "<loc>https://perknation.app/articles/laguna-beach-august-2026-guide</loc>" in root_sitemap.text
+    assert "<loc>https://perknation.app/articles/laguna-beach-august-2026-guide</loc>" not in root_sitemap.text
 
 
 def test_laguna_beach_roundup_link_and_public_answer_are_scoped() -> None:
@@ -86,10 +85,10 @@ def test_laguna_beach_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "covers the final September 6 day" in answer
-    assert "Sawdust Art Festival" in answer
-    assert "Laguna Art-A-Fair" in answer
+    assert "concluded on September 6" in answer
+    assert "Sawdust Art Festival" not in answer
+    assert "Laguna Art-A-Fair" not in answer
     assert "Pageant of the Masters" not in answer
     assert "First Thursdays Art Walk" not in answer
-    assert "/articles/laguna-beach-august-2026-guide" in answer
+    assert "/articles/laguna-beach-august-2026-guide" not in answer
     assert "Santa Monica" not in answer

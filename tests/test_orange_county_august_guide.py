@@ -69,10 +69,8 @@ def test_orange_county_routes_image_homepages_and_sitemap() -> None:
 
     home_html = HOME.read_text(encoding="utf-8")
     white_html = WHITE_HOME.read_text(encoding="utf-8")
-    assert home_html.count("Final day September 6 · Orange County") == 1
-    assert white_html.count("Final day September 6 · Orange County") == 1
-    assert "Two Orange County arts and food plans close tonight." in home_html
-    assert "Two Orange County arts and food plans close tonight." in white_html
+    assert '<section class="section homeArticleSection" id="orange-county-august-2026-guide">' not in home_html
+    assert '<section class="section homeArticleSection" id="orange-county-august-2026-guide">' not in white_html
     assert "Orange International Street Fair" in home_html
     assert "tonight's free <em>Top Gun</em> finale" not in home_html
     assert "Orange International Street Fair" in white_html
@@ -82,7 +80,7 @@ def test_orange_county_routes_image_homepages_and_sitemap() -> None:
     assert "/white/articles/orange-county-august-2026-guide" in white_html
 
     root_sitemap = client.get("/sitemap.xml")
-    assert "<loc>https://perknation.app/articles/orange-county-august-2026-guide</loc>" in root_sitemap.text
+    assert "<loc>https://perknation.app/articles/orange-county-august-2026-guide</loc>" not in root_sitemap.text
 
 
 def test_orange_county_roundup_link_and_public_answer_are_scoped() -> None:
@@ -96,9 +94,9 @@ def test_orange_county_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "two final-day Labor Day options" in answer
+    assert "concluded on September 6" in answer
     assert "September 3 Family Style" not in answer
-    assert "/articles/orange-county-august-2026-guide" in answer
+    assert "/articles/orange-county-august-2026-guide" not in answer
     assert "Orange County Burger Week" in answer
     assert "/articles/southern-california-september-events-2026#orange-county-burger-week" in answer
     assert "Pasadena" not in answer

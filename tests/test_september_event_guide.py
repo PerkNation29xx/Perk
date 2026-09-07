@@ -14,17 +14,13 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Twenty-six Southern California September plans" in html
-    assert 'dateModified": "2026-09-06"' in html
+    assert "Twenty-five Southern California September plans" in html
+    assert 'dateModified": "2026-09-07"' in html
     assert html.count("<h2") >= 28
     for expected in (
-        "Orange International Street Fair",
         "Long Beach Greek Festival",
-        "Long Beach Comic Con",
-        "https://longbeachcomiccon.com/",
         "Maker Faire Orange County",
         "https://oc.makerfaire.com/tickets/",
-        "Fiesta Hermosa",
         "BlizzCon in Anaheim",
         "Pasadena ARTWalk",
         "Pasadena Chalk Festival",
@@ -40,6 +36,10 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Jewel City Concert Series in Glendale",
         'id="jewel-city-concerts"',
         "Burbank Career Transitions Expo",
+        "Burbank Autumn Arts Festival",
+        'id="burbank-autumn-arts"',
+        "Craft Beer LB Fest",
+        'id="craft-beer-lb"',
         "Arcadia Health Fair",
         "Taste of Arcadia",
         "https://tasteofarcadia.com/",
@@ -59,6 +59,8 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "/directory?city=Long%20Beach",
     ):
         assert expected in html
+    for expired in ("Orange International Street Fair", "Long Beach Comic Con", "Fiesta Hermosa"):
+        assert expired not in html
     for forbidden in (
         "Examples from the official listing",
         "editorial image generated",
@@ -89,14 +91,14 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated September 6 · September guide" in response.text
-        assert "Twenty-six Southern California September plans, ranked." in response.text
+        assert "Updated September 7 · September guide" in response.text
+        assert "Twenty-five Southern California September plans, ranked." in response.text
         assert "Maker Faire OC" in response.text
-        assert "Pasadena Greek Festival" in response.text
+        assert "Burbank's free Autumn Arts Festival" in response.text
         assert "the Lucas Museum opening" in response.text
         assert "Dine LA's final day is organized" not in response.text
         assert "Fourteen Southern California summer plans, ranked." not in response.text
-        assert "Orange International Street Fair closes tonight" in response.text
+        assert "Maker Faire OC turns invention into a hands-on weekend" in response.text
         assert "Arcadia's August finale pairs Broadway music with a garden picnic." not in response.text
 
     root_sitemap = client.get("/sitemap.xml")
@@ -114,8 +116,9 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     )
 
     assert answer
-    assert "Twenty-six Southern California September plans" in answer
-    assert "Long Beach Comic Con" in answer
+    assert "Twenty-five Southern California September plans" in answer
+    assert "Craft Beer LB Fest" in answer
+    assert "Autumn Arts Festival" in answer
     assert "Taste of Arcadia" in answer
     assert "Mid-Autumn Moon Festival" in answer
     assert "Lucas Museum" in answer
