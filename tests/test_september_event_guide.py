@@ -14,11 +14,10 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Twenty-five Southern California September plans" in html
-    assert 'dateModified": "2026-09-07"' in html
-    assert html.count("<h2") >= 28
+    assert "Twenty-six Southern California September plans" in html
+    assert 'dateModified": "2026-09-08"' in html
+    assert html.count("<h2") >= 29
     for expected in (
-        "Long Beach Greek Festival",
         "Maker Faire Orange County",
         "https://oc.makerfaire.com/tickets/",
         "BlizzCon in Anaheim",
@@ -28,7 +27,9 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Lucas Museum opening in Los Angeles",
         "https://lucasmuseum.org/about/tickets",
         "/directory?q=restaurants&amp;city=Los%20Angeles",
-        "Southern California Open in Glendale",
+        "Moompetam American Indian Festival",
+        "https://www.aquariumofpacific.org/events/info/moompetam/",
+        'id="moompetam"',
         "Armenian Film Festival in Glendale",
         'id="armenian-film-festival"',
         "Pasadena Greek Festival",
@@ -40,6 +41,12 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         'id="burbank-autumn-arts"',
         "Craft Beer LB Fest",
         'id="craft-beer-lb"',
+        "Levitt VIBE Pasadena finale",
+        "https://www.cityofpasadena.net/parks-and-rec/event/levitt-vibe-pasadena-music-series-2/2026-09-12/",
+        'id="levitt-vibe"',
+        "LAWineFest in Burbank",
+        "https://www.lawinefest.com/",
+        'id="la-winefest"',
         "Arcadia Health Fair",
         "Taste of Arcadia",
         "https://tasteofarcadia.com/",
@@ -59,7 +66,7 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "/directory?city=Long%20Beach",
     ):
         assert expected in html
-    for expired in ("Orange International Street Fair", "Long Beach Comic Con", "Fiesta Hermosa"):
+    for expired in ("Orange International Street Fair", "Long Beach Comic Con", "Fiesta Hermosa", "Long Beach Greek Festival", "Southern California Open in Glendale"):
         assert expired not in html
     for forbidden in (
         "Examples from the official listing",
@@ -91,10 +98,12 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated September 7 · September guide" in response.text
-        assert "Twenty-five Southern California September plans, ranked." in response.text
+        assert "Updated September 8 · September guide" in response.text
+        assert "Twenty-six Southern California September plans, ranked." in response.text
         assert "Maker Faire OC" in response.text
-        assert "Burbank's free Autumn Arts Festival" in response.text
+        assert "Moompetam at the Aquarium" in response.text
+        assert "Levitt VIBE finale" in response.text
+        assert "LAWineFest in Burbank" in response.text
         assert "the Lucas Museum opening" in response.text
         assert "Dine LA's final day is organized" not in response.text
         assert "Fourteen Southern California summer plans, ranked." not in response.text
@@ -116,7 +125,10 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     )
 
     assert answer
-    assert "Twenty-five Southern California September plans" in answer
+    assert "Twenty-six Southern California September plans" in answer
+    assert "Moompetam" in answer
+    assert "Levitt VIBE" in answer
+    assert "LAWineFest" in answer
     assert "Craft Beer LB Fest" in answer
     assert "Autumn Arts Festival" in answer
     assert "Taste of Arcadia" in answer
