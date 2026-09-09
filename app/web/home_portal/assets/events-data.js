@@ -1,26 +1,5 @@
 window.PERK_NATION_EVENTS = [
   {
-    slug: "j-cole-los-angeles",
-    category: "Concerts",
-    title: "J. Cole brings The Fall-Off World Tour to Los Angeles",
-    eventName: "J. Cole — The Fall-Off World Tour",
-    date: "September 1 & 7, 2026",
-    time: "8:00 PM; doors at 7:00 PM",
-    city: "Los Angeles",
-    venue: "Crypto.com Arena",
-    image: "https://www.cryptoarena.com/assets/img/550x324_J-COLE_EDP_Thumbnail-47710c2603.jpg",
-    imageAlt: "J. Cole The Fall-Off World Tour promotional artwork",
-    officialUrl: "https://www.cryptoarena.com/events/detail/jcole090126",
-    summary: "J. Cole’s first solo headline tour in five years lands in LA for two arena nights.",
-    intro: "The Fall-Off World Tour reaches Crypto.com Arena twice as part of J. Cole’s 50-plus-date global run.",
-    paragraphs: [
-      "The tour supports The Fall Off and marks the artist’s first solo headline tour since 2021. Los Angeles receives two performances—Tuesday, September 1 and Labor Day Monday, September 7.",
-      "Both shows are listed for 8:00 PM with doors at 7:00 PM. The official arena page contains current ticket, parking, suite and bag-policy information."
-    ],
-    highlights: ["Two Los Angeles dates", "50-plus-city global tour", "Labor Day performance available"],
-    credit: "Official promotional artwork via Crypto.com Arena"
-  },
-  {
     slug: "carin-leon-san-diego",
     category: "Concerts",
     title: "Carín León brings his arena tour to San Diego",

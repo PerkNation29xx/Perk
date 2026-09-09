@@ -14,13 +14,25 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Twenty-six Southern California September plans" in html
-    assert 'dateModified": "2026-09-08"' in html
-    assert html.count("<h2") >= 29
+    assert "Twenty-nine Southern California September plans" in html
+    assert 'dateModified": "2026-09-09"' in html
+    assert html.count("<h2") >= 32
     for expected in (
         "Maker Faire Orange County",
         "https://oc.makerfaire.com/tickets/",
         "BlizzCon in Anaheim",
+        "Santa Ana Fiestas Patrias",
+        "https://santa-ana.gov/city-of-santa-ana-to-celebrate-hispanic-heritage-at-fiestas-patrias-festival-and-parade-sept-12-13/",
+        'id="santa-ana-fiestas-patrias"',
+        "/directory?q=restaurants&amp;city=Santa%20Ana",
+        "Dana Point Maritime Festival",
+        "https://maritime-fest.org/event/festival-adventure-pass-4/",
+        'id="dana-point-maritime-festival"',
+        "/directory?city=Dana%20Point",
+        "Segerstrom Center Ruby Jubilee",
+        "https://www.travelcostamesa.com/events/ruby-jubilee-40th-anniversary-celebration/",
+        'id="ruby-jubilee"',
+        "/directory?q=restaurants&amp;city=Costa%20Mesa",
         "Pasadena ARTWalk",
         "Pasadena Chalk Festival",
         "Ocean Way Festival",
@@ -98,8 +110,11 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated September 8 · September guide" in response.text
-        assert "Twenty-six Southern California September plans, ranked." in response.text
+        assert "Updated September 9 · September guide" in response.text
+        assert "Twenty-nine Southern California September plans, ranked." in response.text
+        assert "Santa Ana Fiestas Patrias" in response.text
+        assert "Dana Point's Maritime Festival" in response.text
+        assert "Segerstrom's free Ruby Jubilee" in response.text
         assert "Maker Faire OC" in response.text
         assert "Moompetam at the Aquarium" in response.text
         assert "Levitt VIBE finale" in response.text
@@ -108,6 +123,8 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
         assert "Dine LA's final day is organized" not in response.text
         assert "Fourteen Southern California summer plans, ranked." not in response.text
         assert "Maker Faire OC turns invention into a hands-on weekend" in response.text
+        assert "J. Cole brings The Fall-Off Tour to LA" not in response.text
+        assert "Santa Ana Fiestas Patrias brings a free festival and parade downtown" in response.text
         assert "Arcadia's August finale pairs Broadway music with a garden picnic." not in response.text
 
     root_sitemap = client.get("/sitemap.xml")
@@ -116,6 +133,11 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     assert white_sitemap.status_code == 308
     assert white_sitemap.headers["location"] == "/sitemap.xml"
     assert "<loc>https://perknation.app/articles/southern-california-september-events-2026</loc>" in root_sitemap.text
+    assert "/events/j-cole-los-angeles" not in root_sitemap.text
+
+    events_data = client.get("/assets/events-data.js")
+    assert events_data.status_code == 200
+    assert "j-cole-los-angeles" not in events_data.text
 
 
 def test_september_guide_is_current_in_public_review_answers() -> None:
@@ -125,7 +147,10 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     )
 
     assert answer
-    assert "Twenty-six Southern California September plans" in answer
+    assert "Twenty-nine Southern California September plans" in answer
+    assert "Santa Ana Fiestas Patrias" in answer
+    assert "Dana Point Maritime Festival" in answer
+    assert "Ruby Jubilee" in answer
     assert "Moompetam" in answer
     assert "Levitt VIBE" in answer
     assert "LAWineFest" in answer
@@ -138,3 +163,16 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     assert "Armenian Film Festival" in answer
     assert "/articles/southern-california-september-events-2026" in answer
     assert "Dine LA 2026 city guides" not in answer
+
+
+def test_orange_county_city_answers_include_new_immediate_weekend_plans() -> None:
+    answer = _public_review_live_query_response(
+        "What current events are covered in Santa Ana and Costa Mesa this weekend?",
+        "home_local_guide",
+    )
+
+    assert answer
+    assert "Santa Ana Fiestas Patrias" in answer
+    assert "Dana Point's Maritime Festival" in answer
+    assert "Ruby Jubilee" in answer
+    assert "#santa-ana-fiestas-patrias" in answer

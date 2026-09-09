@@ -812,11 +812,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Twenty-six Southern California September plans",
-        "timing": "September 12-October 1, 2026",
+        "title": "Twenty-nine Southern California September plans",
+        "timing": "September 11-October 1, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to Maker Faire Orange County, BlizzCon, Moompetam at the Aquarium of the Pacific, Pasadena ARTWalk, Greek Festival, Levitt VIBE finale and Chalk Festival, Ocean Way, the Lucas Museum's September 22 opening, UCLA's Rose Bowl home opener, "
+            "Ranked guide to Maker Faire Orange County, BlizzCon, Santa Ana Fiestas Patrias, Dana Point Maritime Festival, Segerstrom's Ruby Jubilee, Moompetam at the Aquarium of the Pacific, Pasadena ARTWalk, Greek Festival, Levitt VIBE finale and Chalk Festival, Ocean Way, the Lucas Museum's September 22 opening, UCLA's Rose Bowl home opener, "
             "Craft Beer LB Fest, LAWineFest, Armenian Film Festival and Jewel City Concert Series, Burbank's Career Transitions Expo and Autumn Arts Festival, "
             "Arcadia's health fair, Americana in the Park, Arcadia's Mid-Autumn Moon Festival, Tongva Twilight, the Hollywood Bowl fireworks finale, "
             "Long Beach Burger Week, Orange County Burger Week, Taste of Arcadia, The Great Outdoors at Greystone, and Design West Hollywood."
@@ -1958,7 +1958,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     wants_burbank = _contains_any(text, ("burbank", "burbank film festival"))
     wants_glendale = _contains_any(text, ("glendale", "deukmejian", "brand park"))
     wants_arcadia = _contains_any(text, ("arcadia", "626 night market", "santa anita", "arboretum"))
-    wants_orange_county = _contains_any(text, ("orange county", "oc fair", "sea country festival", "corn festival", "thefitexpo"))
+    wants_orange_county = _contains_any(text, ("orange county", "santa ana", "dana point", "costa mesa", "oc fair", "sea country festival", "corn festival", "thefitexpo"))
     wants_santa_monica = _contains_any(text, ("santa monica", "wellness & waves", "art on ocean", "ocean way festival"))
     wants_laguna_beach = _contains_any(text, ("laguna beach", "pageant of the masters", "sawdust", "passport to the arts", "laguna art museum"))
     wants_long_beach = _contains_any(text, ("long beach", "stroll & savor", "taste of downtown", "jazz on the bay", "new blues festival"))
@@ -1990,8 +1990,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current September options include Maker Faire Orange County on September 12-13 and Orange County Burger Week on September 20-26, with $10-$25 menu filters across cities including Orange, Huntington Beach, Costa Mesa, Santa Ana, Irvine, Laguna Beach, and Fullerton.",
-                "Open /articles/southern-california-september-events-2026#maker-faire-oc or /articles/southern-california-september-events-2026#orange-county-burger-week for practical comparisons and current city-directory links.",
+                "Current September options include the free Santa Ana Fiestas Patrias festival and parade on September 12-13, Dana Point's Maritime Festival on September 11-13, Segerstrom Center's free Ruby Jubilee in Costa Mesa on September 13, Maker Faire Orange County on September 12-13, and Orange County Burger Week on September 20-26.",
+                "Open /articles/southern-california-september-events-2026#santa-ana-fiestas-patrias, /articles/southern-california-september-events-2026#dana-point-maritime-festival, /articles/southern-california-september-events-2026#ruby-jubilee, /articles/southern-california-september-events-2026#maker-faire-oc, or /articles/southern-california-september-events-2026#orange-county-burger-week for practical comparisons and current city-directory links.",
             )
         )
 
