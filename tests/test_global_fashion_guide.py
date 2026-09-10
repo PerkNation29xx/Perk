@@ -15,18 +15,16 @@ def test_global_fashion_guide_has_verified_calendar_rankings_and_access_notes() 
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "2026 Fashion Week calendar: LA, New York, Miami and the world" in html
-    assert 'dateModified": "2026-07-26"' in html
+    assert 'dateModified": "2026-09-10"' in html
     assert html.count('class="fashionRankCard') == 8
-    assert html.count("<tr><td>") == 9
+    assert html.count("<tr><td>") == 6
     for city, dates in (
-        ("Los Angeles", "Aug 2–5"),
-        ("Copenhagen", "Aug 3–7"),
-        ("Tokyo", "Aug 31–Sep 5"),
         ("New York", "Sep 10–15"),
         ("London", "Sep 17–21"),
         ("Milan", "Sep 22–28"),
         ("Paris", "Sep 28–Oct 6"),
         ("Miami", "Oct 13–17"),
+        ("Los Angeles", "Oct 12–15"),
     ):
         assert city in html
         assert dates in html
@@ -53,7 +51,9 @@ def test_fashion_guide_and_homepage_card_are_live_in_both_themes() -> None:
         response = client.get(route)
         assert response.status_code == 200
         assert "2026 Fashion Weeks: LA, New York, Miami and the world." in response.text
-        assert "Expanded fashion calendar" in response.text
+        assert "Updated September 10 · Fashion calendar" in response.text
+        assert "Follow New York starting September 10" in response.text
+        assert "Copenhagen, Tokyo" not in response.text
         assert _PUBLIC_BUILD_ID in response.text
 
 

@@ -14,9 +14,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Twenty-nine Southern California September plans" in html
-    assert 'dateModified": "2026-09-09"' in html
-    assert html.count("<h2") >= 32
+    assert "Thirty-two Southern California September plans" in html
+    assert 'dateModified": "2026-09-10"' in html
+    assert html.count("<h2") >= 35
     for expected in (
         "Maker Faire Orange County",
         "https://oc.makerfaire.com/tickets/",
@@ -29,6 +29,10 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "https://maritime-fest.org/event/festival-adventure-pass-4/",
         'id="dana-point-maritime-festival"',
         "/directory?city=Dana%20Point",
+        "Original Lobster Festival in Fountain Valley",
+        "https://www.originallobsterfestival.com/tickets",
+        'id="original-lobster-festival"',
+        "/directory?q=restaurants&amp;city=Fountain%20Valley",
         "Segerstrom Center Ruby Jubilee",
         "https://www.travelcostamesa.com/events/ruby-jubilee-40th-anniversary-celebration/",
         'id="ruby-jubilee"',
@@ -36,12 +40,19 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Pasadena ARTWalk",
         "Pasadena Chalk Festival",
         "Ocean Way Festival",
+        "Walt Disney Archives and Disneyland art at Muzeo",
+        "https://muzeo.org/plan-your-visit/",
+        'id="muzeo-disney-exhibitions"',
+        "/directory?q=restaurants&amp;city=Anaheim",
         "Lucas Museum opening in Los Angeles",
         "https://lucasmuseum.org/about/tickets",
         "/directory?q=restaurants&amp;city=Los%20Angeles",
         "Moompetam American Indian Festival",
         "https://www.aquariumofpacific.org/events/info/moompetam/",
         'id="moompetam"',
+        "California Turkish Festival in Long Beach",
+        "https://www.visitlongbeach.com/events/california-turkish-festival/",
+        'id="california-turkish-festival"',
         "Armenian Film Festival in Glendale",
         'id="armenian-film-festival"',
         "Pasadena Greek Festival",
@@ -110,15 +121,15 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated September 9 · September guide" in response.text
-        assert "Twenty-nine Southern California September plans, ranked." in response.text
+        assert "Updated September 10 · September guide" in response.text
+        assert "Thirty-two Southern California September plans, ranked." in response.text
         assert "Santa Ana Fiestas Patrias" in response.text
         assert "Dana Point's Maritime Festival" in response.text
         assert "Segerstrom's free Ruby Jubilee" in response.text
+        assert "Fountain Valley's Original Lobster Festival" in response.text
+        assert "Long Beach's free California Turkish Festival" in response.text
+        assert "the Walt Disney Archives at Muzeo" in response.text
         assert "Maker Faire OC" in response.text
-        assert "Moompetam at the Aquarium" in response.text
-        assert "Levitt VIBE finale" in response.text
-        assert "LAWineFest in Burbank" in response.text
         assert "the Lucas Museum opening" in response.text
         assert "Dine LA's final day is organized" not in response.text
         assert "Fourteen Southern California summer plans, ranked." not in response.text
@@ -147,7 +158,7 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     )
 
     assert answer
-    assert "Twenty-nine Southern California September plans" in answer
+    assert "Thirty-two Southern California September plans" in answer
     assert "Santa Ana Fiestas Patrias" in answer
     assert "Dana Point Maritime Festival" in answer
     assert "Ruby Jubilee" in answer
@@ -161,6 +172,9 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     assert "Lucas Museum" in answer
     assert "Maker Faire Orange County" in answer
     assert "Armenian Film Festival" in answer
+    assert "Original Lobster Festival" in answer
+    assert "California Turkish Festival" in answer
+    assert "Walt Disney Archives" in answer
     assert "/articles/southern-california-september-events-2026" in answer
     assert "Dine LA 2026 city guides" not in answer
 
@@ -175,4 +189,18 @@ def test_orange_county_city_answers_include_new_immediate_weekend_plans() -> Non
     assert "Santa Ana Fiestas Patrias" in answer
     assert "Dana Point's Maritime Festival" in answer
     assert "Ruby Jubilee" in answer
+    assert "Original Lobster Festival" in answer
+    assert "Walt Disney Archives" in answer
     assert "#santa-ana-fiestas-patrias" in answer
+
+
+def test_long_beach_answer_includes_free_turkish_festival() -> None:
+    answer = _public_review_live_query_response(
+        "What current events are covered in Long Beach this weekend?",
+        "home_local_guide",
+    )
+
+    assert answer
+    assert "California Turkish Festival" in answer
+    assert "September 13" in answer
+    assert "#california-turkish-festival" in answer
