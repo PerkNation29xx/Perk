@@ -812,11 +812,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Thirty-two Southern California September plans",
+        "title": "Thirty-six Southern California September plans",
         "timing": "September 11-October 1, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to Maker Faire Orange County, BlizzCon, Santa Ana Fiestas Patrias, Dana Point Maritime Festival, Fountain Valley's Original Lobster Festival, Segerstrom's Ruby Jubilee, Moompetam and the free California Turkish Festival in Long Beach, the Walt Disney Archives and Disneyland art at Muzeo, Pasadena ARTWalk, Greek Festival, Levitt VIBE finale and Chalk Festival, Ocean Way, the Lucas Museum's September 22 opening, UCLA's Rose Bowl home opener, "
+            "Ranked guide to Maker Faire Orange County, BlizzCon, Santa Ana Fiestas Patrias and Pasadena Fiestas Patrias, Dana Point Maritime Festival, Fountain Valley's Original Lobster Festival, Segerstrom's Ruby Jubilee, Huntington Beach Oktoberfest, Moompetam, Baja Splash and the free California Turkish Festival in Long Beach, the Walt Disney Archives and Disneyland art at Muzeo, Gatsby Redux at Greystone, Pasadena ARTWalk, Greek Festival, Levitt VIBE finale and Chalk Festival, Ocean Way, the Lucas Museum's September 22 opening, UCLA's Rose Bowl home opener, "
             "Craft Beer LB Fest, LAWineFest, Armenian Film Festival and Jewel City Concert Series, Burbank's Career Transitions Expo and Autumn Arts Festival, "
             "Arcadia's health fair, Americana in the Park, Arcadia's Mid-Autumn Moon Festival, Tongva Twilight, the Hollywood Bowl fireworks finale, "
             "Long Beach Burger Week, Orange County Burger Week, Taste of Arcadia, The Great Outdoors at Greystone, and Design West Hollywood."
@@ -1990,28 +1990,29 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current September options include the free Santa Ana Fiestas Patrias festival and parade on September 12-13, Dana Point's Maritime Festival on September 11-13, Fountain Valley's Original Lobster Festival on September 11-13, Segerstrom Center's free Ruby Jubilee in Costa Mesa on September 13, Maker Faire Orange County on September 12-13, the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1, and Orange County Burger Week on September 20-26.",
-                "Open /articles/southern-california-september-events-2026#santa-ana-fiestas-patrias, /articles/southern-california-september-events-2026#dana-point-maritime-festival, /articles/southern-california-september-events-2026#original-lobster-festival, /articles/southern-california-september-events-2026#ruby-jubilee, /articles/southern-california-september-events-2026#maker-faire-oc, /articles/southern-california-september-events-2026#muzeo-disney-exhibitions, or /articles/southern-california-september-events-2026#orange-county-burger-week for practical comparisons and current city-directory links.",
+                "Current September options include the free Santa Ana Fiestas Patrias festival and parade on September 12-13, Dana Point's Maritime Festival on September 11-13, Fountain Valley's Original Lobster Festival on September 11-13, Segerstrom Center's free Ruby Jubilee in Costa Mesa on September 13, Maker Faire Orange County on September 12-13, Huntington Beach Oktoberfest from September 12-November 8, the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1, and Orange County Burger Week on September 20-26.",
+                "Open /articles/southern-california-september-events-2026#santa-ana-fiestas-patrias, /articles/southern-california-september-events-2026#dana-point-maritime-festival, /articles/southern-california-september-events-2026#original-lobster-festival, /articles/southern-california-september-events-2026#ruby-jubilee, /articles/southern-california-september-events-2026#maker-faire-oc, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, /articles/southern-california-september-events-2026#muzeo-disney-exhibitions, or /articles/southern-california-september-events-2026#orange-county-burger-week for practical comparisons and current city-directory links.",
             )
         )
 
     if wants_huntington_beach and not wants_restaurants:
         return "\n".join(
             (
-                "PerkNation's late-August Huntington Beach event coverage has concluded and is no longer presented as current.",
-                "Browse /directory?city=Huntington%20Beach for 43 local listings, and confirm new coastal programs with the city or official organizer.",
+                "PerkNation's late-August Huntington Beach event coverage has concluded; the current September guide now includes Huntington Beach Oktoberfest at Old World Village from September 12-November 8, Wednesday-Sunday.",
+                "Choose an all-ages daytime or midweek session for the lowest admission, or a 21-and-older Friday or Saturday night for the later band-and-DJ format. Open /articles/southern-california-september-events-2026#huntington-beach-oktoberfest for prices, age rules, clear-bag guidance, and links into 43 Huntington Beach listings.",
             )
         )
 
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation September guide includes Moompetam, Craft Beer LB Fest, the California Turkish Festival, and Long Beach Burger Week:",
+                "The current PerkNation September guide includes Moompetam, Craft Beer LB Fest, the California Turkish Festival, Long Beach Burger Week, and Baja Splash:",
                 "- Moompetam runs September 12-13 from 9 a.m.-5 p.m. at the Aquarium of the Pacific, with Indigenous California maritime cultures presented through crafts, storytelling, music, and dance; reservations and general admission are required.",
                 "- Craft Beer LB Fest runs September 12 from 1-5 p.m. with Long Beach breweries, food, and artists; confirm current admission and youth-entry terms with the organizer.",
                 "- The free California Turkish Festival runs September 13 from 11 a.m.-5 p.m. at Shoreline Aquatic Park with Turkish food, coffee, folk dance, music, and family activities.",
                 "- Burger Week runs September 13-20 with published $5-$20 menu filters and more than 20 participating restaurants, food trucks, breweries, bars, and pop-ups.",
-                "Open /articles/southern-california-september-events-2026#moompetam, #craft-beer-lb, #california-turkish-festival, or #long-beach-burger-week for practical planning, with links into 208 Long Beach directory listings.",
+                "- Baja Splash runs September 26-27 from 9 a.m.-5 p.m. at the Aquarium of the Pacific with bilingual music, dance, education, and community programming included with timed general admission.",
+                "Open /articles/southern-california-september-events-2026#moompetam, #craft-beer-lb, #california-turkish-festival, #long-beach-burger-week, or #baja-splash for practical planning, with links into 208 Long Beach directory listings.",
                 "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )
@@ -2070,8 +2071,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation September guide includes the free Levitt VIBE finale on September 12, Pasadena ARTWalk, Pasadena Greek Festival, the Pasadena Chalk Festival, and UCLA's Rose Bowl home opener.",
-                "Open /articles/southern-california-september-events-2026 for ranked best-for and transit notes, or browse /directory?city=Pasadena for 563 local listings.",
+                "The current PerkNation September guide includes Pasadena Fiestas Patrias tonight from 5-9 p.m., the free Levitt VIBE finale on September 12, Pasadena ARTWalk, Pasadena Greek Festival, the Pasadena Chalk Festival, and UCLA's Rose Bowl home opener.",
+                "Open /articles/southern-california-september-events-2026#pasadena-fiestas-patrias for the same-day plan or use the full guide for ranked best-for and transit notes; browse /directory?city=Pasadena for 563 local listings.",
             )
         )
 

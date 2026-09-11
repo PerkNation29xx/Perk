@@ -14,9 +14,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-two Southern California September plans" in html
-    assert 'dateModified": "2026-09-10"' in html
-    assert html.count("<h2") >= 35
+    assert "Thirty-six Southern California September plans" in html
+    assert 'dateModified": "2026-09-11"' in html
+    assert html.count("<h2") >= 39
     for expected in (
         "Maker Faire Orange County",
         "https://oc.makerfaire.com/tickets/",
@@ -37,6 +37,18 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "https://www.travelcostamesa.com/events/ruby-jubilee-40th-anniversary-celebration/",
         'id="ruby-jubilee"',
         "/directory?q=restaurants&amp;city=Costa%20Mesa",
+        "Pasadena Fiestas Patrias",
+        "https://www.cityofpasadena.net/event/fiestas-patrias-latino-heritage-celebration/",
+        'id="pasadena-fiestas-patrias"',
+        "Huntington Beach Oktoberfest",
+        "https://www.oldworldhb.com/oktoberfest-orange-county/",
+        'id="huntington-beach-oktoberfest"',
+        "Gatsby Redux at Greystone",
+        "https://beverlyhills.org/1327/Gatsby-Redux---Sept-16-17-19",
+        'id="gatsby-redux"',
+        "Baja Splash in Long Beach",
+        "https://www.aquariumofpacific.org/events/info/baja_splash_cultural_festival/",
+        'id="baja-splash"',
         "Pasadena ARTWalk",
         "Pasadena Chalk Festival",
         "Ocean Way Festival",
@@ -121,13 +133,17 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated September 10 · September guide" in response.text
-        assert "Thirty-two Southern California September plans, ranked." in response.text
+        assert "Updated September 11 · September guide" in response.text
+        assert "Thirty-six Southern California September plans, ranked." in response.text
+        assert "tonight's Pasadena Fiestas Patrias" in response.text
+        assert "Huntington Beach Oktoberfest" in response.text
+        assert "Gatsby Redux at Greystone" in response.text
+        assert "Long Beach's Baja Splash" in response.text
         assert "Santa Ana Fiestas Patrias" in response.text
         assert "Dana Point's Maritime Festival" in response.text
         assert "Segerstrom's free Ruby Jubilee" in response.text
         assert "Fountain Valley's Original Lobster Festival" in response.text
-        assert "Long Beach's free California Turkish Festival" in response.text
+        assert "free California Turkish Festival" in response.text
         assert "the Walt Disney Archives at Muzeo" in response.text
         assert "Maker Faire OC" in response.text
         assert "the Lucas Museum opening" in response.text
@@ -137,6 +153,8 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
         assert "J. Cole brings The Fall-Off Tour to LA" not in response.text
         assert "Santa Ana Fiestas Patrias brings a free festival and parade downtown" in response.text
         assert "Arcadia's August finale pairs Broadway music with a garden picnic." not in response.text
+        assert '<template>\n  <section class="section homeArticleSection" id="pasadena-august-2026-guide">' in response.text
+        assert '<template>\n  <section class="section homeArticleSection" id="long-beach-august-2026-guide">' in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
@@ -158,7 +176,7 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     )
 
     assert answer
-    assert "Thirty-two Southern California September plans" in answer
+    assert "Thirty-six Southern California September plans" in answer
     assert "Santa Ana Fiestas Patrias" in answer
     assert "Dana Point Maritime Festival" in answer
     assert "Ruby Jubilee" in answer
@@ -175,6 +193,10 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     assert "Original Lobster Festival" in answer
     assert "California Turkish Festival" in answer
     assert "Walt Disney Archives" in answer
+    assert "Pasadena Fiestas Patrias" in answer
+    assert "Huntington Beach Oktoberfest" in answer
+    assert "Gatsby Redux" in answer
+    assert "Baja Splash" in answer
     assert "/articles/southern-california-september-events-2026" in answer
     assert "Dine LA 2026 city guides" not in answer
 
@@ -204,3 +226,17 @@ def test_long_beach_answer_includes_free_turkish_festival() -> None:
     assert "California Turkish Festival" in answer
     assert "September 13" in answer
     assert "#california-turkish-festival" in answer
+    assert "Baja Splash" in answer
+    assert "#baja-splash" in answer
+
+
+def test_huntington_beach_answer_includes_current_oktoberfest() -> None:
+    answer = _public_review_live_query_response(
+        "What current events are covered in Huntington Beach?",
+        "home_local_guide",
+    )
+
+    assert answer
+    assert "Huntington Beach Oktoberfest" in answer
+    assert "September 12-November 8" in answer
+    assert "#huntington-beach-oktoberfest" in answer
