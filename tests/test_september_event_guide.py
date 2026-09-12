@@ -14,9 +14,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-six Southern California September plans" in html
-    assert 'dateModified": "2026-09-11"' in html
-    assert html.count("<h2") >= 39
+    assert "Thirty-eight Southern California September plans" in html
+    assert 'dateModified": "2026-09-12"' in html
+    assert html.count("<h2") >= 41
     for expected in (
         "Maker Faire Orange County",
         "https://oc.makerfaire.com/tickets/",
@@ -37,9 +37,9 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "https://www.travelcostamesa.com/events/ruby-jubilee-40th-anniversary-celebration/",
         'id="ruby-jubilee"',
         "/directory?q=restaurants&amp;city=Costa%20Mesa",
-        "Pasadena Fiestas Patrias",
-        "https://www.cityofpasadena.net/event/fiestas-patrias-latino-heritage-celebration/",
-        'id="pasadena-fiestas-patrias"',
+        "Caribbean Heritage Festival in Los Angeles",
+        "https://www.discoverlosangeles.com/event/2026/09/12/caribbean-heritage-festival",
+        'id="caribbean-heritage-festival"',
         "Huntington Beach Oktoberfest",
         "https://www.oldworldhb.com/oktoberfest-orange-county/",
         'id="huntington-beach-oktoberfest"',
@@ -56,6 +56,12 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "https://muzeo.org/plan-your-visit/",
         'id="muzeo-disney-exhibitions"',
         "/directory?q=restaurants&amp;city=Anaheim",
+        "Orange County Children's Book Festival",
+        "https://orangecoastcollege.edu/news/2026/oc-childrens-book-fest.html",
+        'id="oc-childrens-book-festival"',
+        "Anaheim Ducks preseason at Honda Center",
+        "https://www.nhl.com/ducks/news/ducks-announce-2026-preseason-schedule",
+        'id="anaheim-ducks-preseason"',
         "Lucas Museum opening in Los Angeles",
         "https://lucasmuseum.org/about/tickets",
         "/directory?q=restaurants&amp;city=Los%20Angeles",
@@ -101,7 +107,7 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "/directory?city=Long%20Beach",
     ):
         assert expected in html
-    for expired in ("Orange International Street Fair", "Long Beach Comic Con", "Fiesta Hermosa", "Long Beach Greek Festival", "Southern California Open in Glendale"):
+    for expired in ("Pasadena Fiestas Patrias", "Orange International Street Fair", "Long Beach Comic Con", "Fiesta Hermosa", "Long Beach Greek Festival", "Southern California Open in Glendale"):
         assert expired not in html
     for forbidden in (
         "Examples from the official listing",
@@ -133,9 +139,11 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated September 11 · September guide" in response.text
-        assert "Thirty-six Southern California September plans, ranked." in response.text
-        assert "tonight's Pasadena Fiestas Patrias" in response.text
+        assert "Updated September 12 · September guide" in response.text
+        assert "Thirty-eight Southern California September plans, ranked." in response.text
+        assert "today's free Caribbean Heritage Festival in Los Angeles" in response.text
+        assert "Orange County Children's Book Festival" in response.text
+        assert "Anaheim Ducks preseason" in response.text
         assert "Huntington Beach Oktoberfest" in response.text
         assert "Gatsby Redux at Greystone" in response.text
         assert "Long Beach's Baja Splash" in response.text
@@ -176,7 +184,7 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     )
 
     assert answer
-    assert "Thirty-six Southern California September plans" in answer
+    assert "Thirty-eight Southern California September plans" in answer
     assert "Santa Ana Fiestas Patrias" in answer
     assert "Dana Point Maritime Festival" in answer
     assert "Ruby Jubilee" in answer
@@ -193,7 +201,9 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     assert "Original Lobster Festival" in answer
     assert "California Turkish Festival" in answer
     assert "Walt Disney Archives" in answer
-    assert "Pasadena Fiestas Patrias" in answer
+    assert "Caribbean Heritage Festival" in answer
+    assert "Orange County Children's Book Festival" in answer
+    assert "Anaheim Ducks preseason" in answer
     assert "Huntington Beach Oktoberfest" in answer
     assert "Gatsby Redux" in answer
     assert "Baja Splash" in answer
@@ -214,6 +224,22 @@ def test_orange_county_city_answers_include_new_immediate_weekend_plans() -> Non
     assert "Original Lobster Festival" in answer
     assert "Walt Disney Archives" in answer
     assert "#santa-ana-fiestas-patrias" in answer
+    assert "Orange County Children's Book Festival" in answer
+    assert "#oc-childrens-book-festival" in answer
+    assert "Anaheim Ducks preseason" in answer
+    assert "#anaheim-ducks-preseason" in answer
+
+
+def test_pasadena_answer_no_longer_promotes_expired_fiestas_patrias() -> None:
+    answer = _public_review_live_query_response(
+        "What current events are covered in Pasadena?",
+        "home_local_guide",
+    )
+
+    assert answer
+    assert "Levitt VIBE" in answer
+    assert "#levitt-vibe" in answer
+    assert "Pasadena Fiestas Patrias" not in answer
 
 
 def test_long_beach_answer_includes_free_turkish_festival() -> None:

@@ -812,11 +812,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Thirty-six Southern California September plans",
-        "timing": "September 11-October 1, 2026",
+        "title": "Thirty-eight Southern California September plans",
+        "timing": "September 12-October 1, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to Maker Faire Orange County, BlizzCon, Santa Ana Fiestas Patrias and Pasadena Fiestas Patrias, Dana Point Maritime Festival, Fountain Valley's Original Lobster Festival, Segerstrom's Ruby Jubilee, Huntington Beach Oktoberfest, Moompetam, Baja Splash and the free California Turkish Festival in Long Beach, the Walt Disney Archives and Disneyland art at Muzeo, Gatsby Redux at Greystone, Pasadena ARTWalk, Greek Festival, Levitt VIBE finale and Chalk Festival, Ocean Way, the Lucas Museum's September 22 opening, UCLA's Rose Bowl home opener, "
+            "Ranked guide to Maker Faire Orange County, BlizzCon, Santa Ana Fiestas Patrias, the free Caribbean Heritage Festival in Los Angeles, Dana Point Maritime Festival, Fountain Valley's Original Lobster Festival, Segerstrom's Ruby Jubilee, Huntington Beach Oktoberfest, the Orange County Children's Book Festival, Anaheim Ducks preseason, Moompetam, Baja Splash and the free California Turkish Festival in Long Beach, the Walt Disney Archives and Disneyland art at Muzeo, Gatsby Redux at Greystone, Pasadena ARTWalk, Greek Festival, Levitt VIBE finale and Chalk Festival, Ocean Way, the Lucas Museum's September 22 opening, UCLA's Rose Bowl home opener, "
             "Craft Beer LB Fest, LAWineFest, Armenian Film Festival and Jewel City Concert Series, Burbank's Career Transitions Expo and Autumn Arts Festival, "
             "Arcadia's health fair, Americana in the Park, Arcadia's Mid-Autumn Moon Festival, Tongva Twilight, the Hollywood Bowl fireworks finale, "
             "Long Beach Burger Week, Orange County Burger Week, Taste of Arcadia, The Great Outdoors at Greystone, and Design West Hollywood."
@@ -1990,8 +1990,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current September options include the free Santa Ana Fiestas Patrias festival and parade on September 12-13, Dana Point's Maritime Festival on September 11-13, Fountain Valley's Original Lobster Festival on September 11-13, Segerstrom Center's free Ruby Jubilee in Costa Mesa on September 13, Maker Faire Orange County on September 12-13, Huntington Beach Oktoberfest from September 12-November 8, the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1, and Orange County Burger Week on September 20-26.",
-                "Open /articles/southern-california-september-events-2026#santa-ana-fiestas-patrias, /articles/southern-california-september-events-2026#dana-point-maritime-festival, /articles/southern-california-september-events-2026#original-lobster-festival, /articles/southern-california-september-events-2026#ruby-jubilee, /articles/southern-california-september-events-2026#maker-faire-oc, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, /articles/southern-california-september-events-2026#muzeo-disney-exhibitions, or /articles/southern-california-september-events-2026#orange-county-burger-week for practical comparisons and current city-directory links.",
+                "Current September options include the free Santa Ana Fiestas Patrias festival and parade on September 12-13, Dana Point's Maritime Festival on September 11-13, Fountain Valley's Original Lobster Festival on September 11-13, Segerstrom Center's free Ruby Jubilee in Costa Mesa on September 13, Maker Faire Orange County on September 12-13, the free Orange County Children's Book Festival in Costa Mesa on September 20, Anaheim Ducks preseason home games on September 20 and 23, Huntington Beach Oktoberfest from September 12-November 8, the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1, and Orange County Burger Week on September 20-26.",
+                "Open /articles/southern-california-september-events-2026#santa-ana-fiestas-patrias, /articles/southern-california-september-events-2026#dana-point-maritime-festival, /articles/southern-california-september-events-2026#original-lobster-festival, /articles/southern-california-september-events-2026#ruby-jubilee, /articles/southern-california-september-events-2026#maker-faire-oc, /articles/southern-california-september-events-2026#oc-childrens-book-festival, /articles/southern-california-september-events-2026#anaheim-ducks-preseason, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, /articles/southern-california-september-events-2026#muzeo-disney-exhibitions, or /articles/southern-california-september-events-2026#orange-county-burger-week for practical comparisons and current city-directory links.",
             )
         )
 
@@ -2071,8 +2071,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation September guide includes Pasadena Fiestas Patrias tonight from 5-9 p.m., the free Levitt VIBE finale on September 12, Pasadena ARTWalk, Pasadena Greek Festival, the Pasadena Chalk Festival, and UCLA's Rose Bowl home opener.",
-                "Open /articles/southern-california-september-events-2026#pasadena-fiestas-patrias for the same-day plan or use the full guide for ranked best-for and transit notes; browse /directory?city=Pasadena for 563 local listings.",
+                "The current PerkNation September guide includes the free Levitt VIBE finale on September 12, Pasadena ARTWalk, Pasadena Greek Festival, the Pasadena Chalk Festival, and UCLA's Rose Bowl home opener.",
+                "Open /articles/southern-california-september-events-2026#levitt-vibe for tonight's free concert or use the full guide for ranked best-for and transit notes; browse /directory?city=Pasadena for 563 local listings.",
             )
         )
 
