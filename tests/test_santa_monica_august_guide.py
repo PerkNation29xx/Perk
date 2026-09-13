@@ -15,22 +15,23 @@ AUGUST_GUIDE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-cal
 def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Santa Monica has five current late-summer plans" in html
-    assert 'dateModified": "2026-08-28"' in html
-    assert html.count("<h2>") >= 10
+    assert "Santa Monica has five current September plans" in html
+    assert 'dateModified": "2026-09-13"' in html
+    assert html.count("<h2>") >= 9
     for expected in (
         "5 ranked plans",
-        "Cinema by the Sea",
         "Wellness &amp; Waves",
-        "Tongva Twilight",
-        "Downtown Farmers Market",
-        "Ocean Way Festival",
+        "Hispanic Heritage library programs",
+        "dublab Open Air",
+        "Doors Open California",
+        "Pico Farmers Market",
+        "has been canceled",
         "Best for:",
-        "/articles/dine-la-city-santa-monica-2026",
-        "/articles/southern-california-august-events-2026",
-        "https://www.santamonica.gov/",
-        "https://www.santamonica.com/",
-        "https://www.downtownsm.com/",
+        "/directory?city=Santa%20Monica",
+        "/articles/southern-california-september-events-2026",
+        "https://www.santamonica.gov/blog/santa-monica-commemorates-hispanic-heritage-month-2026",
+        "https://www.santamonica.com/event/pico-farmers-market/2026-09-19/",
+        "https://www.santamonica.gov/press/2026/09/11/beach-damage-from-hurricane-marie-forces-cancellation-of-inaugural-ocean-way-festival-to-2027",
     ):
         assert expected in html
     assert "Wellness on the Westside" not in html
@@ -66,10 +67,11 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated September 2 · Santa Monica") == 1
-        assert "Santa Monica has four current September plans from morning through night." in response.text
-        assert "Compare Saturday Pier wellness" in response.text
-        assert "Tongva Twilight through September 12" in response.text
+        assert response.text.count("Updated September 13 · Santa Monica") == 1
+        assert "Five free Santa Monica September plans, ranked." in response.text
+        assert "Compare Pier wellness" in response.text
+        assert "Ocean Way has been canceled." in response.text
+        assert "Tongva Twilight through September 12" not in response.text
         assert "Updated August 28" in response.text
 
     root_sitemap = client.get("/sitemap.xml")
@@ -92,9 +94,12 @@ def test_santa_monica_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "has four September plans" in answer
+    assert "ranks five free September plans" in answer
     assert "August 7" not in answer
     assert "Pier history talk" not in answer
-    assert "Tongva Twilight" in answer
+    assert "Hispanic Heritage" in answer
+    assert "dublab Open Air" in answer
+    assert "Doors Open California" in answer
+    assert "has been canceled" in answer
     assert "/articles/santa-monica-august-2026-guide" in answer
     assert "Glendale" not in answer

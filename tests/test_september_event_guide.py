@@ -14,9 +14,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-eight Southern California September plans" in html
-    assert 'dateModified": "2026-09-12"' in html
-    assert html.count("<h2") >= 41
+    assert "Thirty-five Southern California September plans" in html
+    assert 'dateModified": "2026-09-13"' in html
+    assert html.count("<h2") >= 38
     for expected in (
         "Maker Faire Orange County",
         "https://oc.makerfaire.com/tickets/",
@@ -37,9 +37,6 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "https://www.travelcostamesa.com/events/ruby-jubilee-40th-anniversary-celebration/",
         'id="ruby-jubilee"',
         "/directory?q=restaurants&amp;city=Costa%20Mesa",
-        "Caribbean Heritage Festival in Los Angeles",
-        "https://www.discoverlosangeles.com/event/2026/09/12/caribbean-heritage-festival",
-        'id="caribbean-heritage-festival"',
         "Huntington Beach Oktoberfest",
         "https://www.oldworldhb.com/oktoberfest-orange-county/",
         'id="huntington-beach-oktoberfest"',
@@ -51,7 +48,17 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         'id="baja-splash"',
         "Pasadena ARTWalk",
         "Pasadena Chalk Festival",
-        "Ocean Way Festival",
+        "Zootoberfest at the L.A. Zoo",
+        "https://lazoo.org/plan-your-visit/special-experiences/zootoberfest/",
+        'id="zootoberfest"',
+        "State of the Arts in Long Beach",
+        "https://artslb.org/stateofthearts/",
+        'id="state-of-the-arts-long-beach"',
+        "Anaheim Craft &amp; Vintage Fair",
+        'id="anaheim-craft-vintage"',
+        "Santa Monica Hispanic Heritage programs",
+        "https://www.santamonica.gov/blog/santa-monica-commemorates-hispanic-heritage-month-2026",
+        'id="santa-monica-hispanic-heritage"',
         "Walt Disney Archives and Disneyland art at Muzeo",
         "https://muzeo.org/plan-your-visit/",
         'id="muzeo-disney-exhibitions"',
@@ -80,15 +87,9 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Burbank Career Transitions Expo",
         "Burbank Autumn Arts Festival",
         'id="burbank-autumn-arts"',
-        "Craft Beer LB Fest",
-        'id="craft-beer-lb"',
-        "Levitt VIBE Pasadena finale",
-        "https://www.cityofpasadena.net/parks-and-rec/event/levitt-vibe-pasadena-music-series-2/2026-09-12/",
-        'id="levitt-vibe"',
         "LAWineFest in Burbank",
         "https://www.lawinefest.com/",
         'id="la-winefest"',
-        "Arcadia Health Fair",
         "Taste of Arcadia",
         "https://tasteofarcadia.com/",
         "Arcadia Mid-Autumn Moon Festival",
@@ -107,7 +108,21 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "/directory?city=Long%20Beach",
     ):
         assert expected in html
-    for expired in ("Pasadena Fiestas Patrias", "Orange International Street Fair", "Long Beach Comic Con", "Fiesta Hermosa", "Long Beach Greek Festival", "Southern California Open in Glendale"):
+    for expired in (
+        "Caribbean Heritage Festival",
+        "Ocean Way Festival",
+        "Craft Beer LB Fest",
+        "Levitt VIBE",
+        "Arcadia Health Fair",
+        "Rose Bowl home opener",
+        "Tongva Twilight",
+        "Pasadena Fiestas Patrias",
+        "Orange International Street Fair",
+        "Long Beach Comic Con",
+        "Fiesta Hermosa",
+        "Long Beach Greek Festival",
+        "Southern California Open in Glendale",
+    ):
         assert expired not in html
     for forbidden in (
         "Examples from the official listing",
@@ -139,21 +154,17 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated September 12 · September guide" in response.text
-        assert "Thirty-eight Southern California September plans, ranked." in response.text
-        assert "today's free Caribbean Heritage Festival in Los Angeles" in response.text
-        assert "Orange County Children's Book Festival" in response.text
-        assert "Anaheim Ducks preseason" in response.text
-        assert "Huntington Beach Oktoberfest" in response.text
-        assert "Gatsby Redux at Greystone" in response.text
-        assert "Long Beach's Baja Splash" in response.text
+        assert "Updated September 13 · September guide" in response.text
+        assert "Thirty-five Southern California September plans, ranked." in response.text
+        assert "today's Maker Faire OC" in response.text
         assert "Santa Ana Fiestas Patrias" in response.text
-        assert "Dana Point's Maritime Festival" in response.text
-        assert "Segerstrom's free Ruby Jubilee" in response.text
-        assert "Fountain Valley's Original Lobster Festival" in response.text
-        assert "free California Turkish Festival" in response.text
-        assert "the Walt Disney Archives at Muzeo" in response.text
-        assert "Maker Faire OC" in response.text
+        assert "Dana Point Maritime Festival" in response.text
+        assert "Ruby Jubilee" in response.text
+        assert "California Turkish Festival" in response.text
+        assert "L.A. Zoo Zootoberfest" in response.text
+        assert "Long Beach State of the Arts" in response.text
+        assert "Anaheim's free craft fair" in response.text
+        assert "Santa Monica Hispanic Heritage programs" in response.text
         assert "the Lucas Museum opening" in response.text
         assert "Dine LA's final day is organized" not in response.text
         assert "Fourteen Southern California summer plans, ranked." not in response.text
@@ -184,14 +195,12 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     )
 
     assert answer
-    assert "Thirty-eight Southern California September plans" in answer
+    assert "Thirty-five Southern California September plans" in answer
     assert "Santa Ana Fiestas Patrias" in answer
     assert "Dana Point Maritime Festival" in answer
     assert "Ruby Jubilee" in answer
     assert "Moompetam" in answer
-    assert "Levitt VIBE" in answer
     assert "LAWineFest" in answer
-    assert "Craft Beer LB Fest" in answer
     assert "Autumn Arts Festival" in answer
     assert "Taste of Arcadia" in answer
     assert "Mid-Autumn Moon Festival" in answer
@@ -201,7 +210,10 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     assert "Original Lobster Festival" in answer
     assert "California Turkish Festival" in answer
     assert "Walt Disney Archives" in answer
-    assert "Caribbean Heritage Festival" in answer
+    assert "Zootoberfest" in answer
+    assert "State of the Arts" in answer
+    assert "Craft & Vintage Fair" in answer
+    assert "Santa Monica Hispanic Heritage" in answer
     assert "Orange County Children's Book Festival" in answer
     assert "Anaheim Ducks preseason" in answer
     assert "Huntington Beach Oktoberfest" in answer
@@ -237,12 +249,13 @@ def test_pasadena_answer_no_longer_promotes_expired_fiestas_patrias() -> None:
     )
 
     assert answer
-    assert "Levitt VIBE" in answer
-    assert "#levitt-vibe" in answer
+    assert "Pasadena ARTWalk" in answer
+    assert "Pasadena Greek Festival" in answer
+    assert "Pasadena Chalk Festival" in answer
     assert "Pasadena Fiestas Patrias" not in answer
 
 
-def test_long_beach_answer_includes_free_turkish_festival() -> None:
+def test_long_beach_answer_includes_turkish_festival_and_state_of_the_arts() -> None:
     answer = _public_review_live_query_response(
         "What current events are covered in Long Beach this weekend?",
         "home_local_guide",
@@ -252,6 +265,8 @@ def test_long_beach_answer_includes_free_turkish_festival() -> None:
     assert "California Turkish Festival" in answer
     assert "September 13" in answer
     assert "#california-turkish-festival" in answer
+    assert "State of the Arts" in answer
+    assert "#state-of-the-arts-long-beach" in answer
     assert "Baja Splash" in answer
     assert "#baja-splash" in answer
 

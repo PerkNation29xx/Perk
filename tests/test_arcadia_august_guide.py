@@ -64,7 +64,7 @@ def test_arcadia_archive_routes_and_image_remain_but_visible_cards_retire() -> N
         assert response.status_code == 200
         assert "Updated August 28 · Arcadia" not in response.text
         assert "Arcadia's August finale pairs Broadway music with a garden picnic." not in response.text
-        assert "Arcadia wellness" in response.text
+        assert "Arcadia Health Fair" not in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
@@ -88,7 +88,10 @@ def test_arcadia_archive_is_replaced_by_current_health_fair_in_public_answer() -
     )
 
     assert answer
-    assert "annual health fair" in answer
+    assert "Taste of Arcadia" in answer
+    assert "Mid-Autumn Moon Festival" in answer
+    assert "annual health fair" not in answer
     assert "August 7" not in answer
-    assert "/articles/southern-california-september-events-2026#arcadia-health-fair" in answer
+    assert "/articles/southern-california-september-events-2026#taste-of-arcadia" in answer
+    assert "#arcadia-moon-festival" in answer
     assert "Glendale" not in answer
