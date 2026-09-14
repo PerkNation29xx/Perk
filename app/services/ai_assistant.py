@@ -812,13 +812,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Thirty-five Southern California September plans",
-        "timing": "September 13-October 1, 2026",
+        "title": "Twenty-nine Southern California September plans",
+        "timing": "September 14-October 1, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to today's Maker Faire Orange County, BlizzCon, Santa Ana Fiestas Patrias, Dana Point Maritime Festival, Fountain Valley's Original Lobster Festival, Segerstrom's Ruby Jubilee, Moompetam, the free California Turkish Festival, LAWineFest, and Americana in the Park; plus Huntington Beach Oktoberfest, L.A. Zoo Zootoberfest, the Orange County Children's Book Festival, Anaheim Ducks preseason, Baja Splash, the Walt Disney Archives and Disneyland art at Muzeo, Gatsby Redux at Greystone, Pasadena ARTWalk, Greek Festival and Chalk Festival, and the Lucas Museum's September 22 opening. "
-            "Also covers Long Beach State of the Arts, Anaheim Craft & Vintage Fair, Santa Monica Hispanic Heritage programs, Armenian Film Festival and Jewel City Concert Series, Burbank's Career Transitions Expo and Autumn Arts Festival, "
-            "Arcadia's Mid-Autumn Moon Festival, the Hollywood Bowl fireworks finale, Long Beach Burger Week, Orange County Burger Week, Taste of Arcadia, The Great Outdoors at Greystone, and Design West Hollywood."
+            "Ranked guide to the September 14-16 Angels-Mariners series, Long Beach Burger Week, Huntington Beach Oktoberfest, Gatsby Redux at Greystone, the Armenian Film Festival, Burbank's Career Transitions Expo, Queen Mary's Dark Harbor, Casa Verdugo Library's 75th anniversary, L.A. Zoo Zootoberfest, Pasadena ARTWalk, and Long Beach State of the Arts. "
+            "Also covers Anaheim's Craft & Vintage Fair, Burbank's Autumn Arts Festival, Pasadena Greek Festival and Golden State Tattoo Expo, The Great Outdoors at Greystone, Taste of Arcadia, Santa Monica Hispanic Heritage programs, the Orange County Children's Book Festival, SUGAR SKULL! at Segerstrom, Anaheim Ducks preseason, Baja Splash, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum opening, Orange County Burger Week, Pasadena Chalk Festival, Arcadia's Mid-Autumn Moon Festival, Glendale's Jewel City Concert Series, and Design West Hollywood."
         ),
     },
 
@@ -1989,8 +1988,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current September options include the free Santa Ana Fiestas Patrias festival and parade on September 12-13, Dana Point's Maritime Festival on September 11-13, Fountain Valley's Original Lobster Festival on September 11-13, Segerstrom Center's free Ruby Jubilee in Costa Mesa on September 13, Maker Faire Orange County on September 12-13, the free Orange County Children's Book Festival in Costa Mesa on September 20, Anaheim Ducks preseason home games on September 20 and 23, Huntington Beach Oktoberfest from September 12-November 8, the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1, and Orange County Burger Week on September 20-26.",
-                "Open /articles/southern-california-september-events-2026#santa-ana-fiestas-patrias, /articles/southern-california-september-events-2026#dana-point-maritime-festival, /articles/southern-california-september-events-2026#original-lobster-festival, /articles/southern-california-september-events-2026#ruby-jubilee, /articles/southern-california-september-events-2026#maker-faire-oc, /articles/southern-california-september-events-2026#oc-childrens-book-festival, /articles/southern-california-september-events-2026#anaheim-ducks-preseason, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, /articles/southern-california-september-events-2026#muzeo-disney-exhibitions, or /articles/southern-california-september-events-2026#orange-county-burger-week for practical comparisons and current city-directory links.",
+                "Current Orange County options include the Angels-Mariners series in Anaheim on September 14-16, the free Orange County Children's Book Festival in Costa Mesa on September 20, SUGAR SKULL! at Segerstrom on September 19-20, Anaheim Ducks preseason home games on September 20 and 23, Huntington Beach Oktoberfest through November 8, the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1, and Orange County Burger Week on September 20-26.",
+                "Open /articles/southern-california-september-events-2026#angels-mariners, /articles/southern-california-september-events-2026#oc-childrens-book-festival, /articles/southern-california-september-events-2026#sugar-skull-segerstrom, /articles/southern-california-september-events-2026#anaheim-ducks-preseason, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, /articles/southern-california-september-events-2026#muzeo-disney-exhibitions, or /articles/southern-california-september-events-2026#orange-county-burger-week for practical comparisons and current city-directory links.",
             )
         )
 
@@ -2005,13 +2004,12 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation September guide includes Moompetam, the California Turkish Festival, State of the Arts, Long Beach Burger Week, and Baja Splash:",
-                "- Moompetam runs September 12-13 from 9 a.m.-5 p.m. at the Aquarium of the Pacific, with Indigenous California maritime cultures presented through crafts, storytelling, music, and dance; reservations and general admission are required.",
-                "- The free California Turkish Festival runs September 13 from 11 a.m.-5 p.m. at Shoreline Aquatic Park with Turkish food, coffee, folk dance, music, and family activities.",
+                "The current PerkNation September guide includes Queen Mary's Dark Harbor, State of the Arts, Long Beach Burger Week, and Baja Splash:",
+                "- Dark Harbor runs select nights September 18-November 1 with haunted mazes, performers, immersive attractions, rides, themed food, and modified parking on opening weekend.",
                 "- The free State of the Arts celebration runs September 19 from 4-9 p.m. at Promenade Square Park with local artists, live performances, awards, and dancing.",
                 "- Burger Week runs September 13-20 with published $5-$20 menu filters and more than 20 participating restaurants, food trucks, breweries, bars, and pop-ups.",
                 "- Baja Splash runs September 26-27 from 9 a.m.-5 p.m. at the Aquarium of the Pacific with bilingual music, dance, education, and community programming included with timed general admission.",
-                "Open /articles/southern-california-september-events-2026#moompetam, #california-turkish-festival, #state-of-the-arts-long-beach, #long-beach-burger-week, or #baja-splash for practical planning, with links into 208 Long Beach directory listings.",
+                "Open /articles/southern-california-september-events-2026#queen-mary-dark-harbor, #state-of-the-arts-long-beach, #long-beach-burger-week, or #baja-splash for practical planning, with links into 208 Long Beach directory listings.",
                 "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )
@@ -2070,7 +2068,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation September guide includes Pasadena ARTWalk, Pasadena Greek Festival, and the Pasadena Chalk Festival.",
+                "The current PerkNation September guide includes Pasadena ARTWalk, Pasadena Greek Festival, the Golden State Tattoo Expo, and the Pasadena Chalk Festival.",
                 "Use the full guide for ranked best-for and transit notes, or browse /directory?city=Pasadena for 563 local listings.",
             )
         )
@@ -2078,8 +2076,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_glendale and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation September guide includes the Armenian Film Festival and the free Jewel City Concert Series in Glendale.",
-                "Open /articles/southern-california-september-events-2026#armenian-film-festival or #jewel-city-concerts for practical notes, or browse /directory?city=Glendale for 100 local listings.",
+                "The current PerkNation September guide includes the Armenian Film Festival, Casa Verdugo Library's free 75th-anniversary celebration, and the free Jewel City Concert Series in Glendale.",
+                "Open /articles/southern-california-september-events-2026#armenian-film-festival, #casa-verdugo-75, or #jewel-city-concerts for practical notes, or browse /directory?city=Glendale for 100 local listings.",
             )
         )
 
