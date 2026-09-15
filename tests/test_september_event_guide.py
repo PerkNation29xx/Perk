@@ -14,13 +14,28 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Twenty-nine Southern California September plans" in html
-    assert 'dateModified": "2026-09-14"' in html
-    assert html.count("<h2") >= 32
+    assert "Thirty-four Southern California September plans" in html
+    assert 'dateModified": "2026-09-15"' in html
+    assert html.count("<h2") >= 37
     for expected in (
         "Angels vs. Mariners in Anaheim",
         "https://www.mlb.com/angels",
         'id="angels-mariners"',
+        "Thai Fest by the Beach in Santa Monica",
+        "https://www.thaifestbythebeach.com/",
+        'id="thai-fest-by-the-beach"',
+        "California Coastal Cleanup Day",
+        "https://www.coastal.ca.gov/publiced/ccd/ccd.html",
+        'id="coastal-cleanup-day"',
+        "Lucha Libre Weekend at MOLAA",
+        "https://molaa.org/2026-lucha-libre",
+        'id="molaa-lucha-libre"',
+        "Love Letters to L.A. at the Autry",
+        "https://theautry.org/events/autry-outdoors/love-letters-la-autry-block-party",
+        'id="autry-block-party"',
+        "Los Angeles Libros Festival",
+        "https://www.lapl.org/libros",
+        'id="los-angeles-libros"',
         "Queen Mary's Dark Harbor",
         "https://www.queenmary.com/seasonal-events.htm",
         'id="queen-mary-dark-harbor"',
@@ -150,21 +165,22 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated September 14 · September guide" in response.text
-        assert "Twenty-nine Southern California September plans, ranked." in response.text
+        assert "Updated September 15 · September guide" in response.text
+        assert "Thirty-four Southern California September plans, ranked." in response.text
         assert "Angels-Mariners series" in response.text
+        assert "Thai Fest by the Beach" in response.text
         assert "Long Beach Burger Week" in response.text
+        assert "Coastal Cleanup Day" in response.text
+        assert "MOLAA Lucha Libre" in response.text
+        assert "the Autry Block Party" in response.text
+        assert "Los Angeles Libros" in response.text
         assert "Dark Harbor" in response.text
-        assert "Casa Verdugo Library's anniversary" in response.text
-        assert "L.A. Zoo Zootoberfest" in response.text
-        assert "Pasadena's art and tattoo weekends" in response.text
-        assert "Segerstrom family theater" in response.text
-        assert "the Lucas Museum opening" in response.text
+        assert "Zootoberfest" in response.text
         assert "Dine LA's final day is organized" not in response.text
         assert "Fourteen Southern California summer plans, ranked." not in response.text
         assert "Angels host Seattle for three weeknight games in Anaheim" in response.text
         assert "J. Cole brings The Fall-Off Tour to LA" not in response.text
-        assert "Golden State Tattoo Expo brings three days of specialist art to Pasadena" in response.text
+        assert "Thai Fest brings free food and culture programming to Santa Monica Pier" in response.text
         assert "Maker Faire OC turns invention into a hands-on weekend" not in response.text
         assert "Santa Ana Fiestas Patrias brings a free festival and parade downtown" not in response.text
         assert "Arcadia's August finale pairs Broadway music with a garden picnic." not in response.text
@@ -191,8 +207,13 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     )
 
     assert answer
-    assert "Twenty-nine Southern California September plans" in answer
+    assert "Thirty-four Southern California September plans" in answer
     assert "Angels-Mariners" in answer
+    assert "Thai Fest by the Beach" in answer
+    assert "California Coastal Cleanup Day" in answer
+    assert "Lucha Libre weekend" in answer
+    assert "Autry Block Party" in answer
+    assert "Los Angeles Libros Festival" in answer
     assert "Dark Harbor" in answer
     assert "Casa Verdugo" in answer
     assert "Golden State Tattoo Expo" in answer
@@ -246,7 +267,7 @@ def test_pasadena_answer_no_longer_promotes_expired_fiestas_patrias() -> None:
     assert "Pasadena Fiestas Patrias" not in answer
 
 
-def test_long_beach_answer_includes_dark_harbor_and_state_of_the_arts() -> None:
+def test_long_beach_answer_includes_dark_harbor_cleanup_and_molaa() -> None:
     answer = _public_review_live_query_response(
         "What current events are covered in Long Beach this weekend?",
         "home_local_guide",
@@ -258,6 +279,10 @@ def test_long_beach_answer_includes_dark_harbor_and_state_of_the_arts() -> None:
     assert "#queen-mary-dark-harbor" in answer
     assert "State of the Arts" in answer
     assert "#state-of-the-arts-long-beach" in answer
+    assert "California Coastal Cleanup Day" in answer
+    assert "#coastal-cleanup-day" in answer
+    assert "MOLAA" in answer
+    assert "#molaa-lucha-libre" in answer
     assert "Baja Splash" in answer
     assert "#baja-splash" in answer
 

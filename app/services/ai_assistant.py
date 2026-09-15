@@ -812,12 +812,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Twenty-nine Southern California September plans",
-        "timing": "September 14-October 1, 2026",
+        "title": "Thirty-four Southern California September plans",
+        "timing": "September 15-October 1, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to the September 14-16 Angels-Mariners series, Long Beach Burger Week, Huntington Beach Oktoberfest, Gatsby Redux at Greystone, the Armenian Film Festival, Burbank's Career Transitions Expo, Queen Mary's Dark Harbor, Casa Verdugo Library's 75th anniversary, L.A. Zoo Zootoberfest, Pasadena ARTWalk, and Long Beach State of the Arts. "
-            "Also covers Anaheim's Craft & Vintage Fair, Burbank's Autumn Arts Festival, Pasadena Greek Festival and Golden State Tattoo Expo, The Great Outdoors at Greystone, Taste of Arcadia, Santa Monica Hispanic Heritage programs, the Orange County Children's Book Festival, SUGAR SKULL! at Segerstrom, Anaheim Ducks preseason, Baja Splash, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum opening, Orange County Burger Week, Pasadena Chalk Festival, Arcadia's Mid-Autumn Moon Festival, Glendale's Jewel City Concert Series, and Design West Hollywood."
+            "Ranked guide to the September 14-16 Angels-Mariners series, Thai Fest by the Beach, Long Beach Burger Week, California Coastal Cleanup Day, Huntington Beach Oktoberfest, Gatsby Redux at Greystone, Queen Mary's Dark Harbor, MOLAA's Lucha Libre weekend, the Autry Block Party, Los Angeles Libros Festival, L.A. Zoo Zootoberfest, Pasadena ARTWalk, and Long Beach State of the Arts. "
+            "Also covers the Armenian Film Festival, Casa Verdugo Library's 75th anniversary, Burbank's Career Transitions Expo and Autumn Arts Festival, Anaheim's Craft & Vintage Fair, Pasadena Greek Festival and Golden State Tattoo Expo, The Great Outdoors at Greystone, Taste of Arcadia, Santa Monica Hispanic Heritage programs, the Orange County Children's Book Festival, SUGAR SKULL! at Segerstrom, Anaheim Ducks preseason, Baja Splash, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum opening, Orange County Burger Week, Pasadena Chalk Festival, Arcadia's Mid-Autumn Moon Festival, Glendale's Jewel City Concert Series, and Design West Hollywood."
         ),
     },
 
@@ -2004,12 +2004,14 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation September guide includes Queen Mary's Dark Harbor, State of the Arts, Long Beach Burger Week, and Baja Splash:",
+                "The current PerkNation September guide includes Queen Mary's Dark Harbor, State of the Arts, Long Beach Burger Week, California Coastal Cleanup Day, MOLAA's Lucha Libre weekend, and Baja Splash:",
                 "- Dark Harbor runs select nights September 18-November 1 with haunted mazes, performers, immersive attractions, rides, themed food, and modified parking on opening weekend.",
                 "- The free State of the Arts celebration runs September 19 from 4-9 p.m. at Promenade Square Park with local artists, live performances, awards, and dancing.",
                 "- Burger Week runs September 13-20 with published $5-$20 menu filters and more than 20 participating restaurants, food trucks, breweries, bars, and pop-ups.",
+                "- California Coastal Cleanup Day runs September 19 from 9 a.m.-noon, with official Long Beach and regional registration options.",
+                "- MOLAA's September 25-27 Lucha Libre weekend combines a book launch, cumbia and live wrestling, film, workshops, a marketplace, and family programming.",
                 "- Baja Splash runs September 26-27 from 9 a.m.-5 p.m. at the Aquarium of the Pacific with bilingual music, dance, education, and community programming included with timed general admission.",
-                "Open /articles/southern-california-september-events-2026#queen-mary-dark-harbor, #state-of-the-arts-long-beach, #long-beach-burger-week, or #baja-splash for practical planning, with links into 208 Long Beach directory listings.",
+                "Open /articles/southern-california-september-events-2026#queen-mary-dark-harbor, #state-of-the-arts-long-beach, #long-beach-burger-week, #coastal-cleanup-day, #molaa-lucha-libre, or #baja-splash for practical planning, with links into 208 Long Beach directory listings.",
                 "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )
@@ -2025,8 +2027,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks five free September plans:",
-                "- Saturday Wellness & Waves at the Pier, September 19 Hispanic Heritage music and dance at two library locations, September 25 dublab Open Air at Reed Park, September 26-27 Doors Open California tours at the Marion Davies Guest House, and the Saturday Pico farmers market.",
+                "The current PerkNation Santa Monica guide ranks six free September plans:",
+                "- Thai Fest by the Beach on September 19-20, Saturday Wellness & Waves at the Pier, September 19 Hispanic Heritage music and dance at two library locations, September 25 dublab Open Air at Reed Park, September 26-27 Doors Open California tours at the Marion Davies Guest House, and the Saturday Pico farmers market.",
                 "- Ocean Way Festival has been canceled because storm damage made the beach site unsafe; do not travel to Santa Monica for the September 26-27 festival.",
                 "Open /articles/santa-monica-august-2026-guide for rankings, best-for notes, weather, transit, official sources, and the city's cancellation notice.",
             )
