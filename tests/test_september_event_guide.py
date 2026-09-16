@@ -14,13 +14,22 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-four Southern California September plans" in html
-    assert 'dateModified": "2026-09-15"' in html
-    assert html.count("<h2") >= 37
+    assert "Thirty-seven Southern California September plans" in html
+    assert 'dateModified": "2026-09-16"' in html
+    assert html.count("<h2") >= 40
     for expected in (
         "Angels vs. Mariners in Anaheim",
         "https://www.mlb.com/angels",
         'id="angels-mariners"',
+        "Punk Night at the Pier",
+        "https://www.santamonica.com/event/punk-night-at-the-pier-locals-night/",
+        'id="santa-monica-locals-night"',
+        "Seconds at PCH Food Fest",
+        "https://www.visitlongbeach.com/events/seconds-at-pch-food-fest/",
+        'id="seconds-at-pch-food-fest"',
+        "Halloween at Kidspace",
+        "https://kidspacemuseum.org/event/halloween-at-kidspace-3/",
+        'id="kidspace-halloween"',
         "Thai Fest by the Beach in Santa Monica",
         "https://www.thaifestbythebeach.com/",
         'id="thai-fest-by-the-beach"',
@@ -165,9 +174,12 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated September 15 · September guide" in response.text
-        assert "Thirty-four Southern California September plans, ranked." in response.text
-        assert "Angels-Mariners series" in response.text
+        assert "Updated September 16 · September guide" in response.text
+        assert "Thirty-seven Southern California September plans, ranked." in response.text
+        assert "Angels' final Seattle game" in response.text
+        assert "Santa Monica Pier's free Locals' Night" in response.text
+        assert "Long Beach's food passport" in response.text
+        assert "Kidspace Halloween" in response.text
         assert "Thai Fest by the Beach" in response.text
         assert "Long Beach Burger Week" in response.text
         assert "Coastal Cleanup Day" in response.text
@@ -178,7 +190,7 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
         assert "Zootoberfest" in response.text
         assert "Dine LA's final day is organized" not in response.text
         assert "Fourteen Southern California summer plans, ranked." not in response.text
-        assert "Angels host Seattle for three weeknight games in Anaheim" in response.text
+        assert "Free Locals' Night brings punk, salsa, vendors, and family activities to Santa Monica Pier" in response.text
         assert "J. Cole brings The Fall-Off Tour to LA" not in response.text
         assert "Thai Fest brings free food and culture programming to Santa Monica Pier" in response.text
         assert "Maker Faire OC turns invention into a hands-on weekend" not in response.text
@@ -207,8 +219,11 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     )
 
     assert answer
-    assert "Thirty-four Southern California September plans" in answer
+    assert "Thirty-seven Southern California September plans" in answer
     assert "Angels-Mariners" in answer
+    assert "Locals' Night" in answer
+    assert "Seconds at PCH Food Fest" in answer
+    assert "Halloween at Kidspace" in answer
     assert "Thai Fest by the Beach" in answer
     assert "California Coastal Cleanup Day" in answer
     assert "Lucha Libre weekend" in answer
@@ -267,13 +282,15 @@ def test_pasadena_answer_no_longer_promotes_expired_fiestas_patrias() -> None:
     assert "Pasadena Fiestas Patrias" not in answer
 
 
-def test_long_beach_answer_includes_dark_harbor_cleanup_and_molaa() -> None:
+def test_long_beach_answer_includes_food_fest_dark_harbor_cleanup_and_molaa() -> None:
     answer = _public_review_live_query_response(
         "What current events are covered in Long Beach this weekend?",
         "home_local_guide",
     )
 
     assert answer
+    assert "Seconds at PCH" in answer
+    assert "#seconds-at-pch-food-fest" in answer
     assert "Dark Harbor" in answer
     assert "September 18-November 1" in answer
     assert "#queen-mary-dark-harbor" in answer
