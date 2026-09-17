@@ -14,13 +14,10 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-seven Southern California September plans" in html
-    assert 'dateModified": "2026-09-16"' in html
-    assert html.count("<h2") >= 40
+    assert "Thirty-nine Southern California September plans" in html
+    assert 'dateModified": "2026-09-17"' in html
+    assert html.count("<h2") >= 42
     for expected in (
-        "Angels vs. Mariners in Anaheim",
-        "https://www.mlb.com/angels",
-        'id="angels-mariners"',
         "Punk Night at the Pier",
         "https://www.santamonica.com/event/punk-night-at-the-pier-locals-night/",
         'id="santa-monica-locals-night"',
@@ -33,6 +30,9 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Thai Fest by the Beach in Santa Monica",
         "https://www.thaifestbythebeach.com/",
         'id="thai-fest-by-the-beach"',
+        "Dodgers vs. Giants in Los Angeles",
+        "https://www.mlb.com/dodgers",
+        'id="dodgers-giants"',
         "California Coastal Cleanup Day",
         "https://www.coastal.ca.gov/publiced/ccd/ccd.html",
         'id="coastal-cleanup-day"',
@@ -59,6 +59,9 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Huntington Beach Oktoberfest",
         "https://www.oldworldhb.com/oktoberfest-orange-county/",
         'id="huntington-beach-oktoberfest"',
+        "San Clemente Car Show",
+        "https://sccarshow.com/",
+        'id="san-clemente-car-show"',
         "Gatsby Redux at Greystone",
         "https://beverlyhills.org/1327/Gatsby-Redux---Sept-16-17-19",
         'id="gatsby-redux"',
@@ -66,6 +69,9 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "https://www.aquariumofpacific.org/events/info/baja_splash_cultural_festival/",
         'id="baja-splash"',
         "Pasadena ARTWalk",
+        "Jane Austen UnScripted in West Hollywood",
+        "https://www.weho.org/Home/Components/Calendar/Event/32133/1106",
+        'id="weho-jane-austen"',
         "Pasadena Chalk Festival",
         "Zootoberfest at the L.A. Zoo",
         "https://lazoo.org/plan-your-visit/special-experiences/zootoberfest/",
@@ -142,6 +148,8 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "LAWineFest",
         "Americana in the Park",
         "OneRepublic with fireworks",
+        "Angels vs. Mariners in Anaheim",
+        'id="angels-mariners"',
     ):
         assert expired not in html
     for forbidden in (
@@ -174,15 +182,17 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated September 16 · September guide" in response.text
-        assert "Thirty-seven Southern California September plans, ranked." in response.text
-        assert "Angels' final Seattle game" in response.text
+        assert "Updated September 17 · September guide" in response.text
+        assert "Thirty-nine Southern California September plans, ranked." in response.text
+        assert "Angels' final Seattle game" not in response.text
         assert "Santa Monica Pier's free Locals' Night" in response.text
         assert "Long Beach's food passport" in response.text
         assert "Kidspace Halloween" in response.text
         assert "Thai Fest by the Beach" in response.text
-        assert "Long Beach Burger Week" in response.text
+        assert "Dodgers-Giants" in response.text
         assert "Coastal Cleanup Day" in response.text
+        assert "San Clemente's free car show" in response.text
+        assert "West Hollywood park theatre" in response.text
         assert "MOLAA Lucha Libre" in response.text
         assert "the Autry Block Party" in response.text
         assert "Los Angeles Libros" in response.text
@@ -219,12 +229,15 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     )
 
     assert answer
-    assert "Thirty-seven Southern California September plans" in answer
-    assert "Angels-Mariners" in answer
+    assert "Thirty-nine Southern California September plans" in answer
+    assert "Angels-Mariners" not in answer
     assert "Locals' Night" in answer
     assert "Seconds at PCH Food Fest" in answer
     assert "Halloween at Kidspace" in answer
     assert "Thai Fest by the Beach" in answer
+    assert "Dodgers-Giants" in answer
+    assert "San Clemente" in answer
+    assert "Jane Austen UnScripted" in answer
     assert "California Coastal Cleanup Day" in answer
     assert "Lucha Libre weekend" in answer
     assert "Autry Block Party" in answer
@@ -259,10 +272,10 @@ def test_orange_county_city_answers_include_current_plans() -> None:
     )
 
     assert answer
-    assert "Angels-Mariners" in answer
+    assert "San Clemente Car Show" in answer
     assert "SUGAR SKULL!" in answer
     assert "Walt Disney Archives" in answer
-    assert "#angels-mariners" in answer
+    assert "#san-clemente-car-show" in answer
     assert "Orange County Children's Book Festival" in answer
     assert "#oc-childrens-book-festival" in answer
     assert "Anaheim Ducks preseason" in answer

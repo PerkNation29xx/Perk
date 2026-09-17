@@ -812,11 +812,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Thirty-seven Southern California September plans",
-        "timing": "September 16-October 1, 2026",
+        "title": "Thirty-nine Southern California September plans",
+        "timing": "September 17-October 1, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to the September 14-16 Angels-Mariners series, Santa Monica Pier's free Locals' Night, Seconds at PCH Food Fest, Halloween at Kidspace, Thai Fest by the Beach, Long Beach Burger Week, California Coastal Cleanup Day, Huntington Beach Oktoberfest, Gatsby Redux at Greystone, Queen Mary's Dark Harbor, MOLAA's Lucha Libre weekend, the Autry Block Party, Los Angeles Libros Festival, L.A. Zoo Zootoberfest, Pasadena ARTWalk, and Long Beach State of the Arts. "
+            "Ranked guide to Santa Monica Pier's free Locals' Night, Seconds at PCH Food Fest, Halloween at Kidspace, Thai Fest by the Beach, Dodgers-Giants at Dodger Stadium, Long Beach Burger Week, California Coastal Cleanup Day, Huntington Beach Oktoberfest, Gatsby Redux at Greystone, San Clemente's free car show, Queen Mary's Dark Harbor, MOLAA's Lucha Libre weekend, the Autry Block Party, Los Angeles Libros Festival, L.A. Zoo Zootoberfest, Pasadena ARTWalk, West Hollywood's free Jane Austen UnScripted performances, and Long Beach State of the Arts. "
             "Also covers the Armenian Film Festival, Casa Verdugo Library's 75th anniversary, Burbank's Career Transitions Expo and Autumn Arts Festival, Anaheim's Craft & Vintage Fair, Pasadena Greek Festival and Golden State Tattoo Expo, The Great Outdoors at Greystone, Taste of Arcadia, Santa Monica Hispanic Heritage programs, the Orange County Children's Book Festival, SUGAR SKULL! at Segerstrom, Anaheim Ducks preseason, Baja Splash, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum opening, Orange County Burger Week, Pasadena Chalk Festival, Arcadia's Mid-Autumn Moon Festival, Glendale's Jewel City Concert Series, and Design West Hollywood."
         ),
     },
@@ -1957,7 +1957,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     wants_burbank = _contains_any(text, ("burbank", "burbank film festival"))
     wants_glendale = _contains_any(text, ("glendale", "deukmejian", "brand park"))
     wants_arcadia = _contains_any(text, ("arcadia", "626 night market", "santa anita", "arboretum"))
-    wants_orange_county = _contains_any(text, ("orange county", "santa ana", "dana point", "costa mesa", "oc fair", "sea country festival", "corn festival", "thefitexpo"))
+    wants_orange_county = _contains_any(text, ("orange county", "santa ana", "dana point", "costa mesa", "san clemente", "oc fair", "sea country festival", "corn festival", "thefitexpo"))
     wants_santa_monica = _contains_any(text, ("santa monica", "wellness & waves", "art on ocean", "ocean way festival"))
     wants_laguna_beach = _contains_any(text, ("laguna beach", "pageant of the masters", "sawdust", "passport to the arts", "laguna art museum"))
     wants_long_beach = _contains_any(text, ("long beach", "stroll & savor", "taste of downtown", "jazz on the bay", "new blues festival"))
@@ -1989,8 +1989,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current Orange County options include the Angels-Mariners series in Anaheim on September 14-16, the free Orange County Children's Book Festival in Costa Mesa on September 20, SUGAR SKULL! at Segerstrom on September 19-20, Anaheim Ducks preseason home games on September 20 and 23, Huntington Beach Oktoberfest through November 8, the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1, and Orange County Burger Week on September 20-26.",
-                "Open /articles/southern-california-september-events-2026#angels-mariners, /articles/southern-california-september-events-2026#oc-childrens-book-festival, /articles/southern-california-september-events-2026#sugar-skull-segerstrom, /articles/southern-california-september-events-2026#anaheim-ducks-preseason, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, /articles/southern-california-september-events-2026#muzeo-disney-exhibitions, or /articles/southern-california-september-events-2026#orange-county-burger-week for practical comparisons and current city-directory links.",
+                "Current Orange County options include the free San Clemente Car Show on September 20, the free Orange County Children's Book Festival in Costa Mesa on September 20, SUGAR SKULL! at Segerstrom on September 19-20, Anaheim Ducks preseason home games on September 20 and 23, Huntington Beach Oktoberfest through November 8, the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1, and Orange County Burger Week on September 20-26.",
+                "Open /articles/southern-california-september-events-2026#san-clemente-car-show, /articles/southern-california-september-events-2026#oc-childrens-book-festival, /articles/southern-california-september-events-2026#sugar-skull-segerstrom, /articles/southern-california-september-events-2026#anaheim-ducks-preseason, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, /articles/southern-california-september-events-2026#muzeo-disney-exhibitions, or /articles/southern-california-september-events-2026#orange-county-burger-week for practical comparisons and current city-directory links.",
             )
         )
 
