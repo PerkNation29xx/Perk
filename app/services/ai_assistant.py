@@ -812,12 +812,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Thirty-nine Southern California September plans",
-        "timing": "September 17-October 1, 2026",
+        "title": "Forty-one Southern California September plans",
+        "timing": "September 18-October 1, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to Santa Monica Pier's free Locals' Night, Seconds at PCH Food Fest, Halloween at Kidspace, Thai Fest by the Beach, Dodgers-Giants at Dodger Stadium, Long Beach Burger Week, California Coastal Cleanup Day, Huntington Beach Oktoberfest, Gatsby Redux at Greystone, San Clemente's free car show, Queen Mary's Dark Harbor, MOLAA's Lucha Libre weekend, the Autry Block Party, Los Angeles Libros Festival, L.A. Zoo Zootoberfest, Pasadena ARTWalk, West Hollywood's free Jane Austen UnScripted performances, and Long Beach State of the Arts. "
-            "Also covers the Armenian Film Festival, Casa Verdugo Library's 75th anniversary, Burbank's Career Transitions Expo and Autumn Arts Festival, Anaheim's Craft & Vintage Fair, Pasadena Greek Festival and Golden State Tattoo Expo, The Great Outdoors at Greystone, Taste of Arcadia, Santa Monica Hispanic Heritage programs, the Orange County Children's Book Festival, SUGAR SKULL! at Segerstrom, Anaheim Ducks preseason, Baja Splash, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum opening, Orange County Burger Week, Pasadena Chalk Festival, Arcadia's Mid-Autumn Moon Festival, Glendale's Jewel City Concert Series, and Design West Hollywood."
+            "Ranked guide to Seconds at PCH Food Fest, Halloween at Kidspace, Thai Fest by the Beach, Dodgers-Giants at Dodger Stadium, Natural History Museum's Spider Pavilion, Long Beach Burger Week, California Coastal Cleanup Day, Huntington Beach Oktoberfest, Gatsby Redux at Greystone, San Clemente's free car show, Queen Mary's Dark Harbor, MOLAA's Lucha Libre weekend, the Autry Block Party, Los Angeles Libros Festival, L.A. Zoo Zootoberfest, Pasadena ARTWalk, West Hollywood's free Jane Austen UnScripted performances, and Long Beach State of the Arts. "
+            "Also covers the Armenian Film Festival, Casa Verdugo Library's 75th anniversary, Burbank's Career Transitions Expo and Autumn Arts Festival, Anaheim's Craft & Vintage Fair, Pasadena Greek Festival and Golden State Tattoo Expo, The Great Outdoors at Greystone, Taste of Arcadia, Santa Monica Hispanic Heritage programs, the Orange County Children's Book Festival, SUGAR SKULL! at Segerstrom, Anaheim Ducks preseason, Baja Splash, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum opening, Orange County Burger Week, Pasadena Chalk Festival, Arcadia's Mid-Autumn Moon Festival, Glendale's Jewel City Concert Series, Glendale Tech Week, the Glendale International Film Festival, and Design West Hollywood."
         ),
     },
 
@@ -905,10 +905,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, coastal art, wellness, movies, markets, and local history",
         "city": "Santa Monica",
         "title": "Santa Monica September 2026 coastal events guide",
-        "timing": "September 17-October 17, 2026",
+        "timing": "September 18-October 17, 2026",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Nine current free plans covering Pier Locals' Night, Thai Fest by the Beach, the Santa Monica Symphony's Voices of Strength, "
+            "Eight current free plans covering Thai Fest by the Beach, the Santa Monica Symphony's Voices of Strength, "
             "Between Darkness and Dawn, Wellness & Waves, Hispanic Heritage library music and dance, "
             "dublab Open Air, Doors Open California at the Marion Davies Guest House, and the Pico farmers market, "
             "plus the City of Santa Monica's Ocean Way cancellation notice."
@@ -2029,8 +2029,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks nine free September plans:",
-                "- Punk Night at the Pier on September 17, Thai Fest by the Beach on September 19-20, the Santa Monica Symphony's Voices of Strength on September 19, and the Between Darkness and Dawn exhibition through September 27.",
+                "The current PerkNation Santa Monica guide ranks eight free September plans:",
+                "- Thai Fest by the Beach on September 19-20, the Santa Monica Symphony's Voices of Strength on September 19, and the Between Darkness and Dawn exhibition through September 27.",
                 "- Also compare Saturday Wellness & Waves at the Pier, September 19 Hispanic Heritage music and dance at two library locations, September 25 dublab Open Air at Reed Park, September 26-27 Doors Open California tours at the Marion Davies Guest House, and the Saturday Pico farmers market.",
                 "- Ocean Way Festival has been canceled because storm damage made the beach site unsafe; do not travel to Santa Monica for the September 26-27 festival.",
                 "Open /articles/santa-monica-august-2026-guide for rankings, best-for notes, weather, transit, official sources, and the city's cancellation notice.",
@@ -2081,8 +2081,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_glendale and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation September guide includes the Armenian Film Festival, Casa Verdugo Library's free 75th-anniversary celebration, and the free Jewel City Concert Series in Glendale.",
-                "Open /articles/southern-california-september-events-2026#armenian-film-festival, #casa-verdugo-75, or #jewel-city-concerts for practical notes, or browse /directory?city=Glendale for 100 local listings.",
+                "The current PerkNation September guide includes the Armenian Film Festival, Casa Verdugo Library's free 75th-anniversary celebration, Glendale Tech Week, the Glendale International Film Festival, and the free Jewel City Concert Series.",
+                "Open /articles/southern-california-september-events-2026#armenian-film-festival, #casa-verdugo-75, #glendale-tech-week, #glendale-international-film-festival, or #jewel-city-concerts for practical notes, or browse /directory?city=Glendale for 100 local listings.",
             )
         )
 

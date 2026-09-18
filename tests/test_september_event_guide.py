@@ -14,13 +14,10 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-nine Southern California September plans" in html
-    assert 'dateModified": "2026-09-17"' in html
-    assert html.count("<h2") >= 42
+    assert "Forty-one Southern California September plans" in html
+    assert 'dateModified": "2026-09-18"' in html
+    assert html.count("<h2") >= 44
     for expected in (
-        "Punk Night at the Pier",
-        "https://www.santamonica.com/event/punk-night-at-the-pier-locals-night/",
-        'id="santa-monica-locals-night"',
         "Seconds at PCH Food Fest",
         "https://www.visitlongbeach.com/events/seconds-at-pch-food-fest/",
         'id="seconds-at-pch-food-fest"',
@@ -33,6 +30,9 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Dodgers vs. Giants in Los Angeles",
         "https://www.mlb.com/dodgers",
         'id="dodgers-giants"',
+        "Spider Pavilion at the Natural History Museum",
+        "https://nhm.org/experience-nhm/exhibitions-natural-history-museum/spider-pavilion",
+        'id="spider-pavilion"',
         "California Coastal Cleanup Day",
         "https://www.coastal.ca.gov/publiced/ccd/ccd.html",
         'id="coastal-cleanup-day"',
@@ -117,6 +117,14 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "https://burgerweeklb.com/",
         "https://burgerweek.com/",
         "https://www.visitwesthollywood.com/events/design-west-hollywood/",
+        "Glendale Tech Week",
+        "https://www.glendaletechweek.com/",
+        'id="glendale-tech-week"',
+        "/directory?q=technology&amp;city=Glendale",
+        "Glendale International Film Festival",
+        "https://glendaleiff.org/festival-schedule-26/",
+        'id="glendale-international-film-festival"',
+        "/directory?q=entertainment&amp;city=Glendale",
         "Best for:",
         "/directory?city=Burbank",
         "/directory?city=Pasadena",
@@ -150,6 +158,8 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "OneRepublic with fireworks",
         "Angels vs. Mariners in Anaheim",
         'id="angels-mariners"',
+        "Punk Night at the Pier",
+        'id="santa-monica-locals-night"',
     ):
         assert expired not in html
     for forbidden in (
@@ -182,14 +192,15 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated September 17 · September guide" in response.text
-        assert "Thirty-nine Southern California September plans, ranked." in response.text
+        assert "Updated September 18 · September guide" in response.text
+        assert "Forty-one Southern California September plans, ranked." in response.text
         assert "Angels' final Seattle game" not in response.text
-        assert "Santa Monica Pier's free Locals' Night" in response.text
+        assert "Santa Monica Pier's free Locals' Night" not in response.text
         assert "Long Beach's food passport" in response.text
         assert "Kidspace Halloween" in response.text
         assert "Thai Fest by the Beach" in response.text
         assert "Dodgers-Giants" in response.text
+        assert "Spider Pavilion" in response.text
         assert "Coastal Cleanup Day" in response.text
         assert "San Clemente's free car show" in response.text
         assert "West Hollywood park theatre" in response.text
@@ -198,9 +209,11 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
         assert "Los Angeles Libros" in response.text
         assert "Dark Harbor" in response.text
         assert "Zootoberfest" in response.text
+        assert "Glendale Tech Week and film festival" in response.text
         assert "Dine LA's final day is organized" not in response.text
         assert "Fourteen Southern California summer plans, ranked." not in response.text
-        assert "Free Locals' Night brings punk, salsa, vendors, and family activities to Santa Monica Pier" in response.text
+        assert "Free Locals' Night brings punk, salsa, vendors, and family activities to Santa Monica Pier" not in response.text
+        assert "Spider Pavilion opens with hundreds of orb weavers, webs, and educator-led science" in response.text
         assert "J. Cole brings The Fall-Off Tour to LA" not in response.text
         assert "Thai Fest brings free food and culture programming to Santa Monica Pier" in response.text
         assert "Maker Faire OC turns invention into a hands-on weekend" not in response.text
@@ -229,13 +242,14 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     )
 
     assert answer
-    assert "Thirty-nine Southern California September plans" in answer
+    assert "Forty-one Southern California September plans" in answer
     assert "Angels-Mariners" not in answer
-    assert "Locals' Night" in answer
+    assert "Locals' Night" not in answer
     assert "Seconds at PCH Food Fest" in answer
     assert "Halloween at Kidspace" in answer
     assert "Thai Fest by the Beach" in answer
     assert "Dodgers-Giants" in answer
+    assert "Spider Pavilion" in answer
     assert "San Clemente" in answer
     assert "Jane Austen UnScripted" in answer
     assert "California Coastal Cleanup Day" in answer
@@ -261,6 +275,8 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     assert "Huntington Beach Oktoberfest" in answer
     assert "Gatsby Redux" in answer
     assert "Baja Splash" in answer
+    assert "Glendale Tech Week" in answer
+    assert "Glendale International Film Festival" in answer
     assert "/articles/southern-california-september-events-2026" in answer
     assert "Dine LA 2026 city guides" not in answer
 

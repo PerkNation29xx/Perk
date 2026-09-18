@@ -15,13 +15,11 @@ AUGUST_GUIDE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-cal
 def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Santa Monica has nine current September plans" in html
-    assert 'dateModified": "2026-09-17"' in html
-    assert html.count("<h2>") >= 13
+    assert "Santa Monica has eight current September plans" in html
+    assert 'dateModified": "2026-09-18"' in html
+    assert html.count("<h2>") >= 12
     for expected in (
-        "9 ranked plans",
-        "Punk Night at the Pier",
-        "https://www.santamonica.com/event/punk-night-at-the-pier-locals-night/",
+        "8 ranked plans",
         "Voices of Strength",
         "https://www.santamonica.com/event/santa-monica-symphony-presents-voices-of-strength/",
         "Between Darkness and Dawn",
@@ -42,6 +40,7 @@ def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> 
         "https://www.santamonica.gov/press/2026/09/11/beach-damage-from-hurricane-marie-forces-cancellation-of-inaugural-ocean-way-festival-to-2027",
     ):
         assert expected in html
+    assert "Punk Night at the Pier" not in html
     assert "Wellness on the Westside" not in html
 
     for forbidden in (
@@ -64,7 +63,7 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "9 ranked plans" in response.text
+        assert "8 ranked plans" in response.text
 
     image = client.get("/assets/articles/santa-monica-august-2026-guide.jpg")
     assert image.status_code == 200
@@ -75,9 +74,9 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated September 17 · Santa Monica") == 1
-        assert "Nine free Santa Monica September plans, ranked." in response.text
-        assert "Compare Pier Locals' Night" in response.text
+        assert response.text.count("Updated September 18 · Santa Monica") == 1
+        assert "Eight free Santa Monica September plans, ranked." in response.text
+        assert "Compare Pier Locals' Night" not in response.text
         assert "Ocean Way has been canceled." in response.text
         assert "Tongva Twilight through September 12" not in response.text
         assert "Updated August 28" in response.text
@@ -102,8 +101,8 @@ def test_santa_monica_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "ranks nine free September plans" in answer
-    assert "Punk Night at the Pier" in answer
+    assert "ranks eight free September plans" in answer
+    assert "Punk Night at the Pier" not in answer
     assert "Voices of Strength" in answer
     assert "Between Darkness and Dawn" in answer
     assert "Thai Fest by the Beach" in answer
