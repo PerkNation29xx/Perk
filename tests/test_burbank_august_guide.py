@@ -83,7 +83,8 @@ def test_burbank_guide_is_archived_from_sitemap_and_public_answers() -> None:
         "home_local_guide",
     )
     assert answer
-    assert "Career Transitions Expo" in answer
+    assert "Autumn Arts Festival" in answer
+    assert "Career Transitions Expo" not in answer
     assert "Magnolia Park Food Truck Fridays" not in answer
     assert "Dine LA" not in answer
     assert "/articles/burbank-august-2026-guide" not in answer

@@ -14,9 +14,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Forty-one Southern California September plans" in html
-    assert 'dateModified": "2026-09-18"' in html
-    assert html.count("<h2") >= 44
+    assert "Forty-two Southern California September plans" in html
+    assert 'dateModified": "2026-09-19"' in html
+    assert html.count("<h2") >= 45
     for expected in (
         "Seconds at PCH Food Fest",
         "https://www.visitlongbeach.com/events/seconds-at-pch-food-fest/",
@@ -48,8 +48,15 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Queen Mary's Dark Harbor",
         "https://www.queenmary.com/seasonal-events.htm",
         'id="queen-mary-dark-harbor"',
-        "Casa Verdugo Library's 75th anniversary",
-        'id="casa-verdugo-75"',
+        "Laura Aguilar: Day of the Dead at The Huntington",
+        "https://www.huntington.org/exhibitions",
+        'id="laura-aguilar-day-of-the-dead"',
+        "Ranchos Walk in Long Beach",
+        "https://longbeach.gov/sustainability/about-us/events/ranchos-walk/",
+        'id="ranchos-walk"',
+        "Spinal Dread at Anaheim Central Library",
+        "https://www.anaheim.net/6686/Spinal-Dread-Horror-Literature-and-Cultu",
+        'id="spinal-dread-anaheim"',
         "Golden State Tattoo Expo in Pasadena",
         "https://www.visitpasadena.com/events/golden-state-tattoo-expo/",
         'id="golden-state-tattoo-expo"',
@@ -103,7 +110,6 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "https://www.pasadenagreekfest.com/",
         "Jewel City Concert Series in Glendale",
         'id="jewel-city-concerts"',
-        "Burbank Career Transitions Expo",
         "Burbank Autumn Arts Festival",
         'id="burbank-autumn-arts"',
         "Taste of Arcadia",
@@ -160,6 +166,10 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         'id="angels-mariners"',
         "Punk Night at the Pier",
         'id="santa-monica-locals-night"',
+        "Casa Verdugo Library's 75th anniversary",
+        'id="casa-verdugo-75"',
+        "Burbank Career Transitions Expo",
+        'id="burbank-careers"',
     ):
         assert expired not in html
     for forbidden in (
@@ -192,8 +202,8 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated September 18 · September guide" in response.text
-        assert "Forty-one Southern California September plans, ranked." in response.text
+        assert "Updated September 19 · September guide" in response.text
+        assert "Forty-two Southern California September plans, ranked." in response.text
         assert "Angels' final Seattle game" not in response.text
         assert "Santa Monica Pier's free Locals' Night" not in response.text
         assert "Long Beach's food passport" in response.text
@@ -202,14 +212,14 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
         assert "Dodgers-Giants" in response.text
         assert "Spider Pavilion" in response.text
         assert "Coastal Cleanup Day" in response.text
-        assert "San Clemente's free car show" in response.text
-        assert "West Hollywood park theatre" in response.text
         assert "MOLAA Lucha Libre" in response.text
         assert "the Autry Block Party" in response.text
         assert "Los Angeles Libros" in response.text
         assert "Dark Harbor" in response.text
-        assert "Zootoberfest" in response.text
         assert "Glendale Tech Week and film festival" in response.text
+        assert "Laura Aguilar exhibition" in response.text
+        assert "Ranchos Walk" in response.text
+        assert "Spinal Dread" in response.text
         assert "Dine LA's final day is organized" not in response.text
         assert "Fourteen Southern California summer plans, ranked." not in response.text
         assert "Free Locals' Night brings punk, salsa, vendors, and family activities to Santa Monica Pier" not in response.text
@@ -242,7 +252,7 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     )
 
     assert answer
-    assert "Forty-one Southern California September plans" in answer
+    assert "Forty-two Southern California September plans" in answer
     assert "Angels-Mariners" not in answer
     assert "Locals' Night" not in answer
     assert "Seconds at PCH Food Fest" in answer
@@ -257,7 +267,10 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     assert "Autry Block Party" in answer
     assert "Los Angeles Libros Festival" in answer
     assert "Dark Harbor" in answer
-    assert "Casa Verdugo" in answer
+    assert "Casa Verdugo" not in answer
+    assert "Laura Aguilar" in answer
+    assert "Ranchos Walk" in answer
+    assert "Spinal Dread" in answer
     assert "Golden State Tattoo Expo" in answer
     assert "SUGAR SKULL!" in answer
     assert "Autumn Arts Festival" in answer
@@ -296,6 +309,8 @@ def test_orange_county_city_answers_include_current_plans() -> None:
     assert "#oc-childrens-book-festival" in answer
     assert "Anaheim Ducks preseason" in answer
     assert "#anaheim-ducks-preseason" in answer
+    assert "Spinal Dread" in answer
+    assert "#spinal-dread-anaheim" in answer
 
 
 def test_pasadena_answer_no_longer_promotes_expired_fiestas_patrias() -> None:
@@ -308,6 +323,8 @@ def test_pasadena_answer_no_longer_promotes_expired_fiestas_patrias() -> None:
     assert "Pasadena ARTWalk" in answer
     assert "Pasadena Greek Festival" in answer
     assert "Pasadena Chalk Festival" in answer
+    assert "Laura Aguilar" in answer
+    assert "#laura-aguilar-day-of-the-dead" in answer
     assert "Pasadena Fiestas Patrias" not in answer
 
 
@@ -331,6 +348,8 @@ def test_long_beach_answer_includes_food_fest_dark_harbor_cleanup_and_molaa() ->
     assert "#molaa-lucha-libre" in answer
     assert "Baja Splash" in answer
     assert "#baja-splash" in answer
+    assert "Ranchos Walk" in answer
+    assert "#ranchos-walk" in answer
 
 
 def test_huntington_beach_answer_includes_current_oktoberfest() -> None:

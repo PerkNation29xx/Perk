@@ -812,12 +812,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Forty-one Southern California September plans",
-        "timing": "September 18-October 1, 2026",
+        "title": "Forty-two Southern California September plans",
+        "timing": "September 19-October 1, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to Seconds at PCH Food Fest, Halloween at Kidspace, Thai Fest by the Beach, Dodgers-Giants at Dodger Stadium, Natural History Museum's Spider Pavilion, Long Beach Burger Week, California Coastal Cleanup Day, Huntington Beach Oktoberfest, Gatsby Redux at Greystone, San Clemente's free car show, Queen Mary's Dark Harbor, MOLAA's Lucha Libre weekend, the Autry Block Party, Los Angeles Libros Festival, L.A. Zoo Zootoberfest, Pasadena ARTWalk, West Hollywood's free Jane Austen UnScripted performances, and Long Beach State of the Arts. "
-            "Also covers the Armenian Film Festival, Casa Verdugo Library's 75th anniversary, Burbank's Career Transitions Expo and Autumn Arts Festival, Anaheim's Craft & Vintage Fair, Pasadena Greek Festival and Golden State Tattoo Expo, The Great Outdoors at Greystone, Taste of Arcadia, Santa Monica Hispanic Heritage programs, the Orange County Children's Book Festival, SUGAR SKULL! at Segerstrom, Anaheim Ducks preseason, Baja Splash, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum opening, Orange County Burger Week, Pasadena Chalk Festival, Arcadia's Mid-Autumn Moon Festival, Glendale's Jewel City Concert Series, Glendale Tech Week, the Glendale International Film Festival, and Design West Hollywood."
+            "Also covers the Armenian Film Festival, Burbank's Autumn Arts Festival, Anaheim's Craft & Vintage Fair and Spinal Dread, Pasadena Greek Festival, Golden State Tattoo Expo, The Huntington's Laura Aguilar exhibition, The Great Outdoors at Greystone, Taste of Arcadia, Santa Monica Hispanic Heritage programs, the Orange County Children's Book Festival, SUGAR SKULL! at Segerstrom, Anaheim Ducks preseason, Baja Splash, Long Beach's Ranchos Walk, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum opening, Orange County Burger Week, Pasadena Chalk Festival, Arcadia's Mid-Autumn Moon Festival, Glendale's Jewel City Concert Series, Glendale Tech Week, the Glendale International Film Festival, and Design West Hollywood."
         ),
     },
 
@@ -905,7 +905,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, coastal art, wellness, movies, markets, and local history",
         "city": "Santa Monica",
         "title": "Santa Monica September 2026 coastal events guide",
-        "timing": "September 18-October 17, 2026",
+        "timing": "September 19-October 17, 2026",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
             "Eight current free plans covering Thai Fest by the Beach, the Santa Monica Symphony's Voices of Strength, "
@@ -1989,8 +1989,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current Orange County options include the free San Clemente Car Show on September 20, the free Orange County Children's Book Festival in Costa Mesa on September 20, SUGAR SKULL! at Segerstrom on September 19-20, Anaheim Ducks preseason home games on September 20 and 23, Huntington Beach Oktoberfest through November 8, the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1, and Orange County Burger Week on September 20-26.",
-                "Open /articles/southern-california-september-events-2026#san-clemente-car-show, /articles/southern-california-september-events-2026#oc-childrens-book-festival, /articles/southern-california-september-events-2026#sugar-skull-segerstrom, /articles/southern-california-september-events-2026#anaheim-ducks-preseason, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, /articles/southern-california-september-events-2026#muzeo-disney-exhibitions, or /articles/southern-california-september-events-2026#orange-county-burger-week for practical comparisons and current city-directory links.",
+                "Current Orange County options include the free San Clemente Car Show on September 20, the free Orange County Children's Book Festival in Costa Mesa on September 20, SUGAR SKULL! at Segerstrom on September 19-20, Anaheim Ducks preseason home games on September 20 and 23, the free Spinal Dread horror-literature festival in Anaheim on September 26, Huntington Beach Oktoberfest through November 8, the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1, and Orange County Burger Week on September 20-26.",
+                "Open /articles/southern-california-september-events-2026#san-clemente-car-show, /articles/southern-california-september-events-2026#oc-childrens-book-festival, /articles/southern-california-september-events-2026#sugar-skull-segerstrom, /articles/southern-california-september-events-2026#anaheim-ducks-preseason, /articles/southern-california-september-events-2026#spinal-dread-anaheim, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, /articles/southern-california-september-events-2026#muzeo-disney-exhibitions, or /articles/southern-california-september-events-2026#orange-county-burger-week for practical comparisons and current city-directory links.",
             )
         )
 
@@ -2005,7 +2005,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation September guide includes Seconds at PCH Food Fest, Queen Mary's Dark Harbor, State of the Arts, Long Beach Burger Week, California Coastal Cleanup Day, MOLAA's Lucha Libre weekend, and Baja Splash:",
+                "The current PerkNation September guide includes Seconds at PCH Food Fest, Queen Mary's Dark Harbor, State of the Arts, Long Beach Burger Week, California Coastal Cleanup Day, MOLAA's Lucha Libre weekend, Baja Splash, and Ranchos Walk:",
                 "- Seconds at PCH runs September 17-27 with an opening-night tasting and salsa band, then a restaurant passport, specials, and prizes across the ten-day promotion.",
                 "- Dark Harbor runs select nights September 18-November 1 with haunted mazes, performers, immersive attractions, rides, themed food, and modified parking on opening weekend.",
                 "- The free State of the Arts celebration runs September 19 from 4-9 p.m. at Promenade Square Park with local artists, live performances, awards, and dancing.",
@@ -2013,7 +2013,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
                 "- California Coastal Cleanup Day runs September 19 from 9 a.m.-noon, with official Long Beach and regional registration options.",
                 "- MOLAA's September 25-27 Lucha Libre weekend combines a book launch, cumbia and live wrestling, film, workshops, a marketplace, and family programming.",
                 "- Baja Splash runs September 26-27 from 9 a.m.-5 p.m. at the Aquarium of the Pacific with bilingual music, dance, education, and community programming included with timed general admission.",
-                "Open /articles/southern-california-september-events-2026#seconds-at-pch-food-fest, #queen-mary-dark-harbor, #state-of-the-arts-long-beach, #long-beach-burger-week, #coastal-cleanup-day, #molaa-lucha-libre, or #baja-splash for practical planning, with links into 208 Long Beach directory listings.",
+                "- The free Ranchos Walk runs September 26 from 8 a.m.-2 p.m. with 3-, 6-, and 9-mile routes, a guided history audio tour, return shuttles, and a post-walk celebration.",
+                "Open /articles/southern-california-september-events-2026#seconds-at-pch-food-fest, #queen-mary-dark-harbor, #state-of-the-arts-long-beach, #long-beach-burger-week, #coastal-cleanup-day, #molaa-lucha-libre, #baja-splash, or #ranchos-walk for practical planning, with links into 208 Long Beach directory listings.",
                 "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )
@@ -2065,24 +2066,24 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_burbank and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation September guide includes Burbank's Career Transitions Expo on September 18 and the free Autumn Arts Festival on September 19 from 4-7 p.m.",
-                "Open /articles/southern-california-september-events-2026#burbank-careers or #burbank-autumn-arts for practical notes, or browse /directory?city=Burbank for 968 local listings.",
+                "The current PerkNation September guide includes Burbank's free Autumn Arts Festival on September 19 from 4-7 p.m., with local artists, arts organizations, food trucks, and live music at Johnny Carson Park.",
+                "Open /articles/southern-california-september-events-2026#burbank-autumn-arts for practical notes, or browse /directory?city=Burbank for 968 local listings.",
             )
         )
 
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation September guide includes Pasadena ARTWalk, Pasadena Greek Festival, the Golden State Tattoo Expo, and the Pasadena Chalk Festival.",
-                "Use the full guide for ranked best-for and transit notes, or browse /directory?city=Pasadena for 563 local listings.",
+                "The current PerkNation September guide includes Pasadena ARTWalk, Pasadena Greek Festival, the Golden State Tattoo Expo, the Pasadena Chalk Festival, and The Huntington's Laura Aguilar: Day of the Dead exhibition opening September 20.",
+                "Use the full guide for ranked best-for and transit notes, open /articles/southern-california-september-events-2026#laura-aguilar-day-of-the-dead for the exhibition, or browse /directory?city=Pasadena for 563 local listings.",
             )
         )
 
     if wants_glendale and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation September guide includes the Armenian Film Festival, Casa Verdugo Library's free 75th-anniversary celebration, Glendale Tech Week, the Glendale International Film Festival, and the free Jewel City Concert Series.",
-                "Open /articles/southern-california-september-events-2026#armenian-film-festival, #casa-verdugo-75, #glendale-tech-week, #glendale-international-film-festival, or #jewel-city-concerts for practical notes, or browse /directory?city=Glendale for 100 local listings.",
+                "The current PerkNation September guide includes the Armenian Film Festival, Glendale Tech Week, the Glendale International Film Festival, and the free Jewel City Concert Series.",
+                "Open /articles/southern-california-september-events-2026#armenian-film-festival, #glendale-tech-week, #glendale-international-film-festival, or #jewel-city-concerts for practical notes, or browse /directory?city=Glendale for 100 local listings.",
             )
         )
 

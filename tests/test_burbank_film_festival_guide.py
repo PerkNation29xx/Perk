@@ -45,7 +45,8 @@ def test_burbank_film_guide_stays_retired_while_current_burbank_guide_is_answere
     )
 
     assert answer
-    assert "Career Transitions Expo" in answer
+    assert "Autumn Arts Festival" in answer
+    assert "Career Transitions Expo" not in answer
     assert "/articles/burbank-august-2026-guide" not in answer
     assert "/articles/burbank-film-festival-2026-guide" not in answer
     assert "968 local listings" in answer
