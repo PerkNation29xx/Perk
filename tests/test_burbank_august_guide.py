@@ -84,6 +84,7 @@ def test_burbank_guide_is_archived_from_sitemap_and_public_answers() -> None:
     )
     assert answer
     assert "Autumn Arts Festival" in answer
+    assert "has concluded" in answer
     assert "Career Transitions Expo" not in answer
     assert "Magnolia Park Food Truck Fridays" not in answer
     assert "Dine LA" not in answer

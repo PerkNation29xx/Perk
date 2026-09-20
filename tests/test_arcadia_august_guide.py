@@ -74,7 +74,7 @@ def test_arcadia_archive_routes_and_image_remain_but_visible_cards_retire() -> N
     assert "<loc>https://perknation.app/white/articles/arcadia-august-2026-guide</loc>" not in root_sitemap.text
 
 
-def test_arcadia_archive_is_replaced_by_current_health_fair_in_public_answer() -> None:
+def test_arcadia_archive_is_replaced_by_current_moon_festival_in_public_answer() -> None:
     august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
     assert "/articles/arcadia-august-2026-guide" in august_html
     assert "626 Night Market in Arcadia" not in august_html
@@ -88,10 +88,9 @@ def test_arcadia_archive_is_replaced_by_current_health_fair_in_public_answer() -
     )
 
     assert answer
-    assert "Taste of Arcadia" in answer
+    assert "Taste of Arcadia" not in answer
     assert "Mid-Autumn Moon Festival" in answer
     assert "annual health fair" not in answer
     assert "August 7" not in answer
-    assert "/articles/southern-california-september-events-2026#taste-of-arcadia" in answer
     assert "#arcadia-moon-festival" in answer
     assert "Glendale" not in answer

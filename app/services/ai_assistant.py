@@ -812,12 +812,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Forty-two Southern California September plans",
-        "timing": "September 19-October 1, 2026",
+        "title": "Thirty-eight Southern California September plans",
+        "timing": "September 20-October 18, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to Seconds at PCH Food Fest, Halloween at Kidspace, Thai Fest by the Beach, Dodgers-Giants at Dodger Stadium, Natural History Museum's Spider Pavilion, Long Beach Burger Week, California Coastal Cleanup Day, Huntington Beach Oktoberfest, Gatsby Redux at Greystone, San Clemente's free car show, Queen Mary's Dark Harbor, MOLAA's Lucha Libre weekend, the Autry Block Party, Los Angeles Libros Festival, L.A. Zoo Zootoberfest, Pasadena ARTWalk, West Hollywood's free Jane Austen UnScripted performances, and Long Beach State of the Arts. "
-            "Also covers the Armenian Film Festival, Burbank's Autumn Arts Festival, Anaheim's Craft & Vintage Fair and Spinal Dread, Pasadena Greek Festival, Golden State Tattoo Expo, The Huntington's Laura Aguilar exhibition, The Great Outdoors at Greystone, Taste of Arcadia, Santa Monica Hispanic Heritage programs, the Orange County Children's Book Festival, SUGAR SKULL! at Segerstrom, Anaheim Ducks preseason, Baja Splash, Long Beach's Ranchos Walk, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum opening, Orange County Burger Week, Pasadena Chalk Festival, Arcadia's Mid-Autumn Moon Festival, Glendale's Jewel City Concert Series, Glendale Tech Week, the Glendale International Film Festival, and Design West Hollywood."
+            "Ranked guide to Seconds at PCH Food Fest, Halloween at Kidspace, Thai Fest by the Beach, Dodgers-Giants at Dodger Stadium, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Long Beach Burger Week, Huntington Beach Oktoberfest, San Clemente's free car show, Queen Mary's Dark Harbor, Westminster Fall Festival, SteelCraft Long Beach Oktoberfest, MOLAA's Lucha Libre weekend, the Autry Block Party, Los Angeles Libros Festival, L.A. Zoo Zootoberfest, Pasadena ARTWalk, and West Hollywood's free Jane Austen UnScripted performances. "
+            "Also covers the Armenian Film Festival, Anaheim's Spinal Dread, Pasadena Greek Festival, Golden State Tattoo Expo, The Huntington's Laura Aguilar exhibition, dublab Open Air in Santa Monica, the Orange County Children's Book Festival, SUGAR SKULL! at Segerstrom, Anaheim Ducks preseason, Baja Splash, Long Beach's Ranchos Walk, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum opening, Orange County Burger Week, Pasadena Chalk Festival, Arcadia's Mid-Autumn Moon Festival, Glendale's Jewel City Concert Series, Glendale Tech Week, the Glendale International Film Festival, and Design West Hollywood."
         ),
     },
 
@@ -905,12 +905,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, coastal art, wellness, movies, markets, and local history",
         "city": "Santa Monica",
         "title": "Santa Monica September 2026 coastal events guide",
-        "timing": "September 19-October 17, 2026",
+        "timing": "September 20-October 17, 2026",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Eight current free plans covering Thai Fest by the Beach, the Santa Monica Symphony's Voices of Strength, "
-            "Between Darkness and Dawn, Wellness & Waves, Hispanic Heritage library music and dance, "
-            "dublab Open Air, Doors Open California at the Marion Davies Guest House, and the Pico farmers market, "
+            "Six current free plans covering Thai Fest by the Beach, Between Darkness and Dawn, Wellness & Waves, "
+            "two dublab Open Air nights, Doors Open California at the Marion Davies Guest House, and the Pico farmers market, "
             "plus the City of Santa Monica's Ocean Way cancellation notice."
         ),
     },
@@ -1989,8 +1988,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current Orange County options include the free San Clemente Car Show on September 20, the free Orange County Children's Book Festival in Costa Mesa on September 20, SUGAR SKULL! at Segerstrom on September 19-20, Anaheim Ducks preseason home games on September 20 and 23, the free Spinal Dread horror-literature festival in Anaheim on September 26, Huntington Beach Oktoberfest through November 8, the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1, and Orange County Burger Week on September 20-26.",
-                "Open /articles/southern-california-september-events-2026#san-clemente-car-show, /articles/southern-california-september-events-2026#oc-childrens-book-festival, /articles/southern-california-september-events-2026#sugar-skull-segerstrom, /articles/southern-california-september-events-2026#anaheim-ducks-preseason, /articles/southern-california-september-events-2026#spinal-dread-anaheim, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, /articles/southern-california-september-events-2026#muzeo-disney-exhibitions, or /articles/southern-california-september-events-2026#orange-county-burger-week for practical comparisons and current city-directory links.",
+                "Current Orange County options include the free San Clemente Car Show on September 20, the free Orange County Children's Book Festival in Costa Mesa on September 20, SUGAR SKULL! at Segerstrom on September 19-20, South Coast Repertory's Into the Woods through October 18, Anaheim Ducks preseason home games on September 20 and 23, Westminster's free Fall Festival on September 24-27, the free Spinal Dread horror-literature festival in Anaheim on September 26, Huntington Beach Oktoberfest through November 8, the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1, and Orange County Burger Week on September 20-26.",
+                "Open /articles/southern-california-september-events-2026#san-clemente-car-show, /articles/southern-california-september-events-2026#oc-childrens-book-festival, /articles/southern-california-september-events-2026#sugar-skull-segerstrom, /articles/southern-california-september-events-2026#into-the-woods-costa-mesa, /articles/southern-california-september-events-2026#anaheim-ducks-preseason, /articles/southern-california-september-events-2026#westminster-fall-festival, /articles/southern-california-september-events-2026#spinal-dread-anaheim, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, /articles/southern-california-september-events-2026#muzeo-disney-exhibitions, or /articles/southern-california-september-events-2026#orange-county-burger-week for practical comparisons and current city-directory links.",
             )
         )
 
@@ -2005,16 +2004,15 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation September guide includes Seconds at PCH Food Fest, Queen Mary's Dark Harbor, State of the Arts, Long Beach Burger Week, California Coastal Cleanup Day, MOLAA's Lucha Libre weekend, Baja Splash, and Ranchos Walk:",
+                "The current PerkNation September guide includes Seconds at PCH Food Fest, Queen Mary's Dark Harbor, Long Beach Burger Week, SteelCraft Oktoberfest, MOLAA's Lucha Libre weekend, Baja Splash, and Ranchos Walk:",
                 "- Seconds at PCH runs September 17-27 with an opening-night tasting and salsa band, then a restaurant passport, specials, and prizes across the ten-day promotion.",
                 "- Dark Harbor runs select nights September 18-November 1 with haunted mazes, performers, immersive attractions, rides, themed food, and modified parking on opening weekend.",
-                "- The free State of the Arts celebration runs September 19 from 4-9 p.m. at Promenade Square Park with local artists, live performances, awards, and dancing.",
                 "- Burger Week runs September 13-20 with published $5-$20 menu filters and more than 20 participating restaurants, food trucks, breweries, bars, and pop-ups.",
-                "- California Coastal Cleanup Day runs September 19 from 9 a.m.-noon, with official Long Beach and regional registration options.",
+                "- SteelCraft Long Beach's free-entry Oktoberfest runs September 25-27 with live polka, German-inspired food, face painting, pop-ups, wiener-dog races, and stein contests; Saturday has the fullest program.",
                 "- MOLAA's September 25-27 Lucha Libre weekend combines a book launch, cumbia and live wrestling, film, workshops, a marketplace, and family programming.",
                 "- Baja Splash runs September 26-27 from 9 a.m.-5 p.m. at the Aquarium of the Pacific with bilingual music, dance, education, and community programming included with timed general admission.",
                 "- The free Ranchos Walk runs September 26 from 8 a.m.-2 p.m. with 3-, 6-, and 9-mile routes, a guided history audio tour, return shuttles, and a post-walk celebration.",
-                "Open /articles/southern-california-september-events-2026#seconds-at-pch-food-fest, #queen-mary-dark-harbor, #state-of-the-arts-long-beach, #long-beach-burger-week, #coastal-cleanup-day, #molaa-lucha-libre, #baja-splash, or #ranchos-walk for practical planning, with links into 208 Long Beach directory listings.",
+                "Open /articles/southern-california-september-events-2026#seconds-at-pch-food-fest, #queen-mary-dark-harbor, #long-beach-burger-week, #steelcraft-long-beach-oktoberfest, #molaa-lucha-libre, #baja-splash, or #ranchos-walk for practical planning, with links into 208 Long Beach directory listings.",
                 "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )
@@ -2030,9 +2028,9 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks eight free September plans:",
-                "- Thai Fest by the Beach on September 19-20, the Santa Monica Symphony's Voices of Strength on September 19, and the Between Darkness and Dawn exhibition through September 27.",
-                "- Also compare Saturday Wellness & Waves at the Pier, September 19 Hispanic Heritage music and dance at two library locations, September 25 dublab Open Air at Reed Park, September 26-27 Doors Open California tours at the Marion Davies Guest House, and the Saturday Pico farmers market.",
+                "The current PerkNation Santa Monica guide ranks six free September plans:",
+                "- Thai Fest by the Beach on September 20 and the Between Darkness and Dawn exhibition through September 27.",
+                "- Also compare Saturday Wellness & Waves at the Pier, two dublab Open Air nights at Reed Park on September 24-25, September 26-27 Doors Open California tours at the Marion Davies Guest House, and the Saturday Pico farmers market.",
                 "- Ocean Way Festival has been canceled because storm damage made the beach site unsafe; do not travel to Santa Monica for the September 26-27 festival.",
                 "Open /articles/santa-monica-august-2026-guide for rankings, best-for notes, weather, transit, official sources, and the city's cancellation notice.",
             )
@@ -2066,8 +2064,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_burbank and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation September guide includes Burbank's free Autumn Arts Festival on September 19 from 4-7 p.m., with local artists, arts organizations, food trucks, and live music at Johnny Carson Park.",
-                "Open /articles/southern-california-september-events-2026#burbank-autumn-arts for practical notes, or browse /directory?city=Burbank for 968 local listings.",
+                "Burbank's September 19 Autumn Arts Festival has concluded and is no longer presented as current.",
+                "Browse /directory?city=Burbank for 968 local listings and confirm the next city arts program on Burbank's official calendar.",
             )
         )
 
@@ -2090,10 +2088,9 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_arcadia and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation September guide includes Taste of Arcadia and the Mid-Autumn Moon Festival:",
-                "- Taste of Arcadia runs September 19 from 2-6 p.m. at Santa Anita Park, with 1 p.m. VIP entry, food and beverage sampling, live entertainment, and a business showcase; it is ticketed and 21 and over.",
+                "The current PerkNation September guide includes Arcadia's Mid-Autumn Moon Festival:",
                 "- The free Mid-Autumn Moon Festival runs September 26 from 5-8:30 p.m. on the City Hall Lawn, with live entertainment, children's activities, vendors, food, mooncake making, and parking at City Hall or Santa Anita Park Gate 5.",
-                "Open /articles/southern-california-september-events-2026#taste-of-arcadia or #arcadia-moon-festival for practical notes, official sources, and links into 40 Arcadia directory listings.",
+                "Open /articles/southern-california-september-events-2026#arcadia-moon-festival for practical notes, official sources, and links into 40 Arcadia directory listings.",
             )
         )
 
