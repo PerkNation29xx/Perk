@@ -90,7 +90,9 @@ def test_pasadena_guide_is_cross_linked_and_available_to_public_answers() -> Non
     )
 
     assert answer
-    assert "Pasadena ARTWalk" in answer
+    assert "Pasadena ARTWalk" not in answer
+    assert "The Visit" in answer
+    assert "Pasadena Chalk Festival" in answer
     assert "Sunset Sessions today" not in answer
     assert "/articles/pasadena-august-2026-guide" not in answer
     assert "Rose Bowl Flea Market" not in answer
