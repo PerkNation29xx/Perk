@@ -14,9 +14,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-three Southern California September plans" in html
-    assert 'dateModified": "2026-09-23"' in html
-    assert html.count("<h2") >= 36
+    assert "Thirty-five Southern California September plans" in html
+    assert 'dateModified": "2026-09-24"' in html
+    assert html.count("<h2") >= 38
     for expected in (
         "Seconds at PCH Food Fest",
         "https://www.visitlongbeach.com/events/seconds-at-pch-food-fest/",
@@ -77,9 +77,6 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "https://muzeo.org/plan-your-visit/",
         'id="muzeo-disney-exhibitions"',
         "/directory?q=restaurants&amp;city=Anaheim",
-        "Anaheim Ducks preseason at Honda Center",
-        "https://www.nhl.com/ducks/news/ducks-announce-2026-preseason-schedule",
-        'id="anaheim-ducks-preseason"',
         "Lucas Museum opening in Los Angeles",
         "https://lucasmuseum.org/about/tickets",
         "/directory?q=restaurants&amp;city=Los%20Angeles",
@@ -115,6 +112,15 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Creative Educators Network Burbank Institute",
         "https://visitburbank.com/events/",
         'id="burbank-creative-educators-institute"',
+        "Burbank Native American Day Celebration",
+        "https://www.burbankca.gov/web/parks-recreation/",
+        'id="burbank-native-american-day"',
+        "Watts Towers drum and jazz festivals",
+        "https://culture.lacity.gov/cultural-centers/watts-towers-campus",
+        'id="watts-towers-drum-jazz-festivals"',
+        "Artifacts from an Unborn Empire",
+        "https://www.glendaleca.gov/Home/Components/News/News/9677/16",
+        'id="artifacts-unborn-empire-glendale"',
         "Best for:",
         "/directory?city=Burbank",
         "/directory?city=Pasadena",
@@ -190,6 +196,8 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         'id="pasadena-greek-festival"',
         "Golden State Tattoo Expo",
         'id="golden-state-tattoo-expo"',
+        "Anaheim Ducks preseason at Honda Center",
+        'id="anaheim-ducks-preseason"',
     ):
         assert expired not in html
     for forbidden in (
@@ -222,8 +230,8 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated September 23 · September guide" in response.text
-        assert "Thirty-three Southern California September plans, ranked." in response.text
+        assert "Updated September 24 · September guide" in response.text
+        assert "Thirty-five Southern California September plans, ranked." in response.text
         assert "Angels' final Seattle game" not in response.text
         assert "Santa Monica Pier's free Locals' Night" not in response.text
         assert "Long Beach's food passport" in response.text
@@ -239,11 +247,11 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
         assert "the Autry Block Party" in response.text
         assert "Los Angeles Libros" in response.text
         assert "Dark Harbor" in response.text
-        assert "Glendale Tech Week and film festival" in response.text
-        assert "Laura Aguilar exhibition" in response.text
+        assert "Watts Towers drum and jazz festivals" in response.text
+        assert "Burbank's Native American Day celebration" in response.text
+        assert "Glendale's Artifacts from an Unborn Empire" in response.text
         assert "Ranchos Walk" in response.text
         assert "Spinal Dread" in response.text
-        assert "Urban Farm Dinner" in response.text
         assert "The Horror Show at the Academy Museum" in response.text
         assert "SoCal Fitness Festival" in response.text
         assert "Burbank's Creative Educators Institute" in response.text
@@ -279,7 +287,7 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     )
 
     assert answer
-    assert "Thirty-three Southern California September plans" in answer
+    assert "Thirty-five Southern California September plans" in answer
     assert "Angels-Mariners" not in answer
     assert "Locals' Night" not in answer
     assert "Seconds at PCH Food Fest" in answer
@@ -314,7 +322,7 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     assert "Craft & Vintage Fair" not in answer
     assert "dublab Open Air" in answer
     assert "Orange County Children's Book Festival" not in answer
-    assert "Anaheim Ducks preseason" in answer
+    assert "Anaheim Ducks preseason" not in answer
     assert "Huntington Beach Oktoberfest" in answer
     assert "Gatsby Redux" not in answer
     assert "Baja Splash" in answer
@@ -326,6 +334,10 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     assert "The Horror Show" in answer
     assert "SoCal Fitness Festival" in answer
     assert "Creative Educators Network Institute" in answer
+    assert "Native American Day celebration" in answer
+    assert "Watts Towers Day of the Drum" in answer
+    assert "Simon Rodia Jazz" in answer
+    assert "Artifacts from an Unborn Empire" in answer
     assert "/articles/southern-california-september-events-2026" in answer
     assert "Dine LA 2026 city guides" not in answer
 
@@ -345,8 +357,8 @@ def test_orange_county_city_answers_include_current_plans() -> None:
     assert "#san-clemente-car-show" not in answer
     assert "Orange County Children's Book Festival" not in answer
     assert "#oc-childrens-book-festival" not in answer
-    assert "Anaheim Ducks' remaining preseason" in answer
-    assert "#anaheim-ducks-preseason" in answer
+    assert "Anaheim Ducks" not in answer
+    assert "#anaheim-ducks-preseason" not in answer
     assert "Westminster" in answer
     assert "#westminster-fall-festival" in answer
     assert "SoCal Fitness Festival" in answer

@@ -86,6 +86,8 @@ def test_burbank_guide_is_archived_from_sitemap_and_public_answers() -> None:
     assert "Creative Educators Network Institute" in answer
     assert "September 23-25" in answer
     assert "#burbank-creative-educators-institute" in answer
+    assert "Native American Day Celebration" in answer
+    assert "#burbank-native-american-day" in answer
     assert "Career Transitions Expo" not in answer
     assert "Magnolia Park Food Truck Fridays" not in answer
     assert "Dine LA" not in answer

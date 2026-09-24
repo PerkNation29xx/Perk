@@ -92,6 +92,8 @@ def test_glendale_guide_is_cross_linked_and_available_to_public_answers() -> Non
     assert "Armenian Film Festival" not in answer
     assert "Glendale Tech Week" in answer
     assert "Glendale International Film Festival" in answer
+    assert "Artifacts from an Unborn Empire" in answer
+    assert "#artifacts-unborn-empire-glendale" in answer
     assert "Southern California Open chess tournament" not in answer
     assert "Brand Summer Concert Series finale today" not in answer
     assert "Classic Film Under the Stars" in answer

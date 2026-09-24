@@ -812,12 +812,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Thirty-three Southern California September plans",
-        "timing": "September 23-October 18, 2026",
+        "title": "Thirty-five Southern California September plans",
+        "timing": "September 24-October 18, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to Seconds at PCH Food Fest, Halloween at Kidspace, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Pasadena Playhouse's The Visit, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Westminster Fall Festival, SteelCraft Long Beach Oktoberfest, MOLAA's Lucha Libre weekend, the Autry Block Party, Los Angeles Libros Festival, and West Hollywood's free Jane Austen UnScripted performances. "
-            "Also covers the Academy Museum's The Horror Show, Huntington Beach's SoCal Fitness Festival, Burbank's Creative Educators Network Institute, Anaheim's Spinal Dread festival, The Huntington's Laura Aguilar exhibition, dublab Open Air in Santa Monica, Anaheim Ducks preseason, Baja Splash, Long Beach's Ranchos Walk and Urban Farm Dinner, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Orange County Burger Week, Pasadena Chalk Festival, Arcadia's Mid-Autumn Moon Festival, Glendale's Jewel City Concert Series, Glendale Tech Week, the Glendale International Film Festival, Glendale's free Classic Film Under the Stars, and Design West Hollywood."
+            "Also covers the Watts Towers Day of the Drum and Simon Rodia Jazz festivals, Burbank's Native American Day celebration and Creative Educators Network Institute, Glendale's Artifacts from an Unborn Empire exhibition, the Academy Museum's The Horror Show, Huntington Beach's SoCal Fitness Festival, Anaheim's Spinal Dread festival, The Huntington's Laura Aguilar exhibition, dublab Open Air in Santa Monica, Baja Splash, Long Beach's Ranchos Walk and Urban Farm Dinner, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Orange County Burger Week, Pasadena Chalk Festival, Arcadia's Mid-Autumn Moon Festival, Glendale's Jewel City Concert Series, Glendale Tech Week, the Glendale International Film Festival, Glendale's free Classic Film Under the Stars, and Design West Hollywood."
         ),
     },
 
@@ -1988,8 +1988,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current Orange County options include South Coast Repertory's Into the Woods through October 18, the Anaheim Ducks' remaining preseason home game against Los Angeles on September 23, Westminster's free Fall Festival on September 24-27, Huntington Beach's SoCal Fitness Festival on September 25-27, the free Spinal Dread horror-literature festival in Anaheim on September 26, Huntington Beach Oktoberfest through November 8, the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1, and Orange County Burger Week through September 26.",
-                "Open /articles/southern-california-september-events-2026#into-the-woods-costa-mesa, /articles/southern-california-september-events-2026#anaheim-ducks-preseason, /articles/southern-california-september-events-2026#westminster-fall-festival, /articles/southern-california-september-events-2026#socal-fitness-festival, /articles/southern-california-september-events-2026#spinal-dread-anaheim, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, /articles/southern-california-september-events-2026#muzeo-disney-exhibitions, or /articles/southern-california-september-events-2026#orange-county-burger-week for practical comparisons and current city-directory links.",
+                "Current Orange County options include South Coast Repertory's Into the Woods through October 18, Westminster's free Fall Festival on September 24-27, Huntington Beach's SoCal Fitness Festival on September 25-27, the free Spinal Dread horror-literature festival in Anaheim on September 26, Huntington Beach Oktoberfest through November 8, the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1, and Orange County Burger Week through September 26.",
+                "Open /articles/southern-california-september-events-2026#into-the-woods-costa-mesa, /articles/southern-california-september-events-2026#westminster-fall-festival, /articles/southern-california-september-events-2026#socal-fitness-festival, /articles/southern-california-september-events-2026#spinal-dread-anaheim, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, /articles/southern-california-september-events-2026#muzeo-disney-exhibitions, or /articles/southern-california-september-events-2026#orange-county-burger-week for practical comparisons and current city-directory links.",
             )
         )
 
@@ -2064,7 +2064,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "Burbank's Creative Educators Network Institute runs September 23-25 for arts, media, design, film, and entertainment educators, with a keynote, awards, industry sessions, and Friday field trips.",
-                "Open /articles/southern-california-september-events-2026#burbank-creative-educators-institute for the audience and registration caveats, or browse /directory?city=Burbank for 968 local listings.",
+                "The city's Native American Day Celebration follows September 25 from 6:30-8:30 p.m. at Stough Canyon Nature Center with dancers, crafts, games, and an official registration link; the city preview does not state an admission price, so confirm registration and capacity before traveling.",
+                "Open /articles/southern-california-september-events-2026#burbank-creative-educators-institute or #burbank-native-american-day for audience and planning caveats, or browse /directory?city=Burbank for 968 local listings.",
             )
         )
 
@@ -2079,8 +2080,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_glendale and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation September guide includes Glendale Tech Week, the Glendale International Film Festival, the free Jewel City Concert Series, and the free September 26 Classic Film Under the Stars screening of The Quiet Man.",
-                "Open /articles/southern-california-september-events-2026#glendale-tech-week, #glendale-international-film-festival, #jewel-city-concerts, or #classic-film-glendale for practical notes, or browse /directory?city=Glendale for 100 local listings.",
+                "The current PerkNation September guide includes Glendale Tech Week, the Glendale International Film Festival, the free Jewel City Concert Series, the free September 26 Classic Film Under the Stars screening of The Quiet Man, and Brand Library's free Artifacts from an Unborn Empire exhibition from September 26-December 31.",
+                "Open /articles/southern-california-september-events-2026#glendale-tech-week, #glendale-international-film-festival, #jewel-city-concerts, #classic-film-glendale, or #artifacts-unborn-empire-glendale for practical notes, or browse /directory?city=Glendale for 100 local listings.",
             )
         )
 
