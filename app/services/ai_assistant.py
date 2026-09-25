@@ -812,12 +812,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Thirty-five Southern California September plans",
-        "timing": "September 24-October 18, 2026",
+        "title": "Thirty-six Southern California September plans",
+        "timing": "September 25-October 18, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to Seconds at PCH Food Fest, Halloween at Kidspace, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Pasadena Playhouse's The Visit, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Westminster Fall Festival, SteelCraft Long Beach Oktoberfest, MOLAA's Lucha Libre weekend, the Autry Block Party, Los Angeles Libros Festival, and West Hollywood's free Jane Austen UnScripted performances. "
-            "Also covers the Watts Towers Day of the Drum and Simon Rodia Jazz festivals, Burbank's Native American Day celebration and Creative Educators Network Institute, Glendale's Artifacts from an Unborn Empire exhibition, the Academy Museum's The Horror Show, Huntington Beach's SoCal Fitness Festival, Anaheim's Spinal Dread festival, The Huntington's Laura Aguilar exhibition, dublab Open Air in Santa Monica, Baja Splash, Long Beach's Ranchos Walk and Urban Farm Dinner, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Orange County Burger Week, Pasadena Chalk Festival, Arcadia's Mid-Autumn Moon Festival, Glendale's Jewel City Concert Series, Glendale Tech Week, the Glendale International Film Festival, Glendale's free Classic Film Under the Stars, and Design West Hollywood."
+            "Also covers Anaheim's free Taiwan Carnival, the Watts Towers Day of the Drum and Simon Rodia Jazz festivals, Burbank's Native American Day celebration and Creative Educators Network Institute, Glendale's Artifacts from an Unborn Empire exhibition, the Academy Museum's The Horror Show, Huntington Beach's SoCal Fitness Festival, Anaheim's Spinal Dread festival, The Huntington's Laura Aguilar exhibition, the remaining dublab Open Air night in Santa Monica, Baja Splash, Long Beach's Ranchos Walk and Urban Farm Dinner, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Orange County Burger Week, Pasadena Chalk Festival, Arcadia's Mid-Autumn Moon Festival, Glendale's Jewel City Concert Series, Glendale Tech Week, the Glendale International Film Festival, Glendale's free Classic Film Under the Stars, and Design West Hollywood."
         ),
     },
 
@@ -905,10 +905,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, coastal art, wellness, movies, markets, and local history",
         "city": "Santa Monica",
         "title": "Santa Monica September 2026 coastal events guide",
-        "timing": "September 23-October 17, 2026",
+        "timing": "September 25-October 17, 2026",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Five current free plans covering Between Darkness and Dawn, Wellness & Waves, two dublab Open Air nights, "
+            "Five current free plans covering Between Darkness and Dawn, Wellness & Waves, the remaining dublab Open Air night, "
             "Doors Open California at the Marion Davies Guest House, and the Pico farmers market, "
             "plus the City of Santa Monica's Ocean Way cancellation notice."
         ),
@@ -1988,8 +1988,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current Orange County options include South Coast Repertory's Into the Woods through October 18, Westminster's free Fall Festival on September 24-27, Huntington Beach's SoCal Fitness Festival on September 25-27, the free Spinal Dread horror-literature festival in Anaheim on September 26, Huntington Beach Oktoberfest through November 8, the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1, and Orange County Burger Week through September 26.",
-                "Open /articles/southern-california-september-events-2026#into-the-woods-costa-mesa, /articles/southern-california-september-events-2026#westminster-fall-festival, /articles/southern-california-september-events-2026#socal-fitness-festival, /articles/southern-california-september-events-2026#spinal-dread-anaheim, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, /articles/southern-california-september-events-2026#muzeo-disney-exhibitions, or /articles/southern-california-september-events-2026#orange-county-burger-week for practical comparisons and current city-directory links.",
+                "Current Orange County options include South Coast Repertory's Into the Woods through October 18, Westminster's free Fall Festival on September 24-27, Anaheim's free Taiwan Carnival on September 25-27, Huntington Beach's SoCal Fitness Festival on September 25-27, the free Spinal Dread horror-literature festival in Anaheim on September 26, Huntington Beach Oktoberfest through November 8, the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1, and Orange County Burger Week through September 26.",
+                "Open /articles/southern-california-september-events-2026#into-the-woods-costa-mesa, /articles/southern-california-september-events-2026#westminster-fall-festival, /articles/southern-california-september-events-2026#taiwan-carnival-anaheim, /articles/southern-california-september-events-2026#socal-fitness-festival, /articles/southern-california-september-events-2026#spinal-dread-anaheim, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, /articles/southern-california-september-events-2026#muzeo-disney-exhibitions, or /articles/southern-california-september-events-2026#orange-county-burger-week for practical comparisons and current city-directory links.",
             )
         )
 
@@ -2029,7 +2029,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "The current PerkNation Santa Monica guide ranks five free September plans:",
-                "- Compare the Between Darkness and Dawn exhibition through September 27, Saturday Wellness & Waves at the Pier, two dublab Open Air nights at Reed Park on September 24-25, September 26-27 Doors Open California tours at the Marion Davies Guest House, and the Saturday Pico farmers market.",
+                "- Compare the Between Darkness and Dawn exhibition through September 27, Saturday Wellness & Waves at the Pier, the remaining dublab Open Air dance-floor program at Reed Park on September 25, September 26-27 Doors Open California tours at the Marion Davies Guest House, and the Saturday Pico farmers market.",
                 "- Ocean Way Festival has been canceled because storm damage made the beach site unsafe; do not travel to Santa Monica for the September 26-27 festival.",
                 "Open /articles/santa-monica-august-2026-guide for rankings, best-for notes, weather, transit, official sources, and the city's cancellation notice.",
             )

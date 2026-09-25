@@ -14,9 +14,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-five Southern California September plans" in html
-    assert 'dateModified": "2026-09-24"' in html
-    assert html.count("<h2") >= 38
+    assert "Thirty-six Southern California September plans" in html
+    assert 'dateModified": "2026-09-25"' in html
+    assert html.count("<h2") >= 39
     for expected in (
         "Seconds at PCH Food Fest",
         "https://www.visitlongbeach.com/events/seconds-at-pch-food-fest/",
@@ -36,6 +36,9 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Lucha Libre Weekend at MOLAA",
         "https://molaa.org/2026-lucha-libre",
         'id="molaa-lucha-libre"',
+        "Taiwan Carnival in Anaheim",
+        "https://www.visitanaheim.org/event/2026-taiwan-carnival/3433/",
+        'id="taiwan-carnival-anaheim"',
         "Love Letters to L.A. at the Autry",
         "https://theautry.org/events/autry-outdoors/love-letters-la-autry-block-party",
         'id="autry-block-party"',
@@ -230,8 +233,8 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated September 24 · September guide" in response.text
-        assert "Thirty-five Southern California September plans, ranked." in response.text
+        assert "Updated September 25 · September guide" in response.text
+        assert "Thirty-six Southern California September plans, ranked." in response.text
         assert "Angels' final Seattle game" not in response.text
         assert "Santa Monica Pier's free Locals' Night" not in response.text
         assert "Long Beach's food passport" in response.text
@@ -244,6 +247,7 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
         assert "Westminster Fall Festival" in response.text
         assert "SteelCraft Long Beach Oktoberfest" in response.text
         assert "MOLAA Lucha Libre" in response.text
+        assert "Anaheim's free Taiwan Carnival" in response.text
         assert "the Autry Block Party" in response.text
         assert "Los Angeles Libros" in response.text
         assert "Dark Harbor" in response.text
@@ -287,7 +291,7 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     )
 
     assert answer
-    assert "Thirty-five Southern California September plans" in answer
+    assert "Thirty-six Southern California September plans" in answer
     assert "Angels-Mariners" not in answer
     assert "Locals' Night" not in answer
     assert "Seconds at PCH Food Fest" in answer
@@ -301,6 +305,7 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     assert "Westminster Fall Festival" in answer
     assert "SteelCraft Long Beach Oktoberfest" in answer
     assert "Lucha Libre weekend" in answer
+    assert "Taiwan Carnival" in answer
     assert "Autry Block Party" in answer
     assert "Los Angeles Libros Festival" in answer
     assert "Dark Harbor" in answer

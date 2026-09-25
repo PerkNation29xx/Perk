@@ -1,45 +1,24 @@
 window.PERK_NATION_EVENTS = [
   {
-    slug: "carin-leon-san-diego",
-    category: "Concerts",
-    title: "Carín León brings his arena tour to San Diego",
-    eventName: "Carín León — De Sonora Para El Mundo Tour",
-    date: "September 24, 2026",
-    time: "7:00 PM",
-    city: "San Diego",
-    venue: "Pechanga Arena",
-    image: "https://pechangaarenasd.com/wp-content/uploads/0924-SanDiego-CarinLeon-750x400-1.jpg",
-    imageAlt: "Carín León San Diego concert artwork",
-    officialUrl: "https://pechangaarenasd.com/event/carin-leon-north-american-tour-2026/",
-    summary: "The Mexican singer-songwriter’s De Sonora Para El Mundo Tour stops at Pechanga Arena.",
-    intro: "Carín León’s 2026 arena run arrives in San Diego with a show built around his contemporary regional Mexican sound.",
-    paragraphs: [
-      "The Thursday-night date gives Southern California fans a major Latin music event late in the summer calendar. Pechanga Arena lists a 7:00 PM start.",
-      "Ticket availability, accessible seating and venue policies can change, so use the official arena listing for the latest event-day details."
-    ],
-    highlights: ["Major Latin arena tour", "Southern California stop", "Thursday night performance"],
-    credit: "Official promotional artwork via Pechanga Arena San Diego"
-  },
-  {
-    slug: "ringling-san-diego-2026",
+    slug: "taiwan-carnival-anaheim-2026",
     category: "Live events",
-    title: "The Greatest Show on Earth returns to San Diego",
-    eventName: "Ringling Bros. and Barnum & Bailey",
-    date: "September 11–13, 2026",
-    time: "Multiple performances",
-    city: "San Diego",
-    venue: "Pechanga Arena",
-    image: "https://pechangaarenasd.com/wp-content/uploads/2026/04/750x400-ArtOnly.jpg",
-    imageAlt: "Ringling Bros. and Barnum & Bailey show artwork",
-    officialUrl: "https://pechangaarenasd.com/series/ringling-bros-and-barnum-bailey/",
-    summary: "A full weekend of acrobatics, comedy and family entertainment comes to Pechanga Arena.",
-    intro: "The reimagined Ringling production brings a multi-performance family weekend to San Diego with acrobatics, music, comedy and large-scale stunts.",
+    title: "Taiwan Carnival brings a free culture-and-food weekend to Anaheim",
+    eventName: "2026 Taiwan Carnival",
+    date: "September 25–27, 2026",
+    time: "Friday 4–9 PM; Saturday noon–9 PM; Sunday noon–8 PM",
+    city: "Anaheim",
+    venue: "Anaheim GardenWalk",
+    image: "/assets/articles/southern-california-september-events-2026.png",
+    imageAlt: "Southern California festival with food, art, live music, and families at golden hour",
+    officialUrl: "https://www.visitanaheim.org/event/2026-taiwan-carnival/3433/",
+    summary: "Free admission, Taiwanese street food, puppetry, live performances, shopping, games, and family activities fill Anaheim GardenWalk for three days.",
+    intro: "Taiwan Carnival turns Anaheim GardenWalk into a three-day celebration of Taiwanese food, traditional arts, performance, and community.",
     paragraphs: [
-      "Performances run Friday through Sunday, including daytime and evening options. That range makes the engagement one of the calendar’s strongest family-event picks.",
-      "Showtimes vary by day. Families should confirm the selected performance and current child ticket requirements on the official event series page."
+      "The free program includes Taiwanese street food, a traditional puppet show, live music and dance, artisan shopping, festival games, collectible pins, and temple-festival-inspired photo displays. A free advance RSVP adds access to prize drawings and a festival map.",
+      "Friday is the shortest evening visit, Saturday has the longest program window, and Sunday offers a daytime finish. Food and parking cost extra; the official listing says the first garage hour is complimentary and later hours are charged."
     ],
-    highlights: ["Friday through Sunday", "Multiple family showtimes", "Acrobatics and live stunts"],
-    credit: "Official promotional artwork via Pechanga Arena San Diego"
+    highlights: ["Free public admission", "Three distinct daily schedules", "Taiwanese food and traditional arts", "Family activities and marketplace"],
+    credit: "Perk Nation Southern California events guide"
   },
   {
     slug: "chargers-home-opener-2026",

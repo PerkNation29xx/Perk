@@ -80,3 +80,23 @@ def test_expired_ufc_sacramento_is_removed_from_current_event_surfaces() -> None
         response = client.get(route)
         assert response.status_code == 200
         assert "UFC returns to Sacramento" not in response.text
+
+
+def test_expired_san_diego_events_are_replaced_by_taiwan_carnival() -> None:
+    source = EVENTS_DATA.read_text(encoding="utf-8")
+    assert "carin-leon-san-diego" not in source
+    assert "ringling-san-diego-2026" not in source
+    assert "taiwan-carnival-anaheim-2026" in source
+    assert "September 25–27, 2026" in source
+
+    client = TestClient(app)
+    for slug in ("carin-leon-san-diego", "ringling-san-diego-2026"):
+        assert client.get(f"/events/{slug}").status_code == 404
+
+    current = client.get("/events/taiwan-carnival-anaheim-2026")
+    assert current.status_code == 200
+
+    sitemap = client.get("/sitemap.xml").text
+    assert "carin-leon-san-diego" not in sitemap
+    assert "ringling-san-diego-2026" not in sitemap
+    assert "https://perknation.app/events/taiwan-carnival-anaheim-2026" in sitemap
