@@ -813,11 +813,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
         "title": "Thirty-six Southern California September plans",
-        "timing": "September 25-October 18, 2026",
+        "timing": "September 26-October 18, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to Seconds at PCH Food Fest, Halloween at Kidspace, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Pasadena Playhouse's The Visit, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Westminster Fall Festival, SteelCraft Long Beach Oktoberfest, MOLAA's Lucha Libre weekend, the Autry Block Party, Los Angeles Libros Festival, and West Hollywood's free Jane Austen UnScripted performances. "
-            "Also covers Anaheim's free Taiwan Carnival, the Watts Towers Day of the Drum and Simon Rodia Jazz festivals, Burbank's Native American Day celebration and Creative Educators Network Institute, Glendale's Artifacts from an Unborn Empire exhibition, the Academy Museum's The Horror Show, Huntington Beach's SoCal Fitness Festival, Anaheim's Spinal Dread festival, The Huntington's Laura Aguilar exhibition, the remaining dublab Open Air night in Santa Monica, Baja Splash, Long Beach's Ranchos Walk and Urban Farm Dinner, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Orange County Burger Week, Pasadena Chalk Festival, Arcadia's Mid-Autumn Moon Festival, Glendale's Jewel City Concert Series, Glendale Tech Week, the Glendale International Film Festival, Glendale's free Classic Film Under the Stars, and Design West Hollywood."
+            "Also covers Anaheim's free Taiwan Carnival, the Watts Towers Day of the Drum and Simon Rodia Jazz festivals, Pasadena's Where History Meets the Road Route 66 exhibition, West Hollywood's free World Dog Day, Burbank's Moonlight Hike, Glendale's Artifacts from an Unborn Empire exhibition, the Academy Museum's The Horror Show, Huntington Beach's SoCal Fitness Festival, Anaheim's Spinal Dread festival, The Huntington's Laura Aguilar exhibition, Baja Splash, Long Beach's Ranchos Walk and Urban Farm Dinner, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Orange County Burger Week, Pasadena Chalk Festival, Arcadia's Mid-Autumn Moon Festival, Glendale's Jewel City Concert Series, Glendale Tech Week, the Glendale International Film Festival, Glendale's free Classic Film Under the Stars, and Design West Hollywood."
         ),
     },
 
@@ -905,10 +905,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, coastal art, wellness, movies, markets, and local history",
         "city": "Santa Monica",
         "title": "Santa Monica September 2026 coastal events guide",
-        "timing": "September 25-October 17, 2026",
+        "timing": "September 26-October 17, 2026",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Five current free plans covering Between Darkness and Dawn, Wellness & Waves, the remaining dublab Open Air night, "
+            "Four current free plans covering Between Darkness and Dawn, Wellness & Waves, "
             "Doors Open California at the Marion Davies Guest House, and the Pico farmers market, "
             "plus the City of Santa Monica's Ocean Way cancellation notice."
         ),
@@ -2028,8 +2028,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks five free September plans:",
-                "- Compare the Between Darkness and Dawn exhibition through September 27, Saturday Wellness & Waves at the Pier, the remaining dublab Open Air dance-floor program at Reed Park on September 25, September 26-27 Doors Open California tours at the Marion Davies Guest House, and the Saturday Pico farmers market.",
+                "The current PerkNation Santa Monica guide ranks four free September plans:",
+                "- Compare the Between Darkness and Dawn exhibition through September 27, Saturday Wellness & Waves at the Pier, September 26-27 Doors Open California tours at the Marion Davies Guest House, and the Saturday Pico farmers market.",
                 "- Ocean Way Festival has been canceled because storm damage made the beach site unsafe; do not travel to Santa Monica for the September 26-27 festival.",
                 "Open /articles/santa-monica-august-2026-guide for rankings, best-for notes, weather, transit, official sources, and the city's cancellation notice.",
             )
@@ -2063,17 +2063,17 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_burbank and not wants_restaurants:
         return "\n".join(
             (
-                "Burbank's Creative Educators Network Institute runs September 23-25 for arts, media, design, film, and entertainment educators, with a keynote, awards, industry sessions, and Friday field trips.",
-                "The city's Native American Day Celebration follows September 25 from 6:30-8:30 p.m. at Stough Canyon Nature Center with dancers, crafts, games, and an official registration link; the city preview does not state an admission price, so confirm registration and capacity before traveling.",
-                "Open /articles/southern-california-september-events-2026#burbank-creative-educators-institute or #burbank-native-american-day for audience and planning caveats, or browse /directory?city=Burbank for 968 local listings.",
+                "Burbank's September 26 Moonlight Hike is a short, easy, staff-led Stough Canyon outing to The View; the city calendar lists 7 p.m., but the nature-center page says monthly times vary, so register and confirm before leaving.",
+                "Adults must accompany children under 12, strollers are not recommended, and hikers should bring water, closed-toe shoes, and layers.",
+                "Open /articles/southern-california-september-events-2026#burbank-moonlight-hike for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
             )
         )
 
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation September guide includes Halloween at Kidspace, Pasadena Playhouse's The Visit, the Pasadena Chalk Festival, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
-                "Use the full guide for ranked best-for and transit notes, open /articles/southern-california-september-events-2026#the-visit-pasadena for theater guidance or #laura-aguilar-day-of-the-dead for the exhibition, or browse /directory?city=Pasadena for 563 local listings.",
+                "The current PerkNation September guide includes Halloween at Kidspace, Pasadena Playhouse's The Visit, the Pasadena Chalk Festival, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
+                "Use the full guide for ranked best-for and transit notes, open /articles/southern-california-september-events-2026#the-visit-pasadena for theater guidance, #pasadena-route-66-exhibition for history, or #laura-aguilar-day-of-the-dead for photography, or browse /directory?city=Pasadena for 563 local listings.",
             )
         )
 

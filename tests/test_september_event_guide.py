@@ -15,7 +15,7 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Thirty-six Southern California September plans" in html
-    assert 'dateModified": "2026-09-25"' in html
+    assert 'dateModified": "2026-09-26"' in html
     assert html.count("<h2") >= 39
     for expected in (
         "Seconds at PCH Food Fest",
@@ -74,8 +74,9 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "https://www.weho.org/Home/Components/Calendar/Event/32133/1106",
         'id="weho-jane-austen"',
         "Pasadena Chalk Festival",
-        "dublab Open Air in Santa Monica",
-        'id="santa-monica-dublab"',
+        "Where History Meets the Road",
+        "https://pasadenacenter.visitpasadena.com/events/where-history-meets-the-road-celebrating-route-66-colorado-boulevard/",
+        'id="pasadena-route-66-exhibition"',
         "Walt Disney Archives and Disneyland art at Muzeo",
         "https://muzeo.org/plan-your-visit/",
         'id="muzeo-disney-exhibitions"',
@@ -112,12 +113,12 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "The Horror Show",
         "https://www.academymuseum.org/exhibitions/the-horror-show",
         'id="academy-museum-horror-show"',
-        "Creative Educators Network Burbank Institute",
-        "https://visitburbank.com/events/",
-        'id="burbank-creative-educators-institute"',
-        "Burbank Native American Day Celebration",
-        "https://www.burbankca.gov/web/parks-recreation/",
-        'id="burbank-native-american-day"',
+        "World Dog Day in West Hollywood",
+        "https://www.weho.org/Home/Components/News/News/12294/",
+        'id="weho-world-dog-day"',
+        "Burbank Moonlight Hike",
+        "https://www.burbankca.gov/web/parks-recreation/nature-center",
+        'id="burbank-moonlight-hike"',
         "Watts Towers drum and jazz festivals",
         "https://culture.lacity.gov/cultural-centers/watts-towers-campus",
         'id="watts-towers-drum-jazz-festivals"',
@@ -201,6 +202,12 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         'id="golden-state-tattoo-expo"',
         "Anaheim Ducks preseason at Honda Center",
         'id="anaheim-ducks-preseason"',
+        "dublab Open Air in Santa Monica",
+        'id="santa-monica-dublab"',
+        "Creative Educators Network Burbank Institute",
+        'id="burbank-creative-educators-institute"',
+        "Burbank Native American Day Celebration",
+        'id="burbank-native-american-day"',
     ):
         assert expired not in html
     for forbidden in (
@@ -233,7 +240,7 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated September 25 · September guide" in response.text
+        assert "Updated September 26 · September guide" in response.text
         assert "Thirty-six Southern California September plans, ranked." in response.text
         assert "Angels' final Seattle game" not in response.text
         assert "Santa Monica Pier's free Locals' Night" not in response.text
@@ -252,13 +259,16 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
         assert "Los Angeles Libros" in response.text
         assert "Dark Harbor" in response.text
         assert "Watts Towers drum and jazz festivals" in response.text
-        assert "Burbank's Native American Day celebration" in response.text
+        assert "Pasadena's Route 66 exhibition" in response.text
+        assert "West Hollywood's World Dog Day" in response.text
         assert "Glendale's Artifacts from an Unborn Empire" in response.text
         assert "Ranchos Walk" in response.text
         assert "Spinal Dread" in response.text
         assert "The Horror Show at the Academy Museum" in response.text
         assert "SoCal Fitness Festival" in response.text
-        assert "Burbank's Creative Educators Institute" in response.text
+        assert "Burbank's Moonlight Hike" in response.text
+        assert "Burbank's Native American Day celebration" not in response.text
+        assert "Burbank's Creative Educators Institute" not in response.text
         assert "Dine LA's final day is organized" not in response.text
         assert "Fourteen Southern California summer plans, ranked." not in response.text
         assert "Free Locals' Night brings punk, salsa, vendors, and family activities to Santa Monica Pier" not in response.text
@@ -325,7 +335,7 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     assert "Zootoberfest" not in answer
     assert "State of the Arts" not in answer
     assert "Craft & Vintage Fair" not in answer
-    assert "dublab Open Air" in answer
+    assert "Where History Meets the Road" in answer
     assert "Orange County Children's Book Festival" not in answer
     assert "Anaheim Ducks preseason" not in answer
     assert "Huntington Beach Oktoberfest" in answer
@@ -338,8 +348,10 @@ def test_september_guide_is_current_in_public_review_answers() -> None:
     assert "Urban Farm Dinner" in answer
     assert "The Horror Show" in answer
     assert "SoCal Fitness Festival" in answer
-    assert "Creative Educators Network Institute" in answer
-    assert "Native American Day celebration" in answer
+    assert "World Dog Day" in answer
+    assert "Burbank's Moonlight Hike" in answer
+    assert "Creative Educators Network Institute" not in answer
+    assert "Native American Day celebration" not in answer
     assert "Watts Towers Day of the Drum" in answer
     assert "Simon Rodia Jazz" in answer
     assert "Artifacts from an Unborn Empire" in answer
@@ -384,6 +396,8 @@ def test_pasadena_answer_no_longer_promotes_expired_fiestas_patrias() -> None:
     assert "The Visit" in answer
     assert "#the-visit-pasadena" in answer
     assert "Pasadena Chalk Festival" in answer
+    assert "Where History Meets the Road" in answer
+    assert "#pasadena-route-66-exhibition" in answer
     assert "Laura Aguilar" in answer
     assert "#laura-aguilar-day-of-the-dead" in answer
     assert "Pasadena Fiestas Patrias" not in answer
