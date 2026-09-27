@@ -97,6 +97,7 @@ def test_orange_county_roundup_link_and_public_answer_are_scoped() -> None:
     assert "concluded on September 6" in answer
     assert "September 3 Family Style" not in answer
     assert "/articles/orange-county-august-2026-guide" not in answer
-    assert "Orange County Burger Week" in answer
-    assert "/articles/southern-california-september-events-2026#orange-county-burger-week" in answer
+    assert "Orange County Burger Week" not in answer
+    assert "Huntington Beach Oktoberfest" in answer
+    assert "/articles/southern-california-september-events-2026#huntington-beach-oktoberfest" in answer
     assert "Pasadena" not in answer

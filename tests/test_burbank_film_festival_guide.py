@@ -45,9 +45,10 @@ def test_burbank_film_guide_stays_retired_while_current_burbank_guide_is_answere
     )
 
     assert answer
-    assert "Moonlight Hike" in answer
-    assert "September 26" in answer
-    assert "#burbank-moonlight-hike" in answer
+    assert "Burbank Book Festival" in answer
+    assert "October 3" in answer
+    assert "#burbank-book-festival" in answer
+    assert "Moonlight Hike" not in answer
     assert "Career Transitions Expo" not in answer
     assert "/articles/burbank-august-2026-guide" not in answer
     assert "/articles/burbank-film-festival-2026-guide" not in answer

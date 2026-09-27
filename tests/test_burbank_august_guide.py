@@ -83,9 +83,10 @@ def test_burbank_guide_is_archived_from_sitemap_and_public_answers() -> None:
         "home_local_guide",
     )
     assert answer
-    assert "Moonlight Hike" in answer
-    assert "September 26" in answer
-    assert "#burbank-moonlight-hike" in answer
+    assert "Burbank Book Festival" in answer
+    assert "October 3" in answer
+    assert "#burbank-book-festival" in answer
+    assert "Moonlight Hike" not in answer
     assert "Creative Educators Network Institute" not in answer
     assert "Native American Day Celebration" not in answer
     assert "Career Transitions Expo" not in answer

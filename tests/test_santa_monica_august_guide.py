@@ -16,7 +16,7 @@ def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> 
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Santa Monica has four current September plans" in html
-    assert 'dateModified": "2026-09-26"' in html
+    assert 'dateModified": "2026-09-27"' in html
     assert html.count("<h2>") >= 8
     for expected in (
         "4 ranked plans",
@@ -71,7 +71,7 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated September 26 · Santa Monica") == 1
+        assert response.text.count("Updated September 27 · Santa Monica") == 1
         assert "Four free Santa Monica September plans, ranked." in response.text
         assert "Compare Pier Locals' Night" not in response.text
         assert "Ocean Way has been canceled." in response.text
