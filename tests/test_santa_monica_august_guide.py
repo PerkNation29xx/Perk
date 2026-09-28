@@ -15,22 +15,21 @@ AUGUST_GUIDE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-cal
 def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Santa Monica has four current September plans" in html
-    assert 'dateModified": "2026-09-27"' in html
-    assert html.count("<h2>") >= 8
+    assert "Santa Monica has four current October plans" in html
+    assert 'dateModified": "2026-09-28"' in html
+    assert html.count("<h2>") >= 7
     for expected in (
         "4 ranked plans",
-        "Between Darkness and Dawn",
-        "https://www.santamonica.com/event/between-darkness-and-dawn/all/",
+        "Montana Avenue Art Walk",
+        "https://www.santamonica.com/event/montana-avenue-art-walk-3/",
+        "Join &amp; Thrive",
+        "santa-monica-public-library-and-bahala-present-join-thrive-film-screening-and-volunteer-fair",
         "Wellness &amp; Waves",
-        "Doors Open California",
         "Pico Farmers Market",
-        "has been canceled",
         "Best for:",
         "/directory?city=Santa%20Monica",
         "/articles/southern-california-september-events-2026",
-        "https://www.santamonica.com/event/pico-farmers-market/2026-09-26/",
-        "https://www.santamonica.gov/press/2026/09/11/beach-damage-from-hurricane-marie-forces-cancellation-of-inaugural-ocean-way-festival-to-2027",
+        "https://www.santamonica.com/event/pico-farmers-market/2026-10-03/",
     ):
         assert expected in html
     assert "Punk Night at the Pier" not in html
@@ -39,6 +38,9 @@ def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> 
     assert "Hispanic Heritage library doubleheader" not in html
     assert "Thai Fest by the Beach" not in html
     assert "dublab Open Air" not in html
+    assert "Between Darkness and Dawn" not in html
+    assert "Doors Open California" not in html
+    assert "Ocean Way" not in html
 
     for forbidden in (
         "Examples from the official listing",
@@ -71,10 +73,10 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated September 27 · Santa Monica") == 1
-        assert "Four free Santa Monica September plans, ranked." in response.text
+        assert response.text.count("Updated September 28 · Santa Monica") == 1
+        assert "Four free Santa Monica October plans, ranked." in response.text
         assert "Compare Pier Locals' Night" not in response.text
-        assert "Ocean Way has been canceled." in response.text
+        assert "Ocean Way has been canceled." not in response.text
         assert "Tongva Twilight through September 12" not in response.text
         assert "Updated August 28" in response.text
 
@@ -98,16 +100,17 @@ def test_santa_monica_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "ranks four free September plans" in answer
+    assert "ranks four free October plans" in answer
     assert "Punk Night at the Pier" not in answer
     assert "Voices of Strength" not in answer
-    assert "Between Darkness and Dawn" in answer
+    assert "Montana Avenue Art Walk" in answer
+    assert "Join & Thrive" in answer
     assert "Thai Fest by the Beach" not in answer
     assert "August 7" not in answer
     assert "Pier history talk" not in answer
     assert "Hispanic Heritage" not in answer
     assert "dublab Open Air" not in answer
-    assert "Doors Open California" in answer
-    assert "has been canceled" in answer
+    assert "Doors Open California" not in answer
+    assert "has been canceled" not in answer
     assert "/articles/santa-monica-august-2026-guide" in answer
     assert "Glendale" not in answer

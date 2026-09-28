@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -11,101 +12,62 @@ ARTICLE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-californ
 IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern-california-september-events-2026.png"
 
 
-def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
+def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty Southern California September plans" in html
-    assert 'dateModified": "2026-09-27"' in html
-    assert html.count("<h2") >= 33
+    assert "Twenty-four Southern California fall plans" in html
+    assert 'dateModified": "2026-09-28"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 25))
     for expected in (
-        "Seconds at PCH Food Fest",
-        "https://www.visitlongbeach.com/events/seconds-at-pch-food-fest/",
-        'id="seconds-at-pch-food-fest"',
+        "Glendale International Film Festival awards night",
+        'id="glendale-international-film-festival"',
+        "https://glendaleiff.org/festival-schedule-26/",
+        "Design West Hollywood",
+        'id="design-west-hollywood"',
         "Halloween at Kidspace",
-        "https://kidspacemuseum.org/event/halloween-at-kidspace-3/",
         'id="kidspace-halloween"',
         "Spider Pavilion at the Natural History Museum",
-        "https://nhm.org/experience-nhm/exhibitions-natural-history-museum/spider-pavilion",
         'id="spider-pavilion"',
         "Into the Woods",
-        "https://www.scr.org/plays/productions/26-27-season/into-the-woods/",
         'id="into-the-woods-costa-mesa"',
         "at Pasadena Playhouse",
-        "https://www.pasadenaplayhouse.org/event/the-visit/",
         'id="the-visit-pasadena"',
-        "Lucha Libre Weekend at MOLAA",
-        "https://molaa.org/2026-lucha-libre",
-        'id="molaa-lucha-libre"',
-        "Taiwan Carnival in Anaheim",
-        "https://www.visitanaheim.org/event/2026-taiwan-carnival/3433/",
-        'id="taiwan-carnival-anaheim"',
-        "Los Angeles Korean Festival",
-        "https://www.lakoreanfestival.org/parking/",
-        'id="los-angeles-korean-festival"',
-        "Burbank Book Festival",
-        "third-annual-burbank-book-festival-returns-october-3",
-        'id="burbank-book-festival"',
-        "Glendale Cultural Festival",
-        "https://www.glendaleca.gov/Home/Components/Calendar/Event/56256/20",
-        'id="glendale-cultural-festival"',
-        "Queen Mary's Dark Harbor",
-        "https://www.queenmary.com/seasonal-events.htm",
-        'id="queen-mary-dark-harbor"',
-        "Westminster Fall Festival",
-        "https://www.westminster-ca.gov/departments/community-services/fall-festival",
-        'id="westminster-fall-festival"',
-        "SteelCraft Long Beach Oktoberfest",
-        "https://steelcraftlb.com/events/oktoberfest-at-steelcraft-long-beach/",
-        'id="steelcraft-long-beach-oktoberfest"',
-        "Laura Aguilar: Day of the Dead at The Huntington",
-        "https://www.huntington.org/exhibitions",
-        'id="laura-aguilar-day-of-the-dead"',
-        "/directory?q=restaurants&amp;city=Costa%20Mesa",
         "Huntington Beach Oktoberfest",
-        "https://www.oldworldhb.com/oktoberfest-orange-county/",
         'id="huntington-beach-oktoberfest"',
-        "Baja Splash in Long Beach",
-        "https://www.aquariumofpacific.org/events/info/baja_splash_cultural_festival/",
-        'id="baja-splash"',
-        "Jane Austen UnScripted in West Hollywood",
-        "https://www.weho.org/Home/Components/Calendar/Event/32133/1106",
-        'id="weho-jane-austen"',
-        "Pasadena Chalk Festival",
-        "Where History Meets the Road",
-        "https://pasadenacenter.visitpasadena.com/events/where-history-meets-the-road-celebrating-route-66-colorado-boulevard/",
-        'id="pasadena-route-66-exhibition"',
+        "Queen Mary's Dark Harbor",
+        'id="queen-mary-dark-harbor"',
+        "Los Angeles Korean Festival",
+        'id="los-angeles-korean-festival"',
+        "Tustin Tiller Days",
+        'id="tustin-tiller-days"',
+        "https://www.tustinca.org/637/Tustin-Tiller-Days",
+        "Burbank Book Festival",
+        'id="burbank-book-festival"',
+        "West Hollywood Movies in the Park",
+        'id="weho-princess-and-the-frog"',
+        "Montana Avenue Art Walk in Santa Monica",
+        'id="santa-monica-montana-art-walk"',
+        "Glendale Cultural Festival",
+        'id="glendale-cultural-festival"',
+        "ArtNight Pasadena",
+        'id="artnight-pasadena"',
+        "Long Beach Marathon weekend",
+        'id="long-beach-marathon"',
+        "Beverly Hills Art Show",
+        'id="beverly-hills-art-show"',
         "Walt Disney Archives and Disneyland art at Muzeo",
-        "https://muzeo.org/plan-your-visit/",
         'id="muzeo-disney-exhibitions"',
-        "/directory?q=restaurants&amp;city=Anaheim",
         "Lucas Museum opening in Los Angeles",
-        "https://lucasmuseum.org/about/tickets",
-        "/directory?q=restaurants&amp;city=Los%20Angeles",
+        'id="lucas-museum-opening"',
+        "Where History Meets the Road",
+        'id="pasadena-route-66-exhibition"',
         "Jewel City Concert Series in Glendale",
         'id="jewel-city-concerts"',
-        "Design West Hollywood",
-        "https://www.visitwesthollywood.com/events/design-west-hollywood/",
-        "Mariachi Meets The Smiths",
-        "https://www.laphil.com/events/instances/6rkvv4fv/2026-09-27/mariachi-meets-the-smiths",
-        'id="mariachi-meets-the-smiths"',
-        "Glendale International Film Festival",
-        "https://glendaleiff.org/festival-schedule-26/",
-        'id="glendale-international-film-festival"',
-        "/directory?q=entertainment&amp;city=Glendale",
-        "Long Beach Urban Farm Dinner",
-        "https://primalalchemy.com/",
-        'id="long-beach-urban-farm-dinner"',
-        "SoCal Fitness Festival in Huntington Beach",
-        "https://socalfitnessfestival.com/",
-        'id="socal-fitness-festival"',
+        "Laura Aguilar: Day of the Dead at The Huntington",
+        'id="laura-aguilar-day-of-the-dead"',
         "The Horror Show",
-        "https://www.academymuseum.org/exhibitions/the-horror-show",
         'id="academy-museum-horror-show"',
-        "Simon Rodia Watts Towers Jazz Festival",
-        "https://culture.lacity.gov/cultural-centers/watts-towers-campus",
-        'id="watts-towers-drum-jazz-festivals"',
         "Artifacts from an Unborn Empire",
-        "https://www.glendaleca.gov/Home/Components/News/News/9677/16",
         'id="artifacts-unborn-empire-glendale"',
         "Best for:",
         "/directory?city=Burbank",
@@ -113,105 +75,27 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         "/directory?city=Long%20Beach",
     ):
         assert expected in html
+
     for expired in (
-        "Caribbean Heritage Festival",
-        "Ocean Way Festival",
-        "Craft Beer LB Fest",
-        "Levitt VIBE",
-        "Arcadia Health Fair",
-        "Rose Bowl home opener",
-        "Tongva Twilight",
-        "Pasadena Fiestas Patrias",
-        "Orange International Street Fair",
-        "Long Beach Comic Con",
-        "Fiesta Hermosa",
-        "Long Beach Greek Festival",
-        "Southern California Open in Glendale",
-        "Maker Faire Orange County",
-        "BlizzCon in Anaheim",
-        "Santa Ana Fiestas Patrias",
-        "Dana Point Maritime Festival",
-        "Original Lobster Festival",
-        "Ruby Jubilee",
-        "Moompetam",
-        "California Turkish Festival",
-        "LAWineFest",
-        "Americana in the Park",
-        "OneRepublic with fireworks",
-        "Angels vs. Mariners in Anaheim",
-        'id="angels-mariners"',
-        "Punk Night at the Pier",
-        'id="santa-monica-locals-night"',
-        "Casa Verdugo Library's 75th anniversary",
-        'id="casa-verdugo-75"',
-        "Burbank Career Transitions Expo",
-        'id="burbank-careers"',
-        "California Coastal Cleanup Day",
-        'id="coastal-cleanup-day"',
-        "Gatsby Redux at Greystone",
-        'id="gatsby-redux"',
-        "State of the Arts in Long Beach",
-        'id="state-of-the-arts-long-beach"',
-        "Anaheim Craft &amp; Vintage Fair",
-        'id="anaheim-craft-vintage"',
-        "Burbank Autumn Arts Festival",
-        'id="burbank-autumn-arts"',
-        "Taste of Arcadia",
-        'id="taste-of-arcadia"',
-        "The Great Outdoors at Greystone",
-        'id="greystone-outdoors"',
-        "Thai Fest by the Beach",
-        'id="thai-fest-by-the-beach"',
-        "Dodgers vs. Giants",
-        'id="dodgers-giants"',
-        "Long Beach Burger Week",
-        'id="long-beach-burger-week"',
-        "Zootoberfest",
-        'id="zootoberfest"',
-        "San Clemente Car Show",
-        'id="san-clemente-car-show"',
-        "Pasadena ARTWalk",
-        'id="pasadena-artwalk"',
-        "Orange County Children's Book Festival",
-        'id="oc-childrens-book-festival"',
-        "SUGAR SKULL!",
-        'id="sugar-skull-segerstrom"',
-        "Armenian Film Festival",
-        'id="armenian-film-festival"',
-        "Pasadena Greek Festival",
-        'id="pasadena-greek-festival"',
-        "Golden State Tattoo Expo",
-        'id="golden-state-tattoo-expo"',
-        "Anaheim Ducks preseason at Honda Center",
-        'id="anaheim-ducks-preseason"',
-        "dublab Open Air in Santa Monica",
-        'id="santa-monica-dublab"',
-        "Creative Educators Network Burbank Institute",
-        'id="burbank-creative-educators-institute"',
-        "Burbank Native American Day Celebration",
-        'id="burbank-native-american-day"',
-        "Love Letters to L.A. at the Autry",
-        'id="autry-block-party"',
-        "Los Angeles Libros Festival",
-        'id="los-angeles-libros"',
-        "Arcadia Mid-Autumn Moon Festival",
-        'id="arcadia-moon-festival"',
-        "Orange County Burger Week",
-        'id="orange-county-burger-week"',
-        "Glendale Tech Week",
-        'id="glendale-tech-week"',
-        "Ranchos Walk in Long Beach",
-        'id="ranchos-walk"',
-        "Spinal Dread at Anaheim Central Library",
-        'id="spinal-dread-anaheim"',
-        "Classic Film Under the Stars in Glendale",
-        'id="classic-film-glendale"',
+        "Seconds at PCH Food Fest",
+        "Westminster Fall Festival",
+        "SteelCraft Long Beach Oktoberfest",
+        "Lucha Libre Weekend at MOLAA",
+        "Taiwan Carnival in Anaheim",
+        "Baja Splash in Long Beach",
+        "Jane Austen UnScripted in West Hollywood",
+        "Pasadena Chalk Festival",
+        "Mariachi Meets The Smiths",
+        "Long Beach Urban Farm Dinner",
+        "SoCal Fitness Festival in Huntington Beach",
+        "Simon Rodia Watts Towers Jazz Festival",
         "World Dog Day in West Hollywood",
-        'id="weho-world-dog-day"',
         "Burbank Moonlight Hike",
-        'id="burbank-moonlight-hike"',
+        "Glendale Tech Week",
+        "Orange County Burger Week",
     ):
         assert expired not in html
+
     for forbidden in (
         "Examples from the official listing",
         "editorial image generated",
@@ -223,7 +107,7 @@ def test_september_guide_is_substantial_ranked_and_reader_facing() -> None:
         assert forbidden.lower() not in html.lower()
 
 
-def test_september_guide_routes_image_homepages_and_sitemap() -> None:
+def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     client = TestClient(app)
 
     for route in (
@@ -242,48 +126,32 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated September 27 · September guide" in response.text
-        assert "Thirty Southern California September plans, ranked." in response.text
-        assert "Angels' final Seattle game" not in response.text
-        assert "Santa Monica Pier's free Locals' Night" not in response.text
-        assert "Long Beach's food passport" in response.text
-        assert "Kidspace Halloween" in response.text
-        assert "Thai Fest by the Beach" not in response.text
-        assert "Dodgers-Giants" not in response.text
-        assert "Spider Pavilion" in response.text
-        assert "Into the Woods" in response.text
-        assert "Pasadena Playhouse's The Visit" in response.text
-        assert "Westminster Fall Festival" in response.text
-        assert "SteelCraft Long Beach Oktoberfest" in response.text
-        assert "MOLAA Lucha Libre" in response.text
-        assert "Anaheim's Taiwan Carnival" in response.text
-        assert "Los Angeles Korean Festival" in response.text
-        assert "Burbank Book Festival" in response.text
-        assert "Glendale Cultural Festival" in response.text
-        assert "Dark Harbor" in response.text
-        assert "Simon Rodia Watts Towers Jazz Festival" in response.text
-        assert "Pasadena's Route 66 exhibition" in response.text
-        assert "Glendale's Artifacts from an Unborn Empire" in response.text
-        assert "The Horror Show at the Academy Museum" in response.text
-        assert "SoCal Fitness Festival" in response.text
-        assert "Mariachi Meets The Smiths" in response.text
-        assert "World Dog Day" not in response.text
-        assert "Ranchos Walk" not in response.text
-        assert "Spinal Dread" not in response.text
-        assert "Moonlight Hike" not in response.text
-        assert "Burbank's Native American Day celebration" not in response.text
-        assert "Burbank's Creative Educators Institute" not in response.text
-        assert "Dine LA's final day is organized" not in response.text
-        assert "Fourteen Southern California summer plans, ranked." not in response.text
-        assert "Free Locals' Night brings punk, salsa, vendors, and family activities to Santa Monica Pier" not in response.text
-        assert "Spider Pavilion opens with hundreds of orb weavers, webs, and educator-led science" in response.text
-        assert "J. Cole brings The Fall-Off Tour to LA" not in response.text
-        assert "Thai Fest brings free food and culture programming to Santa Monica Pier" not in response.text
-        assert "Maker Faire OC turns invention into a hands-on weekend" not in response.text
-        assert "Santa Ana Fiestas Patrias brings a free festival and parade downtown" not in response.text
-        assert "Arcadia's August finale pairs Broadway music with a garden picnic." not in response.text
-        assert '<template>\n  <section class="section homeArticleSection" id="pasadena-august-2026-guide">' in response.text
-        assert '<template>\n  <section class="section homeArticleSection" id="long-beach-august-2026-guide">' in response.text
+        assert "Updated September 28 · Fall guide" in response.text
+        assert "Twenty-four Southern California fall plans, ranked." in response.text
+        for current in (
+            "Glendale's final film-festival awards night",
+            "Design West Hollywood",
+            "Los Angeles Korean Festival",
+            "Tustin Tiller Days",
+            "Burbank Book Festival",
+            "Santa Monica's Route 66 Art Walk",
+            "West Hollywood's free park movie",
+            "Glendale Cultural Festival",
+            "ArtNight Pasadena",
+            "Long Beach Marathon weekend",
+            "Beverly Hills Art Show",
+        ):
+            assert current in response.text
+        for expired in (
+            "Anaheim's Taiwan Carnival",
+            "Simon Rodia Watts Towers Jazz Festival",
+            "SoCal Fitness Festival",
+            "Mariachi Meets The Smiths",
+            "Westminster Fall Festival",
+            "SteelCraft Long Beach Oktoberfest",
+            "MOLAA Lucha Libre",
+        ):
+            assert expired not in response.text
 
     root_sitemap = client.get("/sitemap.xml")
     white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
@@ -291,78 +159,46 @@ def test_september_guide_routes_image_homepages_and_sitemap() -> None:
     assert white_sitemap.status_code == 308
     assert white_sitemap.headers["location"] == "/sitemap.xml"
     assert "<loc>https://perknation.app/articles/southern-california-september-events-2026</loc>" in root_sitemap.text
-    assert "/events/j-cole-los-angeles" not in root_sitemap.text
-
-    events_data = client.get("/assets/events-data.js")
-    assert events_data.status_code == 200
-    assert "j-cole-los-angeles" not in events_data.text
 
 
-def test_september_guide_is_current_in_public_review_answers() -> None:
+def test_fall_guide_is_current_in_public_review_answers() -> None:
     answer = _public_review_live_query_response(
         "What current events are covered in Southern California?",
         "home_local_guide",
     )
 
     assert answer
-    assert "Thirty Southern California September plans" in answer
-    assert "Angels-Mariners" not in answer
-    assert "Locals' Night" not in answer
-    assert "Seconds at PCH Food Fest" in answer
-    assert "Halloween at Kidspace" in answer
-    assert "Thai Fest by the Beach" not in answer
-    assert "Dodgers-Giants" not in answer
-    assert "Spider Pavilion" in answer
-    assert "San Clemente Car Show" not in answer
-    assert "Jane Austen UnScripted" in answer
-    assert "Into the Woods" in answer
-    assert "Westminster Fall Festival" in answer
-    assert "SteelCraft Long Beach Oktoberfest" in answer
-    assert "Lucha Libre weekend" in answer
-    assert "Taiwan Carnival" in answer
-    assert "Los Angeles Korean Festival" in answer
-    assert "Burbank Book Festival" in answer
-    assert "Glendale Cultural Festival" in answer
-    assert "Dark Harbor" in answer
-    assert "Casa Verdugo" not in answer
-    assert "Laura Aguilar" in answer
-    assert "Ranchos Walk" not in answer
-    assert "Spinal Dread" not in answer
-    assert "Golden State Tattoo Expo" not in answer
-    assert "SUGAR SKULL!" not in answer
-    assert "Into the Woods" in answer
-    assert "Autumn Arts Festival" not in answer
-    assert "Taste of Arcadia" not in answer
-    assert "Mid-Autumn Moon Festival" not in answer
-    assert "Lucas Museum" in answer
-    assert "Armenian Film Festival" not in answer
-    assert "Walt Disney Archives" in answer
-    assert "Zootoberfest" not in answer
-    assert "State of the Arts" not in answer
-    assert "Craft & Vintage Fair" not in answer
-    assert "Where History Meets the Road" in answer
-    assert "Orange County Children's Book Festival" not in answer
-    assert "Anaheim Ducks preseason" not in answer
-    assert "Huntington Beach Oktoberfest" in answer
-    assert "Gatsby Redux" not in answer
-    assert "Baja Splash" in answer
-    assert "Glendale Tech Week" not in answer
-    assert "Glendale International Film Festival" in answer
-    assert "The Visit" in answer
-    assert "Classic Film Under the Stars" not in answer
-    assert "Urban Farm Dinner" in answer
-    assert "The Horror Show" in answer
-    assert "SoCal Fitness Festival" in answer
-    assert "World Dog Day" not in answer
-    assert "Burbank's Moonlight Hike" not in answer
-    assert "Mariachi Meets The Smiths" in answer
-    assert "Creative Educators Network Institute" not in answer
-    assert "Native American Day celebration" not in answer
-    assert "Watts Towers Day of the Drum" not in answer
-    assert "Simon Rodia Watts Towers Jazz Festival" in answer
-    assert "Artifacts from an Unborn Empire" in answer
-    assert "/articles/southern-california-september-events-2026" in answer
-    assert "Dine LA 2026 city guides" not in answer
+    for current in (
+        "Twenty-four Southern California fall plans",
+        "Glendale International Film Festival",
+        "Design West Hollywood",
+        "Tustin Tiller Days",
+        "West Hollywood's free Movies in the Park",
+        "Montana Avenue Art Walk",
+        "ArtNight Pasadena",
+        "Long Beach Marathon weekend",
+        "Beverly Hills Art Show",
+        "Los Angeles Korean Festival",
+        "Burbank Book Festival",
+        "The Horror Show",
+        "Artifacts from an Unborn Empire",
+        "/articles/southern-california-september-events-2026",
+    ):
+        assert current in answer
+    for expired in (
+        "Seconds at PCH Food Fest",
+        "Jane Austen UnScripted",
+        "Westminster Fall Festival",
+        "SteelCraft Long Beach Oktoberfest",
+        "Lucha Libre weekend",
+        "Taiwan Carnival",
+        "Baja Splash",
+        "Urban Farm Dinner",
+        "SoCal Fitness Festival",
+        "Mariachi Meets The Smiths",
+        "Simon Rodia Watts Towers Jazz Festival",
+    ):
+        assert expired not in answer
 
 
 def test_orange_county_city_answers_include_current_plans() -> None:
@@ -372,65 +208,46 @@ def test_orange_county_city_answers_include_current_plans() -> None:
     )
 
     assert answer
-    assert "San Clemente Car Show" not in answer
-    assert "SUGAR SKULL!" not in answer
+    assert "Tustin Tiller Days" in answer
+    assert "#tustin-tiller-days" in answer
     assert "Into the Woods" in answer
     assert "#into-the-woods-costa-mesa" in answer
     assert "Walt Disney Archives" in answer
-    assert "#san-clemente-car-show" not in answer
-    assert "Orange County Children's Book Festival" not in answer
-    assert "#oc-childrens-book-festival" not in answer
-    assert "Anaheim Ducks" not in answer
-    assert "#anaheim-ducks-preseason" not in answer
-    assert "Westminster" in answer
-    assert "#westminster-fall-festival" in answer
-    assert "SoCal Fitness Festival" in answer
-    assert "#socal-fitness-festival" in answer
-    assert "Spinal Dread" not in answer
-    assert "#spinal-dread-anaheim" not in answer
+    assert "Westminster" not in answer
+    assert "SoCal Fitness Festival" not in answer
 
 
-def test_pasadena_answer_no_longer_promotes_expired_fiestas_patrias() -> None:
+def test_pasadena_answer_includes_artnight_and_flexible_exhibitions() -> None:
     answer = _public_review_live_query_response(
         "What current events are covered in Pasadena?",
         "home_local_guide",
     )
 
     assert answer
-    assert "Pasadena ARTWalk" not in answer
-    assert "Pasadena Greek Festival" not in answer
     assert "The Visit" in answer
     assert "#the-visit-pasadena" in answer
-    assert "Pasadena Chalk Festival" in answer
+    assert "ArtNight Pasadena" in answer
+    assert "#artnight-pasadena" in answer
     assert "Where History Meets the Road" in answer
-    assert "#pasadena-route-66-exhibition" in answer
     assert "Laura Aguilar" in answer
-    assert "#laura-aguilar-day-of-the-dead" in answer
-    assert "Pasadena Fiestas Patrias" not in answer
+    assert "Pasadena Chalk Festival" not in answer
 
 
-def test_long_beach_answer_includes_food_fest_dark_harbor_steelcraft_and_molaa() -> None:
+def test_long_beach_answer_includes_dark_harbor_and_marathon() -> None:
     answer = _public_review_live_query_response(
         "What current events are covered in Long Beach this weekend?",
         "home_local_guide",
     )
 
     assert answer
-    assert "Seconds at PCH" in answer
-    assert "#seconds-at-pch-food-fest" in answer
     assert "Dark Harbor" in answer
-    assert "September 18-November 1" in answer
     assert "#queen-mary-dark-harbor" in answer
-    assert "SteelCraft" in answer
-    assert "#steelcraft-long-beach-oktoberfest" in answer
-    assert "MOLAA" in answer
-    assert "#molaa-lucha-libre" in answer
-    assert "Baja Splash" in answer
-    assert "#baja-splash" in answer
-    assert "Ranchos Walk" not in answer
-    assert "#ranchos-walk" not in answer
-    assert "Urban Farm Dinner" in answer
-    assert "#long-beach-urban-farm-dinner" in answer
+    assert "Long Beach Marathon weekend" in answer
+    assert "#long-beach-marathon" in answer
+    assert "SteelCraft" not in answer
+    assert "MOLAA" not in answer
+    assert "Baja Splash" not in answer
+    assert "Urban Farm Dinner" not in answer
 
 
 def test_huntington_beach_answer_includes_current_oktoberfest() -> None:
@@ -443,3 +260,4 @@ def test_huntington_beach_answer_includes_current_oktoberfest() -> None:
     assert "Huntington Beach Oktoberfest" in answer
     assert "September 12-November 8" in answer
     assert "#huntington-beach-oktoberfest" in answer
+    assert "SoCal Fitness Festival" not in answer

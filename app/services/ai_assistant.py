@@ -812,12 +812,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Thirty Southern California September plans",
-        "timing": "September 27-October 18, 2026",
+        "title": "Twenty-four Southern California fall plans",
+        "timing": "September 28-October 18, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to Seconds at PCH Food Fest, Halloween at Kidspace, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Pasadena Playhouse's The Visit, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Westminster Fall Festival, SteelCraft Long Beach Oktoberfest, MOLAA's Lucha Libre weekend, Anaheim's free Taiwan Carnival, and West Hollywood's free Jane Austen UnScripted finale. "
-            "Also covers the free Los Angeles Korean Festival, Burbank Book Festival, Glendale Cultural Festival, Mariachi Meets The Smiths, the Simon Rodia Watts Towers Jazz Festival, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Artifacts from an Unborn Empire exhibition, the Academy Museum's The Horror Show, Huntington Beach's SoCal Fitness Festival, The Huntington's Laura Aguilar exhibition, Baja Splash, the Long Beach Urban Farm Dinner, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena Chalk Festival, Glendale's Jewel City Concert Series, the Glendale International Film Festival, and Design West Hollywood."
+            "Ranked guide to the Glendale International Film Festival awards night, Design West Hollywood, Halloween at Kidspace, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Pasadena Playhouse's The Visit, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, the free Los Angeles Korean Festival, Tustin Tiller Days, Burbank Book Festival, West Hollywood's free Movies in the Park, Santa Monica's Montana Avenue Art Walk, and Glendale Cultural Festival. "
+            "Also covers ArtNight Pasadena, Long Beach Marathon weekend, the Beverly Hills Art Show, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, and Glendale's Artifacts from an Unborn Empire exhibition."
         ),
     },
 
@@ -904,13 +904,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Concerts, coastal art, wellness, movies, markets, and local history",
         "city": "Santa Monica",
-        "title": "Santa Monica September 2026 coastal events guide",
-        "timing": "September 27-October 17, 2026",
+        "title": "Santa Monica October 2026 coastal events guide",
+        "timing": "October 3-17, 2026",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Four current free plans covering Between Darkness and Dawn, Wellness & Waves, "
-            "Doors Open California at the Marion Davies Guest House, and the Pico farmers market, "
-            "plus the City of Santa Monica's Ocean Way cancellation notice."
+            "Four current free plans covering the Montana Avenue Art Walk, Join & Thrive film screening and volunteer fair, "
+            "Wellness & Waves at the Pier, and the Pico farmers market."
         ),
     },
     {
@@ -1988,30 +1987,26 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current Orange County options include South Coast Repertory's Into the Woods through October 18, Westminster's free Fall Festival through September 27, Anaheim's free Taiwan Carnival through September 27, Huntington Beach's SoCal Fitness Festival through September 27, Huntington Beach Oktoberfest through November 8, and the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1.",
-                "Open /articles/southern-california-september-events-2026#into-the-woods-costa-mesa, /articles/southern-california-september-events-2026#westminster-fall-festival, /articles/southern-california-september-events-2026#taiwan-carnival-anaheim, /articles/southern-california-september-events-2026#socal-fitness-festival, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, or /articles/southern-california-september-events-2026#muzeo-disney-exhibitions for practical comparisons and current city-directory links.",
+                "Current Orange County options include Tustin Tiller Days from October 2-4, South Coast Repertory's Into the Woods through October 18, Huntington Beach Oktoberfest through November 8, and the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1.",
+                "Open /articles/southern-california-september-events-2026#tustin-tiller-days, /articles/southern-california-september-events-2026#into-the-woods-costa-mesa, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, or /articles/southern-california-september-events-2026#muzeo-disney-exhibitions for practical comparisons and current city-directory links.",
             )
         )
 
     if wants_huntington_beach and not wants_restaurants:
         return "\n".join(
             (
-                "PerkNation's late-August Huntington Beach event coverage has concluded; the current September guide includes Huntington Beach Oktoberfest at Old World Village from September 12-November 8 and the SoCal Fitness Festival at Huntington Beach Pier from September 25-27.",
-                "Choose Oktoberfest for German food, bands, and repeatable daytime or 21-and-older sessions; choose SoCal Fitness Festival for CrossFit, weightlifting, strongman, hybrid events, vendors, and live music. Open /articles/southern-california-september-events-2026#huntington-beach-oktoberfest or #socal-fitness-festival for ticket, schedule, and planning guidance plus links into 43 Huntington Beach listings.",
+                "PerkNation's late-August and September 25-27 Huntington Beach event coverage has concluded; the current guide includes Huntington Beach Oktoberfest at Old World Village from September 12-November 8.",
+                "Choose a daytime all-ages session for families or a later 21-and-older session for nightlife. Open /articles/southern-california-september-events-2026#huntington-beach-oktoberfest for admission, bag, and schedule guidance plus links into 43 Huntington Beach listings.",
             )
         )
 
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation September guide includes Seconds at PCH Food Fest, Queen Mary's Dark Harbor, SteelCraft Oktoberfest, MOLAA's Lucha Libre weekend, Baja Splash, and the Long Beach Urban Farm Dinner:",
-                "- Seconds at PCH runs September 17-27 with an opening-night tasting and salsa band, then a restaurant passport, specials, and prizes across the ten-day promotion.",
+                "The current PerkNation fall guide includes Queen Mary's Dark Harbor and Long Beach Marathon weekend:",
                 "- Dark Harbor runs select nights September 18-November 1 with haunted mazes, performers, immersive attractions, rides, and themed food; check the venue's current parking guidance before leaving.",
-                "- SteelCraft Long Beach's free-entry Oktoberfest runs September 25-27 with live polka, German-inspired food, face painting, pop-ups, wiener-dog races, and stein contests; Saturday has the fullest program.",
-                "- MOLAA's September 25-27 Lucha Libre weekend combines a book launch, cumbia and live wrestling, film, workshops, a marketplace, and family programming.",
-                "- Baja Splash runs September 26-27 from 9 a.m.-5 p.m. at the Aquarium of the Pacific with bilingual music, dance, education, and community programming included with timed general admission.",
-                "- The September 27 Urban Farm Dinner is a premium 21-chef, multi-course event at Rancho Los Alamitos focused on local and sustainable ingredients.",
-                "Open /articles/southern-california-september-events-2026#seconds-at-pch-food-fest, #queen-mary-dark-harbor, #steelcraft-long-beach-oktoberfest, #molaa-lucha-libre, #baja-splash, or #long-beach-urban-farm-dinner for practical planning, with links into 208 Long Beach directory listings.",
+                "- Long Beach Marathon weekend runs October 10-11 with an Aquarium of the Pacific 5K, marathon, half marathon, bike tour, and wheelchair marathon; choose the 5K for the most approachable format.",
+                "Open /articles/southern-california-september-events-2026#queen-mary-dark-harbor or #long-beach-marathon for practical planning, with links into 208 Long Beach directory listings.",
                 "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )
@@ -2027,10 +2022,10 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks four free September plans:",
-                "- For September 27, compare the final day of Between Darkness and Dawn with free Doors Open California tours at the Marion Davies Guest House; later Saturdays continue with Wellness & Waves at the Pier and the Pico farmers market.",
-                "- Ocean Way Festival has been canceled because storm damage made the beach site unsafe; do not travel to Santa Monica for the September 26-27 festival.",
-                "Open /articles/santa-monica-august-2026-guide for rankings, best-for notes, weather, transit, official sources, and the city's cancellation notice.",
+                "The current PerkNation Santa Monica guide ranks four free October plans:",
+                "- On October 3, choose the Montana Avenue Art Walk for a ten-block Route 66 arts-and-shopping day or Join & Thrive for a library documentary discussion and volunteer fair.",
+                "- Later Saturdays through October 17 continue with Wellness & Waves at the Pier and the Pico farmers market.",
+                "Open /articles/santa-monica-august-2026-guide for rankings, best-for notes, transit, official sources, and directory links.",
             )
         )
 
@@ -2071,8 +2066,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation September guide includes Halloween at Kidspace, Pasadena Playhouse's The Visit, the Pasadena Chalk Festival, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
-                "Use the full guide for ranked best-for and transit notes, open /articles/southern-california-september-events-2026#the-visit-pasadena for theater guidance, #pasadena-route-66-exhibition for history, or #laura-aguilar-day-of-the-dead for photography, or browse /directory?city=Pasadena for 563 local listings.",
+                "The current PerkNation fall guide includes Halloween at Kidspace, Pasadena Playhouse's The Visit, ArtNight Pasadena, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
+                "Use the full guide for ranked best-for and transit notes, open /articles/southern-california-september-events-2026#the-visit-pasadena for theater guidance, #artnight-pasadena for free citywide culture, #pasadena-route-66-exhibition for history, or #laura-aguilar-day-of-the-dead for photography, or browse /directory?city=Pasadena for 563 local listings.",
             )
         )
 
