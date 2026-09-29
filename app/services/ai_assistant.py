@@ -812,11 +812,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Twenty-four Southern California fall plans",
-        "timing": "September 28-October 18, 2026",
+        "title": "Twenty-five Southern California fall plans",
+        "timing": "September 29-October 25, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to the Glendale International Film Festival awards night, Design West Hollywood, Halloween at Kidspace, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Pasadena Playhouse's The Visit, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, the free Los Angeles Korean Festival, Tustin Tiller Days, Burbank Book Festival, West Hollywood's free Movies in the Park, Santa Monica's Montana Avenue Art Walk, and Glendale Cultural Festival. "
+            "Ranked guide to Design West Hollywood, Halloween at Kidspace, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Pasadena Playhouse's The Visit, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, the free Los Angeles Korean Festival, Tustin Tiller Days, Burbank Book Festival, Long Beach Open Studio Tour, Latino Restaurant Week, West Hollywood's free Movies in the Park, Santa Monica's Montana Avenue Art Walk, and Glendale Cultural Festival. "
             "Also covers ArtNight Pasadena, Long Beach Marathon weekend, the Beverly Hills Art Show, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, and Glendale's Artifacts from an Unborn Empire exhibition."
         ),
     },
@@ -2003,10 +2003,12 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Queen Mary's Dark Harbor and Long Beach Marathon weekend:",
+                "The current PerkNation fall guide includes Queen Mary's Dark Harbor, Long Beach Open Studio Tour, Latino Restaurant Week, and Long Beach Marathon weekend:",
                 "- Dark Harbor runs select nights September 18-November 1 with haunted mazes, performers, immersive attractions, rides, and themed food; check the venue's current parking guidance before leaving.",
+                "- Long Beach Open Studio Tour runs four free October weekends from 1-5 p.m., rotating through Belmont, Uptown, Downtown, and Eastside with 120-plus artists in 80-plus studios.",
+                "- Latino Restaurant Week runs October 5-11 after a separate October 1 kickoff; compare participating restaurants because menus, pricing, hours, and reservations vary.",
                 "- Long Beach Marathon weekend runs October 10-11 with an Aquarium of the Pacific 5K, marathon, half marathon, bike tour, and wheelchair marathon; choose the 5K for the most approachable format.",
-                "Open /articles/southern-california-september-events-2026#queen-mary-dark-harbor or #long-beach-marathon for practical planning, with links into 208 Long Beach directory listings.",
+                "Open /articles/southern-california-september-events-2026#long-beach-open-studio-tour, #long-beach-latino-restaurant-week, #queen-mary-dark-harbor, or #long-beach-marathon for practical planning, with links into 208 Long Beach directory listings.",
                 "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )
@@ -2074,8 +2076,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_glendale and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation September guide includes the Glendale International Film Festival through September 28, the free Jewel City Concert Series through October 24, the inaugural Glendale Cultural Festival on October 4, and Brand Library's free Artifacts from an Unborn Empire exhibition through December 31.",
-                "Open /articles/southern-california-september-events-2026#glendale-international-film-festival, #jewel-city-concerts, #glendale-cultural-festival, or #artifacts-unborn-empire-glendale for practical notes, or browse /directory?city=Glendale for 100 local listings.",
+                "The current PerkNation fall guide includes the free Jewel City Concert Series through October 24, the inaugural Glendale Cultural Festival on October 4, and Brand Library's free Artifacts from an Unborn Empire exhibition through December 31.",
+                "Open /articles/southern-california-september-events-2026#jewel-city-concerts, #glendale-cultural-festival, or #artifacts-unborn-empire-glendale for practical notes, or browse /directory?city=Glendale for 100 local listings.",
             )
         )
 

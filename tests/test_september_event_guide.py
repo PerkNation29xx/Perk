@@ -15,13 +15,10 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Twenty-four Southern California fall plans" in html
-    assert 'dateModified": "2026-09-28"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 25))
+    assert "Twenty-five Southern California fall plans" in html
+    assert 'dateModified": "2026-09-29"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 26))
     for expected in (
-        "Glendale International Film Festival awards night",
-        'id="glendale-international-film-festival"',
-        "https://glendaleiff.org/festival-schedule-26/",
         "Design West Hollywood",
         'id="design-west-hollywood"',
         "Halloween at Kidspace",
@@ -43,6 +40,12 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "https://www.tustinca.org/637/Tustin-Tiller-Days",
         "Burbank Book Festival",
         'id="burbank-book-festival"',
+        "Long Beach Open Studio Tour",
+        'id="long-beach-open-studio-tour"',
+        "https://lbopenstudiotour.com/",
+        "Long Beach Latino Restaurant Week",
+        'id="long-beach-latino-restaurant-week"',
+        "https://latinorestaurantweeklbc.com/",
         "West Hollywood Movies in the Park",
         'id="weho-princess-and-the-frog"',
         "Montana Avenue Art Walk in Santa Monica",
@@ -93,6 +96,7 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Burbank Moonlight Hike",
         "Glendale Tech Week",
         "Orange County Burger Week",
+        "Glendale International Film Festival awards night",
     ):
         assert expired not in html
 
@@ -126,14 +130,15 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated September 28 · Fall guide" in response.text
-        assert "Twenty-four Southern California fall plans, ranked." in response.text
+        assert "Updated September 29 · Fall guide" in response.text
+        assert "Twenty-five Southern California fall plans, ranked." in response.text
         for current in (
-            "Glendale's final film-festival awards night",
             "Design West Hollywood",
             "Los Angeles Korean Festival",
             "Tustin Tiller Days",
             "Burbank Book Festival",
+            "Long Beach Open Studio Tour",
+            "Latino Restaurant Week",
             "Santa Monica's Route 66 Art Walk",
             "West Hollywood's free park movie",
             "Glendale Cultural Festival",
@@ -150,6 +155,7 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Westminster Fall Festival",
             "SteelCraft Long Beach Oktoberfest",
             "MOLAA Lucha Libre",
+            "Glendale's final film-festival awards night",
         ):
             assert expired not in response.text
 
@@ -169,8 +175,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
 
     assert answer
     for current in (
-        "Twenty-four Southern California fall plans",
-        "Glendale International Film Festival",
+        "Twenty-five Southern California fall plans",
         "Design West Hollywood",
         "Tustin Tiller Days",
         "West Hollywood's free Movies in the Park",
@@ -180,6 +185,8 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Beverly Hills Art Show",
         "Los Angeles Korean Festival",
         "Burbank Book Festival",
+        "Long Beach Open Studio Tour",
+        "Latino Restaurant Week",
         "The Horror Show",
         "Artifacts from an Unborn Empire",
         "/articles/southern-california-september-events-2026",
@@ -197,6 +204,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "SoCal Fitness Festival",
         "Mariachi Meets The Smiths",
         "Simon Rodia Watts Towers Jazz Festival",
+        "Glendale International Film Festival",
     ):
         assert expired not in answer
 
