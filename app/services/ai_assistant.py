@@ -812,12 +812,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Twenty-five Southern California fall plans",
-        "timing": "September 29-October 25, 2026",
+        "title": "Twenty-eight Southern California fall plans",
+        "timing": "September 30-October 25, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to Design West Hollywood, Halloween at Kidspace, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Pasadena Playhouse's The Visit, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, the free Los Angeles Korean Festival, Tustin Tiller Days, Burbank Book Festival, Long Beach Open Studio Tour, Latino Restaurant Week, West Hollywood's free Movies in the Park, Santa Monica's Montana Avenue Art Walk, and Glendale Cultural Festival. "
-            "Also covers ArtNight Pasadena, Long Beach Marathon weekend, the Beverly Hills Art Show, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, and Glendale's Artifacts from an Unborn Empire exhibition."
+            "Also covers ArtNight Pasadena, the Pasadena Latino Heritage Parade & Festival, Long Beach Marathon weekend, Indigenous Pride LA, Burbank Haunted Adventure, the Beverly Hills Art Show, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, and Glendale's Artifacts from an Unborn Empire exhibition."
         ),
     },
 
@@ -2060,16 +2060,16 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "Burbank Public Library's free Burbank Book Festival runs October 3 from 10 a.m.-4 p.m. at Buena Vista Branch Library with more than 80 authors, panels, readings, signings, booksellers, vendors, and a new Bookmobile design unveiling.",
-                "Parking is limited, so the city recommends walking, biking, carpooling, or alternative transportation.",
-                "Open /articles/southern-california-september-events-2026#burbank-book-festival for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
+                "The city-run Haunted Adventure follows at Starlight Bowl on October 16, 17, 23, and 24 from 7-9:30 p.m.; advance tickets cost $10 for adults and $5 for children 12 and younger, children under 6 are not admitted, and the route includes stairs and uphill walking.",
+                "Open /articles/southern-california-september-events-2026#burbank-book-festival or #burbank-haunted-adventure for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
             )
         )
 
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Halloween at Kidspace, Pasadena Playhouse's The Visit, ArtNight Pasadena, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
-                "Use the full guide for ranked best-for and transit notes, open /articles/southern-california-september-events-2026#the-visit-pasadena for theater guidance, #artnight-pasadena for free citywide culture, #pasadena-route-66-exhibition for history, or #laura-aguilar-day-of-the-dead for photography, or browse /directory?city=Pasadena for 563 local listings.",
+                "The current PerkNation fall guide includes Halloween at Kidspace, Pasadena Playhouse's The Visit, ArtNight Pasadena, the free Latino Heritage Parade & Festival on October 10, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
+                "Use the full guide for ranked best-for and transit notes, open /articles/southern-california-september-events-2026#the-visit-pasadena for theater guidance, #artnight-pasadena for free citywide culture, #pasadena-latino-heritage for the parade and festival, #pasadena-route-66-exhibition for history, or #laura-aguilar-day-of-the-dead for photography, or browse /directory?city=Pasadena for 563 local listings.",
             )
         )
 

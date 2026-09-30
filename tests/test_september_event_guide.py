@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Twenty-five Southern California fall plans" in html
-    assert 'dateModified": "2026-09-29"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 26))
+    assert "Twenty-eight Southern California fall plans" in html
+    assert 'dateModified": "2026-09-30"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 29))
     for expected in (
         "Design West Hollywood",
         'id="design-west-hollywood"',
@@ -54,8 +54,17 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         'id="glendale-cultural-festival"',
         "ArtNight Pasadena",
         'id="artnight-pasadena"',
+        "Pasadena Latino Heritage Parade &amp; Festival",
+        'id="pasadena-latino-heritage"',
+        "https://www.cityofpasadena.net/parks-and-rec/event/latino-heritage-parade-festival/",
         "Long Beach Marathon weekend",
         'id="long-beach-marathon"',
+        "Indigenous Pride LA",
+        'id="indigenous-pride-la"',
+        "https://www.indigenouspridela.org/events-news/2026-ipla",
+        "Burbank Haunted Adventure",
+        'id="burbank-haunted-adventure"',
+        "https://www.burbankca.gov/calendar/-/calendar/event/4414632/0",
         "Beverly Hills Art Show",
         'id="beverly-hills-art-show"',
         "Walt Disney Archives and Disneyland art at Muzeo",
@@ -130,8 +139,8 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated September 29 · Fall guide" in response.text
-        assert "Twenty-five Southern California fall plans, ranked." in response.text
+        assert "Updated September 30 · Fall guide" in response.text
+        assert "Twenty-eight Southern California fall plans, ranked." in response.text
         for current in (
             "Design West Hollywood",
             "Los Angeles Korean Festival",
@@ -143,6 +152,9 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "West Hollywood's free park movie",
             "Glendale Cultural Festival",
             "ArtNight Pasadena",
+            "Pasadena's Latino Heritage celebration",
+            "Indigenous Pride LA",
+            "Burbank's Haunted Adventure",
             "Long Beach Marathon weekend",
             "Beverly Hills Art Show",
         ):
@@ -175,12 +187,15 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
 
     assert answer
     for current in (
-        "Twenty-five Southern California fall plans",
+        "Twenty-eight Southern California fall plans",
         "Design West Hollywood",
         "Tustin Tiller Days",
         "West Hollywood's free Movies in the Park",
         "Montana Avenue Art Walk",
         "ArtNight Pasadena",
+        "Pasadena Latino Heritage Parade & Festival",
+        "Indigenous Pride LA",
+        "Burbank Haunted Adventure",
         "Long Beach Marathon weekend",
         "Beverly Hills Art Show",
         "Los Angeles Korean Festival",
@@ -236,9 +251,25 @@ def test_pasadena_answer_includes_artnight_and_flexible_exhibitions() -> None:
     assert "#the-visit-pasadena" in answer
     assert "ArtNight Pasadena" in answer
     assert "#artnight-pasadena" in answer
+    assert "Latino Heritage Parade & Festival" in answer
+    assert "#pasadena-latino-heritage" in answer
     assert "Where History Meets the Road" in answer
     assert "Laura Aguilar" in answer
     assert "Pasadena Chalk Festival" not in answer
+
+
+def test_burbank_answer_includes_book_festival_and_haunted_adventure() -> None:
+    answer = _public_review_live_query_response(
+        "What current events are covered in Burbank?",
+        "home_local_guide",
+    )
+
+    assert answer
+    assert "Burbank Book Festival" in answer
+    assert "Haunted Adventure" in answer
+    assert "#burbank-book-festival" in answer
+    assert "#burbank-haunted-adventure" in answer
+    assert "children under 6 are not admitted" in answer
 
 
 def test_long_beach_answer_includes_dark_harbor_and_marathon() -> None:
