@@ -781,7 +781,7 @@ def _home_local_guide_context(*, db: Optional[Session]) -> str:
             "",
             "Editorial/review coverage currently surfaced for PerkNation readers:",
             "- Los Angeles fashion guide: LA Market Week, CMC sample-sale Fridays, Fashion District shopping, LA Vintage warehouse sale, and The Grove K-beauty pop-up.",
-            "- Events coverage: the ranked September Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
+            "- Events coverage: the ranked October Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
             "- Restaurant coverage: current local directory listings, Pasadena restaurant picks, and broader dining discovery.",
             "",
             "Answering rules:",
@@ -812,12 +812,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Twenty-eight Southern California fall plans",
-        "timing": "September 30-October 25, 2026",
+        "title": "Thirty-one Southern California fall plans",
+        "timing": "October 1-31, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to Design West Hollywood, Halloween at Kidspace, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Pasadena Playhouse's The Visit, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, the free Los Angeles Korean Festival, Tustin Tiller Days, Burbank Book Festival, Long Beach Open Studio Tour, Latino Restaurant Week, West Hollywood's free Movies in the Park, Santa Monica's Montana Avenue Art Walk, and Glendale Cultural Festival. "
-            "Also covers ArtNight Pasadena, the Pasadena Latino Heritage Parade & Festival, Long Beach Marathon weekend, Indigenous Pride LA, Burbank Haunted Adventure, the Beverly Hills Art Show, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, and Glendale's Artifacts from an Unborn Empire exhibition."
+            "Ranked guide to Design West Hollywood's final day, Pacific Airshow, Halloween at Kidspace, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Pasadena Playhouse's The Visit, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, the free Los Angeles Korean Festival, Tustin Tiller Days, Burbank Book Festival, Long Beach Open Studio Tour, Latino Restaurant Week, West Hollywood's free Movies in the Park, Santa Monica's Montana Avenue Art Walk, and Glendale Cultural Festival. "
+            "Also covers ArtNight Pasadena, the Pasadena Latino Heritage Parade & Festival, Continuum at Historic Belmar Park, Long Beach Marathon weekend, Indigenous Pride LA, Burbank Haunted Adventure, the Beverly Hills Art Show, Pasadena Fall Festival, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, and Glendale's Artifacts from an Unborn Empire exhibition."
         ),
     },
 
@@ -908,8 +908,8 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "timing": "October 3-17, 2026",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Four current free plans covering the Montana Avenue Art Walk, Join & Thrive film screening and volunteer fair, "
-            "Wellness & Waves at the Pier, and the Pico farmers market."
+            "Five current free plans covering the Montana Avenue Art Walk, Continuum at Historic Belmar Park, "
+            "Join & Thrive film screening and volunteer fair, Wellness & Waves at the Pier, and the Pico farmers market."
         ),
     },
     {
@@ -1959,7 +1959,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     wants_santa_monica = _contains_any(text, ("santa monica", "wellness & waves", "art on ocean", "ocean way festival"))
     wants_laguna_beach = _contains_any(text, ("laguna beach", "pageant of the masters", "sawdust", "passport to the arts", "laguna art museum"))
     wants_long_beach = _contains_any(text, ("long beach", "stroll & savor", "taste of downtown", "jazz on the bay", "new blues festival"))
-    wants_huntington_beach = _contains_any(text, ("huntington beach", "surf city", "life rolls on", "pier swim", "bolsa chica", "grunion"))
+    wants_huntington_beach = _contains_any(text, ("huntington beach", "surf city", "pacific airshow", "life rolls on", "pier swim", "bolsa chica", "grunion"))
     wants_nisei = _contains_any(text, ("nisei week", "little tokyo"))
     wants_culture = _contains_any(text, ("nisei week", "little tokyo", "cultural event", "cultural events", "traditional arts"))
     wants_restaurants = _contains_any(text, ("restaurant", "restaurants", "dining", "dine la", "food", "food scene"))
@@ -1987,16 +1987,16 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current Orange County options include Tustin Tiller Days from October 2-4, South Coast Repertory's Into the Woods through October 18, Huntington Beach Oktoberfest through November 8, and the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1.",
-                "Open /articles/southern-california-september-events-2026#tustin-tiller-days, /articles/southern-california-september-events-2026#into-the-woods-costa-mesa, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, or /articles/southern-california-september-events-2026#muzeo-disney-exhibitions for practical comparisons and current city-directory links.",
+                "Current Orange County options include Pacific Airshow in Huntington Beach from October 2-4, Tustin Tiller Days from October 2-4, South Coast Repertory's Into the Woods through October 18, Huntington Beach Oktoberfest through November 8, and the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1.",
+                "Open /articles/southern-california-september-events-2026#pacific-airshow-huntington-beach, /articles/southern-california-september-events-2026#tustin-tiller-days, /articles/southern-california-september-events-2026#into-the-woods-costa-mesa, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, or /articles/southern-california-september-events-2026#muzeo-disney-exhibitions for practical comparisons and current city-directory links.",
             )
         )
 
     if wants_huntington_beach and not wants_restaurants:
         return "\n".join(
             (
-                "PerkNation's late-August and September 25-27 Huntington Beach event coverage has concluded; the current guide includes Huntington Beach Oktoberfest at Old World Village from September 12-November 8.",
-                "Choose a daytime all-ages session for families or a later 21-and-older session for nightlife. Open /articles/southern-california-september-events-2026#huntington-beach-oktoberfest for admission, bag, and schedule guidance plus links into 43 Huntington Beach listings.",
+                "PerkNation's late-August and September 25-27 Huntington Beach event coverage has concluded; the current guide includes Pacific Airshow in Huntington Beach from October 2-4 and Huntington Beach Oktoberfest at Old World Village from September 12-November 8.",
+                "Choose Pacific Airshow for four or more hours of flying, aviation STEM, and performer programs, with hearing protection and a weather backup; choose a daytime Oktoberfest session for families or a later 21-and-older session for nightlife. Open /articles/southern-california-september-events-2026#pacific-airshow-huntington-beach or #huntington-beach-oktoberfest for official-source planning plus links into 43 Huntington Beach listings.",
             )
         )
 
@@ -2024,8 +2024,9 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks four free October plans:",
+                "The current PerkNation Santa Monica guide ranks five free October plans:",
                 "- On October 3, choose the Montana Avenue Art Walk for a ten-block Route 66 arts-and-shopping day or Join & Thrive for a library documentary discussion and volunteer fair.",
+                "- On October 11, choose Continuum at Historic Belmar Park for Black Santa Monica history, KCRW DJs, live music, art, and a Black Market Flea vendor village.",
                 "- Later Saturdays through October 17 continue with Wellness & Waves at the Pier and the Pico farmers market.",
                 "Open /articles/santa-monica-august-2026-guide for rankings, best-for notes, transit, official sources, and directory links.",
             )
@@ -2068,8 +2069,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Halloween at Kidspace, Pasadena Playhouse's The Visit, ArtNight Pasadena, the free Latino Heritage Parade & Festival on October 10, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
-                "Use the full guide for ranked best-for and transit notes, open /articles/southern-california-september-events-2026#the-visit-pasadena for theater guidance, #artnight-pasadena for free citywide culture, #pasadena-latino-heritage for the parade and festival, #pasadena-route-66-exhibition for history, or #laura-aguilar-day-of-the-dead for photography, or browse /directory?city=Pasadena for 563 local listings.",
+                "The current PerkNation fall guide includes Halloween at Kidspace, Pasadena Playhouse's The Visit, ArtNight Pasadena, the free Latino Heritage Parade & Festival on October 10, the free Pasadena Fall Festival on October 24, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
+                "Use the full guide for ranked best-for and transit notes, open /articles/southern-california-september-events-2026#the-visit-pasadena for theater guidance, #artnight-pasadena for free citywide culture, #pasadena-latino-heritage for the parade and festival, #pasadena-fall-festival for a family Halloween afternoon, #pasadena-route-66-exhibition for history, or #laura-aguilar-day-of-the-dead for photography, or browse /directory?city=Pasadena for 563 local listings.",
             )
         )
 

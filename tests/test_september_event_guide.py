@@ -15,12 +15,15 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Twenty-eight Southern California fall plans" in html
-    assert 'dateModified": "2026-09-30"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 29))
+    assert "Thirty-one Southern California fall plans" in html
+    assert 'dateModified": "2026-10-01"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 32))
     for expected in (
         "Design West Hollywood",
         'id="design-west-hollywood"',
+        "Pacific Airshow in Huntington Beach",
+        'id="pacific-airshow-huntington-beach"',
+        "https://pacificairshowusa.com/faq",
         "Halloween at Kidspace",
         'id="kidspace-halloween"',
         "Spider Pavilion at the Natural History Museum",
@@ -57,6 +60,9 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Pasadena Latino Heritage Parade &amp; Festival",
         'id="pasadena-latino-heritage"',
         "https://www.cityofpasadena.net/parks-and-rec/event/latino-heritage-parade-festival/",
+        "Continuum at Historic Belmar Park",
+        'id="continuum-black-santa-monica"',
+        "partnership-with-goldenvoice-honors-the-history-of-belmar-and-black-santa-monica",
         "Long Beach Marathon weekend",
         'id="long-beach-marathon"',
         "Indigenous Pride LA",
@@ -67,6 +73,9 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "https://www.burbankca.gov/calendar/-/calendar/event/4414632/0",
         "Beverly Hills Art Show",
         'id="beverly-hills-art-show"',
+        "Pasadena Fall Festival",
+        'id="pasadena-fall-festival"',
+        "https://www.cityofpasadena.net/event/fall-festival/",
         "Walt Disney Archives and Disneyland art at Muzeo",
         'id="muzeo-disney-exhibitions"',
         "Lucas Museum opening in Los Angeles",
@@ -139,20 +148,23 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated September 30 · Fall guide" in response.text
-        assert "Twenty-eight Southern California fall plans, ranked." in response.text
+        assert "Updated October 1 · Fall guide" in response.text
+        assert "Thirty-one Southern California fall plans, ranked." in response.text
         for current in (
             "Design West Hollywood",
+            "Pacific Airshow",
             "Los Angeles Korean Festival",
             "Tustin Tiller Days",
             "Burbank Book Festival",
             "Long Beach Open Studio Tour",
             "Latino Restaurant Week",
             "Santa Monica's Route 66 Art Walk",
+            "Continuum at Historic Belmar Park",
             "West Hollywood's free park movie",
             "Glendale Cultural Festival",
             "ArtNight Pasadena",
             "Pasadena's Latino Heritage celebration",
+            "Pasadena's Latino Heritage celebration and Fall Festival",
             "Indigenous Pride LA",
             "Burbank's Haunted Adventure",
             "Long Beach Marathon weekend",
@@ -187,17 +199,20 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
 
     assert answer
     for current in (
-        "Twenty-eight Southern California fall plans",
+        "Thirty-one Southern California fall plans",
         "Design West Hollywood",
+        "Pacific Airshow",
         "Tustin Tiller Days",
         "West Hollywood's free Movies in the Park",
         "Montana Avenue Art Walk",
         "ArtNight Pasadena",
         "Pasadena Latino Heritage Parade & Festival",
+        "Continuum at Historic Belmar Park",
         "Indigenous Pride LA",
         "Burbank Haunted Adventure",
         "Long Beach Marathon weekend",
         "Beverly Hills Art Show",
+        "Pasadena Fall Festival",
         "Los Angeles Korean Festival",
         "Burbank Book Festival",
         "Long Beach Open Studio Tour",
@@ -231,6 +246,8 @@ def test_orange_county_city_answers_include_current_plans() -> None:
     )
 
     assert answer
+    assert "Pacific Airshow" in answer
+    assert "#pacific-airshow-huntington-beach" in answer
     assert "Tustin Tiller Days" in answer
     assert "#tustin-tiller-days" in answer
     assert "Into the Woods" in answer
@@ -253,6 +270,8 @@ def test_pasadena_answer_includes_artnight_and_flexible_exhibitions() -> None:
     assert "#artnight-pasadena" in answer
     assert "Latino Heritage Parade & Festival" in answer
     assert "#pasadena-latino-heritage" in answer
+    assert "Pasadena Fall Festival" in answer
+    assert "#pasadena-fall-festival" in answer
     assert "Where History Meets the Road" in answer
     assert "Laura Aguilar" in answer
     assert "Pasadena Chalk Festival" not in answer
@@ -296,6 +315,8 @@ def test_huntington_beach_answer_includes_current_oktoberfest() -> None:
     )
 
     assert answer
+    assert "Pacific Airshow" in answer
+    assert "#pacific-airshow-huntington-beach" in answer
     assert "Huntington Beach Oktoberfest" in answer
     assert "September 12-November 8" in answer
     assert "#huntington-beach-oktoberfest" in answer
