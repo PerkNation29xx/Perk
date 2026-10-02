@@ -15,15 +15,19 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-one Southern California fall plans" in html
-    assert 'dateModified": "2026-10-01"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 32))
+    assert "Thirty-two Southern California fall plans" in html
+    assert 'dateModified": "2026-10-02"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 33))
     for expected in (
-        "Design West Hollywood",
-        'id="design-west-hollywood"',
         "Pacific Airshow in Huntington Beach",
         'id="pacific-airshow-huntington-beach"',
         "https://pacificairshowusa.com/faq",
+        "Hot Wheels Monster Trucks in Long Beach",
+        'id="hot-wheels-monster-trucks-long-beach"',
+        "https://www.lbentertainmentcenter.com/events/hot-wheels-monster-trucks-live-glow-n-fire-26/",
+        "Little Women</em> Ballet in Los Angeles",
+        'id="little-women-ballet-los-angeles"',
+        "https://www.heritagesquare.org/events",
         "Halloween at Kidspace",
         'id="kidspace-halloween"',
         "Spider Pavilion at the Natural History Museum",
@@ -115,6 +119,8 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Glendale Tech Week",
         "Orange County Burger Week",
         "Glendale International Film Festival awards night",
+        "Design West Hollywood",
+        "October 1 downtown kickoff",
     ):
         assert expired not in html
 
@@ -148,11 +154,12 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 1 · Fall guide" in response.text
-        assert "Thirty-one Southern California fall plans, ranked." in response.text
+        assert "Updated October 2 · Fall guide" in response.text
+        assert "Thirty-two Southern California fall plans, ranked." in response.text
         for current in (
-            "Design West Hollywood",
             "Pacific Airshow",
+            "Hot Wheels Monster Trucks",
+            "Little Women Ballet",
             "Los Angeles Korean Festival",
             "Tustin Tiller Days",
             "Burbank Book Festival",
@@ -180,6 +187,7 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "SteelCraft Long Beach Oktoberfest",
             "MOLAA Lucha Libre",
             "Glendale's final film-festival awards night",
+            "Design West Hollywood",
         ):
             assert expired not in response.text
 
@@ -199,9 +207,10 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
 
     assert answer
     for current in (
-        "Thirty-one Southern California fall plans",
-        "Design West Hollywood",
+        "Thirty-two Southern California fall plans",
         "Pacific Airshow",
+        "Hot Wheels Monster Trucks",
+        "Little Women Ballet",
         "Tustin Tiller Days",
         "West Hollywood's free Movies in the Park",
         "Montana Avenue Art Walk",
@@ -235,6 +244,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Mariachi Meets The Smiths",
         "Simon Rodia Watts Towers Jazz Festival",
         "Glendale International Film Festival",
+        "Design West Hollywood",
     ):
         assert expired not in answer
 
@@ -300,6 +310,8 @@ def test_long_beach_answer_includes_dark_harbor_and_marathon() -> None:
     assert answer
     assert "Dark Harbor" in answer
     assert "#queen-mary-dark-harbor" in answer
+    assert "Hot Wheels Monster Trucks" in answer
+    assert "#hot-wheels-monster-trucks-long-beach" in answer
     assert "Long Beach Marathon weekend" in answer
     assert "#long-beach-marathon" in answer
     assert "SteelCraft" not in answer
