@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-two Southern California fall plans" in html
-    assert 'dateModified": "2026-10-02"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 33))
+    assert "Thirty-five Southern California fall plans" in html
+    assert 'dateModified": "2026-10-03"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 36))
     for expected in (
         "Pacific Airshow in Huntington Beach",
         'id="pacific-airshow-huntington-beach"',
@@ -94,6 +94,12 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         'id="academy-museum-horror-show"',
         "Artifacts from an Unborn Empire",
         'id="artifacts-unborn-empire-glendale"',
+        "Irvine Global Village Festival",
+        'id="irvine-global-village-festival"',
+        "Gilb Museum's 25th anniversary in Arcadia",
+        'id="gilb-museum-25th-anniversary"',
+        "Fleurs de Villes at Greystone",
+        'id="fleurs-de-villes-greystone"',
         "Best for:",
         "/directory?city=Burbank",
         "/directory?city=Pasadena",
@@ -154,8 +160,8 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 2 · Fall guide" in response.text
-        assert "Thirty-two Southern California fall plans, ranked." in response.text
+        assert "Updated October 3 · Fall guide" in response.text
+        assert "Thirty-five Southern California fall plans, ranked." in response.text
         for current in (
             "Pacific Airshow",
             "Hot Wheels Monster Trucks",
@@ -176,6 +182,9 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Burbank's Haunted Adventure",
             "Long Beach Marathon weekend",
             "Beverly Hills Art Show",
+            "Irvine Global Village Festival",
+            "Gilb Museum's Arcadia anniversary",
+            "Fleurs de Villes at Greystone",
         ):
             assert current in response.text
         for expired in (
@@ -207,7 +216,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
 
     assert answer
     for current in (
-        "Thirty-two Southern California fall plans",
+        "Thirty-five Southern California fall plans",
         "Pacific Airshow",
         "Hot Wheels Monster Trucks",
         "Little Women Ballet",
@@ -228,6 +237,9 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Latino Restaurant Week",
         "The Horror Show",
         "Artifacts from an Unborn Empire",
+        "Irvine Global Village Festival",
+        "Gilb Museum's Arcadia anniversary",
+        "Fleurs de Villes at Greystone",
         "/articles/southern-california-september-events-2026",
     ):
         assert current in answer

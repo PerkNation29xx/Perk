@@ -812,12 +812,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Thirty-two Southern California fall plans",
-        "timing": "October 2-31, 2026",
+        "title": "Thirty-five Southern California fall plans",
+        "timing": "October 3-November 4, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to Pacific Airshow, Hot Wheels Monster Trucks at Long Beach Arena, Little Women Ballet at Heritage Square Museum, Halloween at Kidspace, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Pasadena Playhouse's The Visit, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, the free Los Angeles Korean Festival, Tustin Tiller Days, Burbank Book Festival, Long Beach Open Studio Tour, Latino Restaurant Week, West Hollywood's free Movies in the Park, Santa Monica's Montana Avenue Art Walk, and Glendale Cultural Festival. "
-            "Also covers ArtNight Pasadena, the Pasadena Latino Heritage Parade & Festival, Continuum at Historic Belmar Park, Long Beach Marathon weekend, Indigenous Pride LA, Burbank Haunted Adventure, the Beverly Hills Art Show, Pasadena Fall Festival, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, and Glendale's Artifacts from an Unborn Empire exhibition."
+            "Also covers ArtNight Pasadena, the Pasadena Latino Heritage Parade & Festival, Continuum at Historic Belmar Park, Long Beach Marathon weekend, Indigenous Pride LA, Burbank Haunted Adventure, the Beverly Hills Art Show, Pasadena Fall Festival, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, Irvine Global Village Festival, the Gilb Museum's Arcadia anniversary, and Fleurs de Villes at Greystone."
         ),
     },
 
@@ -1955,7 +1955,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     wants_burbank = _contains_any(text, ("burbank", "burbank film festival"))
     wants_glendale = _contains_any(text, ("glendale", "deukmejian", "brand park"))
     wants_arcadia = _contains_any(text, ("arcadia", "626 night market", "santa anita", "arboretum"))
-    wants_orange_county = _contains_any(text, ("orange county", "santa ana", "dana point", "costa mesa", "san clemente", "oc fair", "sea country festival", "corn festival", "thefitexpo"))
+    wants_orange_county = _contains_any(text, ("orange county", "irvine", "santa ana", "dana point", "costa mesa", "san clemente", "oc fair", "sea country festival", "corn festival", "thefitexpo"))
     wants_santa_monica = _contains_any(text, ("santa monica", "wellness & waves", "art on ocean", "ocean way festival"))
     wants_laguna_beach = _contains_any(text, ("laguna beach", "pageant of the masters", "sawdust", "passport to the arts", "laguna art museum"))
     wants_long_beach = _contains_any(text, ("long beach", "stroll & savor", "taste of downtown", "jazz on the bay", "new blues festival"))
@@ -1987,8 +1987,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current Orange County options include Pacific Airshow in Huntington Beach from October 2-4, Tustin Tiller Days from October 2-4, South Coast Repertory's Into the Woods through October 18, Huntington Beach Oktoberfest through November 8, and the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1.",
-                "Open /articles/southern-california-september-events-2026#pacific-airshow-huntington-beach, /articles/southern-california-september-events-2026#tustin-tiller-days, /articles/southern-california-september-events-2026#into-the-woods-costa-mesa, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, or /articles/southern-california-september-events-2026#muzeo-disney-exhibitions for practical comparisons and current city-directory links.",
+                "Current Orange County options include Pacific Airshow in Huntington Beach from October 2-4, Tustin Tiller Days from October 2-4, Irvine Global Village Festival on October 10, South Coast Repertory's Into the Woods through October 18, Huntington Beach Oktoberfest through November 8, and the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1.",
+                "Open /articles/southern-california-september-events-2026#pacific-airshow-huntington-beach, /articles/southern-california-september-events-2026#tustin-tiller-days, /articles/southern-california-september-events-2026#irvine-global-village-festival, /articles/southern-california-september-events-2026#into-the-woods-costa-mesa, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, or /articles/southern-california-september-events-2026#muzeo-disney-exhibitions for practical comparisons and current city-directory links.",
             )
         )
 
@@ -2086,8 +2086,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_arcadia and not wants_restaurants:
         return "\n".join(
             (
-                "Arcadia's September 26 Mid-Autumn Moon Festival has concluded, so PerkNation no longer presents it as current.",
-                "Browse /directory?city=Arcadia for 40 local listings and confirm the next city event with the organizer before traveling.",
+                "The Gilb Museum of Arcadia Heritage launches its yearlong 25th-anniversary celebration on October 10 from 2-5 p.m.; the ticket page lists 125 total spots, so secure admission before building the rest of the day.",
+                "Open /articles/southern-california-september-events-2026#gilb-museum-25th-anniversary for official sources and planning notes, or browse /directory?city=Arcadia for 40 local listings.",
             )
         )
 
