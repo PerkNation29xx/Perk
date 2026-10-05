@@ -15,44 +15,32 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-six Southern California fall plans" in html
-    assert 'dateModified": "2026-10-04"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 37))
+    assert "Thirty-four Southern California fall plans" in html
+    assert 'dateModified": "2026-10-05"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 35))
     for expected in (
-        "Pacific Airshow in Huntington Beach",
-        'id="pacific-airshow-huntington-beach"',
-        "https://pacificairshowusa.com/faq",
-        "Hot Wheels Monster Trucks in Long Beach",
-        'id="hot-wheels-monster-trucks-long-beach"',
-        "https://www.lbentertainmentcenter.com/events/hot-wheels-monster-trucks-live-glow-n-fire-26/",
-        "Little Women</em> Ballet in Los Angeles",
-        'id="little-women-ballet-los-angeles"',
-        "https://www.heritagesquare.org/events",
         "Halloween at Kidspace",
         'id="kidspace-halloween"',
         "Spider Pavilion at the Natural History Museum",
         'id="spider-pavilion"',
         "Into the Woods",
         'id="into-the-woods-costa-mesa"',
-        "at Pasadena Playhouse",
-        'id="the-visit-pasadena"',
         "Huntington Beach Oktoberfest",
         'id="huntington-beach-oktoberfest"',
         "Queen Mary's Dark Harbor",
         'id="queen-mary-dark-harbor"',
-        "Los Angeles Korean Festival",
-        'id="los-angeles-korean-festival"',
-        "Tustin Tiller Days",
-        'id="tustin-tiller-days"',
-        "https://www.tustinca.org/637/Tustin-Tiller-Days",
         "Long Beach Open Studio Tour",
         'id="long-beach-open-studio-tour"',
         "https://lbopenstudiotour.com/",
         "Long Beach Latino Restaurant Week",
         'id="long-beach-latino-restaurant-week"',
         "https://latinorestaurantweeklbc.com/",
-        "Glendale Cultural Festival",
-        'id="glendale-cultural-festival"',
+        "A Great Day in the Stoke in Huntington Beach",
+        'id="great-day-in-the-stoke"',
+        "https://agreatdayinthestoke.com/",
+        "Culver City Arts Festival",
+        'id="culver-city-arts-festival"',
+        "https://culvercityartsfestival.com/",
         "ArtNight Pasadena",
         'id="artnight-pasadena"',
         "Santa Monica Fire Prevention Week Open House",
@@ -83,6 +71,15 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Anaheim Fall Festival and Halloween Parade",
         'id="anaheim-fall-festival-parade"',
         "https://www.anaheimfallfestival.org/parade/",
+        "SoCal Corgi Beach Day in Huntington Beach",
+        'id="socal-corgi-beach-day"',
+        "https://socalcorgibeachday.com/events",
+        "Ghosts of the Miles in Santa Monica",
+        'id="ghosts-of-the-miles"',
+        "https://www.santamonica.com/event/ghosts-of-the-miles/",
+        "West Hollywood Halloween Carnaval",
+        'id="west-hollywood-halloween-carnaval"',
+        "Event/32213/1106",
         "Walt Disney Archives and Disneyland art at Muzeo",
         'id="muzeo-disney-exhibitions"',
         "Lucas Museum opening in Los Angeles",
@@ -136,6 +133,13 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Burbank Book Festival",
         "West Hollywood Movies in the Park",
         "Montana Avenue Art Walk in Santa Monica",
+        "Pacific Airshow in Huntington Beach",
+        "Hot Wheels Monster Trucks in Long Beach",
+        "Little Women</em> Ballet in Los Angeles",
+        "at Pasadena Playhouse",
+        "Los Angeles Korean Festival",
+        "Tustin Tiller Days",
+        "Glendale Cultural Festival",
     ):
         assert expired not in html
 
@@ -169,19 +173,18 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 4 · Fall guide" in response.text
-        assert "Thirty-six Southern California fall plans, ranked." in response.text
+        assert "Updated October 5 · Fall guide" in response.text
+        assert "Thirty-four Southern California fall plans, ranked." in response.text
         for current in (
-            "Pacific Airshow",
-            "Hot Wheels Monster Trucks",
-            "Little Women Ballet",
-            "Los Angeles Korean Festival",
-            "Tustin Tiller Days",
+            "Halloween at Kidspace",
+            "Spider Pavilion",
+            "Into the Woods",
             "Long Beach Open Studio Tour",
             "Latino Restaurant Week",
+            "A Great Day in the Stoke",
+            "Culver City Arts Festival",
             "Santa Monica's fire station open house",
             "Continuum at Historic Belmar Park",
-            "Glendale Cultural Festival",
             "ArtNight Pasadena",
             "Pasadena's Latino Heritage celebration",
             "Pasadena's Latino Heritage celebration and Fall Festival",
@@ -190,6 +193,9 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Southeast Asia Day",
             "Long Beach Marathon weekend",
             "Anaheim's Fall Festival and Halloween Parade",
+            "SoCal Corgi Beach Day",
+            "Ghosts of the Miles",
+            "West Hollywood Halloween Carnaval",
             "Beverly Hills Art Show",
             "Irvine Global Village Festival",
             "Gilb Museum's Arcadia anniversary",
@@ -209,6 +215,12 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Burbank Book Festival",
             "Santa Monica's Route 66 Art Walk",
             "West Hollywood's free park movie",
+            "Pacific Airshow",
+            "Hot Wheels Monster Trucks",
+            "Little Women Ballet",
+            "Los Angeles Korean Festival",
+            "Tustin Tiller Days",
+            "Glendale Cultural Festival",
         ):
             assert expired not in response.text
 
@@ -228,11 +240,12 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
 
     assert answer
     for current in (
-        "Thirty-six Southern California fall plans",
-        "Pacific Airshow",
-        "Hot Wheels Monster Trucks",
-        "Little Women Ballet",
-        "Tustin Tiller Days",
+        "Thirty-four Southern California fall plans",
+        "Halloween at Kidspace",
+        "Spider Pavilion",
+        "Into the Woods",
+        "A Great Day in the Stoke",
+        "Culver City Arts Festival",
         "ArtNight Pasadena",
         "Fire Prevention Week Open House",
         "Pasadena Latino Heritage Parade & Festival",
@@ -244,7 +257,9 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Beverly Hills Art Show",
         "Pasadena Fall Festival",
         "Anaheim Fall Festival and Halloween Parade",
-        "Los Angeles Korean Festival",
+        "SoCal Corgi Beach Day",
+        "Ghosts of the Miles",
+        "West Hollywood Halloween Carnaval",
         "Long Beach Open Studio Tour",
         "Latino Restaurant Week",
         "The Horror Show",
@@ -273,6 +288,12 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Burbank Book Festival",
         "Montana Avenue Art Walk",
         "West Hollywood's free Movies in the Park",
+        "Pacific Airshow",
+        "Hot Wheels Monster Trucks",
+        "Little Women Ballet",
+        "Tustin Tiller Days",
+        "Los Angeles Korean Festival",
+        "Glendale Cultural Festival",
     ):
         assert expired not in answer
 
@@ -284,10 +305,10 @@ def test_orange_county_city_answers_include_current_plans() -> None:
     )
 
     assert answer
-    assert "Pacific Airshow" in answer
-    assert "#pacific-airshow-huntington-beach" in answer
-    assert "Tustin Tiller Days" in answer
-    assert "#tustin-tiller-days" in answer
+    assert "A Great Day in the Stoke" in answer
+    assert "#great-day-in-the-stoke" in answer
+    assert "SoCal Corgi Beach Day" in answer
+    assert "#socal-corgi-beach-day" in answer
     assert "Into the Woods" in answer
     assert "#into-the-woods-costa-mesa" in answer
     assert "Walt Disney Archives" in answer
@@ -304,8 +325,6 @@ def test_pasadena_answer_includes_artnight_and_flexible_exhibitions() -> None:
     )
 
     assert answer
-    assert "The Visit" in answer
-    assert "#the-visit-pasadena" in answer
     assert "ArtNight Pasadena" in answer
     assert "#artnight-pasadena" in answer
     assert "Latino Heritage Parade & Festival" in answer
@@ -339,8 +358,6 @@ def test_long_beach_answer_includes_dark_harbor_and_marathon() -> None:
     assert answer
     assert "Dark Harbor" in answer
     assert "#queen-mary-dark-harbor" in answer
-    assert "Hot Wheels Monster Trucks" in answer
-    assert "#hot-wheels-monster-trucks-long-beach" in answer
     assert "Long Beach Marathon weekend" in answer
     assert "#long-beach-marathon" in answer
     assert "Southeast Asia Day" in answer
@@ -358,8 +375,10 @@ def test_huntington_beach_answer_includes_current_oktoberfest() -> None:
     )
 
     assert answer
-    assert "Pacific Airshow" in answer
-    assert "#pacific-airshow-huntington-beach" in answer
+    assert "A Great Day in the Stoke" in answer
+    assert "#great-day-in-the-stoke" in answer
+    assert "SoCal Corgi Beach Day" in answer
+    assert "#socal-corgi-beach-day" in answer
     assert "Huntington Beach Oktoberfest" in answer
     assert "September 12-November 8" in answer
     assert "#huntington-beach-oktoberfest" in answer
