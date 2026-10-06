@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-four Southern California fall plans" in html
-    assert 'dateModified": "2026-10-05"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 35))
+    assert "Thirty-seven Southern California fall plans" in html
+    assert 'dateModified": "2026-10-06"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 38))
     for expected in (
         "Halloween at Kidspace",
         'id="kidspace-halloween"',
@@ -35,6 +35,16 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Long Beach Latino Restaurant Week",
         'id="long-beach-latino-restaurant-week"',
         "https://latinorestaurantweeklbc.com/",
+        "Screamfest in Hollywood",
+        'id="screamfest-hollywood"',
+        "https://www.screamfestla.com/festival/attending-festival",
+        "Public Broadcast Stereo",
+        'id="public-broadcast-stereo-weho"',
+        "Event/32227/1472",
+        "Explore JPL in Pasadena",
+        'id="explore-jpl-2026"',
+        "https://www.jpl.nasa.gov/explore-jpl/",
+        "all advance tickets are currently reserved",
         "A Great Day in the Stoke in Huntington Beach",
         'id="great-day-in-the-stoke"',
         "https://agreatdayinthestoke.com/",
@@ -173,14 +183,17 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 5 · Fall guide" in response.text
-        assert "Thirty-four Southern California fall plans, ranked." in response.text
+        assert "Updated October 6 · Fall guide" in response.text
+        assert "Thirty-seven Southern California fall plans, ranked." in response.text
         for current in (
             "Halloween at Kidspace",
             "Spider Pavilion",
             "Into the Woods",
             "Long Beach Open Studio Tour",
             "Latino Restaurant Week",
+            "Screamfest",
+            "Public Broadcast Stereo",
+            "Explore JPL",
             "A Great Day in the Stoke",
             "Culver City Arts Festival",
             "Santa Monica's fire station open house",
@@ -240,10 +253,13 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
 
     assert answer
     for current in (
-        "Thirty-four Southern California fall plans",
+        "Thirty-seven Southern California fall plans",
         "Halloween at Kidspace",
         "Spider Pavilion",
         "Into the Woods",
+        "Screamfest in Hollywood",
+        "Public Broadcast Stereo",
+        "Explore JPL",
         "A Great Day in the Stoke",
         "Culver City Arts Festival",
         "ArtNight Pasadena",
@@ -327,6 +343,9 @@ def test_pasadena_answer_includes_artnight_and_flexible_exhibitions() -> None:
     assert answer
     assert "ArtNight Pasadena" in answer
     assert "#artnight-pasadena" in answer
+    assert "Explore JPL" in answer
+    assert "#explore-jpl-2026" in answer
+    assert "all reserved" in answer
     assert "Latino Heritage Parade & Festival" in answer
     assert "#pasadena-latino-heritage" in answer
     assert "Pasadena Fall Festival" in answer
