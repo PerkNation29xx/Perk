@@ -15,15 +15,17 @@ AUGUST_GUIDE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-cal
 def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Santa Monica has six current October plans" in html
-    assert 'dateModified": "2026-10-06"' in html
-    assert html.count("<h2>") >= 9
+    assert "Santa Monica has seven current October plans" in html
+    assert 'dateModified": "2026-10-07"' in html
+    assert html.count("<h2>") >= 10
     for expected in (
-        "6 ranked plans",
+        "7 ranked plans",
         "Continuum at Historic Belmar Park",
         "partnership-with-goldenvoice-honors-the-history-of-belmar-and-black-santa-monica",
         "Fire Prevention Week Open House",
         "4qdtmwm31wjbrtpetwxs4d5zxh/202610101100",
+        "Airport-to-park master-plan event",
+        "santa-monica-airport-conversion-project-to-hold-community-event-on-oct-17",
         "Ghosts of the Miles",
         "https://www.santamonica.com/event/ghosts-of-the-miles/",
         "Portraits: Faces and Waves",
@@ -68,7 +70,7 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "6 ranked plans" in response.text
+        assert "7 ranked plans" in response.text
 
     image = client.get("/assets/articles/santa-monica-august-2026-guide.jpg")
     assert image.status_code == 200
@@ -79,10 +81,11 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated October 6 · Santa Monica") == 1
-        assert "Six Santa Monica October plans, ranked." in response.text
+        assert response.text.count("Updated October 7 · Santa Monica") == 1
+        assert "Seven Santa Monica October plans, ranked." in response.text
         assert "Continuum at Historic Belmar Park" in response.text
         assert "fire station open house" in response.text
+        assert "airport-to-park master-plan event" in response.text
         assert "Ghosts of the Miles" in response.text
         assert "Portraits: Faces and Waves" in response.text
         assert "Compare Pier Locals' Night" not in response.text
@@ -110,10 +113,11 @@ def test_santa_monica_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "ranks six October plans, including five free choices" in answer
+    assert "ranks seven October plans, including five clearly free choices" in answer
     assert "Punk Night at the Pier" not in answer
     assert "Voices of Strength" not in answer
     assert "Fire Prevention Week Open House" in answer
+    assert "airport-to-park master-plan event" in answer
     assert "Portraits: Faces and Waves" in answer
     assert "Continuum at Historic Belmar Park" in answer
     assert "Ghosts of the Miles" in answer

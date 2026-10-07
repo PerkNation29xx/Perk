@@ -800,24 +800,23 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Fashion and shopping",
         "city": "Los Angeles, United States, and international",
         "title": "2026 Fashion Week calendar: LA, New York, Miami and the world",
-        "timing": "September through October 2026",
+        "timing": "October 7-30, 2026",
         "route": "/articles/la-fashion-events-2026",
         "details": (
-            "Current official 2026 fashion-week dates: New York September 10-15, London September 17-21, "
-            "Milan September 22-28, Paris September 28-October 6, Los Angeles Market Week October 12-15, "
-            "and Miami October 13-17, plus public CMC sample-sale guidance."
+            "Remaining official 2026 dates: trade-only Los Angeles Market Week October 12-15, Miami Fashion Week October 13-17, "
+            "and the public CMC sample sale October 30. Completed New York, London, Milan, and Paris dates remain in the article only as clearly labeled season context."
         ),
     },
 
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Thirty-seven Southern California fall plans",
-        "timing": "October 6-November 5, 2026",
+        "title": "Thirty-nine Southern California fall plans",
+        "timing": "October 7-November 5, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to Halloween at Kidspace, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Long Beach Open Studio Tour, Latino Restaurant Week, Screamfest in Hollywood, West Hollywood's free Public Broadcast Stereo concert, and Explore JPL with its sold-out-ticket warning. "
-            "Also covers A Great Day in the Stoke, Culver City Arts Festival, ArtNight Pasadena, Santa Monica's Fire Prevention Week Open House, the Pasadena Latino Heritage Parade & Festival, Continuum at Historic Belmar Park, Long Beach Marathon weekend, Indigenous Pride LA, Burbank Haunted Adventure, Southeast Asia Day at the Aquarium of the Pacific, the Beverly Hills Art Show, Pasadena Fall Festival, Anaheim Fall Festival and Halloween Parade, SoCal Corgi Beach Day, Ghosts of the Miles, West Hollywood Halloween Carnaval, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, Santa Monica's Portraits: Faces and Waves exhibition, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, Irvine Global Village Festival, the Gilb Museum's Arcadia anniversary, and Fleurs de Villes at Greystone."
+            "Also covers A Great Day in the Stoke, Culver City Arts Festival, ArtNight Pasadena, Long Beach Symphony's America at 250, Santa Monica's Fire Prevention Week Open House, the Pasadena Latino Heritage Parade & Festival, Continuum at Historic Belmar Park, Long Beach Marathon weekend, Indigenous Pride LA, Burbank Haunted Adventure, Southeast Asia Day at the Aquarium of the Pacific, Santa Monica's airport-to-park master-plan event, the Beverly Hills Art Show, Pasadena Fall Festival, Anaheim Fall Festival and Halloween Parade, SoCal Corgi Beach Day, Ghosts of the Miles, West Hollywood Halloween Carnaval, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, Santa Monica's Portraits: Faces and Waves exhibition, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, Irvine Global Village Festival, the Gilb Museum's Arcadia anniversary, and Fleurs de Villes at Greystone."
         ),
     },
 
@@ -905,11 +904,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, coastal art, wellness, movies, markets, and local history",
         "city": "Santa Monica",
         "title": "Santa Monica October 2026 coastal events guide",
-        "timing": "October 6-24, 2026",
+        "timing": "October 7-24, 2026",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Six current plans covering Continuum at Historic Belmar Park, the Fire Prevention Week Open House, "
-            "Ghosts of the Miles, the Portraits: Faces and Waves photography exhibition, Wellness & Waves at the Pier, and the Pico farmers market."
+            "Seven current plans covering Continuum at Historic Belmar Park, the Fire Prevention Week Open House, "
+            "the airport-to-park master-plan event, Ghosts of the Miles, the Portraits: Faces and Waves photography exhibition, Wellness & Waves at the Pier, and the Pico farmers market."
         ),
     },
     {
@@ -2025,9 +2024,10 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks six October plans, including five free choices:",
+                "The current PerkNation Santa Monica guide ranks seven October plans, including five clearly free choices:",
                 "- On October 10, choose the Fire Prevention Week Open House for station tours, fire engines, family activities, and practical lithium-ion battery safety.",
                 "- On October 11, choose Continuum at Historic Belmar Park for Black Santa Monica history, KCRW DJs, live music, art, and a Black Market Flea vendor village.",
+                "- On October 17, attend the airport-to-park master-plan event to see the future park design and share feedback with the project team.",
                 "- On October 23 or 24, reserve Ghosts of the Miles for local history and seasonal performance at the historic Miles Memorial Playhouse.",
                 "- The free Portraits: Faces and Waves exhibition offers a flexible Beach House Gallery stop through March 27, while later Saturdays through October 17 continue with Wellness & Waves at the Pier and the Pico farmers market.",
                 "Open /articles/santa-monica-august-2026-guide for rankings, best-for notes, transit, official sources, and directory links.",
@@ -2037,16 +2037,12 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_fashion and not any((wants_sports, wants_concerts, wants_restaurants)):
         return "\n".join(
             (
-                "Upcoming dates in the PerkNation 2026 Fashion Week guide:",
+                "Remaining dates in the PerkNation 2026 Fashion Week guide:",
                 "- Los Angeles Market Week: October 12-15 (trade credentials required).",
-                "- New York Fashion Week: September 10-15.",
-                "- London Fashion Week: September 17-21.",
-                "- Milano Fashion Week: September 22-28.",
-                "- Paris Fashion Week Womenswear: September 28-October 6.",
                 "- Miami Fashion Week: October 13-17.",
-                "Best starting points: New York for the U.S. industry overview, Milan and Paris for luxury, "
-                "London for emerging perspectives, and Miami for international, resort, "
-                "culture, and technology crossover. Read the rankings, access notes, and official-source links at "
+                "- CMC's next public sample-sale Friday: October 30.",
+                "Choose Los Angeles only with trade credentials, Miami for an international, resort, culture, and technology crossover, "
+                "or the CMC sample sale for public shopping access. Completed New York, London, Milan, and Paris dates are labeled as season context. Read the rankings, access notes, and official-source links at "
                 "/articles/la-fashion-events-2026.",
             )
         )

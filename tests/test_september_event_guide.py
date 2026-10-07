@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-seven Southern California fall plans" in html
-    assert 'dateModified": "2026-10-06"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 38))
+    assert "Thirty-nine Southern California fall plans" in html
+    assert 'dateModified": "2026-10-07"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 40))
     for expected in (
         "Halloween at Kidspace",
         'id="kidspace-halloween"',
@@ -53,6 +53,9 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "https://culvercityartsfestival.com/",
         "ArtNight Pasadena",
         'id="artnight-pasadena"',
+        "Long Beach Symphony's <em>America at 250</em>",
+        'id="long-beach-symphony-america-250"',
+        "https://longbeachsymphony.org/concerts-events/america-at-250/",
         "Santa Monica Fire Prevention Week Open House",
         'id="santa-monica-fire-open-house"',
         "https://www.santamonica.gov/events/4qdtmwm31wjbrtpetwxs4d5zxh/202610101100",
@@ -73,6 +76,9 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Southeast Asia Day in Long Beach",
         'id="southeast-asia-day-long-beach"',
         "https://www.aquariumofpacific.org/events/info/southeast_asia_day",
+        "Santa Monica airport-to-park master-plan event",
+        'id="santa-monica-airport-park-plan"',
+        "santa-monica-airport-conversion-project-to-hold-community-event-on-oct-17",
         "Beverly Hills Art Show",
         'id="beverly-hills-art-show"',
         "Pasadena Fall Festival",
@@ -183,8 +189,8 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 6 · Fall guide" in response.text
-        assert "Thirty-seven Southern California fall plans, ranked." in response.text
+        assert "Updated October 7 · Fall guide" in response.text
+        assert "Thirty-nine Southern California fall plans, ranked." in response.text
         for current in (
             "Halloween at Kidspace",
             "Spider Pavilion",
@@ -198,7 +204,9 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Culver City Arts Festival",
             "Santa Monica's fire station open house",
             "Continuum at Historic Belmar Park",
+            "airport-to-park master-plan event",
             "ArtNight Pasadena",
+            "Long Beach Symphony's <em>America at 250</em>",
             "Pasadena's Latino Heritage celebration",
             "Pasadena's Latino Heritage celebration and Fall Festival",
             "Indigenous Pride LA",
@@ -253,7 +261,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
 
     assert answer
     for current in (
-        "Thirty-seven Southern California fall plans",
+        "Thirty-nine Southern California fall plans",
         "Halloween at Kidspace",
         "Spider Pavilion",
         "Into the Woods",
@@ -263,12 +271,14 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "A Great Day in the Stoke",
         "Culver City Arts Festival",
         "ArtNight Pasadena",
+        "Long Beach Symphony's America at 250",
         "Fire Prevention Week Open House",
         "Pasadena Latino Heritage Parade & Festival",
         "Continuum at Historic Belmar Park",
         "Indigenous Pride LA",
         "Burbank Haunted Adventure",
         "Southeast Asia Day",
+        "airport-to-park master-plan event",
         "Long Beach Marathon weekend",
         "Beverly Hills Art Show",
         "Pasadena Fall Festival",
