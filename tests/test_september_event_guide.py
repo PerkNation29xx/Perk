@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-nine Southern California fall plans" in html
-    assert 'dateModified": "2026-10-07"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 40))
+    assert "Forty-two Southern California fall plans" in html
+    assert 'dateModified": "2026-10-08"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 43))
     for expected in (
         "Halloween at Kidspace",
         'id="kidspace-halloween"',
@@ -38,6 +38,15 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Screamfest in Hollywood",
         'id="screamfest-hollywood"',
         "https://www.screamfestla.com/festival/attending-festival",
+        "CicLAvia—Heart of LA",
+        'id="ciclavia-heart-of-la"',
+        "https://ciclavia.org/events/heart-of-la-2026-10/",
+        "Pasadena Craftsman Week",
+        'id="pasadena-craftsman-week"',
+        "https://www.pasadenaheritage.org/craftsman-week",
+        "LA Opera's <em>Carmen</em> at Santa Monica Pier",
+        'id="carmen-santa-monica-pier"',
+        "opera-at-the-beach-%28santa-monica-pier%29",
         "Public Broadcast Stereo",
         'id="public-broadcast-stereo-weho"',
         "Event/32227/1472",
@@ -189,8 +198,8 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 7 · Fall guide" in response.text
-        assert "Thirty-nine Southern California fall plans, ranked." in response.text
+        assert "Updated October 8 · Fall guide" in response.text
+        assert "Forty-two Southern California fall plans, ranked." in response.text
         for current in (
             "Halloween at Kidspace",
             "Spider Pavilion",
@@ -198,6 +207,9 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Long Beach Open Studio Tour",
             "Latino Restaurant Week",
             "Screamfest",
+            "CicLAvia—Heart of LA",
+            "Pasadena Craftsman Week",
+            "LA Opera's free <em>Carmen</em> simulcast at Santa Monica Pier",
             "Public Broadcast Stereo",
             "Explore JPL",
             "A Great Day in the Stoke",
@@ -261,11 +273,14 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
 
     assert answer
     for current in (
-        "Thirty-nine Southern California fall plans",
+        "Forty-two Southern California fall plans",
         "Halloween at Kidspace",
         "Spider Pavilion",
         "Into the Woods",
         "Screamfest in Hollywood",
+        "CicLAvia—Heart of LA",
+        "Pasadena Craftsman Week",
+        "LA Opera's free Carmen simulcast at Santa Monica Pier",
         "Public Broadcast Stereo",
         "Explore JPL",
         "A Great Day in the Stoke",
