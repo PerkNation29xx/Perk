@@ -811,12 +811,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Forty-two Southern California fall plans",
-        "timing": "October 8-November 6, 2026",
+        "title": "Forty-six Southern California fall plans",
+        "timing": "October 9-November 7, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to Halloween at Kidspace, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Long Beach Open Studio Tour, Latino Restaurant Week, Screamfest in Hollywood, CicLAvia—Heart of LA, Pasadena Craftsman Week, LA Opera's free Carmen simulcast at Santa Monica Pier, West Hollywood's free Public Broadcast Stereo concert, and Explore JPL with its sold-out-ticket warning. "
-            "Also covers A Great Day in the Stoke, Culver City Arts Festival, ArtNight Pasadena, Long Beach Symphony's America at 250, Santa Monica's Fire Prevention Week Open House, the Pasadena Latino Heritage Parade & Festival, Continuum at Historic Belmar Park, Long Beach Marathon weekend, Indigenous Pride LA, Burbank Haunted Adventure, Southeast Asia Day at the Aquarium of the Pacific, Santa Monica's airport-to-park master-plan event, the Beverly Hills Art Show, Pasadena Fall Festival, Anaheim Fall Festival and Halloween Parade, SoCal Corgi Beach Day, Ghosts of the Miles, West Hollywood Halloween Carnaval, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, Santa Monica's Portraits: Faces and Waves exhibition, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, Irvine Global Village Festival, the Gilb Museum's Arcadia anniversary, and Fleurs de Villes at Greystone."
+            "Also covers A Great Day in the Stoke, Culver City Arts Festival, ArtNight Pasadena, OC Japan Fair, Burbank's Harvest of Horror, West Hollywood's free Youth Halloween Carnival, Santa Monica's Spooky Splash, Long Beach Symphony's America at 250, Santa Monica's Fire Prevention Week Open House, the Pasadena Latino Heritage Parade & Festival, Continuum at Historic Belmar Park, Long Beach Marathon weekend, Indigenous Pride LA, Burbank Haunted Adventure, Southeast Asia Day at the Aquarium of the Pacific, Santa Monica's airport-to-park master-plan event, the Beverly Hills Art Show, Pasadena Fall Festival, Anaheim Fall Festival and Halloween Parade, SoCal Corgi Beach Day, Ghosts of the Miles, West Hollywood Halloween Carnaval, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, Santa Monica's Portraits: Faces and Waves exhibition, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, Irvine Global Village Festival, the Gilb Museum's Arcadia anniversary, and Fleurs de Villes at Greystone."
         ),
     },
 
@@ -904,11 +904,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, coastal art, wellness, movies, markets, and local history",
         "city": "Santa Monica",
         "title": "Santa Monica October 2026 coastal events guide",
-        "timing": "October 8-24, 2026",
+        "timing": "October 9-24, 2026",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Eight current plans covering Continuum at Historic Belmar Park, the Fire Prevention Week Open House, "
-            "the airport-to-park master-plan event, LA Opera's free Carmen simulcast at Santa Monica Pier, Ghosts of the Miles, the Portraits: Faces and Waves photography exhibition, Wellness & Waves at the Pier, and the Pico farmers market."
+            "Nine current plans covering Continuum at Historic Belmar Park, the Fire Prevention Week Open House, "
+            "the airport-to-park master-plan event, LA Opera's free Carmen simulcast at Santa Monica Pier, Spooky Splash, Ghosts of the Miles, the Portraits: Faces and Waves photography exhibition, Wellness & Waves at the Pier, and the Pico farmers market."
         ),
     },
     {
@@ -2024,11 +2024,12 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks eight October plans, including six clearly free choices:",
+                "The current PerkNation Santa Monica guide ranks nine October plans, including six clearly free choices:",
                 "- On October 10, choose the Fire Prevention Week Open House for station tours, fire engines, family activities, and practical lithium-ion battery safety.",
                 "- On October 11, choose Continuum at Historic Belmar Park for Black Santa Monica history, KCRW DJs, live music, art, and a Black Market Flea vendor village.",
                 "- On October 17, attend the airport-to-park master-plan event to see the future park design and share feedback with the project team.",
                 "- Also on October 17, LA Opera's free all-ages Carmen simulcast at Santa Monica Pier begins pre-show activities at 4 p.m. and the live broadcast at 6 p.m., with English and Spanish subtitles.",
+                "- On October 23, choose Spooky Splash for recreational swimming, a floating pumpkin patch, an obstacle course, movies, crafts, treats, and a haunted house; advance tickets cost $10 for residents and $15 for non-residents.",
                 "- On October 23 or 24, reserve Ghosts of the Miles for local history and seasonal performance at the historic Miles Memorial Playhouse.",
                 "- The free Portraits: Faces and Waves exhibition offers a flexible Beach House Gallery stop through March 27, while later Saturdays through October 17 continue with Wellness & Waves at the Pier and the Pico farmers market.",
                 "Open /articles/santa-monica-august-2026-guide for rankings, best-for notes, transit, official sources, and directory links.",

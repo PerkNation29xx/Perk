@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Forty-two Southern California fall plans" in html
-    assert 'dateModified": "2026-10-08"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 43))
+    assert "Forty-six Southern California fall plans" in html
+    assert 'dateModified": "2026-10-09"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 47))
     for expected in (
         "Halloween at Kidspace",
         'id="kidspace-halloween"',
@@ -62,6 +62,16 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "https://culvercityartsfestival.com/",
         "ArtNight Pasadena",
         'id="artnight-pasadena"',
+        "OC Japan Fair in Costa Mesa",
+        'id="oc-japan-fair"',
+        "https://ocfair.com/event/oc-japan-fair-october-2026",
+        "Burbank Harvest of Horror",
+        'id="burbank-harvest-of-horror"',
+        "West Hollywood Youth Halloween Carnival",
+        'id="weho-youth-halloween-carnival"',
+        "Santa Monica Spooky Splash",
+        'id="santa-monica-spooky-splash"',
+        "45112ggwps9h1y66jw9xjewkx6/202610231700",
         "Long Beach Symphony's <em>America at 250</em>",
         'id="long-beach-symphony-america-250"',
         "https://longbeachsymphony.org/concerts-events/america-at-250/",
@@ -198,8 +208,8 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 8 · Fall guide" in response.text
-        assert "Forty-two Southern California fall plans, ranked." in response.text
+        assert "Updated October 9 · Fall guide" in response.text
+        assert "Forty-six Southern California fall plans, ranked." in response.text
         for current in (
             "Halloween at Kidspace",
             "Spider Pavilion",
@@ -214,6 +224,10 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Explore JPL",
             "A Great Day in the Stoke",
             "Culver City Arts Festival",
+            "OC Japan Fair",
+            "Burbank's Harvest of Horror",
+            "West Hollywood's free Youth Halloween Carnival",
+            "Santa Monica's Spooky Splash",
             "Santa Monica's fire station open house",
             "Continuum at Historic Belmar Park",
             "airport-to-park master-plan event",
@@ -273,7 +287,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
 
     assert answer
     for current in (
-        "Forty-two Southern California fall plans",
+            "Forty-six Southern California fall plans",
         "Halloween at Kidspace",
         "Spider Pavilion",
         "Into the Woods",
@@ -285,7 +299,11 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Explore JPL",
         "A Great Day in the Stoke",
         "Culver City Arts Festival",
-        "ArtNight Pasadena",
+            "ArtNight Pasadena",
+            "OC Japan Fair",
+            "Burbank's Harvest of Horror",
+            "Youth Halloween Carnival",
+            "Spooky Splash",
         "Long Beach Symphony's America at 250",
         "Fire Prevention Week Open House",
         "Pasadena Latino Heritage Parade & Festival",
