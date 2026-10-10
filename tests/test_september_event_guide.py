@@ -16,7 +16,7 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Forty-six Southern California fall plans" in html
-    assert 'dateModified": "2026-10-09"' in html
+    assert 'dateModified": "2026-10-10"' in html
     assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 47))
     for expected in (
         "Halloween at Kidspace",
@@ -60,8 +60,9 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Culver City Arts Festival",
         'id="culver-city-arts-festival"',
         "https://culvercityartsfestival.com/",
-        "ArtNight Pasadena",
-        'id="artnight-pasadena"',
+        "Pasadena Route 66 Walktober tour",
+        'id="pasadena-route-66-walktober"',
+        "https://www.cityofpasadena.net/event/walktober-99-years-and-11-months-of-route-66/",
         "OC Japan Fair in Costa Mesa",
         'id="oc-japan-fair"',
         "https://ocfair.com/event/oc-japan-fair-october-2026",
@@ -175,6 +176,7 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Los Angeles Korean Festival",
         "Tustin Tiller Days",
         "Glendale Cultural Festival",
+        "ArtNight Pasadena",
     ):
         assert expired not in html
 
@@ -208,7 +210,7 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 9 · Fall guide" in response.text
+        assert "Updated October 10 · Fall guide" in response.text
         assert "Forty-six Southern California fall plans, ranked." in response.text
         for current in (
             "Halloween at Kidspace",
@@ -231,7 +233,7 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Santa Monica's fire station open house",
             "Continuum at Historic Belmar Park",
             "airport-to-park master-plan event",
-            "ArtNight Pasadena",
+            "Pasadena's Route 66 Walktober tour",
             "Long Beach Symphony's <em>America at 250</em>",
             "Pasadena's Latino Heritage celebration",
             "Pasadena's Latino Heritage celebration and Fall Festival",
@@ -268,6 +270,7 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Los Angeles Korean Festival",
             "Tustin Tiller Days",
             "Glendale Cultural Festival",
+            "ArtNight Pasadena",
         ):
             assert expired not in response.text
 
@@ -299,7 +302,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Explore JPL",
         "A Great Day in the Stoke",
         "Culver City Arts Festival",
-            "ArtNight Pasadena",
+            "Pasadena's Route 66 Walktober tour",
             "OC Japan Fair",
             "Burbank's Harvest of Horror",
             "Youth Halloween Carnival",
@@ -353,6 +356,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Tustin Tiller Days",
         "Los Angeles Korean Festival",
         "Glendale Cultural Festival",
+        "ArtNight Pasadena",
     ):
         assert expired not in answer
 
@@ -377,15 +381,15 @@ def test_orange_county_city_answers_include_current_plans() -> None:
     assert "SoCal Fitness Festival" not in answer
 
 
-def test_pasadena_answer_includes_artnight_and_flexible_exhibitions() -> None:
+def test_pasadena_answer_includes_walktober_and_flexible_exhibitions() -> None:
     answer = _public_review_live_query_response(
         "What current events are covered in Pasadena?",
         "home_local_guide",
     )
 
     assert answer
-    assert "ArtNight Pasadena" in answer
-    assert "#artnight-pasadena" in answer
+    assert "Route 66 Walktober tour" in answer
+    assert "#pasadena-route-66-walktober" in answer
     assert "Explore JPL" in answer
     assert "#explore-jpl-2026" in answer
     assert "all reserved" in answer
