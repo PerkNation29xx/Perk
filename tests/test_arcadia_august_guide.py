@@ -89,8 +89,8 @@ def test_arcadia_archive_is_replaced_by_current_directory_guidance() -> None:
 
     assert answer
     assert "Taste of Arcadia" not in answer
-    assert "Gilb Museum of Arcadia Heritage" in answer
-    assert "#gilb-museum-25th-anniversary" in answer
+    assert "Gilb Museum's October 10 anniversary launch has concluded" in answer
+    assert "#gilb-museum-25th-anniversary" not in answer
     assert "annual health fair" not in answer
     assert "August 7" not in answer
     assert "#arcadia-moon-festival" not in answer

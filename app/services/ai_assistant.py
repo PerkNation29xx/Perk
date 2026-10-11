@@ -811,12 +811,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Forty-six Southern California fall plans",
-        "timing": "October 10-November 7, 2026",
+        "title": "Forty-one Southern California fall plans",
+        "timing": "October 11-November 8, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to Halloween at Kidspace, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Long Beach Open Studio Tour, Latino Restaurant Week, Screamfest in Hollywood, CicLAvia—Heart of LA, Pasadena Craftsman Week, LA Opera's free Carmen simulcast at Santa Monica Pier, West Hollywood's free Public Broadcast Stereo concert, and Explore JPL with its sold-out-ticket warning. "
-            "Also covers A Great Day in the Stoke, Culver City Arts Festival, Pasadena's Route 66 Walktober tour, OC Japan Fair, Burbank's Harvest of Horror, West Hollywood's free Youth Halloween Carnival, Santa Monica's Spooky Splash, Long Beach Symphony's America at 250, Santa Monica's Fire Prevention Week Open House, the Pasadena Latino Heritage Parade & Festival, Continuum at Historic Belmar Park, Long Beach Marathon weekend, Indigenous Pride LA, Burbank Haunted Adventure, Southeast Asia Day at the Aquarium of the Pacific, Santa Monica's airport-to-park master-plan event, the Beverly Hills Art Show, Pasadena Fall Festival, Anaheim Fall Festival and Halloween Parade, SoCal Corgi Beach Day, Ghosts of the Miles, West Hollywood Halloween Carnaval, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, Santa Monica's Portraits: Faces and Waves exhibition, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, Irvine Global Village Festival, the Gilb Museum's Arcadia anniversary, and Fleurs de Villes at Greystone."
+            "Ranked guide to Halloween at Kidspace, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Carved at Descanso Gardens, Long Beach Open Studio Tour, Latino Restaurant Week, Screamfest in Hollywood, CicLAvia—Heart of LA, Pasadena Craftsman Week, LA Opera's free Carmen simulcast at Santa Monica Pier, and Explore JPL with its sold-out-ticket warning. "
+            "Also covers Pasadena's Route 66 Walktober tour, OC Japan Fair, Downtown Long Beach Alliance's free DTLB Live Halloween edition, Burbank's Harvest of Horror, West Hollywood's free Youth Halloween Carnival, Santa Monica's Spooky Splash, Continuum at Historic Belmar Park, Long Beach Marathon weekend, Indigenous Pride LA, Burbank Haunted Adventure, Southeast Asia Day at the Aquarium of the Pacific, Santa Monica's airport-to-park master-plan event, the Beverly Hills Art Show, Pasadena Fall Festival, Boo at the L.A. Zoo, Anaheim Fall Festival and Halloween Parade, SoCal Corgi Beach Day, Ghosts of the Miles, West Hollywood Halloween Carnaval, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, Santa Monica's Portraits: Faces and Waves exhibition, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, and Fleurs de Villes at Greystone."
         ),
     },
 
@@ -904,10 +904,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, coastal art, wellness, movies, markets, and local history",
         "city": "Santa Monica",
         "title": "Santa Monica October 2026 coastal events guide",
-        "timing": "October 9-24, 2026",
+        "timing": "October 11-24, 2026",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Nine current plans covering Continuum at Historic Belmar Park, the Fire Prevention Week Open House, "
+            "Eight current plans covering Continuum at Historic Belmar Park, "
             "the airport-to-park master-plan event, LA Opera's free Carmen simulcast at Santa Monica Pier, Spooky Splash, Ghosts of the Miles, the Portraits: Faces and Waves photography exhibition, Wellness & Waves at the Pier, and the Pico farmers market."
         ),
     },
@@ -1986,29 +1986,30 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current Orange County options include A Great Day in the Stoke in Huntington Beach and Irvine Global Village Festival on October 10, South Coast Repertory's Into the Woods through October 18, Anaheim Fall Festival and Halloween Parade plus SoCal Corgi Beach Day on October 24, Huntington Beach Oktoberfest through November 8, and the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1.",
-                "Open /articles/southern-california-september-events-2026#great-day-in-the-stoke, /articles/southern-california-september-events-2026#irvine-global-village-festival, /articles/southern-california-september-events-2026#into-the-woods-costa-mesa, /articles/southern-california-september-events-2026#anaheim-fall-festival-parade, /articles/southern-california-september-events-2026#socal-corgi-beach-day, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, or /articles/southern-california-september-events-2026#muzeo-disney-exhibitions for practical comparisons and current city-directory links.",
+                "Current Orange County options include South Coast Repertory's Into the Woods through October 18, OC Japan Fair in Costa Mesa on October 16-18, Anaheim Fall Festival and Halloween Parade plus SoCal Corgi Beach Day on October 24, Huntington Beach Oktoberfest through November 8, and the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1.",
+                "Open /articles/southern-california-september-events-2026#into-the-woods-costa-mesa, /articles/southern-california-september-events-2026#oc-japan-fair, /articles/southern-california-september-events-2026#anaheim-fall-festival-parade, /articles/southern-california-september-events-2026#socal-corgi-beach-day, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, or /articles/southern-california-september-events-2026#muzeo-disney-exhibitions for practical comparisons and current city-directory links.",
             )
         )
 
     if wants_huntington_beach and not wants_restaurants:
         return "\n".join(
             (
-                "PerkNation's late-August Huntington Beach guide has concluded; the current choices are A Great Day in the Stoke on October 10, SoCal Corgi Beach Day on October 24, and Huntington Beach Oktoberfest at Old World Village from September 12-November 8.",
-                "Choose A Great Day in the Stoke for free Black surf culture, yoga, a 5K, and beginner lessons; Corgi Beach Day for a free pet-centered festival; or a daytime Oktoberfest session for families and a later 21-and-older session for nightlife. Open /articles/southern-california-september-events-2026#great-day-in-the-stoke, #socal-corgi-beach-day, or #huntington-beach-oktoberfest for official-source planning plus links into 43 Huntington Beach listings.",
+                "PerkNation's late-August Huntington Beach guide has concluded; the current choices are SoCal Corgi Beach Day on October 24 and Huntington Beach Oktoberfest at Old World Village from September 12-November 8.",
+                "Choose Corgi Beach Day for a free pet-centered festival, or a daytime Oktoberfest session for families and a later 21-and-older session for nightlife. Open /articles/southern-california-september-events-2026#socal-corgi-beach-day or #huntington-beach-oktoberfest for official-source planning plus links into 43 Huntington Beach listings.",
             )
         )
 
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Queen Mary's Dark Harbor, Long Beach Open Studio Tour, Latino Restaurant Week, Long Beach Marathon weekend, and Southeast Asia Day at the Aquarium of the Pacific:",
+                "The current PerkNation fall guide includes Queen Mary's Dark Harbor, Long Beach Open Studio Tour, Latino Restaurant Week, Long Beach Marathon weekend, DTLB Live Halloween edition, and Southeast Asia Day at the Aquarium of the Pacific:",
                 "- Dark Harbor runs select nights September 18-November 1 with haunted mazes, performers, immersive attractions, rides, and themed food; check the venue's current parking guidance before leaving.",
                 "- Long Beach Open Studio Tour runs four free October weekends from 1-5 p.m., rotating through Belmont, Uptown, Downtown, and Eastside with 120-plus artists in 80-plus studios.",
                 "- Latino Restaurant Week runs October 5-11; compare participating restaurants because menus, pricing, hours, and reservations vary.",
                 "- Long Beach Marathon weekend runs October 10-11 with an Aquarium of the Pacific 5K, marathon, half marathon, bike tour, and wheelchair marathon; choose the 5K for the most approachable format.",
+                "- DTLB Live is free on October 17 from 4-8 p.m. with music, makers, family Halloween activities, and an optional EZ Sip area for adults 21 and older.",
                 "- Southeast Asia Day runs October 17 at the Aquarium of the Pacific with nine short music, dance, and cultural-craft presentations included with timed general admission.",
-                "Open /articles/southern-california-september-events-2026#long-beach-open-studio-tour, #long-beach-latino-restaurant-week, #queen-mary-dark-harbor, #long-beach-marathon, or #southeast-asia-day-long-beach for practical planning, with links into 208 Long Beach directory listings.",
+                "Open /articles/southern-california-september-events-2026#long-beach-open-studio-tour, #long-beach-latino-restaurant-week, #queen-mary-dark-harbor, #long-beach-marathon, #dtlb-live-halloween, or #southeast-asia-day-long-beach for practical planning, with links into 208 Long Beach directory listings.",
                 "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )
@@ -2024,8 +2025,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks nine October plans, including six clearly free choices:",
-                "- On October 10, choose the Fire Prevention Week Open House for station tours, fire engines, family activities, and practical lithium-ion battery safety.",
+                "The current PerkNation Santa Monica guide ranks eight October plans, including six clearly free choices:",
                 "- On October 11, choose Continuum at Historic Belmar Park for Black Santa Monica history, KCRW DJs, live music, art, and a Black Market Flea vendor village.",
                 "- On October 17, attend the airport-to-park master-plan event to see the future park design and share feedback with the project team.",
                 "- Also on October 17, LA Opera's free all-ages Carmen simulcast at Santa Monica Pier begins pre-show activities at 4 p.m. and the live broadcast at 6 p.m., with English and Spanish subtitles.",
@@ -2068,8 +2068,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Halloween at Kidspace, Pasadena's free Route 66 Walktober tour on October 17, Explore JPL on October 10-11, the free Latino Heritage Parade & Festival on October 10, the free Pasadena Fall Festival on October 24, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
-                "Explore JPL's free named tickets are currently all reserved, there is no waitlist, and only cancellations may reopen inventory; do not travel without a confirmed ticket. Use the full guide for ranked best-for and transit notes, open /articles/southern-california-september-events-2026#explore-jpl-2026 for the current ticket warning, #pasadena-route-66-walktober for the guided history walk, #pasadena-latino-heritage for the parade and festival, #pasadena-fall-festival for a family Halloween afternoon, #pasadena-route-66-exhibition for a flexible museum visit, or #laura-aguilar-day-of-the-dead for photography, or browse /directory?city=Pasadena for 563 local listings.",
+                "The current PerkNation fall guide includes Halloween at Kidspace, Pasadena's free Route 66 Walktober tour on October 17, Explore JPL on October 10-11, the free Pasadena Fall Festival on October 24, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
+                "Explore JPL's free named tickets are currently all reserved, there is no waitlist, and only cancellations may reopen inventory; do not travel without a confirmed ticket. Use the full guide for ranked best-for and transit notes, open /articles/southern-california-september-events-2026#explore-jpl-2026 for the current ticket warning, #pasadena-route-66-walktober for the guided history walk, #pasadena-fall-festival for a family Halloween afternoon, #pasadena-route-66-exhibition for a flexible museum visit, or #laura-aguilar-day-of-the-dead for photography, or browse /directory?city=Pasadena for 563 local listings.",
             )
         )
 
@@ -2084,8 +2084,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_arcadia and not wants_restaurants:
         return "\n".join(
             (
-                "The Gilb Museum of Arcadia Heritage launches its yearlong 25th-anniversary celebration on October 10 from 2-5 p.m.; the ticket page lists 125 total spots, so secure admission before building the rest of the day.",
-                "Open /articles/southern-california-september-events-2026#gilb-museum-25th-anniversary for official sources and planning notes, or browse /directory?city=Arcadia for 40 local listings.",
+                "The Gilb Museum's October 10 anniversary launch has concluded, so PerkNation no longer presents that limited-capacity program as active.",
+                "Browse /directory?city=Arcadia for 40 local listings and confirm the museum's next public program on the City of Arcadia site before traveling.",
             )
         )
 

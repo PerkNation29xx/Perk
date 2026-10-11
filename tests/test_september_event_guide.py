@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Forty-six Southern California fall plans" in html
-    assert 'dateModified": "2026-10-10"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 47))
+    assert "Forty-one Southern California fall plans" in html
+    assert 'dateModified": "2026-10-11"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 42))
     for expected in (
         "Halloween at Kidspace",
         'id="kidspace-halloween"',
@@ -29,6 +29,9 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         'id="huntington-beach-oktoberfest"',
         "Queen Mary's Dark Harbor",
         'id="queen-mary-dark-harbor"',
+        "Carved at Descanso Gardens",
+        'id="carved-descanso-gardens"',
+        "https://www.descansogardens.org/carved/",
         "Long Beach Open Studio Tour",
         'id="long-beach-open-studio-tour"',
         "https://lbopenstudiotour.com/",
@@ -47,25 +50,19 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "LA Opera's <em>Carmen</em> at Santa Monica Pier",
         'id="carmen-santa-monica-pier"',
         "opera-at-the-beach-%28santa-monica-pier%29",
-        "Public Broadcast Stereo",
-        'id="public-broadcast-stereo-weho"',
-        "Event/32227/1472",
         "Explore JPL in Pasadena",
         'id="explore-jpl-2026"',
         "https://www.jpl.nasa.gov/explore-jpl/",
         "all advance tickets are currently reserved",
-        "A Great Day in the Stoke in Huntington Beach",
-        'id="great-day-in-the-stoke"',
-        "https://agreatdayinthestoke.com/",
-        "Culver City Arts Festival",
-        'id="culver-city-arts-festival"',
-        "https://culvercityartsfestival.com/",
         "Pasadena Route 66 Walktober tour",
         'id="pasadena-route-66-walktober"',
         "https://www.cityofpasadena.net/event/walktober-99-years-and-11-months-of-route-66/",
         "OC Japan Fair in Costa Mesa",
         'id="oc-japan-fair"',
         "https://ocfair.com/event/oc-japan-fair-october-2026",
+        "DTLB Live Halloween edition",
+        'id="dtlb-live-halloween"',
+        "https://downtownlongbeach.org/event/dtlb-live-halloween-edition-an-ez-sip-event/",
         "Burbank Harvest of Horror",
         'id="burbank-harvest-of-horror"',
         "West Hollywood Youth Halloween Carnival",
@@ -73,15 +70,6 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Santa Monica Spooky Splash",
         'id="santa-monica-spooky-splash"',
         "45112ggwps9h1y66jw9xjewkx6/202610231700",
-        "Long Beach Symphony's <em>America at 250</em>",
-        'id="long-beach-symphony-america-250"',
-        "https://longbeachsymphony.org/concerts-events/america-at-250/",
-        "Santa Monica Fire Prevention Week Open House",
-        'id="santa-monica-fire-open-house"',
-        "https://www.santamonica.gov/events/4qdtmwm31wjbrtpetwxs4d5zxh/202610101100",
-        "Pasadena Latino Heritage Parade &amp; Festival",
-        'id="pasadena-latino-heritage"',
-        "https://www.cityofpasadena.net/parks-and-rec/event/latino-heritage-parade-festival/",
         "Continuum at Historic Belmar Park",
         'id="continuum-black-santa-monica"',
         "partnership-with-goldenvoice-honors-the-history-of-belmar-and-black-santa-monica",
@@ -104,6 +92,9 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Pasadena Fall Festival",
         'id="pasadena-fall-festival"',
         "https://www.cityofpasadena.net/event/fall-festival/",
+        "Boo at the L.A. Zoo",
+        'id="boo-at-la-zoo"',
+        "https://lazoo.org/plan-your-visit/special-experiences/boo-at-the-l-a-zoo-2026/",
         "Anaheim Fall Festival and Halloween Parade",
         'id="anaheim-fall-festival-parade"',
         "https://www.anaheimfallfestival.org/parade/",
@@ -133,10 +124,6 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         'id="academy-museum-horror-show"',
         "Artifacts from an Unborn Empire",
         'id="artifacts-unborn-empire-glendale"',
-        "Irvine Global Village Festival",
-        'id="irvine-global-village-festival"',
-        "Gilb Museum's 25th anniversary in Arcadia",
-        'id="gilb-museum-25th-anniversary"',
         "Fleurs de Villes at Greystone",
         'id="fleurs-de-villes-greystone"',
         "Best for:",
@@ -177,6 +164,14 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Tustin Tiller Days",
         "Glendale Cultural Festival",
         "ArtNight Pasadena",
+        "Public Broadcast Stereo",
+        "A Great Day in the Stoke",
+        "Culver City Arts Festival",
+        "America at 250",
+        "Fire Prevention Week Open House",
+        "Latino Heritage Parade",
+        "Irvine Global Village Festival",
+        "Gilb Museum's 25th anniversary",
     ):
         assert expired not in html
 
@@ -210,44 +205,39 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 10 · Fall guide" in response.text
-        assert "Forty-six Southern California fall plans, ranked." in response.text
+        assert "Updated October 11 · Fall guide" in response.text
+        assert "Forty-one Southern California fall plans, ranked." in response.text
         for current in (
             "Halloween at Kidspace",
             "Spider Pavilion",
             "Into the Woods",
+            "Carved at Descanso Gardens",
             "Long Beach Open Studio Tour",
             "Latino Restaurant Week",
             "Screamfest",
             "CicLAvia—Heart of LA",
             "Pasadena Craftsman Week",
             "LA Opera's free <em>Carmen</em> simulcast at Santa Monica Pier",
-            "Public Broadcast Stereo",
             "Explore JPL",
-            "A Great Day in the Stoke",
-            "Culver City Arts Festival",
             "OC Japan Fair",
+            "DTLB Live Halloween edition",
             "Burbank's Harvest of Horror",
             "West Hollywood's free Youth Halloween Carnival",
             "Santa Monica's Spooky Splash",
-            "Santa Monica's fire station open house",
             "Continuum at Historic Belmar Park",
             "airport-to-park master-plan event",
             "Pasadena's Route 66 Walktober tour",
-            "Long Beach Symphony's <em>America at 250</em>",
-            "Pasadena's Latino Heritage celebration",
-            "Pasadena's Latino Heritage celebration and Fall Festival",
+            "Pasadena's Fall Festival",
             "Indigenous Pride LA",
             "Burbank's Haunted Adventure",
             "Southeast Asia Day",
             "Long Beach Marathon weekend",
+            "Boo at the L.A. Zoo",
             "Anaheim's Fall Festival and Halloween Parade",
             "SoCal Corgi Beach Day",
             "Ghosts of the Miles",
             "West Hollywood Halloween Carnaval",
             "Beverly Hills Art Show",
-            "Irvine Global Village Festival",
-            "Gilb Museum's Arcadia anniversary",
             "Fleurs de Villes at Greystone",
         ):
             assert current in response.text
@@ -271,6 +261,14 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Tustin Tiller Days",
             "Glendale Cultural Festival",
             "ArtNight Pasadena",
+            "Public Broadcast Stereo",
+            "A Great Day in the Stoke",
+            "Culver City Arts Festival",
+            "America at 250",
+            "fire station open house",
+            "Latino Heritage celebration",
+            "Irvine Global Village Festival",
+            "Gilb Museum's Arcadia anniversary",
         ):
             assert expired not in response.text
 
@@ -290,7 +288,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
 
     assert answer
     for current in (
-            "Forty-six Southern California fall plans",
+            "Forty-one Southern California fall plans",
         "Halloween at Kidspace",
         "Spider Pavilion",
         "Into the Woods",
@@ -298,18 +296,13 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "CicLAvia—Heart of LA",
         "Pasadena Craftsman Week",
         "LA Opera's free Carmen simulcast at Santa Monica Pier",
-        "Public Broadcast Stereo",
         "Explore JPL",
-        "A Great Day in the Stoke",
-        "Culver City Arts Festival",
             "Pasadena's Route 66 Walktober tour",
             "OC Japan Fair",
+            "DTLB Live Halloween edition",
             "Burbank's Harvest of Horror",
             "Youth Halloween Carnival",
             "Spooky Splash",
-        "Long Beach Symphony's America at 250",
-        "Fire Prevention Week Open House",
-        "Pasadena Latino Heritage Parade & Festival",
         "Continuum at Historic Belmar Park",
         "Indigenous Pride LA",
         "Burbank Haunted Adventure",
@@ -318,6 +311,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Long Beach Marathon weekend",
         "Beverly Hills Art Show",
         "Pasadena Fall Festival",
+        "Boo at the L.A. Zoo",
         "Anaheim Fall Festival and Halloween Parade",
         "SoCal Corgi Beach Day",
         "Ghosts of the Miles",
@@ -326,8 +320,6 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Latino Restaurant Week",
         "The Horror Show",
         "Artifacts from an Unborn Empire",
-        "Irvine Global Village Festival",
-        "Gilb Museum's Arcadia anniversary",
         "Fleurs de Villes at Greystone",
         "Portraits: Faces and Waves",
         "/articles/southern-california-september-events-2026",
@@ -357,6 +349,14 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Los Angeles Korean Festival",
         "Glendale Cultural Festival",
         "ArtNight Pasadena",
+        "Public Broadcast Stereo",
+        "A Great Day in the Stoke",
+        "Culver City Arts Festival",
+        "America at 250",
+        "Fire Prevention Week Open House",
+        "Pasadena Latino Heritage Parade",
+        "Irvine Global Village Festival",
+        "Gilb Museum's Arcadia anniversary",
     ):
         assert expired not in answer
 
@@ -368,8 +368,8 @@ def test_orange_county_city_answers_include_current_plans() -> None:
     )
 
     assert answer
-    assert "A Great Day in the Stoke" in answer
-    assert "#great-day-in-the-stoke" in answer
+    assert "OC Japan Fair" in answer
+    assert "#oc-japan-fair" in answer
     assert "SoCal Corgi Beach Day" in answer
     assert "#socal-corgi-beach-day" in answer
     assert "Into the Woods" in answer
@@ -393,8 +393,6 @@ def test_pasadena_answer_includes_walktober_and_flexible_exhibitions() -> None:
     assert "Explore JPL" in answer
     assert "#explore-jpl-2026" in answer
     assert "all reserved" in answer
-    assert "Latino Heritage Parade & Festival" in answer
-    assert "#pasadena-latino-heritage" in answer
     assert "Pasadena Fall Festival" in answer
     assert "#pasadena-fall-festival" in answer
     assert "Where History Meets the Road" in answer
@@ -415,7 +413,7 @@ def test_burbank_answer_includes_current_haunted_adventure() -> None:
     assert "Burbank Book Festival" not in answer
 
 
-def test_long_beach_answer_includes_dark_harbor_and_marathon() -> None:
+def test_long_beach_answer_includes_dark_harbor_marathon_and_dtlb_live() -> None:
     answer = _public_review_live_query_response(
         "What current events are covered in Long Beach this weekend?",
         "home_local_guide",
@@ -426,6 +424,8 @@ def test_long_beach_answer_includes_dark_harbor_and_marathon() -> None:
     assert "#queen-mary-dark-harbor" in answer
     assert "Long Beach Marathon weekend" in answer
     assert "#long-beach-marathon" in answer
+    assert "DTLB Live" in answer
+    assert "#dtlb-live-halloween" in answer
     assert "Southeast Asia Day" in answer
     assert "#southeast-asia-day-long-beach" in answer
     assert "SteelCraft" not in answer
@@ -441,8 +441,6 @@ def test_huntington_beach_answer_includes_current_oktoberfest() -> None:
     )
 
     assert answer
-    assert "A Great Day in the Stoke" in answer
-    assert "#great-day-in-the-stoke" in answer
     assert "SoCal Corgi Beach Day" in answer
     assert "#socal-corgi-beach-day" in answer
     assert "Huntington Beach Oktoberfest" in answer
