@@ -16,12 +16,12 @@ def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> 
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Santa Monica has eight current October plans" in html
-    assert 'dateModified": "2026-10-11"' in html
+    assert 'dateModified": "2026-10-12"' in html
     assert html.count("<h2>") >= 11
     for expected in (
         "8 ranked plans",
-        "Continuum at Historic Belmar Park",
-        "partnership-with-goldenvoice-honors-the-history-of-belmar-and-black-santa-monica",
+        "Locals' Night drive-in at Santa Monica Pier",
+        "4xktb5jextrp31pbja4x19m8cd/202610151530",
         "Airport-to-park master-plan event",
         "santa-monica-airport-conversion-project-to-hold-community-event-on-oct-17",
         "LA Opera's <em>Carmen</em> at Santa Monica Pier",
@@ -52,6 +52,7 @@ def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> 
     assert "Montana Avenue Art Walk" not in html
     assert "Join &amp; Thrive" not in html
     assert "Fire Prevention Week Open House" not in html
+    assert "Continuum at Historic Belmar Park" not in html
 
     for forbidden in (
         "Examples from the official listing",
@@ -84,16 +85,15 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated October 11 · Santa Monica") == 1
+        assert response.text.count("Updated October 12 · Santa Monica") == 1
         assert "Eight Santa Monica October plans, ranked." in response.text
-        assert "Continuum at Historic Belmar Park" in response.text
+        assert "Dogtown Locals' Night drive-in" in response.text
         assert "fire station open house" not in response.text
         assert "airport-to-park master-plan event" in response.text
         assert "LA Opera's free <em>Carmen</em> simulcast" in response.text
         assert "Spooky Splash" in response.text
         assert "Ghosts of the Miles" in response.text
         assert "Portraits: Faces and Waves" in response.text
-        assert "Compare Pier Locals' Night" not in response.text
         assert "Ocean Way has been canceled." not in response.text
         assert "Tongva Twilight through September 12" not in response.text
         assert "Updated August 28" in response.text
@@ -126,7 +126,7 @@ def test_santa_monica_roundup_link_and_public_answer_are_scoped() -> None:
     assert "Carmen simulcast at Santa Monica Pier" in answer
     assert "Spooky Splash" in answer
     assert "Portraits: Faces and Waves" in answer
-    assert "Continuum at Historic Belmar Park" in answer
+    assert "Locals' Night drive-in at Santa Monica Pier" in answer
     assert "Ghosts of the Miles" in answer
     assert "Montana Avenue Art Walk" not in answer
     assert "Join & Thrive" not in answer
