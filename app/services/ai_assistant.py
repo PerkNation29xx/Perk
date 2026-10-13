@@ -811,12 +811,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Forty-one Southern California fall plans",
-        "timing": "October 12-November 8, 2026",
+        "title": "Forty-four Southern California fall plans",
+        "timing": "October 13-November 8, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to Halloween at Kidspace, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Carved at Descanso Gardens, Long Beach Open Studio Tour, Newport Beach Film Festival, Screamfest in Hollywood, Santa Monica's free Locals' Night drive-in, Pasadena Craftsman Week, LA Opera's free Carmen simulcast at Santa Monica Pier, and two free Pasadena Walktober routes. "
-            "Also covers OC Japan Fair, Downtown Long Beach Alliance's free DTLB Live Halloween edition, Burbank's Harvest of Horror, West Hollywood's free Youth Halloween Carnival, Santa Monica's Spooky Splash and Main Street Block Party, Glendale Día de Los Muertos, AIDS Walk Los Angeles, Burbank Haunted Adventure, Southeast Asia Day at the Aquarium of the Pacific, Santa Monica's airport-to-park master-plan event, the Beverly Hills Art Show, Pasadena Fall Festival, Boo at the L.A. Zoo, Anaheim Fall Festival and Halloween Parade, SoCal Corgi Beach Day, Ghosts of the Miles, West Hollywood Halloween Carnaval, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, Santa Monica's Portraits: Faces and Waves exhibition, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, and Fleurs de Villes at Greystone."
+            "Also covers OC Japan Fair, Downtown Long Beach Alliance's free DTLB Live Halloween edition and guided DTLB Unfiltered photo walks, Burbank's Harvest of Horror, West Hollywood's free Youth Halloween Carnival, Santa Monica's Spooky Splash and Main Street Block Party, Glendale Día de Los Muertos, AIDS Walk Los Angeles, Burbank Haunted Adventure, Southeast Asia Day at the Aquarium of the Pacific, Long Beach's Howl-O-Ween at El Dorado Nature Center, Santa Monica's airport-to-park master-plan event, the Beverly Hills Art Show, Pasadena Fall Festival and Día de Los Muertos Festival, Boo at the L.A. Zoo, Anaheim Fall Festival and Halloween Parade, SoCal Corgi Beach Day, Ghosts of the Miles, West Hollywood Halloween Carnaval, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, Santa Monica's Portraits: Faces and Waves exhibition, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, and Fleurs de Villes at Greystone."
         ),
     },
 
@@ -907,8 +907,8 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "timing": "October 15-24, 2026",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Eight current plans covering the free Dogtown Locals' Night drive-in at Santa Monica Pier, "
-            "the airport-to-park master-plan event, LA Opera's free Carmen simulcast at Santa Monica Pier, Spooky Splash, Ghosts of the Miles, the Portraits: Faces and Waves photography exhibition, Wellness & Waves at the Pier, and the Pico farmers market."
+            "Nine current plans covering the free Dogtown Locals' Night drive-in at Santa Monica Pier, "
+            "the airport-to-park master-plan event, LA Opera's free Carmen simulcast at Santa Monica Pier, the free Main Street Block Party + Day of the Dog, Spooky Splash, Ghosts of the Miles, the Portraits: Faces and Waves photography exhibition, Wellness & Waves at the Pier, and the Pico farmers market."
         ),
     },
     {
@@ -2002,12 +2002,14 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Queen Mary's Dark Harbor, Long Beach Open Studio Tour, DTLB Live Halloween edition, and Southeast Asia Day at the Aquarium of the Pacific:",
+                "The current PerkNation fall guide includes Queen Mary's Dark Harbor, Long Beach Open Studio Tour, DTLB Live Halloween edition, DTLB Unfiltered photo walks, Howl-O-Ween at El Dorado Nature Center, and Southeast Asia Day at the Aquarium of the Pacific:",
                 "- Dark Harbor runs select nights September 18-November 1 with haunted mazes, performers, immersive attractions, rides, and themed food; check the venue's current parking guidance before leaving.",
                 "- Long Beach Open Studio Tour runs four free October weekends from 1-5 p.m., rotating through Belmont, Uptown, Downtown, and Eastside with 120-plus artists in 80-plus studios.",
                 "- DTLB Live is free on October 17 from 4-8 p.m. with music, makers, family Halloween activities, and an optional EZ Sip area for adults 21 and older.",
+                "- DTLB Unfiltered's remaining guided photo walks meet October 14 at Rainbow Lagoon, October 18 at Villa Riviera during Open Studio Tour, and October 24 on Pine Avenue during Fright Fest.",
+                "- Howl-O-Ween runs October 17 from 2-6 p.m. at El Dorado Nature Center with trail trick-or-treating, animal education, storytelling, face painting, crafts, food trucks, and a suggested $5 donation; last trail entry is 5 p.m.",
                 "- Southeast Asia Day runs October 17 at the Aquarium of the Pacific with nine short music, dance, and cultural-craft presentations included with timed general admission.",
-                "Open /articles/southern-california-september-events-2026#long-beach-open-studio-tour, #queen-mary-dark-harbor, #dtlb-live-halloween, or #southeast-asia-day-long-beach for practical planning, with links into 208 Long Beach directory listings.",
+                "Open /articles/southern-california-september-events-2026#long-beach-open-studio-tour, #queen-mary-dark-harbor, #dtlb-live-halloween, #dtlb-unfiltered-photo-walks, #howl-o-ween-el-dorado, or #southeast-asia-day-long-beach for practical planning, with links into 208 Long Beach directory listings.",
                 "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )
@@ -2023,10 +2025,11 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks eight October plans, including six clearly free choices:",
+                "The current PerkNation Santa Monica guide ranks nine October plans, including seven clearly free choices:",
                 "- On October 15, choose the free Locals' Night drive-in at Santa Monica Pier for Dogtown history, a Dogtown and Z-Boys screening, Tony Alva DJ set, skating, and live music.",
                 "- On October 17, attend the airport-to-park master-plan event to see the future park design and share feedback with the project team.",
                 "- Also on October 17, LA Opera's free all-ages Carmen simulcast at Santa Monica Pier begins pre-show activities at 4 p.m. and the live broadcast at 6 p.m., with English and Spanish subtitles.",
+                "- On October 18, the free Main Street Block Party + Day of the Dog runs noon-6 p.m. with pets, music, DJs, classic cars, kids activities, a farmers market, local businesses, food, and free workouts.",
                 "- On October 23, choose Spooky Splash for recreational swimming, a floating pumpkin patch, an obstacle course, movies, crafts, treats, and a haunted house; advance tickets cost $10 for residents and $15 for non-residents.",
                 "- On October 23 or 24, reserve Ghosts of the Miles for local history and seasonal performance at the historic Miles Memorial Playhouse.",
                 "- The free Portraits: Faces and Waves exhibition offers a flexible Beach House Gallery stop through March 27, while later Saturdays through October 17 continue with Wellness & Waves at the Pier and the Pico farmers market.",
@@ -2066,8 +2069,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Halloween at Kidspace, Pasadena's free Route 66 Walktober tour on October 17, the free Gardens and Historic Homes Walktober loop on October 18, the free Pasadena Fall Festival on October 24, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
-                "Use the full guide for ranked best-for and practical notes, open /articles/southern-california-september-events-2026#pasadena-route-66-walktober for the Route 66 history walk, #pasadena-gardens-walktober for the garden-and-architecture loop, #pasadena-fall-festival for a family Halloween afternoon, #pasadena-route-66-exhibition for a flexible museum visit, or #laura-aguilar-day-of-the-dead for photography, or browse /directory?city=Pasadena for 563 local listings.",
+                "The current PerkNation fall guide includes Halloween at Kidspace, Pasadena's free Route 66 Walktober tour on October 17, the free Gardens and Historic Homes Walktober loop on October 18, the free Pasadena Fall Festival and Día de Los Muertos Festival on October 24, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
+                "Use the full guide for ranked best-for and practical notes, open /articles/southern-california-september-events-2026#pasadena-route-66-walktober for the Route 66 history walk, #pasadena-gardens-walktober for the garden-and-architecture loop, #pasadena-fall-festival for a family Halloween afternoon, #pasadena-dia-de-los-muertos for performances and a cultural market, #pasadena-route-66-exhibition for a flexible museum visit, or #laura-aguilar-day-of-the-dead for photography, or browse /directory?city=Pasadena for 563 local listings.",
             )
         )
 

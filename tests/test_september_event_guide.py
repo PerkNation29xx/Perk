@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Forty-one Southern California fall plans" in html
-    assert 'dateModified": "2026-10-12"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 42))
+    assert "Forty-four Southern California fall plans" in html
+    assert 'dateModified": "2026-10-13"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 45))
     for expected in (
         "Halloween at Kidspace",
         'id="kidspace-halloween"',
@@ -126,6 +126,15 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         'id="artifacts-unborn-empire-glendale"',
         "Fleurs de Villes at Greystone",
         'id="fleurs-de-villes-greystone"',
+        "DTLB Unfiltered photo walks",
+        'id="dtlb-unfiltered-photo-walks"',
+        "dtlb-unfiltered-returns-inviting-photographers-to-capture-downtown-their-way",
+        "Howl-O-Ween at El Dorado Nature Center",
+        'id="howl-o-ween-el-dorado"',
+        "nc-special-events",
+        "Pasadena Día de Los Muertos Festival and Altar Exhibit",
+        'id="pasadena-dia-de-los-muertos"',
+        "dia-de-los-muertos-festival-altar-exhibit",
         "Best for:",
         "/directory?city=Burbank",
         "/directory?city=Pasadena",
@@ -211,8 +220,8 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 12 · Fall guide" in response.text
-        assert "Forty-one Southern California fall plans, ranked." in response.text
+        assert "Updated October 13 · Fall guide" in response.text
+        assert "Forty-four Southern California fall plans, ranked." in response.text
         for current in (
             "Halloween at Kidspace",
             "Spider Pavilion",
@@ -244,6 +253,9 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "West Hollywood Halloween Carnaval",
             "Beverly Hills Art Show",
             "Fleurs de Villes at Greystone",
+            "DTLB Unfiltered photo walks",
+            "Long Beach's Howl-O-Ween",
+            "Pasadena's Fall Festival and Día de Los Muertos",
         ):
             assert current in response.text
         for expired in (
@@ -299,7 +311,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
 
     assert answer
     for current in (
-            "Forty-one Southern California fall plans",
+            "Forty-four Southern California fall plans",
         "Halloween at Kidspace",
         "Spider Pavilion",
         "Into the Woods",
@@ -332,6 +344,9 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Artifacts from an Unborn Empire",
         "Fleurs de Villes at Greystone",
         "Portraits: Faces and Waves",
+        "DTLB Unfiltered photo walks",
+        "Howl-O-Ween at El Dorado Nature Center",
+        "Pasadena Fall Festival and Día de Los Muertos Festival",
         "/articles/southern-california-september-events-2026",
     ):
         assert current in answer
@@ -404,6 +419,8 @@ def test_pasadena_answer_includes_walktober_and_flexible_exhibitions() -> None:
     assert "#pasadena-gardens-walktober" in answer
     assert "Pasadena Fall Festival" in answer
     assert "#pasadena-fall-festival" in answer
+    assert "Día de Los Muertos Festival" in answer
+    assert "#pasadena-dia-de-los-muertos" in answer
     assert "Where History Meets the Road" in answer
     assert "Laura Aguilar" in answer
     assert "Pasadena Chalk Festival" not in answer
@@ -435,6 +452,10 @@ def test_long_beach_answer_includes_dark_harbor_and_dtlb_live() -> None:
     assert "#dtlb-live-halloween" in answer
     assert "Southeast Asia Day" in answer
     assert "#southeast-asia-day-long-beach" in answer
+    assert "DTLB Unfiltered" in answer
+    assert "#dtlb-unfiltered-photo-walks" in answer
+    assert "Howl-O-Ween" in answer
+    assert "#howl-o-ween-el-dorado" in answer
     assert "SteelCraft" not in answer
     assert "MOLAA" not in answer
     assert "Baja Splash" not in answer
