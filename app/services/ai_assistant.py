@@ -811,12 +811,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Forty-four Southern California fall plans",
-        "timing": "October 13-November 8, 2026",
+        "title": "Forty-seven Southern California fall plans",
+        "timing": "October 14-November 8, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to Halloween at Kidspace, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Carved at Descanso Gardens, Long Beach Open Studio Tour, Newport Beach Film Festival, Screamfest in Hollywood, Santa Monica's free Locals' Night drive-in, Pasadena Craftsman Week, LA Opera's free Carmen simulcast at Santa Monica Pier, and two free Pasadena Walktober routes. "
-            "Also covers OC Japan Fair, Downtown Long Beach Alliance's free DTLB Live Halloween edition and guided DTLB Unfiltered photo walks, Burbank's Harvest of Horror, West Hollywood's free Youth Halloween Carnival, Santa Monica's Spooky Splash and Main Street Block Party, Glendale Día de Los Muertos, AIDS Walk Los Angeles, Burbank Haunted Adventure, Southeast Asia Day at the Aquarium of the Pacific, Long Beach's Howl-O-Ween at El Dorado Nature Center, Santa Monica's airport-to-park master-plan event, the Beverly Hills Art Show, Pasadena Fall Festival and Día de Los Muertos Festival, Boo at the L.A. Zoo, Anaheim Fall Festival and Halloween Parade, SoCal Corgi Beach Day, Ghosts of the Miles, West Hollywood Halloween Carnaval, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, Santa Monica's Portraits: Faces and Waves exhibition, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, and Fleurs de Villes at Greystone."
+            "Also covers OC Japan Fair, Downtown Long Beach Alliance's free DTLB Live Halloween edition and guided DTLB Unfiltered photo walks, Burbank's Harvest of Horror, West Hollywood's free Youth Halloween Carnival, Santa Monica's Spooky Splash and Main Street Block Party, Glendale Día de Los Muertos, AIDS Walk Los Angeles, Burbank Haunted Adventure, Southeast Asia Day at the Aquarium of the Pacific, Long Beach's Howl-O-Ween at El Dorado Nature Center, Holo Holo Music Festival, free TYPE S Night Lights, Formula DRIFT's Shoreline Showdown, Santa Monica's airport-to-park master-plan event, the Beverly Hills Art Show, Pasadena Fall Festival and Día de Los Muertos Festival, Boo at the L.A. Zoo, Anaheim Fall Festival and Halloween Parade, SoCal Corgi Beach Day, Ghosts of the Miles, West Hollywood Halloween Carnaval, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, Santa Monica's Portraits: Faces and Waves exhibition, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, and Fleurs de Villes at Greystone."
         ),
     },
 
@@ -2002,14 +2002,17 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Queen Mary's Dark Harbor, Long Beach Open Studio Tour, DTLB Live Halloween edition, DTLB Unfiltered photo walks, Howl-O-Ween at El Dorado Nature Center, and Southeast Asia Day at the Aquarium of the Pacific:",
+                "The current PerkNation fall guide includes Queen Mary's Dark Harbor, Long Beach Open Studio Tour, DTLB Live Halloween edition, DTLB Unfiltered photo walks, Howl-O-Ween at El Dorado Nature Center, Southeast Asia Day at the Aquarium of the Pacific, Holo Holo Music Festival, TYPE S Night Lights, and Formula DRIFT's Shoreline Showdown:",
                 "- Dark Harbor runs select nights September 18-November 1 with haunted mazes, performers, immersive attractions, rides, and themed food; check the venue's current parking guidance before leaving.",
                 "- Long Beach Open Studio Tour runs four free October weekends from 1-5 p.m., rotating through Belmont, Uptown, Downtown, and Eastside with 120-plus artists in 80-plus studios.",
                 "- DTLB Live is free on October 17 from 4-8 p.m. with music, makers, family Halloween activities, and an optional EZ Sip area for adults 21 and older.",
                 "- DTLB Unfiltered's remaining guided photo walks meet October 14 at Rainbow Lagoon, October 18 at Villa Riviera during Open Studio Tour, and October 24 on Pine Avenue during Fright Fest.",
                 "- Howl-O-Ween runs October 17 from 2-6 p.m. at El Dorado Nature Center with trail trick-or-treating, animal education, storytelling, face painting, crafts, food trucks, and a suggested $5 donation; last trail entry is 5 p.m.",
                 "- Southeast Asia Day runs October 17 at the Aquarium of the Pacific with nine short music, dance, and cultural-craft presentations included with timed general admission.",
-                "Open /articles/southern-california-september-events-2026#long-beach-open-studio-tour, #queen-mary-dark-harbor, #dtlb-live-halloween, #dtlb-unfiltered-photo-walks, #howl-o-ween-el-dorado, or #southeast-asia-day-long-beach for practical planning, with links into 208 Long Beach directory listings.",
+                "- Holo Holo Music Festival brings Steel Pulse, Ekolu, The Green, and Siaosi to Marina Green on October 17; confirm the current ticket and entry details with the organizer.",
+                "- TYPE S Night Lights is a free, all-ages tuner, drift, and import-car meet at the 400 Garage on October 22 from 6-10 p.m.; the garage is the show venue, so use the posted spectator parking map, transit, carpooling, or rideshare.",
+                "- Formula DRIFT's Shoreline Showdown runs October 23-24 at the Long Beach Convention & Entertainment Center, with Friday qualifying and Saturday's final championship rounds; the organizer lists $35 on-site parking and a rain-or-shine policy.",
+                "Open /articles/southern-california-september-events-2026#long-beach-open-studio-tour, #queen-mary-dark-harbor, #dtlb-live-halloween, #dtlb-unfiltered-photo-walks, #howl-o-ween-el-dorado, #southeast-asia-day-long-beach, #holo-holo-long-beach, #type-s-night-lights, or #formula-drift-shoreline-showdown for practical planning, with links into 208 Long Beach directory listings.",
                 "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )

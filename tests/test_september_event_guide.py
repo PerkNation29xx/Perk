@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Forty-four Southern California fall plans" in html
-    assert 'dateModified": "2026-10-13"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 45))
+    assert "Forty-seven Southern California fall plans" in html
+    assert 'dateModified": "2026-10-14"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 48))
     for expected in (
         "Halloween at Kidspace",
         'id="kidspace-halloween"',
@@ -135,6 +135,15 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Pasadena Día de Los Muertos Festival and Altar Exhibit",
         'id="pasadena-dia-de-los-muertos"',
         "dia-de-los-muertos-festival-altar-exhibit",
+        "Holo Holo Music Festival in Long Beach",
+        'id="holo-holo-long-beach"',
+        "https://www.holoholofestival.com/long-beach/",
+        "TYPE S Night Lights in Long Beach",
+        'id="type-s-night-lights"',
+        "https://www.lbentertainmentcenter.com/events/type-s-2026/",
+        "Formula DRIFT Shoreline Showdown in Long Beach",
+        'id="formula-drift-shoreline-showdown"',
+        "https://www.formulad.com/schedule/2026/long-beach2",
         "Best for:",
         "/directory?city=Burbank",
         "/directory?city=Pasadena",
@@ -220,8 +229,8 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 13 · Fall guide" in response.text
-        assert "Forty-four Southern California fall plans, ranked." in response.text
+        assert "Updated October 14 · Fall guide" in response.text
+        assert "Forty-seven Southern California fall plans, ranked." in response.text
         for current in (
             "Halloween at Kidspace",
             "Spider Pavilion",
@@ -256,6 +265,9 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "DTLB Unfiltered photo walks",
             "Long Beach's Howl-O-Ween",
             "Pasadena's Fall Festival and Día de Los Muertos",
+            "Holo Holo Music Festival",
+            "free TYPE S Night Lights",
+            "Formula DRIFT's Shoreline Showdown",
         ):
             assert current in response.text
         for expired in (
@@ -311,7 +323,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
 
     assert answer
     for current in (
-            "Forty-four Southern California fall plans",
+            "Forty-seven Southern California fall plans",
         "Halloween at Kidspace",
         "Spider Pavilion",
         "Into the Woods",
@@ -347,6 +359,9 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "DTLB Unfiltered photo walks",
         "Howl-O-Ween at El Dorado Nature Center",
         "Pasadena Fall Festival and Día de Los Muertos Festival",
+        "Holo Holo Music Festival",
+        "TYPE S Night Lights",
+        "Formula DRIFT's Shoreline Showdown",
         "/articles/southern-california-september-events-2026",
     ):
         assert current in answer
@@ -456,6 +471,12 @@ def test_long_beach_answer_includes_dark_harbor_and_dtlb_live() -> None:
     assert "#dtlb-unfiltered-photo-walks" in answer
     assert "Howl-O-Ween" in answer
     assert "#howl-o-ween-el-dorado" in answer
+    assert "Holo Holo Music Festival" in answer
+    assert "#holo-holo-long-beach" in answer
+    assert "TYPE S Night Lights" in answer
+    assert "#type-s-night-lights" in answer
+    assert "Formula DRIFT's Shoreline Showdown" in answer
+    assert "#formula-drift-shoreline-showdown" in answer
     assert "SteelCraft" not in answer
     assert "MOLAA" not in answer
     assert "Baja Splash" not in answer
