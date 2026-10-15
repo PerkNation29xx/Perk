@@ -74,7 +74,7 @@ def test_arcadia_archive_routes_and_image_remain_but_visible_cards_retire() -> N
     assert "<loc>https://perknation.app/white/articles/arcadia-august-2026-guide</loc>" not in root_sitemap.text
 
 
-def test_arcadia_archive_is_replaced_by_current_directory_guidance() -> None:
+def test_arcadia_archive_is_replaced_by_current_arboretum_guidance() -> None:
     august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
     assert "/articles/arcadia-august-2026-guide" in august_html
     assert "626 Night Market in Arcadia" not in august_html
@@ -89,7 +89,10 @@ def test_arcadia_archive_is_replaced_by_current_directory_guidance() -> None:
 
     assert answer
     assert "Taste of Arcadia" not in answer
-    assert "Gilb Museum's October 10 anniversary launch has concluded" in answer
+    assert "Día de los Muertos" in answer
+    assert "Los Angeles County Arboretum" in answer
+    assert "October 25" in answer
+    assert "#arcadia-dia-de-los-muertos-arboretum" in answer
     assert "#gilb-museum-25th-anniversary" not in answer
     assert "annual health fair" not in answer
     assert "August 7" not in answer

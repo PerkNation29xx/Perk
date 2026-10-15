@@ -16,7 +16,7 @@ def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> 
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Santa Monica has nine current October plans" in html
-    assert 'dateModified": "2026-10-13"' in html
+    assert 'dateModified": "2026-10-15"' in html
     assert html.count("<h2>") >= 11
     for expected in (
         "9 ranked plans",
@@ -32,6 +32,9 @@ def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> 
         "45112ggwps9h1y66jw9xjewkx6/202610231700",
         "Ghosts of the Miles",
         "https://www.santamonica.com/event/ghosts-of-the-miles/",
+        "4t27nkvh7dttp1xfz22csmk9dg/202610241200",
+        "free all-ages Festival of Memories",
+        "ticketed 16+ Historical Haunt",
         "Portraits: Faces and Waves",
         "photography-exhibition-portraits-faces-and-waves-on-display-at-annenberg-community-beach-house-gallery",
         "Wellness &amp; Waves",
@@ -87,7 +90,7 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated October 13 · Santa Monica") == 1
+        assert response.text.count("Updated October 15 · Santa Monica") == 1
         assert "Nine Santa Monica October plans, ranked." in response.text
         assert "Dogtown Locals' Night drive-in" in response.text
         assert "fire station open house" not in response.text
@@ -121,7 +124,7 @@ def test_santa_monica_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "ranks nine October plans, including seven clearly free choices" in answer
+    assert "ranks nine October plans, including eight free options" in answer
     assert "Punk Night at the Pier" not in answer
     assert "Voices of Strength" not in answer
     assert "Fire Prevention Week Open House" not in answer
@@ -132,6 +135,8 @@ def test_santa_monica_roundup_link_and_public_answer_are_scoped() -> None:
     assert "Portraits: Faces and Waves" in answer
     assert "Locals' Night drive-in at Santa Monica Pier" in answer
     assert "Ghosts of the Miles" in answer
+    assert "free all-ages Festival of Memories" in answer
+    assert "ticketed 16+ Historical Haunt" in answer
     assert "Montana Avenue Art Walk" not in answer
     assert "Join & Thrive" not in answer
     assert "Thai Fest by the Beach" not in answer

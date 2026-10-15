@@ -811,12 +811,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Forty-seven Southern California fall plans",
-        "timing": "October 14-November 8, 2026",
+        "title": "Forty-eight Southern California fall plans",
+        "timing": "October 15-November 8, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to Halloween at Kidspace, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Carved at Descanso Gardens, Long Beach Open Studio Tour, Newport Beach Film Festival, Screamfest in Hollywood, Santa Monica's free Locals' Night drive-in, Pasadena Craftsman Week, LA Opera's free Carmen simulcast at Santa Monica Pier, and two free Pasadena Walktober routes. "
-            "Also covers OC Japan Fair, Downtown Long Beach Alliance's free DTLB Live Halloween edition and guided DTLB Unfiltered photo walks, Burbank's Harvest of Horror, West Hollywood's free Youth Halloween Carnival, Santa Monica's Spooky Splash and Main Street Block Party, Glendale Día de Los Muertos, AIDS Walk Los Angeles, Burbank Haunted Adventure, Southeast Asia Day at the Aquarium of the Pacific, Long Beach's Howl-O-Ween at El Dorado Nature Center, Holo Holo Music Festival, free TYPE S Night Lights, Formula DRIFT's Shoreline Showdown, Santa Monica's airport-to-park master-plan event, the Beverly Hills Art Show, Pasadena Fall Festival and Día de Los Muertos Festival, Boo at the L.A. Zoo, Anaheim Fall Festival and Halloween Parade, SoCal Corgi Beach Day, Ghosts of the Miles, West Hollywood Halloween Carnaval, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, Santa Monica's Portraits: Faces and Waves exhibition, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, and Fleurs de Villes at Greystone."
+            "Also covers OC Japan Fair, Downtown Long Beach Alliance's free DTLB Live Halloween edition and guided DTLB Unfiltered photo walks, Burbank's Harvest of Horror, West Hollywood's free Youth Halloween Carnival, Santa Monica's Spooky Splash and Main Street Block Party, Glendale Día de Los Muertos, AIDS Walk Los Angeles, Burbank Haunted Adventure, Southeast Asia Day at the Aquarium of the Pacific, Long Beach's Howl-O-Ween at El Dorado Nature Center, Holo Holo Music Festival, free TYPE S Night Lights, Formula DRIFT's Shoreline Showdown, Santa Monica's airport-to-park master-plan event, the Beverly Hills Art Show, Pasadena Fall Festival and Día de Los Muertos Festival, Día de los Muertos at the Arboretum in Arcadia, Boo at the L.A. Zoo, Anaheim Fall Festival and Halloween Parade, SoCal Corgi Beach Day, Ghosts of the Miles, West Hollywood Halloween Carnaval, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, Santa Monica's Portraits: Faces and Waves exhibition, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, and Fleurs de Villes at Greystone."
         ),
     },
 
@@ -2006,7 +2006,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
                 "- Dark Harbor runs select nights September 18-November 1 with haunted mazes, performers, immersive attractions, rides, and themed food; check the venue's current parking guidance before leaving.",
                 "- Long Beach Open Studio Tour runs four free October weekends from 1-5 p.m., rotating through Belmont, Uptown, Downtown, and Eastside with 120-plus artists in 80-plus studios.",
                 "- DTLB Live is free on October 17 from 4-8 p.m. with music, makers, family Halloween activities, and an optional EZ Sip area for adults 21 and older.",
-                "- DTLB Unfiltered's remaining guided photo walks meet October 14 at Rainbow Lagoon, October 18 at Villa Riviera during Open Studio Tour, and October 24 on Pine Avenue during Fright Fest.",
+                "- DTLB Unfiltered's remaining guided photo walks meet October 18 at Villa Riviera during Open Studio Tour and October 24 on Pine Avenue during Fright Fest.",
                 "- Howl-O-Ween runs October 17 from 2-6 p.m. at El Dorado Nature Center with trail trick-or-treating, animal education, storytelling, face painting, crafts, food trucks, and a suggested $5 donation; last trail entry is 5 p.m.",
                 "- Southeast Asia Day runs October 17 at the Aquarium of the Pacific with nine short music, dance, and cultural-craft presentations included with timed general admission.",
                 "- Holo Holo Music Festival brings Steel Pulse, Ekolu, The Green, and Siaosi to Marina Green on October 17; confirm the current ticket and entry details with the organizer.",
@@ -2028,13 +2028,13 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks nine October plans, including seven clearly free choices:",
+                "The current PerkNation Santa Monica guide ranks nine October plans, including eight free options:",
                 "- On October 15, choose the free Locals' Night drive-in at Santa Monica Pier for Dogtown history, a Dogtown and Z-Boys screening, Tony Alva DJ set, skating, and live music.",
                 "- On October 17, attend the airport-to-park master-plan event to see the future park design and share feedback with the project team.",
                 "- Also on October 17, LA Opera's free all-ages Carmen simulcast at Santa Monica Pier begins pre-show activities at 4 p.m. and the live broadcast at 6 p.m., with English and Spanish subtitles.",
                 "- On October 18, the free Main Street Block Party + Day of the Dog runs noon-6 p.m. with pets, music, DJs, classic cars, kids activities, a farmers market, local businesses, food, and free workouts.",
                 "- On October 23, choose Spooky Splash for recreational swimming, a floating pumpkin patch, an obstacle course, movies, crafts, treats, and a haunted house; advance tickets cost $10 for residents and $15 for non-residents.",
-                "- On October 23 or 24, reserve Ghosts of the Miles for local history and seasonal performance at the historic Miles Memorial Playhouse.",
+                "- For Ghosts of the Miles, choose the free all-ages Festival of Memories on October 24 from noon-3 p.m., or reserve the separate ticketed 16+ Historical Haunt on October 23 or 24 for an immersive local-history performance.",
                 "- The free Portraits: Faces and Waves exhibition offers a flexible Beach House Gallery stop through March 27, while later Saturdays through October 17 continue with Wellness & Waves at the Pier and the Pico farmers market.",
                 "Open /articles/santa-monica-august-2026-guide for rankings, best-for notes, transit, official sources, and directory links.",
             )
@@ -2088,8 +2088,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_arcadia and not wants_restaurants:
         return "\n".join(
             (
-                "The Gilb Museum's October 10 anniversary launch has concluded, so PerkNation no longer presents that limited-capacity program as active.",
-                "Browse /directory?city=Arcadia for 40 local listings and confirm the museum's next public program on the City of Arcadia site before traveling.",
+                "The current PerkNation fall guide includes Día de los Muertos at the Los Angeles County Arboretum in Arcadia on October 25 from 4-8 p.m., with a community altar, live music, creative activities, botanical scenery, and a marketplace of local Latin-owned makers, artists, food, and drinks.",
+                "Adult admission is $15 for Arboretum members and $18 for non-members, children ages 3-12 are $8, and children 2 and younger enter free. Open /articles/southern-california-september-events-2026#arcadia-dia-de-los-muertos-arboretum for best-for and practical notes, or browse /directory?city=Arcadia for 40 local listings.",
             )
         )
 

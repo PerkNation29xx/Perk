@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Forty-seven Southern California fall plans" in html
-    assert 'dateModified": "2026-10-14"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 48))
+    assert "Forty-eight Southern California fall plans" in html
+    assert 'dateModified": "2026-10-15"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 49))
     for expected in (
         "Halloween at Kidspace",
         'id="kidspace-halloween"',
@@ -144,6 +144,10 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Formula DRIFT Shoreline Showdown in Long Beach",
         'id="formula-drift-shoreline-showdown"',
         "https://www.formulad.com/schedule/2026/long-beach2",
+        "Día de los Muertos at the Arboretum in Arcadia",
+        'id="arcadia-dia-de-los-muertos-arboretum"',
+        "https://arboretum.org/events/day-of-the-dead-dia-de-los-muertos/",
+        "40 Arcadia listings",
         "Best for:",
         "/directory?city=Burbank",
         "/directory?city=Pasadena",
@@ -229,8 +233,8 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 14 · Fall guide" in response.text
-        assert "Forty-seven Southern California fall plans, ranked." in response.text
+        assert "Updated October 15 · Fall guide" in response.text
+        assert "Forty-eight Southern California fall plans, ranked." in response.text
         for current in (
             "Halloween at Kidspace",
             "Spider Pavilion",
@@ -268,6 +272,7 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Holo Holo Music Festival",
             "free TYPE S Night Lights",
             "Formula DRIFT's Shoreline Showdown",
+            "Arcadia's Día de los Muertos at the Arboretum",
         ):
             assert current in response.text
         for expired in (
@@ -323,7 +328,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
 
     assert answer
     for current in (
-            "Forty-seven Southern California fall plans",
+            "Forty-eight Southern California fall plans",
         "Halloween at Kidspace",
         "Spider Pavilion",
         "Into the Woods",
@@ -362,6 +367,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Holo Holo Music Festival",
         "TYPE S Night Lights",
         "Formula DRIFT's Shoreline Showdown",
+        "Día de los Muertos at the Arboretum in Arcadia",
         "/articles/southern-california-september-events-2026",
     ):
         assert current in answer
@@ -498,3 +504,18 @@ def test_huntington_beach_answer_includes_current_oktoberfest() -> None:
     assert "September 12-November 8" in answer
     assert "#huntington-beach-oktoberfest" in answer
     assert "SoCal Fitness Festival" not in answer
+
+
+def test_arcadia_answer_includes_current_arboretum_event() -> None:
+    answer = _public_review_live_query_response(
+        "What current events are covered in Arcadia?",
+        "home_local_guide",
+    )
+
+    assert answer
+    assert "Día de los Muertos" in answer
+    assert "Los Angeles County Arboretum" in answer
+    assert "October 25" in answer
+    assert "#arcadia-dia-de-los-muertos-arboretum" in answer
+    assert "40 local listings" in answer
+    assert "Gilb Museum" not in answer
