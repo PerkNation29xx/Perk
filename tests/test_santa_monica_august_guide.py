@@ -16,12 +16,10 @@ def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> 
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Santa Monica has nine current October plans" in html
-    assert 'dateModified": "2026-10-15"' in html
+    assert 'dateModified": "2026-10-16"' in html
     assert html.count("<h2>") >= 11
     for expected in (
         "9 ranked plans",
-        "Locals' Night drive-in at Santa Monica Pier",
-        "4xktb5jextrp31pbja4x19m8cd/202610151530",
         "Airport-to-park master-plan event",
         "santa-monica-airport-conversion-project-to-hold-community-event-on-oct-17",
         "LA Opera's <em>Carmen</em> at Santa Monica Pier",
@@ -35,6 +33,8 @@ def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> 
         "4t27nkvh7dttp1xfz22csmk9dg/202610241200",
         "free all-ages Festival of Memories",
         "ticketed 16+ Historical Haunt",
+        "Pico Walk Loop ribbon cutting",
+        "4zcsp3g979tqpvt024j48s6k5v/202610241000",
         "Portraits: Faces and Waves",
         "photography-exhibition-portraits-faces-and-waves-on-display-at-annenberg-community-beach-house-gallery",
         "Wellness &amp; Waves",
@@ -45,6 +45,7 @@ def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> 
         "https://www.santamonica.com/event/pico-farmers-market/2026-10-17/",
     ):
         assert expected in html
+    assert "Locals' Night" not in html
     assert "Punk Night at the Pier" not in html
     assert "Wellness on the Westside" not in html
     assert "Voices of Strength" not in html
@@ -90,15 +91,16 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated October 15 · Santa Monica") == 1
+        assert response.text.count("Updated October 16 · Santa Monica") == 1
         assert "Nine Santa Monica October plans, ranked." in response.text
-        assert "Dogtown Locals' Night drive-in" in response.text
+        assert "Dogtown Locals' Night drive-in" not in response.text
         assert "fire station open house" not in response.text
         assert "airport-to-park master-plan event" in response.text
         assert "LA Opera's free <em>Carmen</em> simulcast" in response.text
         assert "free Main Street Block Party + Day of the Dog" in response.text
         assert "Spooky Splash" in response.text
         assert "Ghosts of the Miles" in response.text
+        assert "free Pico Walk Loop ribbon cutting" in response.text
         assert "Portraits: Faces and Waves" in response.text
         assert "Ocean Way has been canceled." not in response.text
         assert "Tongva Twilight through September 12" not in response.text
@@ -133,7 +135,8 @@ def test_santa_monica_roundup_link_and_public_answer_are_scoped() -> None:
     assert "Main Street Block Party + Day of the Dog" in answer
     assert "Spooky Splash" in answer
     assert "Portraits: Faces and Waves" in answer
-    assert "Locals' Night drive-in at Santa Monica Pier" in answer
+    assert "Locals' Night drive-in at Santa Monica Pier" not in answer
+    assert "Pico Walk Loop ribbon cutting" in answer
     assert "Ghosts of the Miles" in answer
     assert "free all-ages Festival of Memories" in answer
     assert "ticketed 16+ Historical Haunt" in answer

@@ -15,7 +15,7 @@ def test_global_fashion_guide_has_verified_calendar_rankings_and_access_notes() 
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "2026 Fashion Week calendar: LA, New York, Miami and the world" in html
-    assert 'dateModified": "2026-10-07"' in html
+    assert 'dateModified": "2026-10-16"' in html
     assert html.count('class="fashionRankCard') == 8
     assert html.count("<tr><td>") == 6
     for city, dates in (
@@ -30,9 +30,10 @@ def test_global_fashion_guide_has_verified_calendar_rankings_and_access_notes() 
         assert dates in html
     assert "Fashion Week is not one public ticket." in html
     assert "Concluded October 6" in html
-    assert "Upcoming; credentialed trade access only" in html
+    assert "Concluded October 15; credentialed trade access only" in html
+    assert "Underway through October 17" in html
     assert "October 30, November 6, 13, and 20" in html
-    assert "trade-only" in html
+    assert "credentialed trade access" in html
     assert "Best for:" in html
     assert "/directory?q=fashion&amp;city=Los%20Angeles" in html
     assert "For SEO:" not in html
@@ -54,8 +55,9 @@ def test_fashion_guide_and_homepage_card_are_live_in_both_themes() -> None:
         response = client.get(route)
         assert response.status_code == 200
         assert "2026 Fashion Weeks: LA, New York, Miami and the world." in response.text
-        assert "Updated October 7 · Fashion calendar" in response.text
-        assert "LA Market Week October 12-15" in response.text
+        assert "Updated October 16 · Fashion calendar" in response.text
+        assert "Miami Fashion Week through October 17" in response.text
+        assert "completed LA Market Week" in response.text
         assert "CMC sample sale October 30" in response.text
         assert "Follow New York starting September 10" not in response.text
         assert "Copenhagen, Tokyo" not in response.text
@@ -68,7 +70,7 @@ def test_fashion_assistant_context_and_questions_cover_global_calendar() -> None
         "home_local_guide",
     )
     assert answer
-    assert "Los Angeles Market Week" in answer
+    assert "Completed Los Angeles Market Week" in answer
     assert "Miami" in answer
     assert "CMC's next public sample-sale Friday" in answer
     assert "New York Fashion Week: September 10-15" not in answer

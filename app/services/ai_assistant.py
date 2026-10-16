@@ -780,7 +780,7 @@ def _home_local_guide_context(*, db: Optional[Session]) -> str:
             "- Union, Agnes, Fishwives, Perle, Bone Kettle, Osawa, Panda Inn, and Pez Coastal Kitchen are Pasadena restaurant recommendations, not discount offers unless another promo says so.",
             "",
             "Editorial/review coverage currently surfaced for PerkNation readers:",
-            "- Los Angeles fashion guide: LA Market Week, CMC sample-sale Fridays, Fashion District shopping, LA Vintage warehouse sale, and The Grove K-beauty pop-up.",
+            "- Fashion guide: Miami Fashion Week through October 17, CMC sample-sale Fridays beginning October 30, Fashion District shopping, and completed LA Market Week as season context.",
             "- Events coverage: the ranked October Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
             "- Restaurant coverage: current local directory listings, Pasadena restaurant picks, and broader dining discovery.",
             "",
@@ -800,11 +800,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Fashion and shopping",
         "city": "Los Angeles, United States, and international",
         "title": "2026 Fashion Week calendar: LA, New York, Miami and the world",
-        "timing": "October 7-30, 2026",
+        "timing": "October 16-30, 2026",
         "route": "/articles/la-fashion-events-2026",
         "details": (
-            "Remaining official 2026 dates: trade-only Los Angeles Market Week October 12-15, Miami Fashion Week October 13-17, "
-            "and the public CMC sample sale October 30. Completed New York, London, Milan, and Paris dates remain in the article only as clearly labeled season context."
+            "Remaining official 2026 dates: Miami Fashion Week through October 17 and the public CMC sample sale October 30. "
+            "Completed Los Angeles Market Week, New York, London, Milan, and Paris dates remain in the article only as clearly labeled season context."
         ),
     },
 
@@ -812,11 +812,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
         "title": "Forty-eight Southern California fall plans",
-        "timing": "October 15-November 8, 2026",
+        "timing": "October 16-November 8, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to Halloween at Kidspace, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Carved at Descanso Gardens, Long Beach Open Studio Tour, Newport Beach Film Festival, Screamfest in Hollywood, Santa Monica's free Locals' Night drive-in, Pasadena Craftsman Week, LA Opera's free Carmen simulcast at Santa Monica Pier, and two free Pasadena Walktober routes. "
-            "Also covers OC Japan Fair, Downtown Long Beach Alliance's free DTLB Live Halloween edition and guided DTLB Unfiltered photo walks, Burbank's Harvest of Horror, West Hollywood's free Youth Halloween Carnival, Santa Monica's Spooky Splash and Main Street Block Party, Glendale Día de Los Muertos, AIDS Walk Los Angeles, Burbank Haunted Adventure, Southeast Asia Day at the Aquarium of the Pacific, Long Beach's Howl-O-Ween at El Dorado Nature Center, Holo Holo Music Festival, free TYPE S Night Lights, Formula DRIFT's Shoreline Showdown, Santa Monica's airport-to-park master-plan event, the Beverly Hills Art Show, Pasadena Fall Festival and Día de Los Muertos Festival, Día de los Muertos at the Arboretum in Arcadia, Boo at the L.A. Zoo, Anaheim Fall Festival and Halloween Parade, SoCal Corgi Beach Day, Ghosts of the Miles, West Hollywood Halloween Carnaval, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, Santa Monica's Portraits: Faces and Waves exhibition, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, and Fleurs de Villes at Greystone."
+            "Ranked guide to Halloween at Kidspace, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Carved at Descanso Gardens, Long Beach Open Studio Tour, Newport Beach Film Festival, Long Beach's free Monster Mash and Shoreline Village Zombie Walk, Pasadena Craftsman Week, LA Opera's free Carmen simulcast at Santa Monica Pier, and two free Pasadena Walktober routes. "
+            "Also covers OC Japan Fair, Downtown Long Beach Alliance's free DTLB Live Halloween edition and guided DTLB Unfiltered photo walks, Burbank's Harvest of Horror, West Hollywood's free Youth Halloween Carnival, Santa Monica's Spooky Splash, Main Street Block Party, and Pico Walk Loop, Glendale Día de Los Muertos, AIDS Walk Los Angeles, Burbank Haunted Adventure, Southeast Asia Day at the Aquarium of the Pacific, Long Beach's Howl-O-Ween at El Dorado Nature Center, Holo Holo Music Festival, free TYPE S Night Lights, Formula DRIFT's Shoreline Showdown, Santa Monica's airport-to-park master-plan event, the Beverly Hills Art Show, Pasadena Fall Festival and Día de Los Muertos Festival, Día de los Muertos at the Arboretum in Arcadia, Boo at the L.A. Zoo, Anaheim Fall Festival and Halloween Parade, SoCal Corgi Beach Day, Ghosts of the Miles, West Hollywood Halloween Carnaval, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, Santa Monica's Portraits: Faces and Waves exhibition, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, and Fleurs de Villes at Greystone."
         ),
     },
 
@@ -904,11 +904,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, coastal art, wellness, movies, markets, and local history",
         "city": "Santa Monica",
         "title": "Santa Monica October 2026 coastal events guide",
-        "timing": "October 15-24, 2026",
+        "timing": "October 17-24, 2026",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Nine current plans covering the free Dogtown Locals' Night drive-in at Santa Monica Pier, "
-            "the airport-to-park master-plan event, LA Opera's free Carmen simulcast at Santa Monica Pier, the free Main Street Block Party + Day of the Dog, Spooky Splash, Ghosts of the Miles, the Portraits: Faces and Waves photography exhibition, Wellness & Waves at the Pier, and the Pico farmers market."
+            "Nine current plans covering the airport-to-park master-plan event, LA Opera's free Carmen simulcast at Santa Monica Pier, "
+            "the free Main Street Block Party + Day of the Dog, Spooky Splash, Ghosts of the Miles, the free Pico Walk Loop ribbon cutting, the Portraits: Faces and Waves photography exhibition, Wellness & Waves at the Pier, and the Pico farmers market."
         ),
     },
     {
@@ -2002,7 +2002,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Queen Mary's Dark Harbor, Long Beach Open Studio Tour, DTLB Live Halloween edition, DTLB Unfiltered photo walks, Howl-O-Ween at El Dorado Nature Center, Southeast Asia Day at the Aquarium of the Pacific, Holo Holo Music Festival, TYPE S Night Lights, and Formula DRIFT's Shoreline Showdown:",
+                "The current PerkNation fall guide includes Queen Mary's Dark Harbor, Long Beach Open Studio Tour, Monster Mash at Lincoln Park, the Shoreline Village Zombie Walk, DTLB Live Halloween edition, DTLB Unfiltered photo walks, Howl-O-Ween at El Dorado Nature Center, Southeast Asia Day at the Aquarium of the Pacific, Holo Holo Music Festival, TYPE S Night Lights, and Formula DRIFT's Shoreline Showdown:",
                 "- Dark Harbor runs select nights September 18-November 1 with haunted mazes, performers, immersive attractions, rides, and themed food; check the venue's current parking guidance before leaving.",
                 "- Long Beach Open Studio Tour runs four free October weekends from 1-5 p.m., rotating through Belmont, Uptown, Downtown, and Eastside with 120-plus artists in 80-plus studios.",
                 "- DTLB Live is free on October 17 from 4-8 p.m. with music, makers, family Halloween activities, and an optional EZ Sip area for adults 21 and older.",
@@ -2010,6 +2010,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
                 "- Howl-O-Ween runs October 17 from 2-6 p.m. at El Dorado Nature Center with trail trick-or-treating, animal education, storytelling, face painting, crafts, food trucks, and a suggested $5 donation; last trail entry is 5 p.m.",
                 "- Southeast Asia Day runs October 17 at the Aquarium of the Pacific with nine short music, dance, and cultural-craft presentations included with timed general admission.",
                 "- Holo Holo Music Festival brings Steel Pulse, Ekolu, The Green, and Siaosi to Marina Green on October 17; confirm the current ticket and entry details with the organizer.",
+                "- Monster Mash is free at Lincoln Park on October 17 from 11 a.m.-1 p.m., with games, crafts, a costume parade, library trick-or-treating, and free Civic Center garage parking.",
+                "- Shoreline Village's free Zombie Walk and Halloween Party starts October 17 at 6 p.m., with an 8 p.m. walk, costumes, DJs, crafts, contests, and later live music; paid parking is limited and the scare level may not suit infants, easily frightened children, or dogs.",
                 "- TYPE S Night Lights is a free, all-ages tuner, drift, and import-car meet at the 400 Garage on October 22 from 6-10 p.m.; the garage is the show venue, so use the posted spectator parking map, transit, carpooling, or rideshare.",
                 "- Formula DRIFT's Shoreline Showdown runs October 23-24 at the Long Beach Convention & Entertainment Center, with Friday qualifying and Saturday's final championship rounds; the organizer lists $35 on-site parking and a rain-or-shine policy.",
                 "Open /articles/southern-california-september-events-2026#long-beach-open-studio-tour, #queen-mary-dark-harbor, #dtlb-live-halloween, #dtlb-unfiltered-photo-walks, #howl-o-ween-el-dorado, #southeast-asia-day-long-beach, #holo-holo-long-beach, #type-s-night-lights, or #formula-drift-shoreline-showdown for practical planning, with links into 208 Long Beach directory listings.",
@@ -2029,12 +2031,12 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "The current PerkNation Santa Monica guide ranks nine October plans, including eight free options:",
-                "- On October 15, choose the free Locals' Night drive-in at Santa Monica Pier for Dogtown history, a Dogtown and Z-Boys screening, Tony Alva DJ set, skating, and live music.",
                 "- On October 17, attend the airport-to-park master-plan event to see the future park design and share feedback with the project team.",
                 "- Also on October 17, LA Opera's free all-ages Carmen simulcast at Santa Monica Pier begins pre-show activities at 4 p.m. and the live broadcast at 6 p.m., with English and Spanish subtitles.",
                 "- On October 18, the free Main Street Block Party + Day of the Dog runs noon-6 p.m. with pets, music, DJs, classic cars, kids activities, a farmers market, local businesses, food, and free workouts.",
                 "- On October 23, choose Spooky Splash for recreational swimming, a floating pumpkin patch, an obstacle course, movies, crafts, treats, and a haunted house; advance tickets cost $10 for residents and $15 for non-residents.",
                 "- For Ghosts of the Miles, choose the free all-ages Festival of Memories on October 24 from noon-3 p.m., or reserve the separate ticketed 16+ Historical Haunt on October 23 or 24 for an immersive local-history performance.",
+                "- Also on October 24, the free Pico Walk Loop ribbon cutting and community walk runs from 10 a.m.-noon at Virginia Avenue Park.",
                 "- The free Portraits: Faces and Waves exhibition offers a flexible Beach House Gallery stop through March 27, while later Saturdays through October 17 continue with Wellness & Waves at the Pier and the Pico farmers market.",
                 "Open /articles/santa-monica-august-2026-guide for rankings, best-for notes, transit, official sources, and directory links.",
             )
@@ -2044,11 +2046,10 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "Remaining dates in the PerkNation 2026 Fashion Week guide:",
-                "- Los Angeles Market Week: October 12-15 (trade credentials required).",
-                "- Miami Fashion Week: October 13-17.",
+                "- Miami Fashion Week continues through October 17.",
                 "- CMC's next public sample-sale Friday: October 30.",
-                "Choose Los Angeles only with trade credentials, Miami for an international, resort, culture, and technology crossover, "
-                "or the CMC sample sale for public shopping access. Completed New York, London, Milan, and Paris dates are labeled as season context. Read the rankings, access notes, and official-source links at "
+                "Choose Miami for an international, resort, culture, and technology crossover, or the CMC sample sale for public shopping access. "
+                "Completed Los Angeles Market Week, New York, London, Milan, and Paris dates are labeled as season context. Read the rankings, access notes, and official-source links at "
                 "/articles/la-fashion-events-2026.",
             )
         )

@@ -16,7 +16,7 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Forty-eight Southern California fall plans" in html
-    assert 'dateModified": "2026-10-15"' in html
+    assert 'dateModified": "2026-10-16"' in html
     assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 49))
     for expected in (
         "Halloween at Kidspace",
@@ -38,12 +38,12 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Newport Beach Film Festival",
         'id="newport-beach-film-festival"',
         "your-guide-to-the-newport-beach-film-festival",
-        "Screamfest in Hollywood",
-        'id="screamfest-hollywood"',
-        "https://www.screamfestla.com/festival/attending-festival",
-        "Santa Monica Locals' Night drive-in",
-        'id="santa-monica-locals-night"',
-        "4xktb5jextrp31pbja4x19m8cd/202610151530",
+        "Monster Mash at Lincoln Park",
+        'id="long-beach-monster-mash"',
+        "city-of-long-beach-to-host-monster-mash-halloween-celebration-at-lincoln-park",
+        "Shoreline Village Zombie Walk and Halloween Party",
+        'id="shoreline-village-zombie-walk"',
+        "shoreline-village-zombie-walk-and-halloween-party-your-ultimate-spooky-season-destination",
         "Pasadena Craftsman Week",
         'id="pasadena-craftsman-week"',
         "https://www.pasadenaheritage.org/craftsman-week",
@@ -233,7 +233,7 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 15 · Fall guide" in response.text
+        assert "Updated October 16 · Fall guide" in response.text
         assert "Forty-eight Southern California fall plans, ranked." in response.text
         for current in (
             "Halloween at Kidspace",
@@ -242,8 +242,8 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Carved at Descanso Gardens",
             "Long Beach Open Studio Tour",
             "Newport Beach Film Festival",
-            "Screamfest",
-            "Locals' Night drive-in",
+            "free Monster Mash",
+            "Shoreline Village Zombie Walk",
             "Pasadena Craftsman Week",
             "LA Opera's free <em>Carmen</em> simulcast at Santa Monica Pier",
             "two Pasadena Walktober routes",
@@ -332,8 +332,8 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Halloween at Kidspace",
         "Spider Pavilion",
         "Into the Woods",
-        "Screamfest in Hollywood",
-        "Santa Monica's free Locals' Night drive-in",
+        "Long Beach's free Monster Mash",
+        "Shoreline Village Zombie Walk",
         "Pasadena Craftsman Week",
         "LA Opera's free Carmen simulcast at Santa Monica Pier",
         "two free Pasadena Walktober routes",
@@ -342,7 +342,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
             "Burbank's Harvest of Horror",
             "Youth Halloween Carnival",
             "Spooky Splash",
-        "Santa Monica's Spooky Splash and Main Street Block Party",
+        "Santa Monica's Spooky Splash, Main Street Block Party, and Pico Walk Loop",
         "AIDS Walk Los Angeles",
         "Burbank Haunted Adventure",
         "Southeast Asia Day",
