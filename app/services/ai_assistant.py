@@ -781,7 +781,7 @@ def _home_local_guide_context(*, db: Optional[Session]) -> str:
             "",
             "Editorial/review coverage currently surfaced for PerkNation readers:",
             "- Fashion guide: Miami Fashion Week through October 17, CMC sample-sale Fridays beginning October 30, Fashion District shopping, and completed LA Market Week as season context.",
-            "- Events coverage: the ranked October Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
+            "- Events coverage: the ranked 52-plan October Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
             "- Restaurant coverage: current local directory listings, Pasadena restaurant picks, and broader dining discovery.",
             "",
             "Answering rules:",
@@ -811,12 +811,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Forty-eight Southern California fall plans",
-        "timing": "October 16-November 8, 2026",
+        "title": "Fifty-two Southern California fall plans",
+        "timing": "October 17-November 8, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to Halloween at Kidspace, Natural History Museum's Spider Pavilion, South Coast Repertory's Into the Woods, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Carved at Descanso Gardens, Long Beach Open Studio Tour, Newport Beach Film Festival, Long Beach's free Monster Mash and Shoreline Village Zombie Walk, Pasadena Craftsman Week, LA Opera's free Carmen simulcast at Santa Monica Pier, and two free Pasadena Walktober routes. "
-            "Also covers OC Japan Fair, Downtown Long Beach Alliance's free DTLB Live Halloween edition and guided DTLB Unfiltered photo walks, Burbank's Harvest of Horror, West Hollywood's free Youth Halloween Carnival, Santa Monica's Spooky Splash, Main Street Block Party, and Pico Walk Loop, Glendale Día de Los Muertos, AIDS Walk Los Angeles, Burbank Haunted Adventure, Southeast Asia Day at the Aquarium of the Pacific, Long Beach's Howl-O-Ween at El Dorado Nature Center, Holo Holo Music Festival, free TYPE S Night Lights, Formula DRIFT's Shoreline Showdown, Santa Monica's airport-to-park master-plan event, the Beverly Hills Art Show, Pasadena Fall Festival and Día de Los Muertos Festival, Día de los Muertos at the Arboretum in Arcadia, Boo at the L.A. Zoo, Anaheim Fall Festival and Halloween Parade, SoCal Corgi Beach Day, Ghosts of the Miles, West Hollywood Halloween Carnaval, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, Santa Monica's Portraits: Faces and Waves exhibition, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, and Fleurs de Villes at Greystone."
+            "Also covers OC Japan Fair, Downtown Long Beach Alliance's free DTLB Live Halloween edition and guided DTLB Unfiltered photo walks, Burbank's Harvest of Horror and Little Pumpkins Tot Party, West Hollywood's free Youth Halloween Carnival and Floating Pumpkin Patch, Santa Monica's Spooky Splash, Main Street Block Party, Pico Walk Loop, and Held in Trust City Gallery opening, Glendale Día de Los Muertos, AIDS Walk Los Angeles, Burbank Haunted Adventure, Southeast Asia Day at the Aquarium of the Pacific, Long Beach's Howl-O-Ween at El Dorado Nature Center, Holo Holo Music Festival, free TYPE S Night Lights, Formula DRIFT's Shoreline Showdown, Santa Monica's airport-to-park master-plan event, the Beverly Hills Art Show and Fall Funtastic, Pasadena Fall Festival and Día de Los Muertos Festival, Día de los Muertos at the Arboretum in Arcadia, Boo at the L.A. Zoo, Anaheim Fall Festival and Halloween Parade, SoCal Corgi Beach Day, Ghosts of the Miles, West Hollywood Halloween Carnaval, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, Santa Monica's Portraits: Faces and Waves exhibition, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, and Fleurs de Villes at Greystone."
         ),
     },
 
@@ -907,8 +907,8 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "timing": "October 17-24, 2026",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Nine current plans covering the airport-to-park master-plan event, LA Opera's free Carmen simulcast at Santa Monica Pier, "
-            "the free Main Street Block Party + Day of the Dog, Spooky Splash, Ghosts of the Miles, the free Pico Walk Loop ribbon cutting, the Portraits: Faces and Waves photography exhibition, Wellness & Waves at the Pier, and the Pico farmers market."
+            "Ten current plans covering the airport-to-park master-plan event, LA Opera's free Carmen simulcast at Santa Monica Pier, "
+            "the free Main Street Block Party + Day of the Dog, Spooky Splash, Ghosts of the Miles, the free Pico Walk Loop ribbon cutting, the free Held in Trust City Gallery opening, the Portraits: Faces and Waves photography exhibition, Wellness & Waves at the Pier, and the Pico farmers market."
         ),
     },
     {
@@ -2030,13 +2030,14 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks nine October plans, including eight free options:",
+                "The current PerkNation Santa Monica guide ranks ten October plans, including nine free options:",
                 "- On October 17, attend the airport-to-park master-plan event to see the future park design and share feedback with the project team.",
                 "- Also on October 17, LA Opera's free all-ages Carmen simulcast at Santa Monica Pier begins pre-show activities at 4 p.m. and the live broadcast at 6 p.m., with English and Spanish subtitles.",
                 "- On October 18, the free Main Street Block Party + Day of the Dog runs noon-6 p.m. with pets, music, DJs, classic cars, kids activities, a farmers market, local businesses, food, and free workouts.",
                 "- On October 23, choose Spooky Splash for recreational swimming, a floating pumpkin patch, an obstacle course, movies, crafts, treats, and a haunted house; advance tickets cost $10 for residents and $15 for non-residents.",
                 "- For Ghosts of the Miles, choose the free all-ages Festival of Memories on October 24 from noon-3 p.m., or reserve the separate ticketed 16+ Historical Haunt on October 23 or 24 for an immersive local-history performance.",
                 "- Also on October 24, the free Pico Walk Loop ribbon cutting and community walk runs from 10 a.m.-noon at Virginia Avenue Park.",
+                "- The free Held in Trust opening at City Gallery runs October 24 from 4-6 p.m. at Bergamot Station, gathering works from Santa Monica's municipal Art Bank.",
                 "- The free Portraits: Faces and Waves exhibition offers a flexible Beach House Gallery stop through March 27, while later Saturdays through October 17 continue with Wellness & Waves at the Pier and the Pico farmers market.",
                 "Open /articles/santa-monica-august-2026-guide for rankings, best-for notes, transit, official sources, and directory links.",
             )
@@ -2066,7 +2067,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "The city-run Haunted Adventure follows at Starlight Bowl on October 16, 17, 23, and 24 from 7-9:30 p.m.; advance tickets cost $10 for adults and $5 for children 12 and younger, children under 6 are not admitted, and the route includes stairs and uphill walking.",
-                "Open /articles/southern-california-september-events-2026#burbank-haunted-adventure for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
+                "For ages 2-5, Little Pumpkins Tot Party runs October 24 from 10-11:30 a.m. at $5 per child, offering a short daytime alternative to the city's evening scares.",
+                "Open /articles/southern-california-september-events-2026#burbank-haunted-adventure or #burbank-little-pumpkins for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
             )
         )
 

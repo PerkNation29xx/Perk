@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Forty-eight Southern California fall plans" in html
-    assert 'dateModified": "2026-10-16"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 49))
+    assert "Fifty-two Southern California fall plans" in html
+    assert 'dateModified": "2026-10-17"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 53))
     for expected in (
         "Halloween at Kidspace",
         'id="kidspace-halloween"',
@@ -148,6 +148,17 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         'id="arcadia-dia-de-los-muertos-arboretum"',
         "https://arboretum.org/events/day-of-the-dead-dia-de-los-muertos/",
         "40 Arcadia listings",
+        "Beverly Hills Fall Funtastic",
+        'id="beverly-hills-fall-funtastic"',
+        "Fall-Funtastic-Harvest-Festival---Octobe",
+        "Burbank Little Pumpkins Tot Party",
+        'id="burbank-little-pumpkins"',
+        "West Hollywood Floating Pumpkin Patch",
+        'id="weho-floating-pumpkin-patch"',
+        "Event/32187/1472",
+        "Held in Trust",
+        'id="santa-monica-held-in-trust"',
+        "4m0q8xgfh3dwp01en1ykxsn3m6/202610241600",
         "Best for:",
         "/directory?city=Burbank",
         "/directory?city=Pasadena",
@@ -233,8 +244,8 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 16 · Fall guide" in response.text
-        assert "Forty-eight Southern California fall plans, ranked." in response.text
+        assert "Updated October 17 · Fall guide" in response.text
+        assert "Fifty-two Southern California fall plans, ranked." in response.text
         for current in (
             "Halloween at Kidspace",
             "Spider Pavilion",
@@ -273,6 +284,10 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "free TYPE S Night Lights",
             "Formula DRIFT's Shoreline Showdown",
             "Arcadia's Día de los Muertos at the Arboretum",
+            "Beverly Hills Art Show and Fall Funtastic",
+            "Burbank's Little Pumpkins Tot Party",
+            "West Hollywood's Floating Pumpkin Patch",
+            "Santa Monica's <em>Held in Trust</em> opening",
         ):
             assert current in response.text
         for expired in (
@@ -328,7 +343,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
 
     assert answer
     for current in (
-            "Forty-eight Southern California fall plans",
+            "Fifty-two Southern California fall plans",
         "Halloween at Kidspace",
         "Spider Pavilion",
         "Into the Woods",
@@ -342,7 +357,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
             "Burbank's Harvest of Horror",
             "Youth Halloween Carnival",
             "Spooky Splash",
-        "Santa Monica's Spooky Splash, Main Street Block Party, and Pico Walk Loop",
+        "Santa Monica's Spooky Splash, Main Street Block Party, Pico Walk Loop, and Held in Trust City Gallery opening",
         "AIDS Walk Los Angeles",
         "Burbank Haunted Adventure",
         "Southeast Asia Day",
@@ -368,6 +383,10 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "TYPE S Night Lights",
         "Formula DRIFT's Shoreline Showdown",
         "Día de los Muertos at the Arboretum in Arcadia",
+        "Burbank's Harvest of Horror and Little Pumpkins Tot Party",
+        "West Hollywood's free Youth Halloween Carnival and Floating Pumpkin Patch",
+        "Beverly Hills Art Show and Fall Funtastic",
+        "Held in Trust City Gallery opening",
         "/articles/southern-california-september-events-2026",
     ):
         assert current in answer
