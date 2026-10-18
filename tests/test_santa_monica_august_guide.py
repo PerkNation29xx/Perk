@@ -15,15 +15,15 @@ AUGUST_GUIDE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-cal
 def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Santa Monica has ten current October plans" in html
-    assert 'dateModified": "2026-10-17"' in html
+    assert "Santa Monica has nine current October plans" in html
+    assert 'dateModified": "2026-10-18"' in html
     assert html.count("<h2>") >= 12
     for expected in (
-        "10 ranked plans",
-        "Airport-to-park master-plan event",
-        "santa-monica-airport-conversion-project-to-hold-community-event-on-oct-17",
-        "LA Opera's <em>Carmen</em> at Santa Monica Pier",
-        "opera-at-the-beach-%28santa-monica-pier%29",
+        "9 ranked plans",
+        "LA Times Food Bowl",
+        "101-best-restaurants-in-l-a",
+        "Scott Silven's <em>Wonders</em>",
+        "scott-silven-wonders",
         "Main Street Block Party + Day of the Dog",
         "main-street-block-party-day-of-the-dog",
         "Spooky Splash",
@@ -39,12 +39,11 @@ def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> 
         "4m0q8xgfh3dwp01en1ykxsn3m6/202610241600",
         "Portraits: Faces and Waves",
         "photography-exhibition-portraits-faces-and-waves-on-display-at-annenberg-community-beach-house-gallery",
-        "Wellness &amp; Waves",
         "Pico Farmers Market",
         "Best for:",
         "/directory?city=Santa%20Monica",
         "/articles/southern-california-september-events-2026",
-        "https://www.santamonica.com/event/pico-farmers-market/2026-10-17/",
+        "https://www.santamonica.com/event/pico-farmers-market/2026-10-24/",
     ):
         assert expected in html
     assert "Locals' Night" not in html
@@ -61,6 +60,9 @@ def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> 
     assert "Join &amp; Thrive" not in html
     assert "Fire Prevention Week Open House" not in html
     assert "Continuum at Historic Belmar Park" not in html
+    assert "airport-to-park master-plan event" not in html
+    assert "Carmen simulcast" not in html
+    assert "Wellness &amp; Waves" not in html
 
     for forbidden in (
         "Examples from the official listing",
@@ -82,7 +84,7 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "10 ranked plans" in response.text
+        assert "9 ranked plans" in response.text
 
     image = client.get("/assets/articles/santa-monica-august-2026-guide.jpg")
     assert image.status_code == 200
@@ -93,12 +95,12 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated October 17 · Santa Monica") == 1
-        assert "Ten Santa Monica October plans, ranked." in response.text
+        assert response.text.count("Updated October 18 · Santa Monica") == 1
+        assert "Nine Santa Monica October plans, ranked." in response.text
         assert "Dogtown Locals' Night drive-in" not in response.text
         assert "fire station open house" not in response.text
-        assert "airport-to-park master-plan event" in response.text
-        assert "LA Opera's free <em>Carmen</em> simulcast" in response.text
+        assert "LA Times Food Bowl" in response.text
+        assert "Scott Silven's <em>Wonders</em>" in response.text
         assert "free Main Street Block Party + Day of the Dog" in response.text
         assert "Spooky Splash" in response.text
         assert "Ghosts of the Miles" in response.text
@@ -129,13 +131,13 @@ def test_santa_monica_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "ranks ten October plans, including nine free options" in answer
+    assert "ranks nine October plans, including five free options" in answer
     assert "Held in Trust opening at City Gallery" in answer
     assert "Punk Night at the Pier" not in answer
     assert "Voices of Strength" not in answer
     assert "Fire Prevention Week Open House" not in answer
-    assert "airport-to-park master-plan event" in answer
-    assert "Carmen simulcast at Santa Monica Pier" in answer
+    assert "LA Times Food Bowl" in answer
+    assert "Scott Silven's Wonders" in answer
     assert "Main Street Block Party + Day of the Dog" in answer
     assert "Spooky Splash" in answer
     assert "Portraits: Faces and Waves" in answer

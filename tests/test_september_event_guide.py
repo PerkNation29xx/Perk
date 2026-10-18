@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Fifty-two Southern California fall plans" in html
-    assert 'dateModified": "2026-10-17"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 53))
+    assert "Forty-seven Southern California fall plans" in html
+    assert 'dateModified": "2026-10-18"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 48))
     for expected in (
         "Halloween at Kidspace",
         'id="kidspace-halloween"',
@@ -38,34 +38,32 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Newport Beach Film Festival",
         'id="newport-beach-film-festival"',
         "your-guide-to-the-newport-beach-film-festival",
-        "Monster Mash at Lincoln Park",
-        'id="long-beach-monster-mash"',
-        "city-of-long-beach-to-host-monster-mash-halloween-celebration-at-lincoln-park",
-        "Shoreline Village Zombie Walk and Halloween Party",
-        'id="shoreline-village-zombie-walk"',
-        "shoreline-village-zombie-walk-and-halloween-party-your-ultimate-spooky-season-destination",
+        "LA Times Food Bowl in Santa Monica",
+        'id="la-times-food-bowl-santa-monica"',
+        "101-best-restaurants-in-l-a",
+        "Scott Silven's <em>Wonders</em> at BroadStage",
+        'id="scott-silven-wonders-santa-monica"',
+        "scott-silven-wonders",
+        "Pasadena's 710 Stub Walktober",
+        'id="pasadena-710-stub-walktober"',
+        "Stories of Displacement",
+        "Downtown Long Beach Fright Fest",
+        'id="downtown-long-beach-fright-fest"',
+        "downtown-fright-fest",
+        "Belmont Shore Sidewalk Chalk Art Contest",
+        'id="belmont-shore-sidewalk-chalk-art"',
+        "belmont-shore-sidewalk-chalk-art-contest",
         "Pasadena Craftsman Week",
         'id="pasadena-craftsman-week"',
         "https://www.pasadenaheritage.org/craftsman-week",
-        "LA Opera's <em>Carmen</em> at Santa Monica Pier",
-        'id="carmen-santa-monica-pier"',
-        "opera-at-the-beach-%28santa-monica-pier%29",
         "Pasadena Gardens and Historic Homes Walktober",
         'id="pasadena-gardens-walktober"',
         "walktober-pasadena-gardens-and-historic-homes",
-        "Pasadena Route 66 Walktober tour",
-        'id="pasadena-route-66-walktober"',
-        "https://www.cityofpasadena.net/event/walktober-99-years-and-11-months-of-route-66/",
         "OC Japan Fair in Costa Mesa",
         'id="oc-japan-fair"',
         "https://ocfair.com/event/oc-japan-fair-october-2026",
-        "DTLB Live Halloween edition",
-        'id="dtlb-live-halloween"',
-        "https://downtownlongbeach.org/event/dtlb-live-halloween-edition-an-ez-sip-event/",
         "Burbank Harvest of Horror",
         'id="burbank-harvest-of-horror"',
-        "West Hollywood Youth Halloween Carnival",
-        'id="weho-youth-halloween-carnival"',
         "Santa Monica Spooky Splash",
         'id="santa-monica-spooky-splash"',
         "45112ggwps9h1y66jw9xjewkx6/202610231700",
@@ -81,12 +79,6 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Burbank Haunted Adventure",
         'id="burbank-haunted-adventure"',
         "https://www.burbankca.gov/calendar/-/calendar/event/4414632/0",
-        "Southeast Asia Day in Long Beach",
-        'id="southeast-asia-day-long-beach"',
-        "https://www.aquariumofpacific.org/events/info/southeast_asia_day",
-        "Santa Monica airport-to-park master-plan event",
-        'id="santa-monica-airport-park-plan"',
-        "santa-monica-airport-conversion-project-to-hold-community-event-on-oct-17",
         "Beverly Hills Art Show",
         'id="beverly-hills-art-show"',
         "Pasadena Fall Festival",
@@ -129,15 +121,9 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "DTLB Unfiltered photo walks",
         'id="dtlb-unfiltered-photo-walks"',
         "dtlb-unfiltered-returns-inviting-photographers-to-capture-downtown-their-way",
-        "Howl-O-Ween at El Dorado Nature Center",
-        'id="howl-o-ween-el-dorado"',
-        "nc-special-events",
         "Pasadena Día de Los Muertos Festival and Altar Exhibit",
         'id="pasadena-dia-de-los-muertos"',
         "dia-de-los-muertos-festival-altar-exhibit",
-        "Holo Holo Music Festival in Long Beach",
-        'id="holo-holo-long-beach"',
-        "https://www.holoholofestival.com/long-beach/",
         "TYPE S Night Lights in Long Beach",
         'id="type-s-night-lights"',
         "https://www.lbentertainmentcenter.com/events/type-s-2026/",
@@ -211,6 +197,16 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Continuum at Historic Belmar Park",
         "Long Beach Marathon weekend",
         "Indigenous Pride LA",
+        "Monster Mash at Lincoln Park",
+        "Shoreline Village Zombie Walk and Halloween Party",
+        "LA Opera's <em>Carmen</em> at Santa Monica Pier",
+        "Pasadena Route 66 Walktober tour",
+        "DTLB Live Halloween edition",
+        "West Hollywood Youth Halloween Carnival",
+        "Southeast Asia Day in Long Beach",
+        "Santa Monica airport-to-park master-plan event",
+        "Howl-O-Ween at El Dorado Nature Center",
+        "Holo Holo Music Festival in Long Beach",
     ):
         assert expired not in html
 
@@ -244,8 +240,8 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 17 · Fall guide" in response.text
-        assert "Fifty-two Southern California fall plans, ranked." in response.text
+        assert "Updated October 18 · Fall guide" in response.text
+        assert "Forty-seven Southern California fall plans, ranked." in response.text
         for current in (
             "Halloween at Kidspace",
             "Spider Pavilion",
@@ -253,22 +249,19 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Carved at Descanso Gardens",
             "Long Beach Open Studio Tour",
             "Newport Beach Film Festival",
-            "free Monster Mash",
-            "Shoreline Village Zombie Walk",
+            "LA Times Food Bowl",
+            "Scott Silven's <em>Wonders</em>",
+            "Downtown Long Beach Fright Fest",
+            "Belmont Shore Sidewalk Chalk Art Contest",
             "Pasadena Craftsman Week",
-            "LA Opera's free <em>Carmen</em> simulcast at Santa Monica Pier",
-            "two Pasadena Walktober routes",
+            "current Walktober routes",
             "OC Japan Fair",
-            "DTLB Live Halloween edition",
             "Burbank's Harvest of Horror",
-            "West Hollywood's free Youth Halloween Carnival",
             "Santa Monica's Spooky Splash",
             "Main Street Block Party",
-            "airport-to-park master-plan event",
             "Pasadena's Fall Festival",
             "AIDS Walk Los Angeles",
             "Burbank's Haunted Adventure",
-            "Southeast Asia Day",
             "Glendale Día de Los Muertos",
             "Boo at the L.A. Zoo",
             "Anaheim's Fall Festival and Halloween Parade",
@@ -278,9 +271,7 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Beverly Hills Art Show",
             "Fleurs de Villes at Greystone",
             "DTLB Unfiltered photo walks",
-            "Long Beach's Howl-O-Ween",
             "Pasadena's Fall Festival and Día de Los Muertos",
-            "Holo Holo Music Festival",
             "free TYPE S Night Lights",
             "Formula DRIFT's Shoreline Showdown",
             "Arcadia's Día de los Muertos at the Arboretum",
@@ -324,6 +315,15 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Continuum at Historic Belmar Park",
             "Indigenous Pride LA",
             "Long Beach Marathon weekend",
+            "free Monster Mash",
+            "Shoreline Village Zombie Walk",
+            "LA Opera's free <em>Carmen</em> simulcast",
+            "DTLB Live Halloween edition",
+            "West Hollywood's free Youth Halloween Carnival",
+            "airport-to-park master-plan event",
+            "Southeast Asia Day",
+            "Long Beach's Howl-O-Ween",
+            "Holo Holo Music Festival",
         ):
             assert expired not in response.text
 
@@ -343,25 +343,22 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
 
     assert answer
     for current in (
-            "Fifty-two Southern California fall plans",
+            "Forty-seven Southern California fall plans",
         "Halloween at Kidspace",
         "Spider Pavilion",
         "Into the Woods",
-        "Long Beach's free Monster Mash",
-        "Shoreline Village Zombie Walk",
+        "LA Times Food Bowl",
+        "Scott Silven's Wonders",
+        "Downtown Long Beach Fright Fest",
+        "Belmont Shore Sidewalk Chalk Art Contest",
         "Pasadena Craftsman Week",
-        "LA Opera's free Carmen simulcast at Santa Monica Pier",
-        "two free Pasadena Walktober routes",
+        "current Walktober routes",
             "OC Japan Fair",
-            "DTLB Live Halloween edition",
             "Burbank's Harvest of Horror",
-            "Youth Halloween Carnival",
             "Spooky Splash",
         "Santa Monica's Spooky Splash, Main Street Block Party, Pico Walk Loop, and Held in Trust City Gallery opening",
         "AIDS Walk Los Angeles",
         "Burbank Haunted Adventure",
-        "Southeast Asia Day",
-        "airport-to-park master-plan event",
         "Glendale Día de Los Muertos",
         "Beverly Hills Art Show",
         "Pasadena Fall Festival",
@@ -377,14 +374,12 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Fleurs de Villes at Greystone",
         "Portraits: Faces and Waves",
         "DTLB Unfiltered photo walks",
-        "Howl-O-Ween at El Dorado Nature Center",
         "Pasadena Fall Festival and Día de Los Muertos Festival",
-        "Holo Holo Music Festival",
         "TYPE S Night Lights",
         "Formula DRIFT's Shoreline Showdown",
         "Día de los Muertos at the Arboretum in Arcadia",
         "Burbank's Harvest of Horror and Little Pumpkins Tot Party",
-        "West Hollywood's free Youth Halloween Carnival and Floating Pumpkin Patch",
+        "West Hollywood's Floating Pumpkin Patch",
         "Beverly Hills Art Show and Fall Funtastic",
         "Held in Trust City Gallery opening",
         "/articles/southern-california-september-events-2026",
@@ -408,6 +403,15 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Montana Avenue Art Walk",
         "West Hollywood's free Movies in the Park",
         "Pacific Airshow",
+        "Long Beach's free Monster Mash",
+        "Shoreline Village Zombie Walk",
+        "LA Opera's free Carmen simulcast",
+        "DTLB Live Halloween edition",
+        "Youth Halloween Carnival",
+        "Southeast Asia Day",
+        "airport-to-park master-plan event",
+        "Howl-O-Ween",
+        "Holo Holo Music Festival",
         "Hot Wheels Monster Trucks",
         "Little Women Ballet",
         "Tustin Tiller Days",
@@ -453,8 +457,8 @@ def test_pasadena_answer_includes_walktober_and_flexible_exhibitions() -> None:
     )
 
     assert answer
-    assert "Route 66 Walktober tour" in answer
-    assert "#pasadena-route-66-walktober" in answer
+    assert "Stories of Displacement: the 710 Stub" in answer
+    assert "#pasadena-710-stub-walktober" in answer
     assert "Gardens and Historic Homes Walktober" in answer
     assert "#pasadena-gardens-walktober" in answer
     assert "Pasadena Fall Festival" in answer
@@ -479,7 +483,7 @@ def test_burbank_answer_includes_current_haunted_adventure() -> None:
     assert "Burbank Book Festival" not in answer
 
 
-def test_long_beach_answer_includes_dark_harbor_and_dtlb_live() -> None:
+def test_long_beach_answer_includes_dark_harbor_and_fright_fest() -> None:
     answer = _public_review_live_query_response(
         "What current events are covered in Long Beach this weekend?",
         "home_local_guide",
@@ -488,16 +492,12 @@ def test_long_beach_answer_includes_dark_harbor_and_dtlb_live() -> None:
     assert answer
     assert "Dark Harbor" in answer
     assert "#queen-mary-dark-harbor" in answer
-    assert "DTLB Live" in answer
-    assert "#dtlb-live-halloween" in answer
-    assert "Southeast Asia Day" in answer
-    assert "#southeast-asia-day-long-beach" in answer
+    assert "Fright Fest" in answer
+    assert "#downtown-long-beach-fright-fest" in answer
+    assert "Belmont Shore Sidewalk Chalk Art Contest" in answer
+    assert "#belmont-shore-sidewalk-chalk-art" in answer
     assert "DTLB Unfiltered" in answer
     assert "#dtlb-unfiltered-photo-walks" in answer
-    assert "Howl-O-Ween" in answer
-    assert "#howl-o-ween-el-dorado" in answer
-    assert "Holo Holo Music Festival" in answer
-    assert "#holo-holo-long-beach" in answer
     assert "TYPE S Night Lights" in answer
     assert "#type-s-night-lights" in answer
     assert "Formula DRIFT's Shoreline Showdown" in answer
