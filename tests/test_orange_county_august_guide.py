@@ -99,7 +99,7 @@ def test_orange_county_roundup_link_and_public_answer_are_scoped() -> None:
     assert "/articles/orange-county-august-2026-guide" not in answer
     assert "Orange County Burger Week" not in answer
     assert "Huntington Beach Oktoberfest" in answer
-    assert "OC Japan Fair" in answer
-    assert "/articles/southern-california-september-events-2026#oc-japan-fair" in answer
+    assert "OC Japan Fair" not in answer
+    assert "/articles/southern-california-september-events-2026#oc-japan-fair" not in answer
     assert "/articles/southern-california-september-events-2026#huntington-beach-oktoberfest" in answer
     assert "Pasadena" not in answer

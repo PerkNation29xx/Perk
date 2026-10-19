@@ -15,16 +15,17 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Forty-seven Southern California fall plans" in html
-    assert 'dateModified": "2026-10-18"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 48))
+    assert "Forty-four Southern California fall plans" in html
+    assert 'dateModified": "2026-10-19"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 45))
     for expected in (
         "Halloween at Kidspace",
         'id="kidspace-halloween"',
         "Spider Pavilion at the Natural History Museum",
         'id="spider-pavilion"',
-        "Into the Woods",
-        'id="into-the-woods-costa-mesa"',
+        "Grand Ave Arts: All Access in Los Angeles",
+        'id="grand-ave-arts-all-access"',
+        "https://grandavearts.org/",
         "Huntington Beach Oktoberfest",
         'id="huntington-beach-oktoberfest"',
         "Queen Mary's Dark Harbor",
@@ -53,34 +54,26 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Belmont Shore Sidewalk Chalk Art Contest",
         'id="belmont-shore-sidewalk-chalk-art"',
         "belmont-shore-sidewalk-chalk-art-contest",
-        "Pasadena Craftsman Week",
-        'id="pasadena-craftsman-week"',
-        "https://www.pasadenaheritage.org/craftsman-week",
-        "Pasadena Gardens and Historic Homes Walktober",
-        'id="pasadena-gardens-walktober"',
-        "walktober-pasadena-gardens-and-historic-homes",
-        "OC Japan Fair in Costa Mesa",
-        'id="oc-japan-fair"',
-        "https://ocfair.com/event/oc-japan-fair-october-2026",
+        "Grand Park's Downtown Día de los Muertos",
+        'id="grand-park-dia-de-los-muertos"',
+        "https://grandparkla.org/diadelosmuertos",
+        "Scarium Family Night at the Aquarium of the Pacific",
+        'id="scarium-family-night"',
+        "scarium_family_night",
+        "Fright Dive at the Aquarium of the Pacific",
+        'id="fright-dive-aquarium"',
+        "events/info/night_dive",
         "Burbank Harvest of Horror",
         'id="burbank-harvest-of-horror"',
         "Santa Monica Spooky Splash",
         'id="santa-monica-spooky-splash"',
         "45112ggwps9h1y66jw9xjewkx6/202610231700",
-        "Santa Monica Main Street Block Party and Day of the Dog",
-        'id="santa-monica-main-street-block-party"',
-        "main-street-block-party-day-of-the-dog",
         "Glendale Día de Los Muertos",
         'id="glendale-dia-de-los-muertos"',
         "Event/56410/18",
-        "AIDS Walk Los Angeles in West Hollywood",
-        'id="aids-walk-los-angeles"',
-        "https://aidswalkla.org/faq/",
         "Burbank Haunted Adventure",
         'id="burbank-haunted-adventure"',
         "https://www.burbankca.gov/calendar/-/calendar/event/4414632/0",
-        "Beverly Hills Art Show",
-        'id="beverly-hills-art-show"',
         "Pasadena Fall Festival",
         'id="pasadena-fall-festival"',
         "https://www.cityofpasadena.net/event/fall-festival/",
@@ -207,6 +200,13 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Santa Monica airport-to-park master-plan event",
         "Howl-O-Ween at El Dorado Nature Center",
         "Holo Holo Music Festival in Long Beach",
+        "Into the Woods",
+        "Pasadena Craftsman Week",
+        "Pasadena Gardens and Historic Homes Walktober",
+        "OC Japan Fair in Costa Mesa",
+        "Santa Monica Main Street Block Party and Day of the Dog",
+        "AIDS Walk Los Angeles in West Hollywood",
+        "Beverly Hills Art Show",
     ):
         assert expired not in html
 
@@ -240,12 +240,15 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 18 · Fall guide" in response.text
-        assert "Forty-seven Southern California fall plans, ranked." in response.text
+        assert "Updated October 19 · Fall guide" in response.text
+        assert "Forty-four Southern California fall plans, ranked." in response.text
         for current in (
             "Halloween at Kidspace",
             "Spider Pavilion",
-            "Into the Woods",
+            "Grand Ave Arts: All Access",
+            "Grand Park's Downtown Día de los Muertos",
+            "Scarium Family Night",
+            "Fright Dive",
             "Carved at Descanso Gardens",
             "Long Beach Open Studio Tour",
             "Newport Beach Film Festival",
@@ -253,14 +256,10 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Scott Silven's <em>Wonders</em>",
             "Downtown Long Beach Fright Fest",
             "Belmont Shore Sidewalk Chalk Art Contest",
-            "Pasadena Craftsman Week",
-            "current Walktober routes",
-            "OC Japan Fair",
+            "Pasadena's remaining Walktober route",
             "Burbank's Harvest of Horror",
             "Santa Monica's Spooky Splash",
-            "Main Street Block Party",
             "Pasadena's Fall Festival",
-            "AIDS Walk Los Angeles",
             "Burbank's Haunted Adventure",
             "Glendale Día de Los Muertos",
             "Boo at the L.A. Zoo",
@@ -268,14 +267,13 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "SoCal Corgi Beach Day",
             "Ghosts of the Miles",
             "West Hollywood Halloween Carnaval",
-            "Beverly Hills Art Show",
             "Fleurs de Villes at Greystone",
             "DTLB Unfiltered photo walks",
             "Pasadena's Fall Festival and Día de Los Muertos",
             "free TYPE S Night Lights",
             "Formula DRIFT's Shoreline Showdown",
             "Arcadia's Día de los Muertos at the Arboretum",
-            "Beverly Hills Art Show and Fall Funtastic",
+            "Beverly Hills Fall Funtastic",
             "Burbank's Little Pumpkins Tot Party",
             "West Hollywood's Floating Pumpkin Patch",
             "Santa Monica's <em>Held in Trust</em> opening",
@@ -324,6 +322,12 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Southeast Asia Day",
             "Long Beach's Howl-O-Ween",
             "Holo Holo Music Festival",
+            "Into the Woods",
+            "Pasadena Craftsman Week",
+            "OC Japan Fair",
+            "Main Street Block Party",
+            "AIDS Walk Los Angeles",
+            "Beverly Hills Art Show",
         ):
             assert expired not in response.text
 
@@ -343,24 +347,23 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
 
     assert answer
     for current in (
-            "Forty-seven Southern California fall plans",
+            "Forty-four Southern California fall plans",
         "Halloween at Kidspace",
         "Spider Pavilion",
-        "Into the Woods",
+        "Grand Ave Arts: All Access",
         "LA Times Food Bowl",
         "Scott Silven's Wonders",
         "Downtown Long Beach Fright Fest",
         "Belmont Shore Sidewalk Chalk Art Contest",
-        "Pasadena Craftsman Week",
-        "current Walktober routes",
-            "OC Japan Fair",
+        "Pasadena's remaining Walktober route",
+        "Grand Park's Downtown Día de los Muertos",
+        "Scarium Family Night",
+        "Fright Dive",
             "Burbank's Harvest of Horror",
             "Spooky Splash",
-        "Santa Monica's Spooky Splash, Main Street Block Party, Pico Walk Loop, and Held in Trust City Gallery opening",
-        "AIDS Walk Los Angeles",
+        "Santa Monica's Spooky Splash, Pico Walk Loop, and Held in Trust City Gallery opening",
         "Burbank Haunted Adventure",
         "Glendale Día de Los Muertos",
-        "Beverly Hills Art Show",
         "Pasadena Fall Festival",
         "Boo at the L.A. Zoo",
         "Anaheim Fall Festival and Halloween Parade",
@@ -380,7 +383,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Día de los Muertos at the Arboretum in Arcadia",
         "Burbank's Harvest of Horror and Little Pumpkins Tot Party",
         "West Hollywood's Floating Pumpkin Patch",
-        "Beverly Hills Art Show and Fall Funtastic",
+        "Beverly Hills Fall Funtastic",
         "Held in Trust City Gallery opening",
         "/articles/southern-california-september-events-2026",
     ):
@@ -426,6 +429,12 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Pasadena Latino Heritage Parade",
         "Irvine Global Village Festival",
         "Gilb Museum's Arcadia anniversary",
+        "Into the Woods",
+        "Pasadena Craftsman Week",
+        "OC Japan Fair",
+        "Main Street Block Party",
+        "AIDS Walk Los Angeles",
+        "Beverly Hills Art Show",
     ):
         assert expired not in answer
 
@@ -437,15 +446,13 @@ def test_orange_county_city_answers_include_current_plans() -> None:
     )
 
     assert answer
-    assert "OC Japan Fair" in answer
-    assert "#oc-japan-fair" in answer
     assert "SoCal Corgi Beach Day" in answer
     assert "#socal-corgi-beach-day" in answer
-    assert "Into the Woods" in answer
-    assert "#into-the-woods-costa-mesa" in answer
     assert "Walt Disney Archives" in answer
     assert "Anaheim Fall Festival" in answer
     assert "#anaheim-fall-festival-parade" in answer
+    assert "OC Japan Fair" not in answer
+    assert "Into the Woods" not in answer
     assert "Westminster" not in answer
     assert "SoCal Fitness Festival" not in answer
 
@@ -459,8 +466,6 @@ def test_pasadena_answer_includes_walktober_and_flexible_exhibitions() -> None:
     assert answer
     assert "Stories of Displacement: the 710 Stub" in answer
     assert "#pasadena-710-stub-walktober" in answer
-    assert "Gardens and Historic Homes Walktober" in answer
-    assert "#pasadena-gardens-walktober" in answer
     assert "Pasadena Fall Festival" in answer
     assert "#pasadena-fall-festival" in answer
     assert "Día de Los Muertos Festival" in answer
@@ -468,6 +473,7 @@ def test_pasadena_answer_includes_walktober_and_flexible_exhibitions() -> None:
     assert "Where History Meets the Road" in answer
     assert "Laura Aguilar" in answer
     assert "Pasadena Chalk Festival" not in answer
+    assert "Gardens and Historic Homes Walktober" not in answer
 
 
 def test_burbank_answer_includes_current_haunted_adventure() -> None:
@@ -498,6 +504,10 @@ def test_long_beach_answer_includes_dark_harbor_and_fright_fest() -> None:
     assert "#belmont-shore-sidewalk-chalk-art" in answer
     assert "DTLB Unfiltered" in answer
     assert "#dtlb-unfiltered-photo-walks" in answer
+    assert "Scarium Family Night" in answer
+    assert "#scarium-family-night" in answer
+    assert "Fright Dive" in answer
+    assert "#fright-dive-aquarium" in answer
     assert "TYPE S Night Lights" in answer
     assert "#type-s-night-lights" in answer
     assert "Formula DRIFT's Shoreline Showdown" in answer

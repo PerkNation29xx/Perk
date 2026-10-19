@@ -15,17 +15,15 @@ AUGUST_GUIDE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-cal
 def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Santa Monica has nine current October plans" in html
-    assert 'dateModified": "2026-10-18"' in html
-    assert html.count("<h2>") >= 12
+    assert "Santa Monica has eight current October plans" in html
+    assert 'dateModified": "2026-10-19"' in html
+    assert html.count("<h2>") >= 11
     for expected in (
-        "9 ranked plans",
+        "8 ranked plans",
         "LA Times Food Bowl",
         "101-best-restaurants-in-l-a",
         "Scott Silven's <em>Wonders</em>",
         "scott-silven-wonders",
-        "Main Street Block Party + Day of the Dog",
-        "main-street-block-party-day-of-the-dog",
         "Spooky Splash",
         "45112ggwps9h1y66jw9xjewkx6/202610231700",
         "Ghosts of the Miles",
@@ -63,6 +61,7 @@ def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> 
     assert "airport-to-park master-plan event" not in html
     assert "Carmen simulcast" not in html
     assert "Wellness &amp; Waves" not in html
+    assert "Main Street Block Party + Day of the Dog" not in html
 
     for forbidden in (
         "Examples from the official listing",
@@ -84,7 +83,7 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "9 ranked plans" in response.text
+        assert "8 ranked plans" in response.text
 
     image = client.get("/assets/articles/santa-monica-august-2026-guide.jpg")
     assert image.status_code == 200
@@ -95,13 +94,13 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated October 18 · Santa Monica") == 1
-        assert "Nine Santa Monica October plans, ranked." in response.text
+        assert response.text.count("Updated October 19 · Santa Monica") == 1
+        assert "Eight Santa Monica October plans, ranked." in response.text
         assert "Dogtown Locals' Night drive-in" not in response.text
         assert "fire station open house" not in response.text
         assert "LA Times Food Bowl" in response.text
         assert "Scott Silven's <em>Wonders</em>" in response.text
-        assert "free Main Street Block Party + Day of the Dog" in response.text
+        assert "Main Street Block Party + Day of the Dog" not in response.text
         assert "Spooky Splash" in response.text
         assert "Ghosts of the Miles" in response.text
         assert "free Pico Walk Loop ribbon cutting" in response.text
@@ -131,14 +130,14 @@ def test_santa_monica_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "ranks nine October plans, including five free options" in answer
+    assert "ranks eight October plans, including four free options" in answer
     assert "Held in Trust opening at City Gallery" in answer
     assert "Punk Night at the Pier" not in answer
     assert "Voices of Strength" not in answer
     assert "Fire Prevention Week Open House" not in answer
     assert "LA Times Food Bowl" in answer
     assert "Scott Silven's Wonders" in answer
-    assert "Main Street Block Party + Day of the Dog" in answer
+    assert "Main Street Block Party + Day of the Dog" not in answer
     assert "Spooky Splash" in answer
     assert "Portraits: Faces and Waves" in answer
     assert "Locals' Night drive-in at Santa Monica Pier" not in answer
