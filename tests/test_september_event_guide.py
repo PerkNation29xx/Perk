@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Forty-four Southern California fall plans" in html
-    assert 'dateModified": "2026-10-19"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 45))
+    assert "Forty-seven Southern California fall plans" in html
+    assert 'dateModified": "2026-10-20"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 48))
     for expected in (
         "Halloween at Kidspace",
         'id="kidspace-halloween"',
@@ -138,6 +138,15 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Held in Trust",
         'id="santa-monica-held-in-trust"',
         "4m0q8xgfh3dwp01en1ykxsn3m6/202610241600",
+        "MOLAA Día de los Muertos Festival",
+        'id="molaa-dia-de-los-muertos"',
+        "https://molaa.org/2026-day-of-the-dead",
+        "Día de los Muertos on Olvera Street",
+        'id="olvera-street-dia-de-los-muertos"',
+        "https://www.olveraevents.com/day-of-the-dead-olvera-street",
+        "Burbank Halloween Skatefest",
+        'id="burbank-halloween-skatefest"',
+        "/calendar/-/calendar/event/3710005/0",
         "Best for:",
         "/directory?city=Burbank",
         "/directory?city=Pasadena",
@@ -240,8 +249,8 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 19 · Fall guide" in response.text
-        assert "Forty-four Southern California fall plans, ranked." in response.text
+        assert "Updated October 20 · Fall guide" in response.text
+        assert "Forty-seven Southern California fall plans, ranked." in response.text
         for current in (
             "Halloween at Kidspace",
             "Spider Pavilion",
@@ -277,6 +286,9 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Burbank's Little Pumpkins Tot Party",
             "West Hollywood's Floating Pumpkin Patch",
             "Santa Monica's <em>Held in Trust</em> opening",
+            "MOLAA's free Día de los Muertos festival",
+            "Olvera Street's nine-night Día de los Muertos celebration",
+            "Burbank Halloween Skatefest",
         ):
             assert current in response.text
         for expired in (
@@ -347,7 +359,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
 
     assert answer
     for current in (
-            "Forty-four Southern California fall plans",
+            "Forty-seven Southern California fall plans",
         "Halloween at Kidspace",
         "Spider Pavilion",
         "Grand Ave Arts: All Access",
@@ -381,10 +393,13 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "TYPE S Night Lights",
         "Formula DRIFT's Shoreline Showdown",
         "Día de los Muertos at the Arboretum in Arcadia",
-        "Burbank's Harvest of Horror and Little Pumpkins Tot Party",
+        "Burbank's Harvest of Horror, Little Pumpkins Tot Party, and Halloween Skatefest",
         "West Hollywood's Floating Pumpkin Patch",
         "Beverly Hills Fall Funtastic",
         "Held in Trust City Gallery opening",
+        "MOLAA's free Día de los Muertos Festival",
+        "Olvera Street's nine-night Día de los Muertos celebration",
+        "Halloween Skatefest",
         "/articles/southern-california-september-events-2026",
     ):
         assert current in answer
@@ -486,6 +501,8 @@ def test_burbank_answer_includes_current_haunted_adventure() -> None:
     assert "Haunted Adventure" in answer
     assert "#burbank-haunted-adventure" in answer
     assert "children under 6 are not admitted" in answer
+    assert "Halloween Skatefest" in answer
+    assert "#burbank-halloween-skatefest" in answer
     assert "Burbank Book Festival" not in answer
 
 
@@ -512,8 +529,10 @@ def test_long_beach_answer_includes_dark_harbor_and_fright_fest() -> None:
     assert "#type-s-night-lights" in answer
     assert "Formula DRIFT's Shoreline Showdown" in answer
     assert "#formula-drift-shoreline-showdown" in answer
+    assert "MOLAA's Día de los Muertos Festival" in answer
+    assert "#molaa-dia-de-los-muertos" in answer
     assert "SteelCraft" not in answer
-    assert "MOLAA" not in answer
+    assert "Lucha Libre" not in answer
     assert "Baja Splash" not in answer
     assert "Urban Farm Dinner" not in answer
     assert "Latino Restaurant Week" not in answer

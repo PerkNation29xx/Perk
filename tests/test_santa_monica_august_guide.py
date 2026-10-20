@@ -15,11 +15,11 @@ AUGUST_GUIDE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-cal
 def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Santa Monica has eight current October plans" in html
-    assert 'dateModified": "2026-10-19"' in html
-    assert html.count("<h2>") >= 11
+    assert "Santa Monica has nine current October plans" in html
+    assert 'dateModified": "2026-10-20"' in html
+    assert html.count("<h2>") >= 12
     for expected in (
-        "8 ranked plans",
+        "9 ranked plans",
         "LA Times Food Bowl",
         "101-best-restaurants-in-l-a",
         "Scott Silven's <em>Wonders</em>",
@@ -35,6 +35,9 @@ def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> 
         "4zcsp3g979tqpvt024j48s6k5v/202610241000",
         "Held in Trust",
         "4m0q8xgfh3dwp01en1ykxsn3m6/202610241600",
+        "Cinema by the Sea",
+        "cinema-by-the-sea-2/2026-10-31/",
+        "Practical Magic",
         "Portraits: Faces and Waves",
         "photography-exhibition-portraits-faces-and-waves-on-display-at-annenberg-community-beach-house-gallery",
         "Pico Farmers Market",
@@ -83,7 +86,7 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "8 ranked plans" in response.text
+        assert "9 ranked plans" in response.text
 
     image = client.get("/assets/articles/santa-monica-august-2026-guide.jpg")
     assert image.status_code == 200
@@ -94,8 +97,8 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated October 19 · Santa Monica") == 1
-        assert "Eight Santa Monica October plans, ranked." in response.text
+        assert response.text.count("Updated October 20 · Santa Monica") == 1
+        assert "Nine Santa Monica October plans, ranked." in response.text
         assert "Dogtown Locals' Night drive-in" not in response.text
         assert "fire station open house" not in response.text
         assert "LA Times Food Bowl" in response.text
@@ -105,6 +108,7 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
         assert "Ghosts of the Miles" in response.text
         assert "free Pico Walk Loop ribbon cutting" in response.text
         assert "free <em>Held in Trust</em> City Gallery opening" in response.text
+        assert "Cinema by the Sea" in response.text
         assert "Portraits: Faces and Waves" in response.text
         assert "Ocean Way has been canceled." not in response.text
         assert "Tongva Twilight through September 12" not in response.text
@@ -130,7 +134,7 @@ def test_santa_monica_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "ranks eight October plans, including four free options" in answer
+    assert "ranks nine October plans, including four free options" in answer
     assert "Held in Trust opening at City Gallery" in answer
     assert "Punk Night at the Pier" not in answer
     assert "Voices of Strength" not in answer
@@ -143,6 +147,8 @@ def test_santa_monica_roundup_link_and_public_answer_are_scoped() -> None:
     assert "Locals' Night drive-in at Santa Monica Pier" not in answer
     assert "Pico Walk Loop ribbon cutting" in answer
     assert "Ghosts of the Miles" in answer
+    assert "Cinema by the Sea" in answer
+    assert "Practical Magic" in answer
     assert "free all-ages Festival of Memories" in answer
     assert "ticketed 16+ Historical Haunt" in answer
     assert "Montana Avenue Art Walk" not in answer
