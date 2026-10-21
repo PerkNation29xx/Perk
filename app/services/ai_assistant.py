@@ -781,7 +781,7 @@ def _home_local_guide_context(*, db: Optional[Session]) -> str:
             "",
             "Editorial/review coverage currently surfaced for PerkNation readers:",
             "- Fashion guide: CMC sample-sale Fridays beginning October 30, Fashion District shopping, and completed Miami Fashion Week and LA Market Week as season context.",
-            "- Events coverage: the ranked 44-plan October Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
+            "- Events coverage: the ranked 50-plan October Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
             "- Restaurant coverage: current local directory listings, Pasadena restaurant picks, and broader dining discovery.",
             "",
             "Answering rules:",
@@ -811,12 +811,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Forty-seven Southern California fall plans",
-        "timing": "October 20-November 8, 2026",
+        "title": "Fifty Southern California fall plans",
+        "timing": "October 21-November 8, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to Halloween at Kidspace, Natural History Museum's Spider Pavilion, Grand Ave Arts: All Access, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Carved at Descanso Gardens, Long Beach Open Studio Tour, Newport Beach Film Festival, LA Times Food Bowl, Scott Silven's Wonders, Pasadena's remaining Walktober route, Downtown Long Beach Fright Fest, and the Belmont Shore Sidewalk Chalk Art Contest. "
-            "Also covers Grand Park's Downtown Día de los Muertos, MOLAA's free Día de los Muertos Festival, Olvera Street's nine-night Día de los Muertos celebration, Aquarium of the Pacific's Scarium Family Night and Fright Dive, guided DTLB Unfiltered photo walks, Burbank's Harvest of Horror, Little Pumpkins Tot Party, and Halloween Skatefest, West Hollywood's Floating Pumpkin Patch, Santa Monica's Spooky Splash, Pico Walk Loop, and Held in Trust City Gallery opening, Glendale Día de Los Muertos, Burbank Haunted Adventure, free TYPE S Night Lights, Formula DRIFT's Shoreline Showdown, Beverly Hills Fall Funtastic, Pasadena Fall Festival and Día de Los Muertos Festival, Día de los Muertos at the Arboretum in Arcadia, Boo at the L.A. Zoo, Anaheim Fall Festival and Halloween Parade, SoCal Corgi Beach Day, Ghosts of the Miles, West Hollywood Halloween Carnaval, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, Santa Monica's Portraits: Faces and Waves exhibition, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, and Fleurs de Villes at Greystone."
+            "Also covers Grand Park's Downtown Día de los Muertos, MOLAA's free Día de los Muertos Festival, Olvera Street's nine-night Día de los Muertos celebration, Aquarium of the Pacific's Scarium Family Night and Fright Dive, guided DTLB Unfiltered photo walks, Burbank's Harvest of Horror, Little Pumpkins Tot Party, and Halloween Skatefest, West Hollywood's Floating Pumpkin Patch, Santa Monica's Spooky Splash, Pico Walk Loop, and Held in Trust City Gallery opening, Glendale Día de Los Muertos, Burbank Haunted Adventure, free TYPE S Night Lights, Formula DRIFT's Shoreline Showdown, Beverly Hills Fall Funtastic, Pasadena Fall Festival, the Pasadena Día de Los Muertos Festival and Villa Parke Día De Los Muertos gathering, Día de los Muertos at the Arboretum in Arcadia, Boo at the L.A. Zoo, Anaheim Fall Festival and Halloween Parade, SoCal Corgi Beach Day, Ghosts of the Miles, West Hollywood Halloween Carnaval, Coast Film & Music Festival in Laguna Beach, Halloween Horror Nights near Burbank, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, Santa Monica's Portraits: Faces and Waves exhibition, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, and Fleurs de Villes at Greystone."
         ),
     },
 

@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Forty-seven Southern California fall plans" in html
-    assert 'dateModified": "2026-10-20"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 48))
+    assert "Fifty Southern California fall plans" in html
+    assert 'dateModified": "2026-10-21"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 51))
     for expected in (
         "Halloween at Kidspace",
         'id="kidspace-halloween"',
@@ -147,6 +147,15 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Burbank Halloween Skatefest",
         'id="burbank-halloween-skatefest"',
         "/calendar/-/calendar/event/3710005/0",
+        "Coast Film &amp; Music Festival in Laguna Beach",
+        'id="coast-film-music-festival"',
+        "https://www.coastfilmfestival.com/",
+        "Día De Los Muertos at Villa Parke in Pasadena",
+        'id="pasadena-villa-parke-dia-de-los-muertos"',
+        "city-of-pasadena-celebrates-latino-culture-heritage-and-community",
+        "Halloween Horror Nights at Universal Studios Hollywood",
+        'id="universal-halloween-horror-nights"',
+        "https://visitburbank.com/events/halloween-horror-nights/",
         "Best for:",
         "/directory?city=Burbank",
         "/directory?city=Pasadena",
@@ -249,8 +258,8 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 20 · Fall guide" in response.text
-        assert "Forty-seven Southern California fall plans, ranked." in response.text
+        assert "Updated October 21 · Fall guide" in response.text
+        assert "Fifty Southern California fall plans, ranked." in response.text
         for current in (
             "Halloween at Kidspace",
             "Spider Pavilion",
@@ -289,6 +298,9 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "MOLAA's free Día de los Muertos festival",
             "Olvera Street's nine-night Día de los Muertos celebration",
             "Burbank Halloween Skatefest",
+            "Coast Film &amp; Music Festival",
+            "Villa Parke Día De Los Muertos",
+            "Halloween Horror Nights",
         ):
             assert current in response.text
         for expired in (
@@ -359,7 +371,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
 
     assert answer
     for current in (
-            "Forty-seven Southern California fall plans",
+            "Fifty Southern California fall plans",
         "Halloween at Kidspace",
         "Spider Pavilion",
         "Grand Ave Arts: All Access",
@@ -389,7 +401,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Fleurs de Villes at Greystone",
         "Portraits: Faces and Waves",
         "DTLB Unfiltered photo walks",
-        "Pasadena Fall Festival and Día de Los Muertos Festival",
+        "Pasadena Fall Festival, the Pasadena Día de Los Muertos Festival",
         "TYPE S Night Lights",
         "Formula DRIFT's Shoreline Showdown",
         "Día de los Muertos at the Arboretum in Arcadia",
@@ -400,6 +412,9 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "MOLAA's free Día de los Muertos Festival",
         "Olvera Street's nine-night Día de los Muertos celebration",
         "Halloween Skatefest",
+        "Coast Film & Music Festival in Laguna Beach",
+        "Villa Parke Día De Los Muertos gathering",
+        "Halloween Horror Nights near Burbank",
         "/articles/southern-california-september-events-2026",
     ):
         assert current in answer
