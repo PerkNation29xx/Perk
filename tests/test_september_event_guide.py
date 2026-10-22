@@ -16,7 +16,7 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Fifty Southern California fall plans" in html
-    assert 'dateModified": "2026-10-21"' in html
+    assert 'dateModified": "2026-10-22"' in html
     assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 51))
     for expected in (
         "Halloween at Kidspace",
@@ -63,8 +63,9 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Fright Dive at the Aquarium of the Pacific",
         'id="fright-dive-aquarium"',
         "events/info/night_dive",
-        "Burbank Harvest of Horror",
-        'id="burbank-harvest-of-horror"',
+        "Long Beach Día de los Muertos Festival",
+        'id="long-beach-dia-de-los-muertos-festival"',
+        "save-the-date-city-of-long-beachs-dia-de-los-muertos-festival-returns-nov.-1",
         "Santa Monica Spooky Splash",
         'id="santa-monica-spooky-splash"',
         "45112ggwps9h1y66jw9xjewkx6/202610231700",
@@ -225,6 +226,7 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Santa Monica Main Street Block Party and Day of the Dog",
         "AIDS Walk Los Angeles in West Hollywood",
         "Beverly Hills Art Show",
+        "Burbank Harvest of Horror",
     ):
         assert expired not in html
 
@@ -258,7 +260,7 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 21 · Fall guide" in response.text
+        assert "Updated October 22 · Fall guide" in response.text
         assert "Fifty Southern California fall plans, ranked." in response.text
         for current in (
             "Halloween at Kidspace",
@@ -275,7 +277,7 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Downtown Long Beach Fright Fest",
             "Belmont Shore Sidewalk Chalk Art Contest",
             "Pasadena's remaining Walktober route",
-            "Burbank's Harvest of Horror",
+            "Long Beach's Día de los Muertos Festival",
             "Santa Monica's Spooky Splash",
             "Pasadena's Fall Festival",
             "Burbank's Haunted Adventure",
@@ -352,6 +354,7 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Main Street Block Party",
             "AIDS Walk Los Angeles",
             "Beverly Hills Art Show",
+            "Burbank's Harvest of Horror",
         ):
             assert expired not in response.text
 
@@ -383,7 +386,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Grand Park's Downtown Día de los Muertos",
         "Scarium Family Night",
         "Fright Dive",
-            "Burbank's Harvest of Horror",
+            "Long Beach Día de los Muertos Festival",
             "Spooky Splash",
         "Santa Monica's Spooky Splash, Pico Walk Loop, and Held in Trust City Gallery opening",
         "Burbank Haunted Adventure",
@@ -405,7 +408,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "TYPE S Night Lights",
         "Formula DRIFT's Shoreline Showdown",
         "Día de los Muertos at the Arboretum in Arcadia",
-        "Burbank's Harvest of Horror, Little Pumpkins Tot Party, and Halloween Skatefest",
+        "Burbank's Little Pumpkins Tot Party and Halloween Skatefest",
         "West Hollywood's Floating Pumpkin Patch",
         "Beverly Hills Fall Funtastic",
         "Held in Trust City Gallery opening",
@@ -465,6 +468,7 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Main Street Block Party",
         "AIDS Walk Los Angeles",
         "Beverly Hills Art Show",
+        "Burbank's Harvest of Horror",
     ):
         assert expired not in answer
 
