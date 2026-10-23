@@ -16,7 +16,7 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Fifty Southern California fall plans" in html
-    assert 'dateModified": "2026-10-22"' in html
+    assert 'dateModified": "2026-10-23"' in html
     assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 51))
     for expected in (
         "Halloween at Kidspace",
@@ -36,9 +36,9 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Long Beach Open Studio Tour",
         'id="long-beach-open-studio-tour"',
         "https://lbopenstudiotour.com/",
-        "Newport Beach Film Festival",
-        'id="newport-beach-film-festival"',
-        "your-guide-to-the-newport-beach-film-festival",
+        "Bark in the Park in Pasadena",
+        'id="pasadena-bark-in-the-park"',
+        "https://www.visitpasadena.com/blog/halloween/",
         "LA Times Food Bowl in Santa Monica",
         'id="la-times-food-bowl-santa-monica"',
         "101-best-restaurants-in-l-a",
@@ -118,9 +118,9 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Pasadena Día de Los Muertos Festival and Altar Exhibit",
         'id="pasadena-dia-de-los-muertos"',
         "dia-de-los-muertos-festival-altar-exhibit",
-        "TYPE S Night Lights in Long Beach",
-        'id="type-s-night-lights"',
-        "https://www.lbentertainmentcenter.com/events/type-s-2026/",
+        "Halloween STEMebration at Battleship IOWA",
+        'id="battleship-iowa-halloween-stemebration"',
+        "https://pacificbattleship.com/halloween-stemebration-at-battleship-iowa/",
         "Formula DRIFT Shoreline Showdown in Long Beach",
         'id="formula-drift-shoreline-showdown"',
         "https://www.formulad.com/schedule/2026/long-beach2",
@@ -227,6 +227,8 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "AIDS Walk Los Angeles in West Hollywood",
         "Beverly Hills Art Show",
         "Burbank Harvest of Horror",
+        "Newport Beach Film Festival",
+        "TYPE S Night Lights",
     ):
         assert expired not in html
 
@@ -260,7 +262,7 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 22 · Fall guide" in response.text
+        assert "Updated October 23 · Fall guide" in response.text
         assert "Fifty Southern California fall plans, ranked." in response.text
         for current in (
             "Halloween at Kidspace",
@@ -271,7 +273,7 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Fright Dive",
             "Carved at Descanso Gardens",
             "Long Beach Open Studio Tour",
-            "Newport Beach Film Festival",
+            "Pasadena's Bark in the Park",
             "LA Times Food Bowl",
             "Scott Silven's <em>Wonders</em>",
             "Downtown Long Beach Fright Fest",
@@ -290,7 +292,7 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Fleurs de Villes at Greystone",
             "DTLB Unfiltered photo walks",
             "Pasadena's Fall Festival and Día de Los Muertos",
-            "free TYPE S Night Lights",
+            "Battleship IOWA's free Halloween STEMebration",
             "Formula DRIFT's Shoreline Showdown",
             "Arcadia's Día de los Muertos at the Arboretum",
             "Beverly Hills Fall Funtastic",
@@ -355,6 +357,8 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "AIDS Walk Los Angeles",
             "Beverly Hills Art Show",
             "Burbank's Harvest of Horror",
+            "Newport Beach Film Festival",
+            "free TYPE S Night Lights",
         ):
             assert expired not in response.text
 
@@ -398,14 +402,14 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Ghosts of the Miles",
         "West Hollywood Halloween Carnaval",
         "Long Beach Open Studio Tour",
-        "Newport Beach Film Festival",
+        "Pasadena's Bark in the Park",
         "The Horror Show",
         "Artifacts from an Unborn Empire",
         "Fleurs de Villes at Greystone",
         "Portraits: Faces and Waves",
         "DTLB Unfiltered photo walks",
         "Pasadena Fall Festival, the Pasadena Día de Los Muertos Festival",
-        "TYPE S Night Lights",
+        "Battleship IOWA's free Halloween STEMebration",
         "Formula DRIFT's Shoreline Showdown",
         "Día de los Muertos at the Arboretum in Arcadia",
         "Burbank's Little Pumpkins Tot Party and Halloween Skatefest",
@@ -469,6 +473,8 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "AIDS Walk Los Angeles",
         "Beverly Hills Art Show",
         "Burbank's Harvest of Horror",
+        "Newport Beach Film Festival",
+        "TYPE S Night Lights",
     ):
         assert expired not in answer
 
@@ -504,6 +510,8 @@ def test_pasadena_answer_includes_walktober_and_flexible_exhibitions() -> None:
     assert "#pasadena-fall-festival" in answer
     assert "Día de Los Muertos Festival" in answer
     assert "#pasadena-dia-de-los-muertos" in answer
+    assert "Bark in the Park" in answer
+    assert "#pasadena-bark-in-the-park" in answer
     assert "Where History Meets the Road" in answer
     assert "Laura Aguilar" in answer
     assert "Pasadena Chalk Festival" not in answer
@@ -544,8 +552,8 @@ def test_long_beach_answer_includes_dark_harbor_and_fright_fest() -> None:
     assert "#scarium-family-night" in answer
     assert "Fright Dive" in answer
     assert "#fright-dive-aquarium" in answer
-    assert "TYPE S Night Lights" in answer
-    assert "#type-s-night-lights" in answer
+    assert "TYPE S Night Lights" not in answer
+    assert "#type-s-night-lights" not in answer
     assert "Formula DRIFT's Shoreline Showdown" in answer
     assert "#formula-drift-shoreline-showdown" in answer
     assert "MOLAA's Día de los Muertos Festival" in answer
