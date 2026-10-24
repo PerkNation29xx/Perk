@@ -812,11 +812,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
         "title": "Fifty Southern California fall plans",
-        "timing": "October 23-November 8, 2026",
+        "timing": "October 24-November 8, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to Halloween at Kidspace, Natural History Museum's Spider Pavilion, Grand Ave Arts: All Access, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Carved at Descanso Gardens, Long Beach Open Studio Tour, Pasadena's Bark in the Park, LA Times Food Bowl, Scott Silven's Wonders, Pasadena's remaining Walktober route, Downtown Long Beach Fright Fest, and the Belmont Shore Sidewalk Chalk Art Contest. "
-            "Also covers Grand Park's Downtown Día de los Muertos, the free Long Beach Día de los Muertos Festival at Rainbow Lagoon, MOLAA's free Día de los Muertos Festival, Olvera Street's nine-night Día de los Muertos celebration, Aquarium of the Pacific's Scarium Family Night and Fright Dive, guided DTLB Unfiltered photo walks, Burbank's Little Pumpkins Tot Party and Halloween Skatefest, West Hollywood's Floating Pumpkin Patch, Santa Monica's Spooky Splash, Pico Walk Loop, and Held in Trust City Gallery opening, Glendale Día de Los Muertos, Burbank Haunted Adventure, Battleship IOWA's free Halloween STEMebration, Formula DRIFT's Shoreline Showdown, Beverly Hills Fall Funtastic, Pasadena Fall Festival, the Pasadena Día de Los Muertos Festival and Villa Parke Día De Los Muertos gathering, Día de los Muertos at the Arboretum in Arcadia, Boo at the L.A. Zoo, Anaheim Fall Festival and Halloween Parade, SoCal Corgi Beach Day, Ghosts of the Miles, West Hollywood Halloween Carnaval, Coast Film & Music Festival in Laguna Beach, Halloween Horror Nights near Burbank, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, Santa Monica's Portraits: Faces and Waves exhibition, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, and Fleurs de Villes at Greystone."
+            "Also covers Grand Park's Downtown Día de los Muertos, the free Long Beach Día de los Muertos Festival at Rainbow Lagoon, MOLAA's free Día de los Muertos Festival, Olvera Street's nine-night Día de los Muertos celebration, Aquarium of the Pacific's Fright Dive, guided DTLB Unfiltered photo walks, Burbank's Little Pumpkins Tot Party and Halloween Skatefest plus Halloween Carnival, West Hollywood's Floating Pumpkin Patch, Santa Monica's Pico Walk Loop, Held in Trust City Gallery opening, and Party on the Pier, Glendale Día de Los Muertos, Burbank Haunted Adventure, Battleship IOWA's free Halloween STEMebration, Formula DRIFT's Shoreline Showdown, Beverly Hills Fall Funtastic, Pasadena Fall Festival, the Pasadena Día de Los Muertos Festival and Villa Parke Día De Los Muertos gathering, Día de los Muertos at the Arboretum in Arcadia, Boo at the L.A. Zoo, Anaheim Fall Festival and Halloween Parade plus the city's Día de los Muertos night, SoCal Corgi Beach Day, Ghosts of the Miles, West Hollywood Halloween Carnaval, Coast Film & Music Festival in Laguna Beach, Halloween Horror Nights near Burbank, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Glendale's Jewel City Concert Series, Santa Monica's Portraits: Faces and Waves exhibition, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, and Fleurs de Villes at Greystone."
         ),
     },
 
@@ -904,10 +904,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, coastal art, wellness, movies, markets, and local history",
         "city": "Santa Monica",
         "title": "Santa Monica October 2026 coastal events guide",
-        "timing": "October 20-31, 2026",
+        "timing": "October 24-31, 2026",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Nine current plans covering LA Times Food Bowl, Scott Silven's Wonders at BroadStage, Spooky Splash, Ghosts of the Miles, the free Pico Walk Loop ribbon cutting, the free Held in Trust City Gallery opening, Cinema by the Sea, the Portraits: Faces and Waves photography exhibition, and the Pico farmers market."
+            "Nine current plans covering LA Times Food Bowl, Scott Silven's Wonders at BroadStage, UCLA's Party on the Pier, Ghosts of the Miles, the free Pico Walk Loop ribbon cutting, the free Held in Trust City Gallery opening, Cinema by the Sea, the Portraits: Faces and Waves photography exhibition, and the Pico farmers market."
         ),
     },
     {
@@ -1985,8 +1985,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current Orange County options include Anaheim Fall Festival and Halloween Parade plus SoCal Corgi Beach Day on October 24, Huntington Beach Oktoberfest through November 8, and the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1.",
-                "Open /articles/southern-california-september-events-2026#anaheim-fall-festival-parade, /articles/southern-california-september-events-2026#socal-corgi-beach-day, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, or /articles/southern-california-september-events-2026#muzeo-disney-exhibitions for practical comparisons and current city-directory links.",
+                "Current Orange County options include Anaheim Fall Festival and Halloween Parade plus SoCal Corgi Beach Day on October 24, Anaheim's free Día de los Muertos night on October 30, Huntington Beach Oktoberfest through November 8, and the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1.",
+                "Open /articles/southern-california-september-events-2026#anaheim-fall-festival-parade, /articles/southern-california-september-events-2026#anaheim-dia-de-los-muertos, /articles/southern-california-september-events-2026#socal-corgi-beach-day, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, or /articles/southern-california-september-events-2026#muzeo-disney-exhibitions for practical comparisons and current city-directory links.",
             )
         )
 
@@ -2001,10 +2001,9 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Queen Mary's Dark Harbor, the final Long Beach Open Studio Tour weekend, Scarium Family Night, Fright Dive, MOLAA's Día de los Muertos Festival, the City of Long Beach Día de los Muertos Festival, Downtown Long Beach Fright Fest, the Belmont Shore Sidewalk Chalk Art Contest, the final DTLB Unfiltered photo walk, and Formula DRIFT's Shoreline Showdown:",
+                "The current PerkNation fall guide includes Queen Mary's Dark Harbor, the final Long Beach Open Studio Tour weekend, Fright Dive, MOLAA's Día de los Muertos Festival, the City of Long Beach Día de los Muertos Festival, Downtown Long Beach Fright Fest, the Belmont Shore Sidewalk Chalk Art Contest, the final DTLB Unfiltered photo walk, and Formula DRIFT's Shoreline Showdown:",
                 "- Dark Harbor runs select nights September 18-November 1 with haunted mazes, performers, immersive attractions, rides, and themed food; check the venue's current parking guidance before leaving.",
                 "- Long Beach Open Studio Tour's final Eastside weekend runs October 24-25 from 1-5 p.m.; use the organizer's map to build a route among participating studios.",
-                "- Scarium Family Night runs October 23 from 6:30-9 p.m. with aquarium viewing, trick-or-treating, a scavenger hunt, children's activities, a DJ, and costume restrictions; general tickets are $30.95 and member tickets are $20.95.",
                 "- Fright Dive runs October 30 from 7:30-11 p.m. for adults 18 and older, with after-hours gallery access, live music, DJs, art, food, and drinks; general tickets are $49.95 and member tickets are $44.95.",
                 "- DTLB Unfiltered's final guided photo walk meets October 24 on Pine Avenue during Fright Fest.",
                 "- Fright Fest is a free 18+ Halloween block party on Pine Avenue on October 24 from 4-10 p.m., with local makers, food, live music, entertainment, immersive activations, and an optional EZ Sip area for adults 21 and older.",
@@ -2012,7 +2011,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
                 "- Formula DRIFT's Shoreline Showdown runs October 23-24 at the Long Beach Convention & Entertainment Center, with Friday qualifying and Saturday's final championship rounds; the organizer lists $35 on-site parking and a rain-or-shine policy.",
                 "- MOLAA's free Día de los Muertos Festival runs October 25 from 11 a.m.-5 p.m. with dance, music, workshops, food, and a Catrina/Catrin contest; parking is $15 and large bags are prohibited.",
                 "- The free City of Long Beach Día de los Muertos Festival runs November 1 from 1-7 p.m. at Rainbow Lagoon with culturally rooted performances, vendors, a resource fair, and city and community partners; confirm the final schedule, access, parking, and transit closer to the date.",
-                "Open /articles/southern-california-september-events-2026#long-beach-open-studio-tour, #queen-mary-dark-harbor, #scarium-family-night, #fright-dive-aquarium, #molaa-dia-de-los-muertos, #long-beach-dia-de-los-muertos-festival, #downtown-long-beach-fright-fest, #belmont-shore-sidewalk-chalk-art, #dtlb-unfiltered-photo-walks, or #formula-drift-shoreline-showdown for practical planning, with links into 208 Long Beach directory listings.",
+                "Open /articles/southern-california-september-events-2026#long-beach-open-studio-tour, #queen-mary-dark-harbor, #fright-dive-aquarium, #molaa-dia-de-los-muertos, #long-beach-dia-de-los-muertos-festival, #downtown-long-beach-fright-fest, #belmont-shore-sidewalk-chalk-art, #dtlb-unfiltered-photo-walks, or #formula-drift-shoreline-showdown for practical planning, with links into 208 Long Beach directory listings.",
                 "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )
@@ -2031,7 +2030,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
                 "The current PerkNation Santa Monica guide ranks nine October plans, including four free options:",
                 "- LA Times Food Bowl runs October 23-24 at Barker Hangar with restaurant tastings, chef programming, and a live 101 Best Restaurants reveal; confirm the selected night, age rule, and ticket tier before buying.",
                 "- Scott Silven's Wonders runs October 22-24 at BroadStage, pairing illusion, hypnosis, memoir, and audience perception in a 75-minute theater performance.",
-                "- On October 23, choose Spooky Splash for recreational swimming, a floating pumpkin patch, an obstacle course, movies, crafts, treats, and a haunted house; advance tickets cost $10 for residents and $15 for non-residents.",
+                "- Party on the Pier runs October 25 from 10 a.m.-2 p.m. at Pacific Park, combining rides, carnival games, crafts, therapy dogs, food, and photo opportunities in a cashless benefit for UCLA Mattel Children's Hospital; tickets and game add-ons are separate costs.",
                 "- For Ghosts of the Miles, choose the free all-ages Festival of Memories on October 24 from noon-3 p.m., or reserve the separate ticketed 16+ Historical Haunt on October 23 or 24 for an immersive local-history performance.",
                 "- Also on October 24, the free Pico Walk Loop ribbon cutting and community walk runs from 10 a.m.-noon at Virginia Avenue Park.",
                 "- The free Held in Trust opening at City Gallery runs October 24 from 4-6 p.m. at Bergamot Station, gathering works from Santa Monica's municipal Art Bank.",
@@ -2066,7 +2065,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
                 "The city-run Haunted Adventure follows at Starlight Bowl on October 16, 17, 23, and 24 from 7-9:30 p.m.; advance tickets cost $10 for adults and $5 for children 12 and younger, children under 6 are not admitted, and the route includes stairs and uphill walking.",
                 "For ages 2-5, Little Pumpkins Tot Party runs October 24 from 10-11:30 a.m. at $5 per child, offering a short daytime alternative to the city's evening scares.",
                 "Halloween Skatefest follows at Valley Skate Park on October 30 from 6-9 p.m. with free barbecue, skating competitions, raffles, free admission, and no registration requirement.",
-                "Open /articles/southern-california-september-events-2026#burbank-haunted-adventure, #burbank-little-pumpkins, or #burbank-halloween-skatefest for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
+                "The city-run Halloween Carnival follows October 31 from 6:30-8 p.m. at McCambridge Recreation Center for children ages 3-11; admission is $5 per child.",
+                "Open /articles/southern-california-september-events-2026#burbank-haunted-adventure, #burbank-little-pumpkins, #burbank-halloween-skatefest, or #burbank-halloween-carnival for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
             )
         )
 

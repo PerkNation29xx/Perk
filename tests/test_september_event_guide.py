@@ -16,7 +16,7 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Fifty Southern California fall plans" in html
-    assert 'dateModified": "2026-10-23"' in html
+    assert 'dateModified": "2026-10-24"' in html
     assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 51))
     for expected in (
         "Halloween at Kidspace",
@@ -57,18 +57,18 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Grand Park's Downtown Día de los Muertos",
         'id="grand-park-dia-de-los-muertos"',
         "https://grandparkla.org/diadelosmuertos",
-        "Scarium Family Night at the Aquarium of the Pacific",
-        'id="scarium-family-night"',
-        "scarium_family_night",
+        "Burbank Halloween Carnival",
+        'id="burbank-halloween-carnival"',
+        "/calendar/-/calendar/event/3709768/0",
         "Fright Dive at the Aquarium of the Pacific",
         'id="fright-dive-aquarium"',
         "events/info/night_dive",
         "Long Beach Día de los Muertos Festival",
         'id="long-beach-dia-de-los-muertos-festival"',
         "save-the-date-city-of-long-beachs-dia-de-los-muertos-festival-returns-nov.-1",
-        "Santa Monica Spooky Splash",
-        'id="santa-monica-spooky-splash"',
-        "45112ggwps9h1y66jw9xjewkx6/202610231700",
+        "Anaheim Día de los Muertos",
+        'id="anaheim-dia-de-los-muertos"',
+        "communitycalendar.anaheim.net/anaheimca/260214113",
         "Glendale Día de Los Muertos",
         'id="glendale-dia-de-los-muertos"',
         "Event/56410/18",
@@ -229,6 +229,8 @@ def test_fall_guide_is_substantial_ranked_and_reader_facing() -> None:
         "Burbank Harvest of Horror",
         "Newport Beach Film Festival",
         "TYPE S Night Lights",
+        "Scarium Family Night",
+        "Santa Monica Spooky Splash",
     ):
         assert expired not in html
 
@@ -262,14 +264,14 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 23 · Fall guide" in response.text
+        assert "Updated October 24 · Fall guide" in response.text
         assert "Fifty Southern California fall plans, ranked." in response.text
         for current in (
             "Halloween at Kidspace",
             "Spider Pavilion",
             "Grand Ave Arts: All Access",
             "Grand Park's Downtown Día de los Muertos",
-            "Scarium Family Night",
+            "Burbank's Halloween Carnival",
             "Fright Dive",
             "Carved at Descanso Gardens",
             "Long Beach Open Studio Tour",
@@ -280,7 +282,7 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Belmont Shore Sidewalk Chalk Art Contest",
             "Pasadena's remaining Walktober route",
             "Long Beach's Día de los Muertos Festival",
-            "Santa Monica's Spooky Splash",
+            "Anaheim's Día de los Muertos night",
             "Pasadena's Fall Festival",
             "Burbank's Haunted Adventure",
             "Glendale Día de Los Muertos",
@@ -359,6 +361,8 @@ def test_fall_guide_routes_image_homepages_and_sitemap() -> None:
             "Burbank's Harvest of Horror",
             "Newport Beach Film Festival",
             "free TYPE S Night Lights",
+            "Scarium Family Night",
+            "Santa Monica's Spooky Splash",
         ):
             assert expired not in response.text
 
@@ -388,11 +392,10 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Belmont Shore Sidewalk Chalk Art Contest",
         "Pasadena's remaining Walktober route",
         "Grand Park's Downtown Día de los Muertos",
-        "Scarium Family Night",
         "Fright Dive",
             "Long Beach Día de los Muertos Festival",
-            "Spooky Splash",
-        "Santa Monica's Spooky Splash, Pico Walk Loop, and Held in Trust City Gallery opening",
+        "Burbank's Little Pumpkins Tot Party and Halloween Skatefest plus Halloween Carnival",
+        "Santa Monica's Pico Walk Loop, Held in Trust City Gallery opening, and Party on the Pier",
         "Burbank Haunted Adventure",
         "Glendale Día de Los Muertos",
         "Pasadena Fall Festival",
@@ -475,6 +478,8 @@ def test_fall_guide_is_current_in_public_review_answers() -> None:
         "Burbank's Harvest of Horror",
         "Newport Beach Film Festival",
         "TYPE S Night Lights",
+        "Scarium Family Night",
+        "Spooky Splash",
     ):
         assert expired not in answer
 
@@ -491,6 +496,8 @@ def test_orange_county_city_answers_include_current_plans() -> None:
     assert "Walt Disney Archives" in answer
     assert "Anaheim Fall Festival" in answer
     assert "#anaheim-fall-festival-parade" in answer
+    assert "Anaheim's free Día de los Muertos night" in answer
+    assert "#anaheim-dia-de-los-muertos" in answer
     assert "OC Japan Fair" not in answer
     assert "Into the Woods" not in answer
     assert "Westminster" not in answer
@@ -530,6 +537,8 @@ def test_burbank_answer_includes_current_haunted_adventure() -> None:
     assert "children under 6 are not admitted" in answer
     assert "Halloween Skatefest" in answer
     assert "#burbank-halloween-skatefest" in answer
+    assert "Halloween Carnival" in answer
+    assert "#burbank-halloween-carnival" in answer
     assert "Burbank Book Festival" not in answer
 
 
@@ -548,8 +557,8 @@ def test_long_beach_answer_includes_dark_harbor_and_fright_fest() -> None:
     assert "#belmont-shore-sidewalk-chalk-art" in answer
     assert "DTLB Unfiltered" in answer
     assert "#dtlb-unfiltered-photo-walks" in answer
-    assert "Scarium Family Night" in answer
-    assert "#scarium-family-night" in answer
+    assert "Scarium Family Night" not in answer
+    assert "#scarium-family-night" not in answer
     assert "Fright Dive" in answer
     assert "#fright-dive-aquarium" in answer
     assert "TYPE S Night Lights" not in answer
