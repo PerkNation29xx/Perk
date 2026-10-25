@@ -91,8 +91,11 @@ def test_pasadena_guide_is_cross_linked_and_available_to_public_answers() -> Non
 
     assert answer
     assert "Pasadena ARTWalk" not in answer
-    assert "Stories of Displacement: the 710 Stub" in answer
-    assert "#pasadena-710-stub-walktober" in answer
+    assert "Bark in the Park" in answer
+    assert "#pasadena-bark-in-the-park" in answer
+    assert "Strange Science" in answer
+    assert "#huntington-strange-science" in answer
+    assert "Walktober" not in answer
     assert "Pasadena Chalk Festival" not in answer
     assert "Sunset Sessions today" not in answer
     assert "/articles/pasadena-august-2026-guide" not in answer

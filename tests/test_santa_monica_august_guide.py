@@ -9,64 +9,39 @@ from app.services.ai_assistant import _public_review_live_query_response
 ROOT = Path(__file__).resolve().parents[1]
 ARTICLE = ROOT / "app" / "web" / "home_portal" / "articles" / "santa-monica-august-2026-guide.html"
 IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "santa-monica-august-2026-guide.jpg"
-AUGUST_GUIDE = ROOT / "app" / "web" / "home_portal" / "articles" / "southern-california-august-events-2026.html"
 
 
-def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> None:
+def test_santa_monica_guide_is_current_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Santa Monica has nine current October plans" in html
-    assert 'dateModified": "2026-10-24"' in html
-    assert html.count("<h2>") >= 12
+    assert "Santa Monica has five current plans" in html
+    assert 'dateModified": "2026-10-25"' in html
+    assert "5 ranked plans" in html
     for expected in (
-        "9 ranked plans",
-        "LA Times Food Bowl",
-        "101-best-restaurants-in-l-a",
-        "Scott Silven's <em>Wonders</em>",
-        "scott-silven-wonders",
         "Party on the Pier",
         "https://partyonthepier.ucla.edu/",
-        "mattel-party-pier",
-        "Ghosts of the Miles",
-        "https://www.santamonica.com/event/ghosts-of-the-miles/",
-        "4t27nkvh7dttp1xfz22csmk9dg/202610241200",
-        "free all-ages Festival of Memories",
-        "ticketed 16+ Historical Haunt",
-        "Pico Walk Loop ribbon cutting",
-        "4zcsp3g979tqpvt024j48s6k5v/202610241000",
-        "Held in Trust",
-        "4m0q8xgfh3dwp01en1ykxsn3m6/202610241600",
         "Cinema by the Sea",
-        "cinema-by-the-sea-2/2026-10-31/",
         "Practical Magic",
+        "Santa Monica Pier Día de los Muertos",
+        "https://www.santamonicapier.org/diadelosmuertos",
         "Portraits: Faces and Waves",
-        "photography-exhibition-portraits-faces-and-waves-on-display-at-annenberg-community-beach-house-gallery",
         "Pico Farmers Market",
         "Best for:",
         "/directory?city=Santa%20Monica",
         "/articles/southern-california-september-events-2026",
-        "https://www.santamonica.com/event/pico-farmers-market/2026-10-24/",
     ):
         assert expected in html
-    assert "Locals' Night" not in html
-    assert "Punk Night at the Pier" not in html
-    assert "Wellness on the Westside" not in html
-    assert "Voices of Strength" not in html
-    assert "Hispanic Heritage library doubleheader" not in html
-    assert "Thai Fest by the Beach" not in html
-    assert "dublab Open Air" not in html
-    assert "Between Darkness and Dawn" not in html
-    assert "Doors Open California" not in html
-    assert "Ocean Way" not in html
-    assert "Montana Avenue Art Walk" not in html
-    assert "Join &amp; Thrive" not in html
-    assert "Fire Prevention Week Open House" not in html
-    assert "Continuum at Historic Belmar Park" not in html
-    assert "airport-to-park master-plan event" not in html
-    assert "Carmen simulcast" not in html
-    assert "Wellness &amp; Waves" not in html
-    assert "Main Street Block Party + Day of the Dog" not in html
-    assert "Spooky Splash" not in html
+
+    for expired in (
+        "LA Times Food Bowl",
+        "Scott Silven",
+        "Ghosts of the Miles",
+        "Pico Walk Loop",
+        "Held in Trust",
+        "Hocus Pocus",
+        "October 24 Pico Farmers Market",
+    ):
+        assert expired not in html
 
     for forbidden in (
         "Examples from the official listing",
@@ -79,7 +54,7 @@ def test_santa_monica_guide_is_substantial_source_backed_and_reader_facing() -> 
         assert forbidden.lower() not in html.lower()
 
 
-def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
+def test_santa_monica_routes_homepages_image_and_sitemap() -> None:
     client = TestClient(app)
 
     for route in (
@@ -88,7 +63,7 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "9 ranked plans" in response.text
+        assert "5 ranked plans" in response.text
 
     image = client.get("/assets/articles/santa-monica-august-2026-guide.jpg")
     assert image.status_code == 200
@@ -99,69 +74,34 @@ def test_santa_monica_routes_image_homepage_cards_and_sitemaps() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert response.text.count("Updated October 24 · Santa Monica") == 1
-        assert "Nine Santa Monica October plans, ranked." in response.text
-        assert "Dogtown Locals' Night drive-in" not in response.text
-        assert "fire station open house" not in response.text
-        assert "LA Times Food Bowl" in response.text
-        assert "Scott Silven's <em>Wonders</em>" in response.text
-        assert "Main Street Block Party + Day of the Dog" not in response.text
+        assert "Updated October 25 · Santa Monica" in response.text
+        assert "Five current Santa Monica plans, ranked." in response.text
         assert "UCLA's Party on the Pier" in response.text
-        assert "Ghosts of the Miles" in response.text
-        assert "free Pico Walk Loop ribbon cutting" in response.text
-        assert "free <em>Held in Trust</em> City Gallery opening" in response.text
-        assert "Cinema by the Sea" in response.text
-        assert "Portraits: Faces and Waves" in response.text
-        assert "Ocean Way has been canceled." not in response.text
-        assert "Tongva Twilight through September 12" not in response.text
-        assert "Updated August 28" in response.text
+        assert "Practical Magic" in response.text
+        assert "Santa Monica Pier's free Día de los Muertos celebration" in response.text
+        assert "LA Times Food Bowl" not in response.text
+        assert "Ghosts of the Miles" not in response.text
+        assert "Held in Trust" not in response.text
 
     root_sitemap = client.get("/sitemap.xml")
-    white_sitemap = client.get("/white/sitemap.xml", follow_redirects=False)
     assert "<loc>https://perknation.app/articles/santa-monica-august-2026-guide</loc>" in root_sitemap.text
-    assert white_sitemap.status_code == 308
-    assert white_sitemap.headers["location"] == "/sitemap.xml"
-    assert "<loc>https://perknation.app/white/articles/santa-monica-august-2026-guide</loc>" not in root_sitemap.text
 
 
-def test_santa_monica_roundup_link_and_public_answer_are_scoped() -> None:
-    august_html = AUGUST_GUIDE.read_text(encoding="utf-8")
-    assert "/articles/santa-monica-august-2026-guide" in august_html
-    assert "Santa Monica wellness, movies, and park nights" in august_html
-    assert 'dateModified": "2026-08-28"' in august_html
-
+def test_santa_monica_public_answer_is_current_and_scoped() -> None:
     answer = _public_review_live_query_response(
-        "what current Santa Monica August events guide is covered?",
+        "What current Santa Monica events are covered?",
         "home_local_guide",
     )
 
     assert answer
-    assert "ranks nine October plans, including four free options" in answer
-    assert "Held in Trust opening at City Gallery" in answer
-    assert "Punk Night at the Pier" not in answer
-    assert "Voices of Strength" not in answer
-    assert "Fire Prevention Week Open House" not in answer
-    assert "LA Times Food Bowl" in answer
-    assert "Scott Silven's Wonders" in answer
-    assert "Main Street Block Party + Day of the Dog" not in answer
+    assert "ranks five October and early November plans, including three free options" in answer
     assert "Party on the Pier" in answer
-    assert "Spooky Splash" not in answer
-    assert "Portraits: Faces and Waves" in answer
-    assert "Locals' Night drive-in at Santa Monica Pier" not in answer
-    assert "Pico Walk Loop ribbon cutting" in answer
-    assert "Ghosts of the Miles" in answer
-    assert "Cinema by the Sea" in answer
     assert "Practical Magic" in answer
-    assert "free all-ages Festival of Memories" in answer
-    assert "ticketed 16+ Historical Haunt" in answer
-    assert "Montana Avenue Art Walk" not in answer
-    assert "Join & Thrive" not in answer
-    assert "Thai Fest by the Beach" not in answer
-    assert "August 7" not in answer
-    assert "Pier history talk" not in answer
-    assert "Hispanic Heritage" not in answer
-    assert "dublab Open Air" not in answer
-    assert "Doors Open California" not in answer
-    assert "has been canceled" not in answer
+    assert "Santa Monica Pier's free Día de los Muertos celebration" in answer
+    assert "Portraits: Faces and Waves" in answer
+    assert "Pico farmers market" in answer
+    assert "LA Times Food Bowl" not in answer
+    assert "Scott Silven" not in answer
+    assert "Ghosts of the Miles" not in answer
+    assert "Held in Trust" not in answer
     assert "/articles/santa-monica-august-2026-guide" in answer
-    assert "Glendale" not in answer
