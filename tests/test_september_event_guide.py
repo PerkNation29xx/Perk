@@ -15,28 +15,22 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Forty Southern California fall plans" in html
-    assert 'dateModified": "2026-10-25"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 41))
+    assert "Thirty-two Southern California fall plans" in html
+    assert 'dateModified": "2026-10-26"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 33))
 
     for expected in (
         "Halloween at Kidspace",
         "Spider Pavilion",
         "Huntington Beach Oktoberfest",
-        "Long Beach Open Studio Tour",
-        "Bark in the Park",
-        'id="marina-spooktacular"',
-        "visitmdr.com/events-marina-del-rey/halloween-spooktacular",
-        'id="burbank-wild-creatures-walk"',
-        "/calendar/-/calendar/event/4397152/0",
-        'id="la-plaza-dia-de-los-muertos-family-day"',
-        "lapca.org/event/ddlm/",
-        'id="santa-monica-party-on-the-pier"',
-        "partyonthepier.ucla.edu",
-        "MOLAA Día de los Muertos Festival",
+        'id="burbank-moonlight-hike"',
+        "/calendar/-/calendar/event/4397112/0",
+        'id="pasadena-trunk-or-treat"',
+        "trunk-or-treat-halloween-extravaganza",
+        'id="santa-monica-woodlawn-dia-de-los-muertos"',
+        "4qs9amnfe2p00xgqe88s65zs53/202611011100",
         "Día de los Muertos on Olvera Street",
         "Halloween STEMebration",
-        "Día de los Muertos at the Arboretum",
         'id="huntington-strange-science"',
         "huntington.org/event/strange-science",
         'id="santa-monica-pier-dia-de-los-muertos"',
@@ -65,11 +59,25 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "Anaheim Fall Festival and Halloween Parade",
         "SoCal Corgi Beach Day",
         "Ghosts of the Miles",
+        "Party on the Pier",
+        "Marina Spooktacular",
+        "Wild Creatures Walk",
         "Jewel City Concert Series",
         "DTLB Unfiltered photo walk",
         "Formula DRIFT Shoreline Showdown",
         "Burbank Little Pumpkins Tot Party",
         "Held in Trust",
+        "Long Beach Open Studio Tour",
+        "Bark in the Park",
+        "Marina Spooktacular",
+        "Wild Creatures Walk",
+        "LA Plaza Día de los Muertos Family Day",
+        "Party on the Pier",
+        "Día de los Muertos at the Arboretum",
+        "Beverly Hills Fall Funtastic",
+        "Floating Pumpkin Patch",
+        "MOLAA Día de los Muertos Festival",
+        "Coast Film &amp; Music Festival",
     ):
         assert expired not in html
 
@@ -93,7 +101,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Forty Southern California fall plans" in response.text
+        assert "Thirty-two Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -104,15 +112,14 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 25 · Fall guide" in response.text
-        assert "Forty Southern California fall plans, ranked." in response.text
+        assert "Updated October 26 · Fall guide" in response.text
+        assert "Thirty-two Southern California fall plans, ranked." in response.text
         for current in (
-            "Marina Spooktacular",
-            "Burbank's Wild Creatures Walk",
-            "LA Plaza's Día de los Muertos Family Day",
-            "UCLA's Party on the Pier",
+            "Burbank's October 27 Moonlight Hike",
+            "Pasadena's October 29 Trunk or Treat",
+            "Woodlawn Cemetery",
             "Strange Science",
-            "Santa Monica Pier's Día de los Muertos celebration",
+            "Santa Monica's Pier and Woodlawn Cemetery celebrations",
             "Forest Lawn Glendale",
             "Self Help Graphics",
         ):
@@ -143,13 +150,12 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Forty Southern California fall plans",
-        "Marina Spooktacular",
-        "Wild Creatures Walk",
-        "LA Plaza's Día de los Muertos Family Day",
-        "Party on the Pier",
+        "Thirty-two Southern California fall plans",
+        "Moonlight Hike",
+        "Trunk or Treat",
+        "Woodlawn Cemetery",
         "Strange Science",
-        "Santa Monica Pier's Día de los Muertos",
+        "Santa Monica's Pier and Woodlawn Cemetery",
         "Forest Lawn Glendale",
         "Self Help Graphics",
     ):
@@ -161,19 +167,22 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Fright Fest",
         "Formula DRIFT",
         "Ghosts of the Miles",
+        "Marina Spooktacular",
+        "Wild Creatures Walk",
+        "Party on the Pier",
     ):
         assert expired not in general
 
     burbank = _public_review_live_query_response("What current events are covered in Burbank?", "home_local_guide")
-    assert "Wild Creatures Walk" in burbank
-    assert "#burbank-wild-creatures-walk" in burbank
+    assert "Moonlight Hike" in burbank
+    assert "#burbank-moonlight-hike" in burbank
     assert "Haunted Adventure" not in burbank
     assert "Little Pumpkins" not in burbank
 
     pasadena = _public_review_live_query_response("What current events are covered in Pasadena?", "home_local_guide")
-    assert "Bark in the Park" in pasadena
+    assert "Trunk or Treat" in pasadena
     assert "Strange Science" in pasadena
-    assert "Walktober" not in pasadena
+    assert "Bark in the Park" not in pasadena
     assert "Pasadena Fall Festival" not in pasadena
 
     glendale = _public_review_live_query_response("What current events are covered in Glendale?", "home_local_guide")
@@ -190,7 +199,6 @@ def test_current_city_counts_match_live_facet_context() -> None:
         "100 Glendale listings",
         "61 Los Angeles listings",
         "43 Huntington Beach listings",
-        "40 Arcadia listings",
         "35 Anaheim listings",
     ):
         assert expected in html

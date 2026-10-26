@@ -781,7 +781,7 @@ def _home_local_guide_context(*, db: Optional[Session]) -> str:
             "",
             "Editorial/review coverage currently surfaced for PerkNation readers:",
             "- Fashion guide: CMC sample-sale Fridays beginning October 30, Fashion District shopping, and completed Miami Fashion Week and LA Market Week as season context.",
-            "- Events coverage: the ranked 50-plan October Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
+            "- Events coverage: the ranked 32-plan late-October and early-November Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
             "- Restaurant coverage: current local directory listings, Pasadena restaurant picks, and broader dining discovery.",
             "",
             "Answering rules:",
@@ -811,12 +811,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Forty Southern California fall plans",
-        "timing": "October 25-November 8, 2026",
+        "title": "Thirty-two Southern California fall plans",
+        "timing": "October 26-November 8, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to Halloween at Kidspace, Natural History Museum's Spider Pavilion, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Carved at Descanso Gardens, the final Long Beach Open Studio Tour day, Pasadena's Bark in the Park, Marina Spooktacular, Burbank's Wild Creatures Walk, Grand Park's Downtown Día de los Muertos, LA Plaza's Día de los Muertos Family Day, and UCLA's Party on the Pier. "
-            "Also covers the free Long Beach Día de los Muertos Festival at Rainbow Lagoon, MOLAA's free Día de los Muertos Festival, Olvera Street's nine-night celebration, Aquarium of the Pacific's Fright Dive, Burbank Halloween Skatefest and Halloween Carnival, West Hollywood's Floating Pumpkin Patch and Halloween Carnaval, Battleship IOWA's free Halloween STEMebration, Beverly Hills Fall Funtastic, Villa Parke Día De Los Muertos, Día de los Muertos at the Arboretum in Arcadia, Boo at the L.A. Zoo, Anaheim's Día de los Muertos night, Coast Film & Music Festival in Laguna Beach, Halloween Horror Nights near Burbank, The Huntington's Strange Science, Santa Monica Pier's Día de los Muertos celebration, Forest Lawn Glendale, Self Help Graphics, the Walt Disney Archives and Disneyland art at Muzeo, the Lucas Museum, Pasadena's Where History Meets the Road Route 66 exhibition, Santa Monica's Portraits: Faces and Waves exhibition, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire exhibition, and Fleurs de Villes at Greystone."
+            "Ranked guide to Halloween at Kidspace, Natural History Museum's Spider Pavilion, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Carved at Descanso Gardens, Burbank's October 27 Moonlight Hike, Pasadena's October 29 Trunk or Treat, and Grand Park's Downtown Día de los Muertos. "
+            "Also covers Fright Dive, the Long Beach Día de los Muertos Festival, Anaheim's Día de los Muertos night, Boo at the L.A. Zoo, West Hollywood Halloween Carnaval, Battleship IOWA's Halloween STEMebration, Villa Parke Día De Los Muertos, Halloween Horror Nights, The Huntington's Strange Science, Santa Monica's Pier and Woodlawn Cemetery Día de los Muertos programs, Forest Lawn Glendale, Self Help Graphics, Muzeo's Disney exhibitions, the Lucas Museum, Pasadena's Route 66 exhibition, Santa Monica's Portraits: Faces and Waves, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire, and Fleurs de Villes at Greystone."
         ),
     },
 
@@ -904,10 +904,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, coastal art, wellness, movies, markets, and local history",
         "city": "Santa Monica",
         "title": "Santa Monica October 2026 coastal events guide",
-        "timing": "October 25-November 1, 2026",
+        "timing": "October 26-November 1, 2026",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Five current plans covering UCLA's Party on the Pier, Cinema by the Sea's Practical Magic screening, Santa Monica Pier's free Día de los Muertos celebration, the Portraits: Faces and Waves photography exhibition, and the Pico farmers market."
+            "Five current plans covering Día de los Muertos at Woodlawn Cemetery, Cinema by the Sea's Practical Magic screening, Santa Monica Pier's free Día de los Muertos celebration, the Portraits: Faces and Waves photography exhibition, and the Pico farmers market."
         ),
     },
     {
@@ -2001,13 +2001,12 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Queen Mary's Dark Harbor, the final Long Beach Open Studio Tour day, Fright Dive, MOLAA's Día de los Muertos Festival, and the City of Long Beach Día de los Muertos Festival:",
+                "The current PerkNation fall guide includes Queen Mary's Dark Harbor, Fright Dive, the October 31 Historical Cemetery Tour, and the November 1 City of Long Beach Día de los Muertos Festival:",
                 "- Dark Harbor runs select nights September 18-November 1 with haunted mazes, performers, immersive attractions, rides, and themed food; check the venue's current parking guidance before leaving.",
-                "- Long Beach Open Studio Tour's final Eastside day runs October 25 from 1-5 p.m.; use the organizer's map to build a route among participating studios.",
                 "- Fright Dive runs October 30 from 7:30-11 p.m. for adults 18 and older, with after-hours gallery access, live music, DJs, art, food, and drinks; general tickets are $49.95 and member tickets are $44.95.",
-                "- MOLAA's free Día de los Muertos Festival runs October 25 from 11 a.m.-5 p.m. with dance, music, workshops, food, and a Catrina/Catrin contest; parking is $15 and large bags are prohibited.",
-                "- The free City of Long Beach Día de los Muertos Festival runs November 1 from 1-7 p.m. at Rainbow Lagoon with culturally rooted performances, vendors, a resource fair, and city and community partners; confirm the final schedule, access, parking, and transit closer to the date.",
-                "Open /articles/southern-california-september-events-2026#long-beach-open-studio-tour, #queen-mary-dark-harbor, #fright-dive-aquarium, #molaa-dia-de-los-muertos, or #long-beach-dia-de-los-muertos-festival for practical planning, with links into 208 Long Beach directory listings.",
+                "- The Historical Cemetery Tour runs October 31 from 9 a.m.-2:40 p.m. at Long Beach Municipal and Sunnyside cemeteries, with repeating costumed performances focused on local history rather than scares.",
+                "- The free City of Long Beach Día de los Muertos Festival runs November 1 from 1-7 p.m. at Rainbow Lagoon with culturally rooted performances, vendors, a resource fair, and city and community partners.",
+                "Open /articles/southern-california-september-events-2026#queen-mary-dark-harbor, #fright-dive-aquarium, or #long-beach-dia-de-los-muertos-festival for practical planning, with links into 208 Long Beach directory listings.",
                 "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )
@@ -2023,8 +2022,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks five October and early November plans, including three free options:",
-                "- Party on the Pier runs October 25 from 10 a.m.-2 p.m. at Pacific Park, combining rides, carnival games, crafts, therapy dogs, food, and photo opportunities in a cashless benefit for UCLA Mattel Children's Hospital; tickets and game add-ons are separate costs.",
+                "The current PerkNation Santa Monica guide ranks five late-October and early-November plans, including four free options:",
+                "- Día de los Muertos at Woodlawn Cemetery runs November 1 from 11 a.m.-4 p.m. with live music, traditional altars, art, food, activities, and free admission.",
                 "- Cinema by the Sea screens Practical Magic on October 31 outdoors at Regent Santa Monica Beach; confirm the price, booking method, seating policy, and weather plan with the venue.",
                 "- Santa Monica Pier's free Día de los Muertos celebration runs October 31-November 1 with community ofrendas, a Pedro Infante tribute, and November 1 performances and a procession.",
                 "- The free Portraits: Faces and Waves exhibition offers a flexible Beach House Gallery stop through March 27, while the Pico farmers market remains a repeatable Saturday morning option.",
@@ -2054,18 +2053,18 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_burbank and not wants_restaurants:
         return "\n".join(
             (
-                "Burbank's all-ages Wild Creatures Walk runs October 25 from 11:30 a.m.-12:30 p.m. at Stough Canyon Nature Center with a docent-led look at Verdugo Mountains wildlife; register through the city-linked recreation system.",
+                "Burbank's staff-led Moonlight Hike runs October 27 from 7-8 p.m. at Stough Canyon Nature Center; register in advance, bring water and trail shoes, and check closure notices.",
                 "Halloween Skatefest follows at Valley Skate Park on October 30 from 6-9 p.m. with free barbecue, skating competitions, raffles, free admission, and no registration requirement.",
                 "The city-run Halloween Carnival follows October 31 from 6:30-8 p.m. at McCambridge Recreation Center for children ages 3-11; admission is $5 per child.",
-                "Open /articles/southern-california-september-events-2026#burbank-wild-creatures-walk, #burbank-halloween-skatefest, or #burbank-halloween-carnival for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
+                "Open /articles/southern-california-september-events-2026#burbank-moonlight-hike, #burbank-halloween-skatefest, or #burbank-halloween-carnival for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
             )
         )
 
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Halloween at Kidspace, the free Bark in the Park dog parade and costume contest on October 25, Villa Parke's October 30 Día De Los Muertos gathering, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, The Huntington's Laura Aguilar: Day of the Dead exhibition, and The Huntington's October 30-31 Strange Science event.",
-                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#pasadena-bark-in-the-park for a dog-friendly daytime meetup, #pasadena-villa-parke-dia-de-los-muertos for a shared community altar, #pasadena-route-66-exhibition for a flexible history visit, #laura-aguilar-day-of-the-dead for photography, or #huntington-strange-science for an adults-only museum night; browse /directory?city=Pasadena for 563 local listings.",
+                "The current PerkNation fall guide includes Halloween at Kidspace, Pasadena Trunk or Treat on October 29, Villa Parke's October 30 Día De Los Muertos gathering, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, The Huntington's Laura Aguilar: Day of the Dead exhibition, and The Huntington's October 30-31 Strange Science event.",
+                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#pasadena-trunk-or-treat for a family civic gathering, #pasadena-villa-parke-dia-de-los-muertos for a shared community altar, #pasadena-route-66-exhibition for a flexible history visit, #laura-aguilar-day-of-the-dead for photography, or #huntington-strange-science for an adults-only museum night; browse /directory?city=Pasadena for 563 local listings.",
             )
         )
 
@@ -2080,8 +2079,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_arcadia and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Día de los Muertos at the Los Angeles County Arboretum in Arcadia on October 25 from 4-8 p.m., with a community altar, live music, creative activities, botanical scenery, and a marketplace of local Latin-owned makers, artists, food, and drinks.",
-                "Adult admission is $15 for Arboretum members and $18 for non-members, children ages 3-12 are $8, and children 2 and younger enter free. Open /articles/southern-california-september-events-2026#arcadia-dia-de-los-muertos-arboretum for best-for and practical notes, or browse /directory?city=Arcadia for 40 local listings.",
+                "The Los Angeles County Arboretum's October 25 Día de los Muertos program has concluded and is no longer presented as active.",
+                "Browse /directory?city=Arcadia for 40 local listings and confirm the next Arboretum or city event with its organizer before traveling.",
             )
         )
 

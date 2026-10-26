@@ -91,8 +91,8 @@ def test_pasadena_guide_is_cross_linked_and_available_to_public_answers() -> Non
 
     assert answer
     assert "Pasadena ARTWalk" not in answer
-    assert "Bark in the Park" in answer
-    assert "#pasadena-bark-in-the-park" in answer
+    assert "Trunk or Treat" in answer
+    assert "#pasadena-trunk-or-treat" in answer
     assert "Strange Science" in answer
     assert "#huntington-strange-science" in answer
     assert "Walktober" not in answer

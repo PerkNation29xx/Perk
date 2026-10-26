@@ -92,7 +92,7 @@ def test_arcadia_archive_is_replaced_by_current_arboretum_guidance() -> None:
     assert "Día de los Muertos" in answer
     assert "Los Angeles County Arboretum" in answer
     assert "October 25" in answer
-    assert "#arcadia-dia-de-los-muertos-arboretum" in answer
+    assert "has concluded" in answer
     assert "#gilb-museum-25th-anniversary" not in answer
     assert "annual health fair" not in answer
     assert "August 7" not in answer

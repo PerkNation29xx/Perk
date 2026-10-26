@@ -15,11 +15,11 @@ def test_santa_monica_guide_is_current_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Santa Monica has five current plans" in html
-    assert 'dateModified": "2026-10-25"' in html
+    assert 'dateModified": "2026-10-26"' in html
     assert "5 ranked plans" in html
     for expected in (
-        "Party on the Pier",
-        "https://partyonthepier.ucla.edu/",
+        "Día de los Muertos at Woodlawn Cemetery",
+        "4qs9amnfe2p00xgqe88s65zs53/202611011100",
         "Cinema by the Sea",
         "Practical Magic",
         "Santa Monica Pier Día de los Muertos",
@@ -40,6 +40,7 @@ def test_santa_monica_guide_is_current_and_reader_facing() -> None:
         "Held in Trust",
         "Hocus Pocus",
         "October 24 Pico Farmers Market",
+        "Party on the Pier",
     ):
         assert expired not in html
 
@@ -74,11 +75,11 @@ def test_santa_monica_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 25 · Santa Monica" in response.text
+        assert "Updated October 26 · Santa Monica" in response.text
         assert "Five current Santa Monica plans, ranked." in response.text
-        assert "UCLA's Party on the Pier" in response.text
+        assert "Día de los Muertos at Woodlawn Cemetery" in response.text
         assert "Practical Magic" in response.text
-        assert "Santa Monica Pier's free Día de los Muertos celebration" in response.text
+        assert "Santa Monica Pier" in response.text
         assert "LA Times Food Bowl" not in response.text
         assert "Ghosts of the Miles" not in response.text
         assert "Held in Trust" not in response.text
@@ -94,8 +95,8 @@ def test_santa_monica_public_answer_is_current_and_scoped() -> None:
     )
 
     assert answer
-    assert "ranks five October and early November plans, including three free options" in answer
-    assert "Party on the Pier" in answer
+    assert "ranks five late-October and early-November plans, including four free options" in answer
+    assert "Woodlawn Cemetery" in answer
     assert "Practical Magic" in answer
     assert "Santa Monica Pier's free Día de los Muertos celebration" in answer
     assert "Portraits: Faces and Waves" in answer
