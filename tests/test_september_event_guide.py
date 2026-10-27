@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-two Southern California fall plans" in html
-    assert 'dateModified": "2026-10-26"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 33))
+    assert "Thirty-four Southern California fall plans" in html
+    assert 'dateModified": "2026-10-27"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 35))
 
     for expected in (
         "Halloween at Kidspace",
@@ -29,6 +29,10 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "trunk-or-treat-halloween-extravaganza",
         'id="santa-monica-woodlawn-dia-de-los-muertos"',
         "4qs9amnfe2p00xgqe88s65zs53/202611011100",
+        'id="burbank-dia-de-los-muertos"',
+        "/calendar/-/calendar/event/4506259/0",
+        'id="huntington-second-sundays-this-land-is"',
+        "huntington.org/event/second-sundays-land",
         "Día de los Muertos on Olvera Street",
         "Halloween STEMebration",
         'id="huntington-strange-science"',
@@ -101,7 +105,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Thirty-two Southern California fall plans" in response.text
+        assert "Thirty-four Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -112,11 +116,13 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 26 · Fall guide" in response.text
-        assert "Thirty-two Southern California fall plans, ranked." in response.text
+        assert "Updated October 27 · Fall guide" in response.text
+        assert "Thirty-four Southern California fall plans, ranked." in response.text
         for current in (
             "Burbank's October 27 Moonlight Hike",
             "Pasadena's October 29 Trunk or Treat",
+            "Burbank's Halloween and Día de los Muertos programs",
+            "The Huntington's November 8 Second Sundays program",
             "Woodlawn Cemetery",
             "Strange Science",
             "Santa Monica's Pier and Woodlawn Cemetery celebrations",
@@ -150,7 +156,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Thirty-two Southern California fall plans",
+        "Thirty-four Southern California fall plans",
         "Moonlight Hike",
         "Trunk or Treat",
         "Woodlawn Cemetery",
@@ -158,6 +164,8 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Santa Monica's Pier and Woodlawn Cemetery",
         "Forest Lawn Glendale",
         "Self Help Graphics",
+        "Burbank's November 1 Día de los Muertos celebration",
+        "The Huntington's November 8 Second Sundays program",
     ):
         assert current in general
     for expired in (
@@ -175,13 +183,16 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
 
     burbank = _public_review_live_query_response("What current events are covered in Burbank?", "home_local_guide")
     assert "Moonlight Hike" in burbank
+    assert "Día de los Muertos celebration" in burbank
     assert "#burbank-moonlight-hike" in burbank
+    assert "#burbank-dia-de-los-muertos" in burbank
     assert "Haunted Adventure" not in burbank
     assert "Little Pumpkins" not in burbank
 
     pasadena = _public_review_live_query_response("What current events are covered in Pasadena?", "home_local_guide")
     assert "Trunk or Treat" in pasadena
     assert "Strange Science" in pasadena
+    assert "Second Sundays" in pasadena
     assert "Bark in the Park" not in pasadena
     assert "Pasadena Fall Festival" not in pasadena
 
