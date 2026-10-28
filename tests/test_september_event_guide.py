@@ -16,15 +16,15 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Thirty-four Southern California fall plans" in html
-    assert 'dateModified": "2026-10-27"' in html
+    assert 'dateModified": "2026-10-28"' in html
     assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 35))
 
     for expected in (
         "Halloween at Kidspace",
         "Spider Pavilion",
         "Huntington Beach Oktoberfest",
-        'id="burbank-moonlight-hike"',
-        "/calendar/-/calendar/event/4397112/0",
+        'id="pasadena-adaptive-sports-festival"',
+        "cityofpasadena.net/event/adaptive-sports-festival",
         'id="pasadena-trunk-or-treat"',
         "trunk-or-treat-halloween-extravaganza",
         'id="santa-monica-woodlawn-dia-de-los-muertos"',
@@ -82,6 +82,7 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "Floating Pumpkin Patch",
         "MOLAA Día de los Muertos Festival",
         "Coast Film &amp; Music Festival",
+        "Moonlight Hike",
     ):
         assert expired not in html
 
@@ -116,10 +117,10 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 27 · Fall guide" in response.text
+        assert "Updated October 28 · Fall guide" in response.text
         assert "Thirty-four Southern California fall plans, ranked." in response.text
         for current in (
-            "Burbank's October 27 Moonlight Hike",
+            "Pasadena's November 7 Adaptive Sports Festival",
             "Pasadena's October 29 Trunk or Treat",
             "Burbank's Halloween and Día de los Muertos programs",
             "The Huntington's November 8 Second Sundays program",
@@ -139,6 +140,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Formula DRIFT",
             "Little Pumpkins",
             "Held in Trust",
+            "Moonlight Hike",
         ):
             assert expired not in response.text
 
@@ -157,7 +159,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     assert general
     for current in (
         "Thirty-four Southern California fall plans",
-        "Moonlight Hike",
+        "Adaptive Sports Festival",
         "Trunk or Treat",
         "Woodlawn Cemetery",
         "Strange Science",
@@ -182,9 +184,9 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         assert expired not in general
 
     burbank = _public_review_live_query_response("What current events are covered in Burbank?", "home_local_guide")
-    assert "Moonlight Hike" in burbank
+    assert "Halloween Skatefest" in burbank
     assert "Día de los Muertos celebration" in burbank
-    assert "#burbank-moonlight-hike" in burbank
+    assert "#burbank-halloween-skatefest" in burbank
     assert "#burbank-dia-de-los-muertos" in burbank
     assert "Haunted Adventure" not in burbank
     assert "Little Pumpkins" not in burbank
@@ -193,6 +195,8 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     assert "Trunk or Treat" in pasadena
     assert "Strange Science" in pasadena
     assert "Second Sundays" in pasadena
+    assert "Adaptive Sports Festival" in pasadena
+    assert "#pasadena-adaptive-sports-festival" in pasadena
     assert "Bark in the Park" not in pasadena
     assert "Pasadena Fall Festival" not in pasadena
 
