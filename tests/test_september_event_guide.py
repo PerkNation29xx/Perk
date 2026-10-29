@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-four Southern California fall plans" in html
-    assert 'dateModified": "2026-10-28"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 35))
+    assert "Thirty-seven Southern California fall plans" in html
+    assert 'dateModified": "2026-10-29"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 38))
 
     for expected in (
         "Halloween at Kidspace",
@@ -33,6 +33,12 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "/calendar/-/calendar/event/4506259/0",
         'id="huntington-second-sundays-this-land-is"',
         "huntington.org/event/second-sundays-land",
+        'id="long-beach-chrysanthemum-festival"',
+        "csulb.edu/earl-burns-miller-japanese-garden",
+        'id="burbank-art-association-fall-show"',
+        "2026-burbank-art-association",
+        'id="anaheim-indie-author-day"',
+        "anaheim.net/6272/Indie-Author-Day",
         "Día de los Muertos on Olvera Street",
         "Halloween STEMebration",
         'id="huntington-strange-science"',
@@ -106,7 +112,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Thirty-four Southern California fall plans" in response.text
+        assert "Thirty-seven Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -117,12 +123,14 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 28 · Fall guide" in response.text
-        assert "Thirty-four Southern California fall plans, ranked." in response.text
+        assert "Updated October 29 · Fall guide" in response.text
+        assert "Thirty-seven Southern California fall plans, ranked." in response.text
         for current in (
             "Pasadena's November 7 Adaptive Sports Festival",
             "Pasadena's October 29 Trunk or Treat",
-            "Burbank's Halloween and Día de los Muertos programs",
+            "Long Beach's Chrysanthemum Festival",
+            "Burbank's Halloween, Día de los Muertos, and fall art programs",
+            "Anaheim's Día de los Muertos night and Indie Author Day",
             "The Huntington's November 8 Second Sundays program",
             "Woodlawn Cemetery",
             "Strange Science",
@@ -158,7 +166,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Thirty-four Southern California fall plans",
+        "Thirty-seven Southern California fall plans",
         "Adaptive Sports Festival",
         "Trunk or Treat",
         "Woodlawn Cemetery",
@@ -168,6 +176,9 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Self Help Graphics",
         "Burbank's November 1 Día de los Muertos celebration",
         "The Huntington's November 8 Second Sundays program",
+        "Chrysanthemum Festival",
+        "Art Association Fall Show",
+        "Indie Author Day",
     ):
         assert current in general
     for expired in (
@@ -186,8 +197,10 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     burbank = _public_review_live_query_response("What current events are covered in Burbank?", "home_local_guide")
     assert "Halloween Skatefest" in burbank
     assert "Día de los Muertos celebration" in burbank
+    assert "Art Association Fall Show" in burbank
     assert "#burbank-halloween-skatefest" in burbank
     assert "#burbank-dia-de-los-muertos" in burbank
+    assert "#burbank-art-association-fall-show" in burbank
     assert "Haunted Adventure" not in burbank
     assert "Little Pumpkins" not in burbank
 

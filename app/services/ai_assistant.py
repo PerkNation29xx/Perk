@@ -811,12 +811,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Thirty-four Southern California fall plans",
-        "timing": "October 28-November 8, 2026",
+        "title": "Thirty-seven Southern California fall plans",
+        "timing": "October 29-November 19, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to Halloween at Kidspace, Natural History Museum's Spider Pavilion, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Carved at Descanso Gardens, Pasadena's free November 7 Adaptive Sports Festival, Pasadena's October 29 Trunk or Treat, and Grand Park's Downtown Día de los Muertos. "
-            "Also covers Burbank's November 1 Día de los Muertos celebration, The Huntington's November 8 Second Sundays program, Fright Dive, the Long Beach Día de los Muertos Festival, Anaheim's Día de los Muertos night, Boo at the L.A. Zoo, West Hollywood Halloween Carnaval, Battleship IOWA's Halloween STEMebration, Villa Parke Día De Los Muertos, Halloween Horror Nights, The Huntington's Strange Science, Santa Monica's Pier and Woodlawn Cemetery Día de los Muertos programs, Forest Lawn Glendale, Self Help Graphics, Muzeo's Disney exhibitions, the Lucas Museum, Pasadena's Route 66 exhibition, Santa Monica's Portraits: Faces and Waves, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire, and Fleurs de Villes at Greystone."
+            "Also covers Long Beach's November 1 Chrysanthemum Festival, Burbank's November 1 Día de los Muertos celebration and November 6-19 Art Association Fall Show, Anaheim's November 7 Indie Author Day, The Huntington's November 8 Second Sundays program, Fright Dive, the Long Beach Día de los Muertos Festival, Anaheim's Día de los Muertos night, Boo at the L.A. Zoo, West Hollywood Halloween Carnaval, Battleship IOWA's Halloween STEMebration, Villa Parke Día De Los Muertos, Halloween Horror Nights, The Huntington's Strange Science, Santa Monica's Pier and Woodlawn Cemetery Día de los Muertos programs, Forest Lawn Glendale, Self Help Graphics, Muzeo's Disney exhibitions, the Lucas Museum, Pasadena's Route 66 exhibition, Santa Monica's Portraits: Faces and Waves, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire, and Fleurs de Villes at Greystone."
         ),
     },
 
@@ -1969,7 +1969,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "D23's 2026 Anaheim convention concluded on August 16, so PerkNation no longer presents its ticket or standby guidance as active.",
-                "For current Anaheim planning, the fall guide covers Muzeo's Disney-history exhibitions through November 1 and the free October 30 Día de los Muertos community night; browse /directory?city=Anaheim for 35 local listings.",
+                "For current Anaheim planning, the fall guide covers Muzeo's Disney-history exhibitions through November 1, the free October 30 Día de los Muertos community night, and November 7 Indie Author Day at Anaheim Central Library; browse /directory?city=Anaheim for 35 local listings.",
             )
         )
 
@@ -1985,8 +1985,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current Orange County options include Anaheim's free Día de los Muertos night on October 30, Huntington Beach Oktoberfest through November 8, and the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1.",
-                "Open /articles/southern-california-september-events-2026#anaheim-dia-de-los-muertos, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, or /articles/southern-california-september-events-2026#muzeo-disney-exhibitions for practical comparisons and current city-directory links.",
+                "Current Orange County options include Anaheim's free Día de los Muertos night on October 30, Huntington Beach Oktoberfest through November 8, the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1, and Anaheim Indie Author Day on November 7.",
+                "Open /articles/southern-california-september-events-2026#anaheim-dia-de-los-muertos, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, /articles/southern-california-september-events-2026#muzeo-disney-exhibitions, or /articles/southern-california-september-events-2026#anaheim-indie-author-day for practical comparisons and current city-directory links.",
             )
         )
 
@@ -2001,12 +2001,13 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Queen Mary's Dark Harbor, Fright Dive, the October 31 Historical Cemetery Tour, and the November 1 City of Long Beach Día de los Muertos Festival:",
+                "The current PerkNation fall guide includes Queen Mary's Dark Harbor, Fright Dive, the October 31 Historical Cemetery Tour, the November 1 Chrysanthemum Festival, and the November 1 City of Long Beach Día de los Muertos Festival:",
                 "- Dark Harbor runs select nights September 18-November 1 with haunted mazes, performers, immersive attractions, rides, and themed food; check the venue's current parking guidance before leaving.",
                 "- Fright Dive runs October 30 from 7:30-11 p.m. for adults 18 and older, with after-hours gallery access, live music, DJs, art, food, and drinks; general tickets are $49.95 and member tickets are $44.95.",
                 "- The Historical Cemetery Tour runs October 31 from 9 a.m.-2:40 p.m. at Long Beach Municipal and Sunnyside cemeteries, with repeating costumed performances focused on local history rather than scares.",
+                "- The Earl Burns Miller Japanese Garden's Chrysanthemum Festival runs November 1 from 1-3 p.m.; confirm the reservation process and budget for CSULB parking before traveling.",
                 "- The free City of Long Beach Día de los Muertos Festival runs November 1 from 1-7 p.m. at Rainbow Lagoon with culturally rooted performances, vendors, a resource fair, and city and community partners.",
-                "Open /articles/southern-california-september-events-2026#queen-mary-dark-harbor, #fright-dive-aquarium, or #long-beach-dia-de-los-muertos-festival for practical planning, with links into 208 Long Beach directory listings.",
+                "Open /articles/southern-california-september-events-2026#queen-mary-dark-harbor, #fright-dive-aquarium, #long-beach-chrysanthemum-festival, or #long-beach-dia-de-los-muertos-festival for practical planning, with links into 208 Long Beach directory listings.",
                 "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )
@@ -2056,7 +2057,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
                 "Halloween Skatefest follows at Valley Skate Park on October 30 from 6-9 p.m. with free barbecue, skating competitions, raffles, free admission, and no registration requirement.",
                 "The city-run Halloween Carnival follows October 31 from 6:30-8 p.m. at McCambridge Recreation Center for children ages 3-11; admission is $5 per child.",
                 "Burbank's free Día de los Muertos celebration follows November 1 from noon-2 p.m. behind Northwest Branch Library with mariachi, dancing, face painting, all-ages crafts, and a community altar.",
-                "Open /articles/southern-california-september-events-2026#burbank-halloween-skatefest, #burbank-halloween-carnival, or #burbank-dia-de-los-muertos for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
+                "The Burbank Art Association Fall Show opens November 6 from 7-9 p.m. with music and light refreshments, then remains at the Betsy Lueke Creative Arts Center through November 19 during regular facility hours.",
+                "Open /articles/southern-california-september-events-2026#burbank-halloween-skatefest, #burbank-halloween-carnival, #burbank-dia-de-los-muertos, or #burbank-art-association-fall-show for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
             )
         )
 
