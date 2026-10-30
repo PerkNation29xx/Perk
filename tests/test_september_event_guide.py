@@ -16,7 +16,7 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Thirty-seven Southern California fall plans" in html
-    assert 'dateModified": "2026-10-29"' in html
+    assert 'dateModified": "2026-10-30"' in html
     assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 38))
 
     for expected in (
@@ -25,8 +25,8 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "Huntington Beach Oktoberfest",
         'id="pasadena-adaptive-sports-festival"',
         "cityofpasadena.net/event/adaptive-sports-festival",
-        'id="pasadena-trunk-or-treat"',
-        "trunk-or-treat-halloween-extravaganza",
+        'id="ciclavia-pasadena"',
+        "cityofpasadena.net/event/ciclavia-2026-pasadena",
         'id="santa-monica-woodlawn-dia-de-los-muertos"',
         "4qs9amnfe2p00xgqe88s65zs53/202611011100",
         'id="burbank-dia-de-los-muertos"',
@@ -89,6 +89,7 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "MOLAA Día de los Muertos Festival",
         "Coast Film &amp; Music Festival",
         "Moonlight Hike",
+        "Pasadena Trunk or Treat",
     ):
         assert expired not in html
 
@@ -123,11 +124,11 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 29 · Fall guide" in response.text
+        assert "Updated October 30 · Fall guide" in response.text
         assert "Thirty-seven Southern California fall plans, ranked." in response.text
         for current in (
             "Pasadena's November 7 Adaptive Sports Festival",
-            "Pasadena's October 29 Trunk or Treat",
+            "Pasadena's November 7 Adaptive Sports Festival and November 15 CicLAvia",
             "Long Beach's Chrysanthemum Festival",
             "Burbank's Halloween, Día de los Muertos, and fall art programs",
             "Anaheim's Día de los Muertos night and Indie Author Day",
@@ -149,6 +150,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Little Pumpkins",
             "Held in Trust",
             "Moonlight Hike",
+            "Trunk or Treat",
         ):
             assert expired not in response.text
 
@@ -168,7 +170,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     for current in (
         "Thirty-seven Southern California fall plans",
         "Adaptive Sports Festival",
-        "Trunk or Treat",
+        "CicLAvia",
         "Woodlawn Cemetery",
         "Strange Science",
         "Santa Monica's Pier and Woodlawn Cemetery",
@@ -191,6 +193,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Marina Spooktacular",
         "Wild Creatures Walk",
         "Party on the Pier",
+        "Trunk or Treat",
     ):
         assert expired not in general
 
@@ -205,13 +208,15 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     assert "Little Pumpkins" not in burbank
 
     pasadena = _public_review_live_query_response("What current events are covered in Pasadena?", "home_local_guide")
-    assert "Trunk or Treat" in pasadena
+    assert "CicLAvia" in pasadena
+    assert "#ciclavia-pasadena" in pasadena
     assert "Strange Science" in pasadena
     assert "Second Sundays" in pasadena
     assert "Adaptive Sports Festival" in pasadena
     assert "#pasadena-adaptive-sports-festival" in pasadena
     assert "Bark in the Park" not in pasadena
     assert "Pasadena Fall Festival" not in pasadena
+    assert "Trunk or Treat" not in pasadena
 
     glendale = _public_review_live_query_response("What current events are covered in Glendale?", "home_local_guide")
     assert "Forest Lawn Glendale" in glendale

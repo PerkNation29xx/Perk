@@ -812,10 +812,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
         "title": "Thirty-seven Southern California fall plans",
-        "timing": "October 29-November 19, 2026",
+        "timing": "October 30-November 19, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to Halloween at Kidspace, Natural History Museum's Spider Pavilion, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Carved at Descanso Gardens, Pasadena's free November 7 Adaptive Sports Festival, Pasadena's October 29 Trunk or Treat, and Grand Park's Downtown Día de los Muertos. "
+            "Ranked guide to Halloween at Kidspace, Natural History Museum's Spider Pavilion, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Carved at Descanso Gardens, Pasadena's free November 7 Adaptive Sports Festival, Pasadena's free November 15 CicLAvia open-streets day, and Grand Park's Downtown Día de los Muertos. "
             "Also covers Long Beach's November 1 Chrysanthemum Festival, Burbank's November 1 Día de los Muertos celebration and November 6-19 Art Association Fall Show, Anaheim's November 7 Indie Author Day, The Huntington's November 8 Second Sundays program, Fright Dive, the Long Beach Día de los Muertos Festival, Anaheim's Día de los Muertos night, Boo at the L.A. Zoo, West Hollywood Halloween Carnaval, Battleship IOWA's Halloween STEMebration, Villa Parke Día De Los Muertos, Halloween Horror Nights, The Huntington's Strange Science, Santa Monica's Pier and Woodlawn Cemetery Día de los Muertos programs, Forest Lawn Glendale, Self Help Graphics, Muzeo's Disney exhibitions, the Lucas Museum, Pasadena's Route 66 exhibition, Santa Monica's Portraits: Faces and Waves, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire, and Fleurs de Villes at Greystone."
         ),
     },
@@ -2065,8 +2065,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Halloween at Kidspace, Pasadena Trunk or Treat on October 29, Villa Parke's October 30 Día De Los Muertos gathering, the free November 7 Adaptive Sports Festival at Brookside Park, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, The Huntington's Laura Aguilar: Day of the Dead exhibition, The Huntington's October 30-31 Strange Science event, and The Huntington's November 8 Second Sundays: This Land Is program.",
-                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#pasadena-trunk-or-treat for a family civic gathering, #pasadena-villa-parke-dia-de-los-muertos for a shared community altar, #pasadena-adaptive-sports-festival for hands-on inclusive recreation, #pasadena-route-66-exhibition for a flexible history visit, #laura-aguilar-day-of-the-dead for photography, #huntington-strange-science for an adults-only museum night, or #huntington-second-sundays-this-land-is for all-ages artmaking and conversation; browse /directory?city=Pasadena for 563 local listings.",
+                "The current PerkNation fall guide includes Halloween at Kidspace, Villa Parke's October 30 Día De Los Muertos gathering, the free November 7 Adaptive Sports Festival at Brookside Park, the free November 15 CicLAvia open-streets day, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, The Huntington's Laura Aguilar: Day of the Dead exhibition, The Huntington's October 30-31 Strange Science event, and The Huntington's November 8 Second Sundays: This Land Is program.",
+                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#ciclavia-pasadena for a car-free walk, bike, roll, or skate day, #pasadena-villa-parke-dia-de-los-muertos for a shared community altar, #pasadena-adaptive-sports-festival for hands-on inclusive recreation, #pasadena-route-66-exhibition for a flexible history visit, #laura-aguilar-day-of-the-dead for photography, #huntington-strange-science for an adults-only museum night, or #huntington-second-sundays-this-land-is for all-ages artmaking and conversation; browse /directory?city=Pasadena for 563 local listings.",
             )
         )
 
