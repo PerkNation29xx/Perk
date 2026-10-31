@@ -16,7 +16,7 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Thirty-seven Southern California fall plans" in html
-    assert 'dateModified": "2026-10-30"' in html
+    assert 'dateModified": "2026-10-31"' in html
     assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 38))
 
     for expected in (
@@ -39,6 +39,14 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "2026-burbank-art-association",
         'id="anaheim-indie-author-day"',
         "anaheim.net/6272/Indie-Author-Day",
+        'id="santa-monica-veterans-day"',
+        "annual-nov-11-veterans-day-ceremony",
+        'id="anaheim-native-art-acorn-festival"',
+        "anaheim.net/6813/Native-Art-and-Acorn-Festival",
+        'id="west-hollywood-next-chapter-writers-summit"',
+        "lacountylibrary.org/nextchapter",
+        'id="beverly-hills-holiday-lighting"',
+        "beverlyhills.org/1682/Citywide-Holiday-Festivities",
         "Día de los Muertos on Olvera Street",
         "Halloween STEMebration",
         'id="huntington-strange-science"',
@@ -90,6 +98,10 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "Coast Film &amp; Music Festival",
         "Moonlight Hike",
         "Pasadena Trunk or Treat",
+        "Fright Dive",
+        "Halloween Skatefest",
+        "Villa Parke",
+        "Anaheim Día de los Muertos",
     ):
         assert expired not in html
 
@@ -124,14 +136,17 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 30 · Fall guide" in response.text
+        assert "Updated October 31 · Fall guide" in response.text
         assert "Thirty-seven Southern California fall plans, ranked." in response.text
         for current in (
             "Pasadena's November 7 Adaptive Sports Festival",
             "Pasadena's November 7 Adaptive Sports Festival and November 15 CicLAvia",
             "Long Beach's Chrysanthemum Festival",
             "Burbank's Halloween, Día de los Muertos, and fall art programs",
-            "Anaheim's Día de los Muertos night and Indie Author Day",
+            "Anaheim's Indie Author Day and Native Art and Acorn Festival",
+            "Santa Monica's Veterans Day ceremony",
+            "West Hollywood's Next Chapter Writers' Summit",
+            "Beverly Hills' holiday lighting",
             "The Huntington's November 8 Second Sundays program",
             "Woodlawn Cemetery",
             "Strange Science",
@@ -151,6 +166,10 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Held in Trust",
             "Moonlight Hike",
             "Trunk or Treat",
+            "Fright Dive",
+            "Skatefest",
+            "Villa Parke",
+            "Día de los Muertos night",
         ):
             assert expired not in response.text
 
@@ -181,6 +200,10 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Chrysanthemum Festival",
         "Art Association Fall Show",
         "Indie Author Day",
+        "Native Art and Acorn Festival",
+        "Veterans Day ceremony",
+        "Next Chapter Writers' Summit",
+        "Beverly Hills' November 19 holiday lighting",
     ):
         assert current in general
     for expired in (
@@ -194,18 +217,23 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Wild Creatures Walk",
         "Party on the Pier",
         "Trunk or Treat",
+        "Fright Dive",
+        "Halloween Skatefest",
+        "Villa Parke",
+        "Día de los Muertos night",
     ):
         assert expired not in general
 
     burbank = _public_review_live_query_response("What current events are covered in Burbank?", "home_local_guide")
-    assert "Halloween Skatefest" in burbank
+    assert "Halloween Carnival" in burbank
     assert "Día de los Muertos celebration" in burbank
     assert "Art Association Fall Show" in burbank
-    assert "#burbank-halloween-skatefest" in burbank
+    assert "#burbank-halloween-carnival" in burbank
     assert "#burbank-dia-de-los-muertos" in burbank
     assert "#burbank-art-association-fall-show" in burbank
     assert "Haunted Adventure" not in burbank
     assert "Little Pumpkins" not in burbank
+    assert "Halloween Skatefest" not in burbank
 
     pasadena = _public_review_live_query_response("What current events are covered in Pasadena?", "home_local_guide")
     assert "CicLAvia" in pasadena
@@ -217,6 +245,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     assert "Bark in the Park" not in pasadena
     assert "Pasadena Fall Festival" not in pasadena
     assert "Trunk or Treat" not in pasadena
+    assert "Villa Parke" not in pasadena
 
     glendale = _public_review_live_query_response("What current events are covered in Glendale?", "home_local_guide")
     assert "Forest Lawn Glendale" in glendale

@@ -780,8 +780,8 @@ def _home_local_guide_context(*, db: Optional[Session]) -> str:
             "- Union, Agnes, Fishwives, Perle, Bone Kettle, Osawa, Panda Inn, and Pez Coastal Kitchen are Pasadena restaurant recommendations, not discount offers unless another promo says so.",
             "",
             "Editorial/review coverage currently surfaced for PerkNation readers:",
-            "- Fashion guide: CMC sample-sale Fridays beginning October 30, Fashion District shopping, and completed Miami Fashion Week and LA Market Week as season context.",
-            "- Events coverage: the ranked 32-plan late-October and early-November Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
+            "- Fashion guide: CMC holiday sample-sale Fridays beginning November 6, Fashion District shopping, and completed Miami Fashion Week and LA Market Week as season context.",
+            "- Events coverage: the ranked 37-plan late-October and November Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
             "- Restaurant coverage: current local directory listings, Pasadena restaurant picks, and broader dining discovery.",
             "",
             "Answering rules:",
@@ -800,10 +800,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Fashion and shopping",
         "city": "Los Angeles, United States, and international",
         "title": "2026 Fashion Week calendar: LA, New York, Miami and the world",
-        "timing": "October 18-30, 2026",
+        "timing": "October 31-December 18, 2026",
         "route": "/articles/la-fashion-events-2026",
         "details": (
-            "The public CMC sample sale on October 30 is the remaining Los Angeles shopping date. "
+            "The remaining public CMC holiday sample-sale Fridays begin November 6 and continue on November 13 and 20 and December 4, 11, and 18. "
             "Completed Miami Fashion Week, Los Angeles Market Week, New York, London, Milan, and Paris dates remain in the article only as clearly labeled season context."
         ),
     },
@@ -812,11 +812,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
         "title": "Thirty-seven Southern California fall plans",
-        "timing": "October 30-November 19, 2026",
+        "timing": "October 31-November 19, 2026",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to Halloween at Kidspace, Natural History Museum's Spider Pavilion, Huntington Beach Oktoberfest, Queen Mary's Dark Harbor, Carved at Descanso Gardens, Pasadena's free November 7 Adaptive Sports Festival, Pasadena's free November 15 CicLAvia open-streets day, and Grand Park's Downtown Día de los Muertos. "
-            "Also covers Long Beach's November 1 Chrysanthemum Festival, Burbank's November 1 Día de los Muertos celebration and November 6-19 Art Association Fall Show, Anaheim's November 7 Indie Author Day, The Huntington's November 8 Second Sundays program, Fright Dive, the Long Beach Día de los Muertos Festival, Anaheim's Día de los Muertos night, Boo at the L.A. Zoo, West Hollywood Halloween Carnaval, Battleship IOWA's Halloween STEMebration, Villa Parke Día De Los Muertos, Halloween Horror Nights, The Huntington's Strange Science, Santa Monica's Pier and Woodlawn Cemetery Día de los Muertos programs, Forest Lawn Glendale, Self Help Graphics, Muzeo's Disney exhibitions, the Lucas Museum, Pasadena's Route 66 exhibition, Santa Monica's Portraits: Faces and Waves, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire, and Fleurs de Villes at Greystone."
+            "Also covers Long Beach's November 1 Chrysanthemum Festival, Burbank's November 1 Día de los Muertos celebration and November 6-19 Art Association Fall Show, Anaheim's November 7 Indie Author Day and November 14 Native Art and Acorn Festival, Santa Monica's November 11 Veterans Day ceremony, West Hollywood's November 14 Next Chapter Writers' Summit, Beverly Hills' November 19 holiday lighting, The Huntington's November 8 Second Sundays program, the Long Beach Día de los Muertos Festival, Boo at the L.A. Zoo, West Hollywood Halloween Carnaval, Battleship IOWA's Halloween STEMebration, Halloween Horror Nights, The Huntington's Strange Science, Santa Monica's Pier and Woodlawn Cemetery Día de los Muertos programs, Forest Lawn Glendale, Self Help Graphics, Muzeo's Disney exhibitions, the Lucas Museum, Pasadena's Route 66 exhibition, Santa Monica's Portraits: Faces and Waves, The Huntington's Laura Aguilar exhibition, the Academy Museum's The Horror Show, Glendale's Artifacts from an Unborn Empire, and Fleurs de Villes at Greystone."
         ),
     },
 
@@ -903,11 +903,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Concerts, coastal art, wellness, movies, markets, and local history",
         "city": "Santa Monica",
-        "title": "Santa Monica October 2026 coastal events guide",
-        "timing": "October 26-November 1, 2026",
+        "title": "Santa Monica October and November 2026 coastal events guide",
+        "timing": "October 31-November 11, 2026",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Five current plans covering Día de los Muertos at Woodlawn Cemetery, Cinema by the Sea's Practical Magic screening, Santa Monica Pier's free Día de los Muertos celebration, the Portraits: Faces and Waves photography exhibition, and the Pico farmers market."
+            "Six current plans covering Día de los Muertos at Woodlawn Cemetery, Cinema by the Sea's Practical Magic screening, Santa Monica Pier's free Día de los Muertos celebration, the November 11 Veterans Day ceremony, the Portraits: Faces and Waves photography exhibition, and the Pico farmers market."
         ),
     },
     {
@@ -1969,7 +1969,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "D23's 2026 Anaheim convention concluded on August 16, so PerkNation no longer presents its ticket or standby guidance as active.",
-                "For current Anaheim planning, the fall guide covers Muzeo's Disney-history exhibitions through November 1, the free October 30 Día de los Muertos community night, and November 7 Indie Author Day at Anaheim Central Library; browse /directory?city=Anaheim for 35 local listings.",
+                "For current Anaheim planning, the fall guide covers Muzeo's Disney-history exhibitions through November 1, November 7 Indie Author Day at Anaheim Central Library, and the free November 14 Native Art and Acorn Festival at Oak Canyon Nature Center; browse /directory?city=Anaheim for 35 local listings.",
             )
         )
 
@@ -1985,8 +1985,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current Orange County options include Anaheim's free Día de los Muertos night on October 30, Huntington Beach Oktoberfest through November 8, the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1, and Anaheim Indie Author Day on November 7.",
-                "Open /articles/southern-california-september-events-2026#anaheim-dia-de-los-muertos, /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, /articles/southern-california-september-events-2026#muzeo-disney-exhibitions, or /articles/southern-california-september-events-2026#anaheim-indie-author-day for practical comparisons and current city-directory links.",
+                "Current Orange County options include Huntington Beach Oktoberfest through November 8, the Walt Disney Archives and Disneyland art at Muzeo in Anaheim through November 1, Anaheim Indie Author Day on November 7, and the free Native Art and Acorn Festival on November 14.",
+                "Open /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, /articles/southern-california-september-events-2026#muzeo-disney-exhibitions, /articles/southern-california-september-events-2026#anaheim-indie-author-day, or /articles/southern-california-september-events-2026#anaheim-native-art-acorn-festival for practical comparisons and current city-directory links.",
             )
         )
 
@@ -2001,13 +2001,12 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Queen Mary's Dark Harbor, Fright Dive, the October 31 Historical Cemetery Tour, the November 1 Chrysanthemum Festival, and the November 1 City of Long Beach Día de los Muertos Festival:",
+                "The current PerkNation fall guide includes Queen Mary's Dark Harbor, the October 31 Historical Cemetery Tour, the November 1 Chrysanthemum Festival, and the November 1 City of Long Beach Día de los Muertos Festival:",
                 "- Dark Harbor runs select nights September 18-November 1 with haunted mazes, performers, immersive attractions, rides, and themed food; check the venue's current parking guidance before leaving.",
-                "- Fright Dive runs October 30 from 7:30-11 p.m. for adults 18 and older, with after-hours gallery access, live music, DJs, art, food, and drinks; general tickets are $49.95 and member tickets are $44.95.",
                 "- The Historical Cemetery Tour runs October 31 from 9 a.m.-2:40 p.m. at Long Beach Municipal and Sunnyside cemeteries, with repeating costumed performances focused on local history rather than scares.",
                 "- The Earl Burns Miller Japanese Garden's Chrysanthemum Festival runs November 1 from 1-3 p.m.; confirm the reservation process and budget for CSULB parking before traveling.",
                 "- The free City of Long Beach Día de los Muertos Festival runs November 1 from 1-7 p.m. at Rainbow Lagoon with culturally rooted performances, vendors, a resource fair, and city and community partners.",
-                "Open /articles/southern-california-september-events-2026#queen-mary-dark-harbor, #fright-dive-aquarium, #long-beach-chrysanthemum-festival, or #long-beach-dia-de-los-muertos-festival for practical planning, with links into 208 Long Beach directory listings.",
+                "Open /articles/southern-california-september-events-2026#queen-mary-dark-harbor, #long-beach-chrysanthemum-festival, or #long-beach-dia-de-los-muertos-festival for practical planning, with links into 208 Long Beach directory listings.",
                 "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )
@@ -2023,10 +2022,11 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks five late-October and early-November plans, including four free options:",
+                "The current PerkNation Santa Monica guide ranks six late-October and November plans, including five free options:",
                 "- Día de los Muertos at Woodlawn Cemetery runs November 1 from 11 a.m.-4 p.m. with live music, traditional altars, art, food, activities, and free admission.",
                 "- Cinema by the Sea screens Practical Magic on October 31 outdoors at Regent Santa Monica Beach; confirm the price, booking method, seating policy, and weather plan with the venue.",
                 "- Santa Monica Pier's free Día de los Muertos celebration runs October 31-November 1 with community ofrendas, a Pedro Infante tribute, and November 1 performances and a procession.",
+                "- The city's free Veterans Day ceremony runs November 11 from 11 a.m.-1 p.m. in Beach Parking Lot 4, with military and city speakers, the 300th Army Band, and a planned flyover.",
                 "- The free Portraits: Faces and Waves exhibition offers a flexible Beach House Gallery stop through March 27, while the Pico farmers market remains a repeatable Saturday morning option.",
                 "Open /articles/santa-monica-august-2026-guide for rankings, best-for notes, transit, official sources, and directory links.",
             )
@@ -2035,9 +2035,9 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_fashion and not any((wants_sports, wants_concerts, wants_restaurants)):
         return "\n".join(
             (
-                "Remaining date in the PerkNation 2026 Fashion Week guide:",
-                "- CMC's next public sample-sale Friday: October 30.",
-                "Choose the CMC sample sale for public shopping access. "
+                "Remaining public dates in the PerkNation 2026 Fashion Week guide:",
+                "- CMC holiday sample-sale Fridays: November 6, 13, and 20, plus December 4, 11, and 18.",
+                "Choose a CMC sample sale for public shopping access. "
                 "Completed Miami Fashion Week and Completed Los Angeles Market Week, plus New York, London, Milan, and Paris dates, are labeled as season context. Read the rankings, access notes, and official-source links at "
                 "/articles/la-fashion-events-2026.",
             )
@@ -2054,19 +2054,18 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_burbank and not wants_restaurants:
         return "\n".join(
             (
-                "Halloween Skatefest follows at Valley Skate Park on October 30 from 6-9 p.m. with free barbecue, skating competitions, raffles, free admission, and no registration requirement.",
                 "The city-run Halloween Carnival follows October 31 from 6:30-8 p.m. at McCambridge Recreation Center for children ages 3-11; admission is $5 per child.",
                 "Burbank's free Día de los Muertos celebration follows November 1 from noon-2 p.m. behind Northwest Branch Library with mariachi, dancing, face painting, all-ages crafts, and a community altar.",
                 "The Burbank Art Association Fall Show opens November 6 from 7-9 p.m. with music and light refreshments, then remains at the Betsy Lueke Creative Arts Center through November 19 during regular facility hours.",
-                "Open /articles/southern-california-september-events-2026#burbank-halloween-skatefest, #burbank-halloween-carnival, #burbank-dia-de-los-muertos, or #burbank-art-association-fall-show for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
+                "Open /articles/southern-california-september-events-2026#burbank-halloween-carnival, #burbank-dia-de-los-muertos, or #burbank-art-association-fall-show for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
             )
         )
 
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Halloween at Kidspace, Villa Parke's October 30 Día De Los Muertos gathering, the free November 7 Adaptive Sports Festival at Brookside Park, the free November 15 CicLAvia open-streets day, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, The Huntington's Laura Aguilar: Day of the Dead exhibition, The Huntington's October 30-31 Strange Science event, and The Huntington's November 8 Second Sundays: This Land Is program.",
-                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#ciclavia-pasadena for a car-free walk, bike, roll, or skate day, #pasadena-villa-parke-dia-de-los-muertos for a shared community altar, #pasadena-adaptive-sports-festival for hands-on inclusive recreation, #pasadena-route-66-exhibition for a flexible history visit, #laura-aguilar-day-of-the-dead for photography, #huntington-strange-science for an adults-only museum night, or #huntington-second-sundays-this-land-is for all-ages artmaking and conversation; browse /directory?city=Pasadena for 563 local listings.",
+                "The current PerkNation fall guide includes Halloween at Kidspace, the free November 7 Adaptive Sports Festival at Brookside Park, the free November 15 CicLAvia open-streets day, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, The Huntington's Laura Aguilar: Day of the Dead exhibition, The Huntington's October 30-31 Strange Science event, and The Huntington's November 8 Second Sundays: This Land Is program.",
+                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#ciclavia-pasadena for a car-free walk, bike, roll, or skate day, #pasadena-adaptive-sports-festival for hands-on inclusive recreation, #pasadena-route-66-exhibition for a flexible history visit, #laura-aguilar-day-of-the-dead for photography, #huntington-strange-science for an adults-only museum night, or #huntington-second-sundays-this-land-is for all-ages artmaking and conversation; browse /directory?city=Pasadena for 563 local listings.",
             )
         )
 

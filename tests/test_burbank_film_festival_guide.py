@@ -45,9 +45,10 @@ def test_burbank_film_guide_stays_retired_while_current_burbank_guide_is_answere
     )
 
     assert answer
-    assert "Halloween Skatefest" in answer
-    assert "October 30" in answer
-    assert "#burbank-halloween-skatefest" in answer
+    assert "Halloween Carnival" in answer
+    assert "October 31" in answer
+    assert "#burbank-halloween-carnival" in answer
+    assert "Halloween Skatefest" not in answer
     assert "Haunted Adventure" not in answer
     assert "Burbank Book Festival" not in answer
     assert "Career Transitions Expo" not in answer
