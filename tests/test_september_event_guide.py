@@ -16,11 +16,10 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Thirty-seven Southern California fall plans" in html
-    assert 'dateModified": "2026-10-31"' in html
+    assert 'dateModified": "2026-11-01"' in html
     assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 38))
 
     for expected in (
-        "Halloween at Kidspace",
         "Spider Pavilion",
         "Huntington Beach Oktoberfest",
         'id="pasadena-adaptive-sports-festival"',
@@ -41,16 +40,23 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "anaheim.net/6272/Indie-Author-Day",
         'id="santa-monica-veterans-day"',
         "annual-nov-11-veterans-day-ceremony",
+        'id="santa-monica-held-in-trust"',
+        "4v0naphs6kscmrssg0n2ejrsce/202611041100",
         'id="anaheim-native-art-acorn-festival"',
         "anaheim.net/6813/Native-Art-and-Acorn-Festival",
         'id="west-hollywood-next-chapter-writers-summit"',
         "lacountylibrary.org/nextchapter",
+        'id="west-hollywood-live-on-sunset"',
+        "visitwesthollywood.com/events/live-on-sunset",
+        'id="beverly-hills-monuments-of-stillness"',
+        "beverlyhills.org/1839/Carole-Feurerman-Monuments-of-Stillness",
         'id="beverly-hills-holiday-lighting"',
         "beverlyhills.org/1682/Citywide-Holiday-Festivities",
+        'id="burbank-holiday-in-the-park"',
+        "visitburbank.com/events/holiday-in-the-park",
+        'id="burbank-winter-wine-walk"',
+        "visitburbank.com/events/burbank-winter-wine-walk",
         "Día de los Muertos on Olvera Street",
-        "Halloween STEMebration",
-        'id="huntington-strange-science"',
-        "huntington.org/event/strange-science",
         'id="santa-monica-pier-dia-de-los-muertos"',
         "santamonicapier.org/diadelosmuertos",
         'id="forest-lawn-glendale-dia-de-los-muertos"',
@@ -84,7 +90,6 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "DTLB Unfiltered photo walk",
         "Formula DRIFT Shoreline Showdown",
         "Burbank Little Pumpkins Tot Party",
-        "Held in Trust",
         "Long Beach Open Studio Tour",
         "Bark in the Park",
         "Marina Spooktacular",
@@ -102,6 +107,11 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "Halloween Skatefest",
         "Villa Parke",
         "Anaheim Día de los Muertos",
+        "Halloween at Kidspace",
+        "Burbank Halloween Carnival",
+        "West Hollywood Halloween Carnaval",
+        "Halloween STEMebration",
+        "Strange Science",
     ):
         assert expired not in html
 
@@ -136,20 +146,21 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated October 31 · Fall guide" in response.text
+        assert "Updated November 1 · Fall guide" in response.text
         assert "Thirty-seven Southern California fall plans, ranked." in response.text
         for current in (
             "Pasadena's November 7 Adaptive Sports Festival",
             "Pasadena's November 7 Adaptive Sports Festival and November 15 CicLAvia",
             "Long Beach's Chrysanthemum Festival",
-            "Burbank's Halloween, Día de los Muertos, and fall art programs",
+            "Burbank's Día de los Muertos, fall art, Holiday in the Park, and Winter Wine Walk",
             "Anaheim's Indie Author Day and Native Art and Acorn Festival",
             "Santa Monica's Veterans Day ceremony",
+            "Held in Trust",
             "West Hollywood's Next Chapter Writers' Summit",
-            "Beverly Hills' holiday lighting",
+            "Live On Sunset",
+            "Beverly Hills' sculpture unveiling and holiday lighting",
             "The Huntington's November 8 Second Sundays program",
             "Woodlawn Cemetery",
-            "Strange Science",
             "Santa Monica's Pier and Woodlawn Cemetery celebrations",
             "Forest Lawn Glendale",
             "Self Help Graphics",
@@ -163,13 +174,15 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Fright Fest",
             "Formula DRIFT",
             "Little Pumpkins",
-            "Held in Trust",
             "Moonlight Hike",
             "Trunk or Treat",
             "Fright Dive",
             "Skatefest",
             "Villa Parke",
             "Día de los Muertos night",
+            "Halloween at Kidspace",
+            "Halloween STEMebration",
+            "West Hollywood Halloween Carnaval",
         ):
             assert expired not in response.text
 
@@ -191,7 +204,11 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Adaptive Sports Festival",
         "CicLAvia",
         "Woodlawn Cemetery",
-        "Strange Science",
+        "Held in Trust",
+        "Live On Sunset",
+        "Holiday in the Park",
+        "Winter Wine Walk",
+        "Monuments of Stillness",
         "Santa Monica's Pier and Woodlawn Cemetery",
         "Forest Lawn Glendale",
         "Self Help Graphics",
@@ -203,7 +220,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Native Art and Acorn Festival",
         "Veterans Day ceremony",
         "Next Chapter Writers' Summit",
-        "Beverly Hills' November 19 holiday lighting",
+        "November 19 holiday lighting",
     ):
         assert current in general
     for expired in (
@@ -221,16 +238,23 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Halloween Skatefest",
         "Villa Parke",
         "Día de los Muertos night",
+        "Halloween at Kidspace",
+        "Halloween Carnival",
+        "Halloween STEMebration",
+        "Strange Science",
     ):
         assert expired not in general
 
     burbank = _public_review_live_query_response("What current events are covered in Burbank?", "home_local_guide")
-    assert "Halloween Carnival" in burbank
     assert "Día de los Muertos celebration" in burbank
     assert "Art Association Fall Show" in burbank
-    assert "#burbank-halloween-carnival" in burbank
+    assert "Holiday in the Park" in burbank
+    assert "Winter Wine Walk" in burbank
     assert "#burbank-dia-de-los-muertos" in burbank
     assert "#burbank-art-association-fall-show" in burbank
+    assert "#burbank-holiday-in-the-park" in burbank
+    assert "#burbank-winter-wine-walk" in burbank
+    assert "Halloween Carnival" not in burbank
     assert "Haunted Adventure" not in burbank
     assert "Little Pumpkins" not in burbank
     assert "Halloween Skatefest" not in burbank
@@ -238,7 +262,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     pasadena = _public_review_live_query_response("What current events are covered in Pasadena?", "home_local_guide")
     assert "CicLAvia" in pasadena
     assert "#ciclavia-pasadena" in pasadena
-    assert "Strange Science" in pasadena
+    assert "Strange Science" not in pasadena
     assert "Second Sundays" in pasadena
     assert "Adaptive Sports Festival" in pasadena
     assert "#pasadena-adaptive-sports-festival" in pasadena

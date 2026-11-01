@@ -93,8 +93,9 @@ def test_pasadena_guide_is_cross_linked_and_available_to_public_answers() -> Non
     assert "Pasadena ARTWalk" not in answer
     assert "CicLAvia" in answer
     assert "#ciclavia-pasadena" in answer
-    assert "Strange Science" in answer
-    assert "#huntington-strange-science" in answer
+    assert "Strange Science" not in answer
+    assert "#huntington-strange-science" not in answer
+    assert "#huntington-second-sundays-this-land-is" in answer
     assert "Walktober" not in answer
     assert "Pasadena Chalk Festival" not in answer
     assert "Sunset Sessions today" not in answer
