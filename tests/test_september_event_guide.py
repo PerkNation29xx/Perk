@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-seven Southern California fall plans" in html
-    assert 'dateModified": "2026-11-01"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 38))
+    assert "Thirty-two Southern California fall plans" in html
+    assert 'dateModified": "2026-11-02"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 33))
 
     for expected in (
         "Spider Pavilion",
@@ -26,22 +26,26 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "cityofpasadena.net/event/adaptive-sports-festival",
         'id="ciclavia-pasadena"',
         "cityofpasadena.net/event/ciclavia-2026-pasadena",
-        'id="santa-monica-woodlawn-dia-de-los-muertos"',
-        "4qs9amnfe2p00xgqe88s65zs53/202611011100",
-        'id="burbank-dia-de-los-muertos"',
-        "/calendar/-/calendar/event/4506259/0",
+        'id="santa-monica-renegade-craft"',
+        "renegadecraft.com/event/los-angeles-winter",
         'id="huntington-second-sundays-this-land-is"',
         "huntington.org/event/second-sundays-land",
-        'id="long-beach-chrysanthemum-festival"',
-        "csulb.edu/earl-burns-miller-japanese-garden",
         'id="burbank-art-association-fall-show"',
         "2026-burbank-art-association",
+        'id="long-beach-little-women"',
+        "musical.org/events/little-women-the-musical",
         'id="anaheim-indie-author-day"',
         "anaheim.net/6272/Indie-Author-Day",
         'id="santa-monica-veterans-day"',
         "annual-nov-11-veterans-day-ceremony",
         'id="santa-monica-held-in-trust"',
         "4v0naphs6kscmrssg0n2ejrsce/202611041100",
+        'id="burbank-veterans-day"',
+        "/calendar/-/calendar/event/3094931/0",
+        'id="pasadena-veterans-day"',
+        "cityofpasadena.net/events/2026-11-11",
+        'id="santa-monica-swiss-winter-village"',
+        "santamonica.com/event/swiss-winter-village",
         'id="anaheim-native-art-acorn-festival"',
         "anaheim.net/6813/Native-Art-and-Acorn-Festival",
         'id="west-hollywood-next-chapter-writers-summit"',
@@ -56,11 +60,9 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "visitburbank.com/events/holiday-in-the-park",
         'id="burbank-winter-wine-walk"',
         "visitburbank.com/events/burbank-winter-wine-walk",
+        'id="la-auto-show"',
+        "laconventioncenter.com/events/detail/la-auto-show-2026",
         "Día de los Muertos on Olvera Street",
-        'id="santa-monica-pier-dia-de-los-muertos"',
-        "santamonicapier.org/diadelosmuertos",
-        'id="forest-lawn-glendale-dia-de-los-muertos"',
-        "forestlawn.com/events/dia-de-los-muertos",
         'id="self-help-graphics-dia-de-los-muertos"',
         "selfhelpgraphics.com/diadelosmuertos",
         "Best for:",
@@ -112,6 +114,16 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "West Hollywood Halloween Carnaval",
         "Halloween STEMebration",
         "Strange Science",
+        "Queen Mary's Dark Harbor",
+        "Carved at Descanso Gardens",
+        "Día de los Muertos at Woodlawn Cemetery",
+        "Chrysanthemum Festival",
+        "Boo at the L.A. Zoo",
+        "Walt Disney Archives and Disneyland art at Muzeo",
+        "Halloween Horror Nights",
+        "Santa Monica Pier Día de los Muertos",
+        "Forest Lawn Glendale Día de los Muertos",
+        "Long Beach Día de los Muertos Festival",
     ):
         assert expired not in html
 
@@ -135,7 +147,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Thirty-seven Southern California fall plans" in response.text
+        assert "Thirty-two Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -146,23 +158,22 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 1 · Fall guide" in response.text
-        assert "Thirty-seven Southern California fall plans, ranked." in response.text
+        assert "Updated November 2 · Fall guide" in response.text
+        assert "Thirty-two Southern California fall plans, ranked." in response.text
         for current in (
             "Pasadena's November 7 Adaptive Sports Festival",
             "Pasadena's November 7 Adaptive Sports Festival and November 15 CicLAvia",
-            "Long Beach's Chrysanthemum Festival",
-            "Burbank's Día de los Muertos, fall art, Holiday in the Park, and Winter Wine Walk",
+            "Santa Monica's Renegade Craft, Veterans Day ceremony",
+            "Long Beach's <em>Little Women</em>",
+            "Burbank's fall art, Veterans Day ceremony, Holiday in the Park, and Winter Wine Walk",
             "Anaheim's Indie Author Day and Native Art and Acorn Festival",
-            "Santa Monica's Veterans Day ceremony",
             "Held in Trust",
             "West Hollywood's Next Chapter Writers' Summit",
             "Live On Sunset",
             "Beverly Hills' sculpture unveiling and holiday lighting",
             "The Huntington's November 8 Second Sundays program",
-            "Woodlawn Cemetery",
-            "Santa Monica's Pier and Woodlawn Cemetery celebrations",
-            "Forest Lawn Glendale",
+            "Swiss Winter Village",
+            "the LA Auto Show",
             "Self Help Graphics",
         ):
             assert current in response.text
@@ -183,6 +194,13 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Halloween at Kidspace",
             "Halloween STEMebration",
             "West Hollywood Halloween Carnaval",
+            "Dark Harbor",
+            "Carved at Descanso Gardens",
+            "Woodlawn Cemetery",
+            "Chrysanthemum Festival",
+            "Boo at the L.A. Zoo",
+            "Halloween Horror Nights",
+            "Forest Lawn Glendale",
         ):
             assert expired not in response.text
 
@@ -200,21 +218,20 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Thirty-seven Southern California fall plans",
+        "Thirty-two Southern California fall plans",
         "Adaptive Sports Festival",
         "CicLAvia",
-        "Woodlawn Cemetery",
+        "Renegade Craft",
         "Held in Trust",
+        "Swiss Winter Village",
+        "Little Women",
+        "LA Auto Show",
         "Live On Sunset",
         "Holiday in the Park",
         "Winter Wine Walk",
         "Monuments of Stillness",
-        "Santa Monica's Pier and Woodlawn Cemetery",
-        "Forest Lawn Glendale",
         "Self Help Graphics",
-        "Burbank's November 1 Día de los Muertos celebration",
         "The Huntington's November 8 Second Sundays program",
-        "Chrysanthemum Festival",
         "Art Association Fall Show",
         "Indie Author Day",
         "Native Art and Acorn Festival",
@@ -242,16 +259,23 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Halloween Carnival",
         "Halloween STEMebration",
         "Strange Science",
+        "Dark Harbor",
+        "Carved at Descanso Gardens",
+        "Woodlawn Cemetery",
+        "Chrysanthemum Festival",
+        "Boo at the L.A. Zoo",
+        "Halloween Horror Nights",
+        "Forest Lawn Glendale",
     ):
         assert expired not in general
 
     burbank = _public_review_live_query_response("What current events are covered in Burbank?", "home_local_guide")
-    assert "Día de los Muertos celebration" in burbank
     assert "Art Association Fall Show" in burbank
+    assert "Veterans Day ceremony" in burbank
     assert "Holiday in the Park" in burbank
     assert "Winter Wine Walk" in burbank
-    assert "#burbank-dia-de-los-muertos" in burbank
     assert "#burbank-art-association-fall-show" in burbank
+    assert "#burbank-veterans-day" in burbank
     assert "#burbank-holiday-in-the-park" in burbank
     assert "#burbank-winter-wine-walk" in burbank
     assert "Halloween Carnival" not in burbank
@@ -266,13 +290,15 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     assert "Second Sundays" in pasadena
     assert "Adaptive Sports Festival" in pasadena
     assert "#pasadena-adaptive-sports-festival" in pasadena
+    assert "#pasadena-veterans-day" in pasadena
     assert "Bark in the Park" not in pasadena
     assert "Pasadena Fall Festival" not in pasadena
     assert "Trunk or Treat" not in pasadena
     assert "Villa Parke" not in pasadena
 
     glendale = _public_review_live_query_response("What current events are covered in Glendale?", "home_local_guide")
-    assert "Forest Lawn Glendale" in glendale
+    assert "Artifacts from an Unborn Empire" in glendale
+    assert "Forest Lawn Glendale" not in glendale
     assert "Jewel City" not in glendale
 
 

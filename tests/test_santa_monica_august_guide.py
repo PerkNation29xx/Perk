@@ -15,15 +15,15 @@ def test_santa_monica_guide_is_current_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Santa Monica has six current plans" in html
-    assert 'dateModified": "2026-11-01"' in html
+    assert 'dateModified": "2026-11-02"' in html
     assert "6 ranked plans" in html
     for expected in (
-        "Día de los Muertos at Woodlawn Cemetery",
-        "4qs9amnfe2p00xgqe88s65zs53/202611011100",
+        "Renegade Craft",
+        "renegadecraft.com/event/los-angeles-winter",
         "Held in Trust",
         "4v0naphs6kscmrssg0n2ejrsce/202611041100",
-        "Santa Monica Pier Día de los Muertos",
-        "https://www.santamonicapier.org/diadelosmuertos",
+        "Swiss Winter Village",
+        "santamonica.com/event/swiss-winter-village",
         "Santa Monica Veterans Day ceremony",
         "annual-nov-11-veterans-day-ceremony",
         "Portraits: Faces and Waves",
@@ -44,6 +44,8 @@ def test_santa_monica_guide_is_current_and_reader_facing() -> None:
         "Hocus Pocus",
         "October 24 Pico Farmers Market",
         "Party on the Pier",
+        "Woodlawn Cemetery",
+        "Santa Monica Pier Día de los Muertos",
     ):
         assert expired not in html
 
@@ -78,11 +80,11 @@ def test_santa_monica_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 1 · Santa Monica" in response.text
+        assert "Updated November 2 · Santa Monica" in response.text
         assert "Six current Santa Monica plans, ranked." in response.text
-        assert "Día de los Muertos at Woodlawn Cemetery" in response.text
+        assert "Renegade Craft" in response.text
         assert "Held in Trust" in response.text
-        assert "Santa Monica Pier" in response.text
+        assert "Swiss Winter Village" in response.text
         assert "Veterans Day ceremony" in response.text
         assert "LA Times Food Bowl" not in response.text
         assert "Ghosts of the Miles" not in response.text
@@ -99,10 +101,10 @@ def test_santa_monica_public_answer_is_current_and_scoped() -> None:
     )
 
     assert answer
-    assert "ranks six November and flexible long-run plans with free admission" in answer
-    assert "Woodlawn Cemetery" in answer
+    assert "ranks six November and flexible long-run plans" in answer
+    assert "Renegade Craft" in answer
     assert "Held in Trust" in answer
-    assert "Santa Monica Pier's free Día de los Muertos celebration" in answer
+    assert "Swiss Winter Village" in answer
     assert "free Veterans Day ceremony" in answer
     assert "Portraits: Faces and Waves" in answer
     assert "Pico farmers market" in answer
@@ -110,4 +112,6 @@ def test_santa_monica_public_answer_is_current_and_scoped() -> None:
     assert "Scott Silven" not in answer
     assert "Ghosts of the Miles" not in answer
     assert "Practical Magic" not in answer
+    assert "Woodlawn Cemetery" not in answer
+    assert "Día de los Muertos celebration" not in answer
     assert "/articles/santa-monica-august-2026-guide" in answer
