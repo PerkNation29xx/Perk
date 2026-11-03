@@ -15,7 +15,7 @@ def test_santa_monica_guide_is_current_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Santa Monica has six current plans" in html
-    assert 'dateModified": "2026-11-02"' in html
+    assert 'dateModified": "2026-11-03"' in html
     assert "6 ranked plans" in html
     for expected in (
         "Renegade Craft",
@@ -80,7 +80,7 @@ def test_santa_monica_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 2 · Santa Monica" in response.text
+        assert "Updated November 3 · Santa Monica" in response.text
         assert "Six current Santa Monica plans, ranked." in response.text
         assert "Renegade Craft" in response.text
         assert "Held in Trust" in response.text

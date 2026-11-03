@@ -16,7 +16,7 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Thirty-two Southern California fall plans" in html
-    assert 'dateModified": "2026-11-02"' in html
+    assert 'dateModified": "2026-11-03"' in html
     assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 33))
 
     for expected in (
@@ -26,6 +26,8 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "cityofpasadena.net/event/adaptive-sports-festival",
         'id="ciclavia-pasadena"',
         "cityofpasadena.net/event/ciclavia-2026-pasadena",
+        'id="aquarium-first-wednesdays-pfas"',
+        "aquariumofpacific.org/events/info/first_wednesdays",
         'id="santa-monica-renegade-craft"',
         "renegadecraft.com/event/los-angeles-winter",
         'id="huntington-second-sundays-this-land-is"',
@@ -48,6 +50,8 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "santamonica.com/event/swiss-winter-village",
         'id="anaheim-native-art-acorn-festival"',
         "anaheim.net/6813/Native-Art-and-Acorn-Festival",
+        'id="anaheim-disneyland-holidays"',
+        "disneyland.disney.go.com/events-tours/holidays-at-the-disneyland-resort",
         'id="west-hollywood-next-chapter-writers-summit"',
         "lacountylibrary.org/nextchapter",
         'id="west-hollywood-live-on-sunset"',
@@ -62,7 +66,6 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "visitburbank.com/events/burbank-winter-wine-walk",
         'id="la-auto-show"',
         "laconventioncenter.com/events/detail/la-auto-show-2026",
-        "Día de los Muertos on Olvera Street",
         'id="self-help-graphics-dia-de-los-muertos"',
         "selfhelpgraphics.com/diadelosmuertos",
         "Best for:",
@@ -124,6 +127,8 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "Santa Monica Pier Día de los Muertos",
         "Forest Lawn Glendale Día de los Muertos",
         "Long Beach Día de los Muertos Festival",
+        "Grand Park's Downtown Día de los Muertos",
+        "Día de los Muertos on Olvera Street",
     ):
         assert expired not in html
 
@@ -158,15 +163,16 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 2 · Fall guide" in response.text
+        assert "Updated November 3 · Fall guide" in response.text
         assert "Thirty-two Southern California fall plans, ranked." in response.text
         for current in (
             "Pasadena's November 7 Adaptive Sports Festival",
             "Pasadena's November 7 Adaptive Sports Festival and November 15 CicLAvia",
+            "Aquarium of the Pacific's November 4 First Wednesdays program",
             "Santa Monica's Renegade Craft, Veterans Day ceremony",
             "Long Beach's <em>Little Women</em>",
             "Burbank's fall art, Veterans Day ceremony, Holiday in the Park, and Winter Wine Walk",
-            "Anaheim's Indie Author Day and Native Art and Acorn Festival",
+            "Anaheim's Indie Author Day, Native Art and Acorn Festival, and Holidays at the Disneyland Resort",
             "Held in Trust",
             "West Hollywood's Next Chapter Writers' Summit",
             "Live On Sunset",
@@ -201,6 +207,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Boo at the L.A. Zoo",
             "Halloween Horror Nights",
             "Forest Lawn Glendale",
+            "Grand Park's final Día de los Muertos",
         ):
             assert expired not in response.text
 
@@ -221,6 +228,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Thirty-two Southern California fall plans",
         "Adaptive Sports Festival",
         "CicLAvia",
+        "Aquarium of the Pacific's November 4 First Wednesdays program",
         "Renegade Craft",
         "Held in Trust",
         "Swiss Winter Village",
@@ -235,6 +243,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Art Association Fall Show",
         "Indie Author Day",
         "Native Art and Acorn Festival",
+        "Holidays at the Disneyland Resort",
         "Veterans Day ceremony",
         "Next Chapter Writers' Summit",
         "November 19 holiday lighting",
@@ -266,6 +275,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Boo at the L.A. Zoo",
         "Halloween Horror Nights",
         "Forest Lawn Glendale",
+        "Grand Park's final November 2 Día de los Muertos",
     ):
         assert expired not in general
 
