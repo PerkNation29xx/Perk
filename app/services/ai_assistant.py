@@ -811,11 +811,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Thirty-two Southern California fall plans",
-        "timing": "November 3, 2026-January 6, 2027",
+        "title": "Thirty-three Southern California fall plans",
+        "timing": "November 4, 2026-January 6, 2027",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to Natural History Museum's Spider Pavilion, Huntington Beach Oktoberfest, Pasadena's free November 7 Adaptive Sports Festival and November 15 CicLAvia, the Aquarium of the Pacific's November 4 First Wednesdays program, Santa Monica's November 7-8 Renegade Craft fair and November 18-January 3 Swiss Winter Village, Long Beach's November 6-22 Little Women, and the November 20-29 LA Auto Show. "
+            "Ranked guide to Natural History Museum's Spider Pavilion, Huntington Beach Oktoberfest, Pasadena's free November 6 Norton Simon Museum evening, November 7 Adaptive Sports Festival, and November 15 CicLAvia, the Aquarium of the Pacific's November 4 First Wednesdays program, Santa Monica's November 7-8 Renegade Craft fair and November 18-January 3 Swiss Winter Village, Long Beach's November 6-22 Little Women, and the November 20-29 LA Auto Show. "
             "Also covers Burbank's November 6-19 Art Association Fall Show, free November 11 Veterans Day ceremony, November 20 Holiday in the Park, and November 21 Winter Wine Walk; Anaheim's November 7 Indie Author Day, November 14 Native Art and Acorn Festival, and November 13-January 6 Holidays at the Disneyland Resort; free Veterans Day programs in Santa Monica and Pasadena; West Hollywood's November 14 Next Chapter Writers' Summit and Live On Sunset concert; Beverly Hills' November 9 Monuments of Stillness unveiling and November 19 holiday lighting; The Huntington's November 8 Second Sundays program; Self Help Graphics' November 7 Día de los Muertos celebration; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Held in Trust and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; Glendale's Artifacts from an Unborn Empire; and Fleurs de Villes at Greystone."
         ),
     },

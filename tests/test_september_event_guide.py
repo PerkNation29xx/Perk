@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-two Southern California fall plans" in html
-    assert 'dateModified": "2026-11-03"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 33))
+    assert "Thirty-three Southern California fall plans" in html
+    assert 'dateModified": "2026-11-04"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 34))
 
     for expected in (
         "Spider Pavilion",
@@ -28,6 +28,8 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "cityofpasadena.net/event/ciclavia-2026-pasadena",
         'id="aquarium-first-wednesdays-pfas"',
         "aquariumofpacific.org/events/info/first_wednesdays",
+        'id="norton-simon-free-first-friday"',
+        "nortonsimon.org/calendar/2026/fall-2026/free-first-friday-nov-6",
         'id="santa-monica-renegade-craft"',
         "renegadecraft.com/event/los-angeles-winter",
         'id="huntington-second-sundays-this-land-is"',
@@ -152,7 +154,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Thirty-two Southern California fall plans" in response.text
+        assert "Thirty-three Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -163,12 +165,13 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 3 · Fall guide" in response.text
-        assert "Thirty-two Southern California fall plans, ranked." in response.text
+        assert "Updated November 4 · Fall guide" in response.text
+        assert "Thirty-three Southern California fall plans, ranked." in response.text
         for current in (
             "Pasadena's November 7 Adaptive Sports Festival",
             "Pasadena's November 7 Adaptive Sports Festival and November 15 CicLAvia",
             "Aquarium of the Pacific's November 4 First Wednesdays program",
+            "Norton Simon Museum's free November 6 evening",
             "Santa Monica's Renegade Craft, Veterans Day ceremony",
             "Long Beach's <em>Little Women</em>",
             "Burbank's fall art, Veterans Day ceremony, Holiday in the Park, and Winter Wine Walk",
@@ -225,10 +228,11 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Thirty-two Southern California fall plans",
+        "Thirty-three Southern California fall plans",
         "Adaptive Sports Festival",
         "CicLAvia",
         "Aquarium of the Pacific's November 4 First Wednesdays program",
+        "Norton Simon",
         "Renegade Craft",
         "Held in Trust",
         "Swiss Winter Village",
