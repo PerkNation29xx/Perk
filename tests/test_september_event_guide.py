@@ -16,7 +16,7 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Thirty-three Southern California fall plans" in html
-    assert 'dateModified": "2026-11-04"' in html
+    assert 'dateModified": "2026-11-05"' in html
     assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 34))
 
     for expected in (
@@ -26,8 +26,10 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "cityofpasadena.net/event/adaptive-sports-festival",
         'id="ciclavia-pasadena"',
         "cityofpasadena.net/event/ciclavia-2026-pasadena",
-        'id="aquarium-first-wednesdays-pfas"',
-        "aquariumofpacific.org/events/info/first_wednesdays",
+        'id="corita-day-festival"',
+        "corita.org/corita-day",
+        'id="arcadia-community-cleanup-day"',
+        "arcadiaca.gov/government/boards_commissions/arcadia_beautiful_commission.php",
         'id="norton-simon-free-first-friday"',
         "nortonsimon.org/calendar/2026/fall-2026/free-first-friday-nov-6",
         'id="santa-monica-renegade-craft"',
@@ -131,6 +133,8 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "Long Beach Día de los Muertos Festival",
         "Grand Park's Downtown Día de los Muertos",
         "Día de los Muertos on Olvera Street",
+        "First Wednesdays at the Aquarium of the Pacific",
+        "Fleurs de Villes at Greystone",
     ):
         assert expired not in html
 
@@ -165,12 +169,13 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 4 · Fall guide" in response.text
+        assert "Updated November 5 · Fall guide" in response.text
         assert "Thirty-three Southern California fall plans, ranked." in response.text
         for current in (
             "Pasadena's November 7 Adaptive Sports Festival",
             "Pasadena's November 7 Adaptive Sports Festival and November 15 CicLAvia",
-            "Aquarium of the Pacific's November 4 First Wednesdays program",
+            "Los Angeles' free November 7 Corita Day Festival",
+            "Arcadia's November 7 Community Cleanup Day",
             "Norton Simon Museum's free November 6 evening",
             "Santa Monica's Renegade Craft, Veterans Day ceremony",
             "Long Beach's <em>Little Women</em>",
@@ -231,7 +236,8 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Thirty-three Southern California fall plans",
         "Adaptive Sports Festival",
         "CicLAvia",
-        "Aquarium of the Pacific's November 4 First Wednesdays program",
+        "Corita Day Festival",
+        "Community Cleanup Day",
         "Norton Simon",
         "Renegade Craft",
         "Held in Trust",
