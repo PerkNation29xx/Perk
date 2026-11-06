@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-three Southern California fall plans" in html
-    assert 'dateModified": "2026-11-05"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 34))
+    assert "Thirty-five Southern California fall plans" in html
+    assert 'dateModified": "2026-11-06"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 36))
 
     for expected in (
         "Spider Pavilion",
@@ -30,6 +30,8 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "corita.org/corita-day",
         'id="arcadia-community-cleanup-day"',
         "arcadiaca.gov/government/boards_commissions/arcadia_beautiful_commission.php",
+        'id="glendale-nature-in-your-neighborhood"',
+        "glendaleca.gov/Home/Components/Calendar/Event/56128/17",
         'id="norton-simon-free-first-friday"',
         "nortonsimon.org/calendar/2026/fall-2026/free-first-friday-nov-6",
         'id="santa-monica-renegade-craft"',
@@ -70,6 +72,8 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "visitburbank.com/events/burbank-winter-wine-walk",
         'id="la-auto-show"',
         "laconventioncenter.com/events/detail/la-auto-show-2026",
+        'id="aquarium-autumn-festival"',
+        "aquariumofpacific.org/events/info/autumn_festival",
         'id="self-help-graphics-dia-de-los-muertos"',
         "selfhelpgraphics.com/diadelosmuertos",
         "Best for:",
@@ -158,7 +162,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Thirty-three Southern California fall plans" in response.text
+        assert "Thirty-five Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -169,16 +173,17 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 5 · Fall guide" in response.text
-        assert "Thirty-three Southern California fall plans, ranked." in response.text
+        assert "Updated November 6 · Fall guide" in response.text
+        assert "Thirty-five Southern California fall plans, ranked." in response.text
         for current in (
             "Pasadena's November 7 Adaptive Sports Festival",
             "Pasadena's November 7 Adaptive Sports Festival and November 15 CicLAvia",
             "Los Angeles' free November 7 Corita Day Festival",
             "Arcadia's November 7 Community Cleanup Day",
+            "Glendale's November 7 Nature in Your Neighborhood bird walk",
             "Norton Simon Museum's free November 6 evening",
             "Santa Monica's Renegade Craft, Veterans Day ceremony",
-            "Long Beach's <em>Little Women</em>",
+            "Long Beach's <em>Little Women</em> and Aquarium Autumn Festival",
             "Burbank's fall art, Veterans Day ceremony, Holiday in the Park, and Winter Wine Walk",
             "Anaheim's Indie Author Day, Native Art and Acorn Festival, and Holidays at the Disneyland Resort",
             "Held in Trust",
@@ -233,16 +238,18 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Thirty-three Southern California fall plans",
+        "Thirty-five Southern California fall plans",
         "Adaptive Sports Festival",
         "CicLAvia",
         "Corita Day Festival",
         "Community Cleanup Day",
+        "Nature in Your Neighborhood",
         "Norton Simon",
         "Renegade Craft",
         "Held in Trust",
         "Swiss Winter Village",
         "Little Women",
+        "Aquarium Autumn Festival",
         "LA Auto Show",
         "Live On Sunset",
         "Holiday in the Park",
@@ -317,9 +324,16 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     assert "Villa Parke" not in pasadena
 
     glendale = _public_review_live_query_response("What current events are covered in Glendale?", "home_local_guide")
+    assert "Nature in Your Neighborhood" in glendale
+    assert "#glendale-nature-in-your-neighborhood" in glendale
     assert "Artifacts from an Unborn Empire" in glendale
     assert "Forest Lawn Glendale" not in glendale
     assert "Jewel City" not in glendale
+
+    long_beach = _public_review_live_query_response("What current events are covered in Long Beach?", "home_local_guide")
+    assert "Little Women" in long_beach
+    assert "Autumn Festival" in long_beach
+    assert "#aquarium-autumn-festival" in long_beach
 
 
 def test_current_city_counts_match_live_facet_context() -> None:

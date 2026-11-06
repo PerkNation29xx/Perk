@@ -781,7 +781,7 @@ def _home_local_guide_context(*, db: Optional[Session]) -> str:
             "",
             "Editorial/review coverage currently surfaced for PerkNation readers:",
             "- Fashion guide: CMC holiday sample-sale Fridays beginning November 6, Fashion District shopping, and completed Miami Fashion Week and LA Market Week as season context.",
-            "- Events coverage: the ranked 37-plan late-October and November Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
+            "- Events coverage: the ranked 35-plan November Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
             "- Restaurant coverage: current local directory listings, Pasadena restaurant picks, and broader dining discovery.",
             "",
             "Answering rules:",
@@ -811,11 +811,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Thirty-three Southern California fall plans",
-        "timing": "November 5, 2026-January 6, 2027",
+        "title": "Thirty-five Southern California fall plans",
+        "timing": "November 6, 2026-January 6, 2027",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to Natural History Museum's Spider Pavilion, Huntington Beach Oktoberfest, Pasadena's free November 6 Norton Simon Museum evening, November 7 Adaptive Sports Festival, and November 15 CicLAvia, Los Angeles' free November 7 Corita Day Festival, Arcadia's November 7 Community Cleanup Day, Santa Monica's November 7-8 Renegade Craft fair and November 18-January 3 Swiss Winter Village, Long Beach's November 6-22 Little Women, and the November 20-29 LA Auto Show. "
+            "Ranked guide to Natural History Museum's Spider Pavilion, Huntington Beach Oktoberfest, Pasadena's free November 6 Norton Simon Museum evening, November 7 Adaptive Sports Festival, and November 15 CicLAvia, Glendale's November 7 Nature in Your Neighborhood bird walk, Los Angeles' free November 7 Corita Day Festival, Arcadia's November 7 Community Cleanup Day, Santa Monica's November 7-8 Renegade Craft fair and November 18-January 3 Swiss Winter Village, Long Beach's November 6-22 Little Women and November 21-22 Aquarium Autumn Festival, and the November 20-29 LA Auto Show. "
             "Also covers Burbank's November 6-19 Art Association Fall Show, free November 11 Veterans Day ceremony, November 20 Holiday in the Park, and November 21 Winter Wine Walk; Anaheim's November 7 Indie Author Day, November 14 Native Art and Acorn Festival, and November 13-January 6 Holidays at the Disneyland Resort; free Veterans Day programs in Santa Monica and Pasadena; West Hollywood's November 14 Next Chapter Writers' Summit and Live On Sunset concert; Beverly Hills' November 9 Monuments of Stillness unveiling and November 19 holiday lighting; The Huntington's November 8 Second Sundays program; Self Help Graphics' November 7 Día de los Muertos celebration; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Held in Trust and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
         ),
     },
@@ -2001,9 +2001,9 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Musical Theatre West's Little Women at the Carpenter Performing Arts Center from November 6-22.",
+                "The current PerkNation fall guide includes Musical Theatre West's Little Women at the Carpenter Performing Arts Center from November 6-22 and the Aquarium of the Pacific's Autumn Festival on November 21-22.",
                 "The G-rated production runs 2 hours and 30 minutes with one intermission, offers matinee and evening performances across three weekends, and includes ASL interpretation at the November 14 matinee.",
-                "Open /articles/southern-california-september-events-2026#long-beach-little-women for official box-office, schedule, parking, and pre-show directory links into 208 Long Beach listings.",
+                "Open /articles/southern-california-september-events-2026#long-beach-little-women for official box-office, schedule, parking, and pre-show guidance, or #aquarium-autumn-festival for admission, reservation, and cultural-program details; both include links into 208 Long Beach listings.",
                 "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )
@@ -2069,8 +2069,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_glendale and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Brand Library's free Artifacts from an Unborn Empire exhibition through December 31.",
-                "Open /articles/southern-california-september-events-2026#artifacts-unborn-empire-glendale for practical notes, or browse /directory?city=Glendale for 100 local listings.",
+                "The current PerkNation fall guide includes Glendale's RSVP-required Nature in Your Neighborhood bird walk and craft at Palmer Park on November 7, plus Brand Library's free Artifacts from an Unborn Empire exhibition through December 31.",
+                "Open /articles/southern-california-september-events-2026#glendale-nature-in-your-neighborhood or #artifacts-unborn-empire-glendale for practical notes, or browse /directory?city=Glendale for 100 local listings.",
             )
         )
 
