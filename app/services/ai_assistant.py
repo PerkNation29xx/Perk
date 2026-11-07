@@ -780,7 +780,7 @@ def _home_local_guide_context(*, db: Optional[Session]) -> str:
             "- Union, Agnes, Fishwives, Perle, Bone Kettle, Osawa, Panda Inn, and Pez Coastal Kitchen are Pasadena restaurant recommendations, not discount offers unless another promo says so.",
             "",
             "Editorial/review coverage currently surfaced for PerkNation readers:",
-            "- Fashion guide: CMC holiday sample-sale Fridays beginning November 6, Fashion District shopping, and completed Miami Fashion Week and LA Market Week as season context.",
+            "- Fashion guide: remaining CMC holiday sample-sale Fridays on November 13 and 20 and December 4, 11, and 18, Fashion District shopping, and completed Miami Fashion Week and LA Market Week as season context.",
             "- Events coverage: the ranked 35-plan November Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
             "- Restaurant coverage: current local directory listings, Pasadena restaurant picks, and broader dining discovery.",
             "",
@@ -800,10 +800,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Fashion and shopping",
         "city": "Los Angeles, United States, and international",
         "title": "2026 Fashion Week calendar: LA, New York, Miami and the world",
-        "timing": "October 31-December 18, 2026",
+        "timing": "November 7-December 18, 2026",
         "route": "/articles/la-fashion-events-2026",
         "details": (
-            "The remaining public CMC holiday sample-sale Fridays begin November 6 and continue on November 13 and 20 and December 4, 11, and 18. "
+            "The remaining public CMC holiday sample-sale Fridays are November 13 and 20 and December 4, 11, and 18. "
             "Completed Miami Fashion Week, Los Angeles Market Week, New York, London, Milan, and Paris dates remain in the article only as clearly labeled season context."
         ),
     },
@@ -812,10 +812,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
         "title": "Thirty-five Southern California fall plans",
-        "timing": "November 6, 2026-January 6, 2027",
+        "timing": "November 7, 2026-January 6, 2027",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to Natural History Museum's Spider Pavilion, Huntington Beach Oktoberfest, Pasadena's free November 6 Norton Simon Museum evening, November 7 Adaptive Sports Festival, and November 15 CicLAvia, Glendale's November 7 Nature in Your Neighborhood bird walk, Los Angeles' free November 7 Corita Day Festival, Arcadia's November 7 Community Cleanup Day, Santa Monica's November 7-8 Renegade Craft fair and November 18-January 3 Swiss Winter Village, Long Beach's November 6-22 Little Women and November 21-22 Aquarium Autumn Festival, and the November 20-29 LA Auto Show. "
+            "Ranked guide to Natural History Museum's Spider Pavilion, Huntington Beach Oktoberfest, Pasadena's free November 7 Adaptive Sports Festival, November 8 USC Pacific Asia Museum Himalayan art and culture day, and November 15 CicLAvia, Glendale's November 7 Nature in Your Neighborhood bird walk, Los Angeles' free November 7 Corita Day Festival, Arcadia's November 7 Community Cleanup Day, Santa Monica's November 7-8 Renegade Craft fair and November 18-January 3 Swiss Winter Village, Long Beach's November 6-22 Little Women and November 21-22 Aquarium Autumn Festival, and the November 20-29 LA Auto Show. "
             "Also covers Burbank's November 6-19 Art Association Fall Show, free November 11 Veterans Day ceremony, November 20 Holiday in the Park, and November 21 Winter Wine Walk; Anaheim's November 7 Indie Author Day, November 14 Native Art and Acorn Festival, and November 13-January 6 Holidays at the Disneyland Resort; free Veterans Day programs in Santa Monica and Pasadena; West Hollywood's November 14 Next Chapter Writers' Summit and Live On Sunset concert; Beverly Hills' November 9 Monuments of Stillness unveiling and November 19 holiday lighting; The Huntington's November 8 Second Sundays program; Self Help Graphics' November 7 Día de los Muertos celebration; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Held in Trust and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
         ),
     },
@@ -2033,7 +2033,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "Remaining public dates in the PerkNation 2026 Fashion Week guide:",
-                "- CMC holiday sample-sale Fridays: November 6, 13, and 20, plus December 4, 11, and 18.",
+                "- CMC holiday sample-sale Fridays: November 13 and 20, plus December 4, 11, and 18.",
                 "Choose a CMC sample sale for public shopping access. "
                 "Completed Miami Fashion Week and Completed Los Angeles Market Week, plus New York, London, Milan, and Paris dates, are labeled as season context. Read the rankings, access notes, and official-source links at "
                 "/articles/la-fashion-events-2026.",
@@ -2061,8 +2061,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes the free November 7 Adaptive Sports Festival at Brookside Park, the free November 11 Veterans Day Celebration at City Hall, the free November 15 CicLAvia open-streets day, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, The Huntington's Laura Aguilar: Day of the Dead exhibition, and The Huntington's November 8 Second Sundays: This Land Is program.",
-                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#ciclavia-pasadena for a car-free walk, bike, roll, or skate day, #pasadena-adaptive-sports-festival for hands-on inclusive recreation, #pasadena-veterans-day for historical exhibits and a planned flyover, #pasadena-route-66-exhibition for a flexible history visit, #laura-aguilar-day-of-the-dead for photography, or #huntington-second-sundays-this-land-is for all-ages artmaking and conversation; browse /directory?city=Pasadena for 563 local listings.",
+                "The current PerkNation fall guide includes the free November 7 Adaptive Sports Festival at Brookside Park, USC Pacific Asia Museum's free November 8 Himalayan art and culture day, the free November 11 Veterans Day Celebration at City Hall, the free November 15 CicLAvia open-streets day, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, The Huntington's Laura Aguilar: Day of the Dead exhibition, and The Huntington's November 8 Second Sundays: This Land Is program.",
+                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#ciclavia-pasadena for a car-free walk, bike, roll, or skate day, #pasadena-adaptive-sports-festival for hands-on inclusive recreation, #usc-pam-free-second-sunday for Himalayan art, workshops, tea, performance, and the sand-mandala ceremony, #pasadena-veterans-day for historical exhibits and a planned flyover, #pasadena-route-66-exhibition for a flexible history visit, #laura-aguilar-day-of-the-dead for photography, or #huntington-second-sundays-this-land-is for all-ages artmaking and conversation; browse /directory?city=Pasadena for 563 local listings.",
             )
         )
 

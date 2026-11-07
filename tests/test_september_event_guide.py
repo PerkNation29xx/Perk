@@ -16,7 +16,7 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Thirty-five Southern California fall plans" in html
-    assert 'dateModified": "2026-11-06"' in html
+    assert 'dateModified": "2026-11-07"' in html
     assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 36))
 
     for expected in (
@@ -32,8 +32,9 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "arcadiaca.gov/government/boards_commissions/arcadia_beautiful_commission.php",
         'id="glendale-nature-in-your-neighborhood"',
         "glendaleca.gov/Home/Components/Calendar/Event/56128/17",
-        'id="norton-simon-free-first-friday"',
-        "nortonsimon.org/calendar/2026/fall-2026/free-first-friday-nov-6",
+        'id="usc-pam-free-second-sunday"',
+        "calendar.usc.edu/event/free-second-sunday-celebrating-himalayan-art-culture",
+        "pacificasiamuseum.usc.edu/learn/kids-and-families",
         'id="santa-monica-renegade-craft"',
         "renegadecraft.com/event/los-angeles-winter",
         'id="huntington-second-sundays-this-land-is"',
@@ -139,6 +140,7 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "Día de los Muertos on Olvera Street",
         "First Wednesdays at the Aquarium of the Pacific",
         "Fleurs de Villes at Greystone",
+        "Norton Simon Museum Free First Friday",
     ):
         assert expired not in html
 
@@ -173,7 +175,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 6 · Fall guide" in response.text
+        assert "Updated November 7 · Fall guide" in response.text
         assert "Thirty-five Southern California fall plans, ranked." in response.text
         for current in (
             "Pasadena's November 7 Adaptive Sports Festival",
@@ -181,7 +183,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Los Angeles' free November 7 Corita Day Festival",
             "Arcadia's November 7 Community Cleanup Day",
             "Glendale's November 7 Nature in Your Neighborhood bird walk",
-            "Norton Simon Museum's free November 6 evening",
+            "USC Pacific Asia Museum's free November 8 Himalayan art and culture day",
             "Santa Monica's Renegade Craft, Veterans Day ceremony",
             "Long Beach's <em>Little Women</em> and Aquarium Autumn Festival",
             "Burbank's fall art, Veterans Day ceremony, Holiday in the Park, and Winter Wine Walk",
@@ -221,6 +223,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Halloween Horror Nights",
             "Forest Lawn Glendale",
             "Grand Park's final Día de los Muertos",
+            "Norton Simon opens its galleries",
         ):
             assert expired not in response.text
 
@@ -244,7 +247,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Corita Day Festival",
         "Community Cleanup Day",
         "Nature in Your Neighborhood",
-        "Norton Simon",
+        "USC Pacific Asia Museum",
         "Renegade Craft",
         "Held in Trust",
         "Swiss Winter Village",
@@ -293,6 +296,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Halloween Horror Nights",
         "Forest Lawn Glendale",
         "Grand Park's final November 2 Día de los Muertos",
+        "Norton Simon",
     ):
         assert expired not in general
 
@@ -315,6 +319,8 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     assert "#ciclavia-pasadena" in pasadena
     assert "Strange Science" not in pasadena
     assert "Second Sundays" in pasadena
+    assert "USC Pacific Asia Museum" in pasadena
+    assert "#usc-pam-free-second-sunday" in pasadena
     assert "Adaptive Sports Festival" in pasadena
     assert "#pasadena-adaptive-sports-festival" in pasadena
     assert "#pasadena-veterans-day" in pasadena
