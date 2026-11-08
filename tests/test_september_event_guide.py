@@ -15,23 +15,15 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-five Southern California fall plans" in html
-    assert 'dateModified": "2026-11-07"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 36))
+    assert "Thirty-one Southern California fall plans" in html
+    assert 'dateModified": "2026-11-08"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 32))
 
     for expected in (
         "Spider Pavilion",
         "Huntington Beach Oktoberfest",
-        'id="pasadena-adaptive-sports-festival"',
-        "cityofpasadena.net/event/adaptive-sports-festival",
         'id="ciclavia-pasadena"',
         "cityofpasadena.net/event/ciclavia-2026-pasadena",
-        'id="corita-day-festival"',
-        "corita.org/corita-day",
-        'id="arcadia-community-cleanup-day"',
-        "arcadiaca.gov/government/boards_commissions/arcadia_beautiful_commission.php",
-        'id="glendale-nature-in-your-neighborhood"',
-        "glendaleca.gov/Home/Components/Calendar/Event/56128/17",
         'id="usc-pam-free-second-sunday"',
         "calendar.usc.edu/event/free-second-sunday-celebrating-himalayan-art-culture",
         "pacificasiamuseum.usc.edu/learn/kids-and-families",
@@ -43,8 +35,6 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "2026-burbank-art-association",
         'id="long-beach-little-women"',
         "musical.org/events/little-women-the-musical",
-        'id="anaheim-indie-author-day"',
-        "anaheim.net/6272/Indie-Author-Day",
         'id="santa-monica-veterans-day"',
         "annual-nov-11-veterans-day-ceremony",
         'id="santa-monica-held-in-trust"',
@@ -53,10 +43,14 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "/calendar/-/calendar/event/3094931/0",
         'id="pasadena-veterans-day"',
         "cityofpasadena.net/events/2026-11-11",
+        'id="anaheim-veterans-day"',
+        "anaheim.net/m/NewsFlash/Home/Detail/3249",
         'id="santa-monica-swiss-winter-village"',
         "santamonica.com/event/swiss-winter-village",
         'id="anaheim-native-art-acorn-festival"',
         "anaheim.net/6813/Native-Art-and-Acorn-Festival",
+        'id="glendale-clothing-swap-repair-cafe"',
+        "glendaleca.gov/Home/Components/Calendar/Event/56145/18",
         'id="anaheim-disneyland-holidays"',
         "disneyland.disney.go.com/events-tours/holidays-at-the-disneyland-resort",
         'id="west-hollywood-next-chapter-writers-summit"',
@@ -75,8 +69,6 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "laconventioncenter.com/events/detail/la-auto-show-2026",
         'id="aquarium-autumn-festival"',
         "aquariumofpacific.org/events/info/autumn_festival",
-        'id="self-help-graphics-dia-de-los-muertos"',
-        "selfhelpgraphics.com/diadelosmuertos",
         "Best for:",
         "/directory?city=Burbank",
         "/directory?city=Pasadena",
@@ -141,6 +133,12 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "First Wednesdays at the Aquarium of the Pacific",
         "Fleurs de Villes at Greystone",
         "Norton Simon Museum Free First Friday",
+        "Pasadena Adaptive Sports Festival",
+        "Corita Day Festival",
+        "Arcadia Community Cleanup Day",
+        "Nature in Your Neighborhood in Glendale",
+        "Anaheim Indie Author Day",
+        "Self Help Graphics Día de los Muertos Celebration",
     ):
         assert expired not in html
 
@@ -164,7 +162,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Thirty-five Southern California fall plans" in response.text
+        assert "Thirty-one Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -175,19 +173,15 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 7 · Fall guide" in response.text
-        assert "Thirty-five Southern California fall plans, ranked." in response.text
+        assert "Updated November 8 · Fall guide" in response.text
+        assert "Thirty-one Southern California fall plans, ranked." in response.text
         for current in (
-            "Pasadena's November 7 Adaptive Sports Festival",
-            "Pasadena's November 7 Adaptive Sports Festival and November 15 CicLAvia",
-            "Los Angeles' free November 7 Corita Day Festival",
-            "Arcadia's November 7 Community Cleanup Day",
-            "Glendale's November 7 Nature in Your Neighborhood bird walk",
             "USC Pacific Asia Museum's free November 8 Himalayan art and culture day",
             "Santa Monica's Renegade Craft, Veterans Day ceremony",
             "Long Beach's <em>Little Women</em> and Aquarium Autumn Festival",
             "Burbank's fall art, Veterans Day ceremony, Holiday in the Park, and Winter Wine Walk",
-            "Anaheim's Indie Author Day, Native Art and Acorn Festival, and Holidays at the Disneyland Resort",
+            "Anaheim's Veterans Day ceremony, Native Art and Acorn Festival, and Holidays at the Disneyland Resort",
+            "Glendale's Clothing Swap and Repair Café",
             "Held in Trust",
             "West Hollywood's Next Chapter Writers' Summit",
             "Live On Sunset",
@@ -195,7 +189,6 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "The Huntington's November 8 Second Sundays program",
             "Swiss Winter Village",
             "the LA Auto Show",
-            "Self Help Graphics",
         ):
             assert current in response.text
         for expired in (
@@ -224,6 +217,12 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Forest Lawn Glendale",
             "Grand Park's final Día de los Muertos",
             "Norton Simon opens its galleries",
+            "Adaptive Sports Festival",
+            "Corita Day",
+            "Community Cleanup Day",
+            "Nature in Your Neighborhood",
+            "Indie Author Day",
+            "Self Help Graphics",
         ):
             assert expired not in response.text
 
@@ -241,12 +240,8 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Thirty-five Southern California fall plans",
-        "Adaptive Sports Festival",
+        "Thirty-one Southern California fall plans",
         "CicLAvia",
-        "Corita Day Festival",
-        "Community Cleanup Day",
-        "Nature in Your Neighborhood",
         "USC Pacific Asia Museum",
         "Renegade Craft",
         "Held in Trust",
@@ -258,10 +253,9 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Holiday in the Park",
         "Winter Wine Walk",
         "Monuments of Stillness",
-        "Self Help Graphics",
         "The Huntington's November 8 Second Sundays program",
         "Art Association Fall Show",
-        "Indie Author Day",
+        "Clothing Swap and Repair Café",
         "Native Art and Acorn Festival",
         "Holidays at the Disneyland Resort",
         "Veterans Day ceremony",
@@ -297,6 +291,12 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Forest Lawn Glendale",
         "Grand Park's final November 2 Día de los Muertos",
         "Norton Simon",
+        "Adaptive Sports Festival",
+        "Corita Day Festival",
+        "Community Cleanup Day",
+        "Nature in Your Neighborhood",
+        "Indie Author Day",
+        "Self Help Graphics",
     ):
         assert expired not in general
 
@@ -321,8 +321,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     assert "Second Sundays" in pasadena
     assert "USC Pacific Asia Museum" in pasadena
     assert "#usc-pam-free-second-sunday" in pasadena
-    assert "Adaptive Sports Festival" in pasadena
-    assert "#pasadena-adaptive-sports-festival" in pasadena
+    assert "Adaptive Sports Festival" not in pasadena
     assert "#pasadena-veterans-day" in pasadena
     assert "Bark in the Park" not in pasadena
     assert "Pasadena Fall Festival" not in pasadena
@@ -330,8 +329,8 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     assert "Villa Parke" not in pasadena
 
     glendale = _public_review_live_query_response("What current events are covered in Glendale?", "home_local_guide")
-    assert "Nature in Your Neighborhood" in glendale
-    assert "#glendale-nature-in-your-neighborhood" in glendale
+    assert "Clothing Swap and Repair Café" in glendale
+    assert "#glendale-clothing-swap-repair-cafe" in glendale
     assert "Artifacts from an Unborn Empire" in glendale
     assert "Forest Lawn Glendale" not in glendale
     assert "Jewel City" not in glendale

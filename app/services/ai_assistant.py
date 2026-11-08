@@ -781,7 +781,7 @@ def _home_local_guide_context(*, db: Optional[Session]) -> str:
             "",
             "Editorial/review coverage currently surfaced for PerkNation readers:",
             "- Fashion guide: remaining CMC holiday sample-sale Fridays on November 13 and 20 and December 4, 11, and 18, Fashion District shopping, and completed Miami Fashion Week and LA Market Week as season context.",
-            "- Events coverage: the ranked 35-plan November Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
+            "- Events coverage: the ranked 31-plan November Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
             "- Restaurant coverage: current local directory listings, Pasadena restaurant picks, and broader dining discovery.",
             "",
             "Answering rules:",
@@ -811,12 +811,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Thirty-five Southern California fall plans",
-        "timing": "November 7, 2026-January 6, 2027",
+        "title": "Thirty-one Southern California fall plans",
+        "timing": "November 8, 2026-January 6, 2027",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to Natural History Museum's Spider Pavilion, Huntington Beach Oktoberfest, Pasadena's free November 7 Adaptive Sports Festival, November 8 USC Pacific Asia Museum Himalayan art and culture day, and November 15 CicLAvia, Glendale's November 7 Nature in Your Neighborhood bird walk, Los Angeles' free November 7 Corita Day Festival, Arcadia's November 7 Community Cleanup Day, Santa Monica's November 7-8 Renegade Craft fair and November 18-January 3 Swiss Winter Village, Long Beach's November 6-22 Little Women and November 21-22 Aquarium Autumn Festival, and the November 20-29 LA Auto Show. "
-            "Also covers Burbank's November 6-19 Art Association Fall Show, free November 11 Veterans Day ceremony, November 20 Holiday in the Park, and November 21 Winter Wine Walk; Anaheim's November 7 Indie Author Day, November 14 Native Art and Acorn Festival, and November 13-January 6 Holidays at the Disneyland Resort; free Veterans Day programs in Santa Monica and Pasadena; West Hollywood's November 14 Next Chapter Writers' Summit and Live On Sunset concert; Beverly Hills' November 9 Monuments of Stillness unveiling and November 19 holiday lighting; The Huntington's November 8 Second Sundays program; Self Help Graphics' November 7 Día de los Muertos celebration; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Held in Trust and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
+            "Ranked guide to Natural History Museum's Spider Pavilion, the November 8 USC Pacific Asia Museum Himalayan art and culture day and The Huntington's November 8 Second Sundays program, Pasadena's November 15 CicLAvia, Santa Monica's November 8 Renegade Craft fair and November 18-January 3 Swiss Winter Village, Long Beach's November 6-22 Little Women and November 21-22 Aquarium Autumn Festival, and the November 20-29 LA Auto Show. "
+            "Also covers Burbank's November 6-19 Art Association Fall Show, free November 11 Veterans Day ceremony, November 20 Holiday in the Park, and November 21 Winter Wine Walk; Anaheim's free November 11 Veterans Day ceremony, November 14 Native Art and Acorn Festival, and November 13-January 6 Holidays at the Disneyland Resort; free Veterans Day programs in Santa Monica and Pasadena; Glendale's November 14 Clothing Swap and Repair Café; West Hollywood's November 14 Next Chapter Writers' Summit and Live On Sunset concert; Beverly Hills' November 9 Monuments of Stillness unveiling and November 19 holiday lighting; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Held in Trust and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
         ),
     },
 
@@ -1969,7 +1969,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "D23's 2026 Anaheim convention concluded on August 16, so PerkNation no longer presents its ticket or standby guidance as active.",
-                "For current Anaheim planning, the fall guide covers November 7 Indie Author Day at Anaheim Central Library and the free November 14 Native Art and Acorn Festival at Oak Canyon Nature Center; browse /directory?city=Anaheim for 35 local listings.",
+                "For current Anaheim planning, the fall guide covers the free November 11 Veterans Day ceremony at the Anaheim Veterans Monument and the free November 14 Native Art and Acorn Festival at Oak Canyon Nature Center; browse /directory?city=Anaheim for 35 local listings.",
             )
         )
 
@@ -1985,8 +1985,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current Orange County options include Huntington Beach Oktoberfest through November 8, Anaheim Indie Author Day on November 7, and the free Native Art and Acorn Festival on November 14.",
-                "Open /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, /articles/southern-california-september-events-2026#anaheim-indie-author-day, or /articles/southern-california-september-events-2026#anaheim-native-art-acorn-festival for practical comparisons and current city-directory links.",
+                "Current Orange County options include Huntington Beach Oktoberfest through November 8, Anaheim's free Veterans Day ceremony on November 11, and the free Native Art and Acorn Festival on November 14.",
+                "Open /articles/southern-california-september-events-2026#huntington-beach-oktoberfest, /articles/southern-california-september-events-2026#anaheim-veterans-day, or /articles/southern-california-september-events-2026#anaheim-native-art-acorn-festival for practical comparisons and current city-directory links.",
             )
         )
 
@@ -2061,16 +2061,16 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes the free November 7 Adaptive Sports Festival at Brookside Park, USC Pacific Asia Museum's free November 8 Himalayan art and culture day, the free November 11 Veterans Day Celebration at City Hall, the free November 15 CicLAvia open-streets day, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, The Huntington's Laura Aguilar: Day of the Dead exhibition, and The Huntington's November 8 Second Sundays: This Land Is program.",
-                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#ciclavia-pasadena for a car-free walk, bike, roll, or skate day, #pasadena-adaptive-sports-festival for hands-on inclusive recreation, #usc-pam-free-second-sunday for Himalayan art, workshops, tea, performance, and the sand-mandala ceremony, #pasadena-veterans-day for historical exhibits and a planned flyover, #pasadena-route-66-exhibition for a flexible history visit, #laura-aguilar-day-of-the-dead for photography, or #huntington-second-sundays-this-land-is for all-ages artmaking and conversation; browse /directory?city=Pasadena for 563 local listings.",
+                "The current PerkNation fall guide includes USC Pacific Asia Museum's free November 8 Himalayan art and culture day, the free November 11 Veterans Day Celebration at City Hall, the free November 15 CicLAvia open-streets day, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, The Huntington's Laura Aguilar: Day of the Dead exhibition, and The Huntington's November 8 Second Sundays: This Land Is program.",
+                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#ciclavia-pasadena for a car-free walk, bike, roll, or skate day, #usc-pam-free-second-sunday for Himalayan art, workshops, tea, performance, and the sand-mandala ceremony, #pasadena-veterans-day for historical exhibits and a planned flyover, #pasadena-route-66-exhibition for a flexible history visit, #laura-aguilar-day-of-the-dead for photography, or #huntington-second-sundays-this-land-is for all-ages artmaking and conversation; browse /directory?city=Pasadena for 563 local listings.",
             )
         )
 
     if wants_glendale and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Glendale's RSVP-required Nature in Your Neighborhood bird walk and craft at Palmer Park on November 7, plus Brand Library's free Artifacts from an Unborn Empire exhibition through December 31.",
-                "Open /articles/southern-california-september-events-2026#glendale-nature-in-your-neighborhood or #artifacts-unborn-empire-glendale for practical notes, or browse /directory?city=Glendale for 100 local listings.",
+                "The current PerkNation fall guide includes Glendale's November 14 Clothing Swap and Repair Café at Brand Studios, plus Brand Library's free Artifacts from an Unborn Empire exhibition through December 31.",
+                "Open /articles/southern-california-september-events-2026#glendale-clothing-swap-repair-cafe or #artifacts-unborn-empire-glendale for practical notes, or browse /directory?city=Glendale for 100 local listings.",
             )
         )
 
