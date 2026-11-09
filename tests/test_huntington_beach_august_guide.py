@@ -88,7 +88,9 @@ def test_huntington_beach_roundup_link_and_public_answer_are_scoped() -> None:
     )
 
     assert answer
-    assert "has concluded" in answer
+    assert "have concluded" in answer
+    assert "Oktoberfest" in answer
+    assert "#huntington-beach-oktoberfest" not in answer
     assert "Surf City Nights" not in answer
     assert "Barefoot Ball" not in answer
     assert "/articles/huntington-beach-august-2026-guide" not in answer

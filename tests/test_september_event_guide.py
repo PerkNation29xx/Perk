@@ -15,22 +15,19 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-one Southern California fall plans" in html
-    assert 'dateModified": "2026-11-08"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 32))
+    assert "Twenty-nine Southern California fall plans" in html
+    assert 'dateModified": "2026-11-09"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 30))
 
     for expected in (
         "Spider Pavilion",
-        "Huntington Beach Oktoberfest",
+        'id="samuel-oschin-air-space-center"',
+        "californiasciencecenter.org/visit/get-reservations-tickets",
+        "302922833",
         'id="ciclavia-pasadena"',
         "cityofpasadena.net/event/ciclavia-2026-pasadena",
-        'id="usc-pam-free-second-sunday"',
-        "calendar.usc.edu/event/free-second-sunday-celebrating-himalayan-art-culture",
-        "pacificasiamuseum.usc.edu/learn/kids-and-families",
-        'id="santa-monica-renegade-craft"',
-        "renegadecraft.com/event/los-angeles-winter",
-        'id="huntington-second-sundays-this-land-is"',
-        "huntington.org/event/second-sundays-land",
+        'id="broad-sensory-morning"',
+        "thebroad.org/events/sensory-morning-broad-16",
         'id="burbank-art-association-fall-show"',
         "2026-burbank-art-association",
         'id="long-beach-little-women"',
@@ -139,6 +136,10 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "Nature in Your Neighborhood in Glendale",
         "Anaheim Indie Author Day",
         "Self Help Graphics Día de los Muertos Celebration",
+        "Huntington Beach Oktoberfest",
+        "USC Pacific Asia Museum Free Second Sunday",
+        "Renegade Craft at Santa Monica Airport",
+        "Second Sundays: “This Land Is …”",
     ):
         assert expired not in html
 
@@ -162,7 +163,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Thirty-one Southern California fall plans" in response.text
+        assert "Twenty-nine Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -173,11 +174,12 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 8 · Fall guide" in response.text
-        assert "Thirty-one Southern California fall plans, ranked." in response.text
+        assert "Updated November 9 · Fall guide" in response.text
+        assert "Twenty-nine Southern California fall plans, ranked." in response.text
         for current in (
-            "USC Pacific Asia Museum's free November 8 Himalayan art and culture day",
-            "Santa Monica's Renegade Craft, Veterans Day ceremony",
+            "November 13 Samuel Oschin Air and Space Center opening",
+            "The Broad's free November 15 Sensory Morning",
+            "Santa Monica's Veterans Day ceremony",
             "Long Beach's <em>Little Women</em> and Aquarium Autumn Festival",
             "Burbank's fall art, Veterans Day ceremony, Holiday in the Park, and Winter Wine Walk",
             "Anaheim's Veterans Day ceremony, Native Art and Acorn Festival, and Holidays at the Disneyland Resort",
@@ -186,7 +188,6 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "West Hollywood's Next Chapter Writers' Summit",
             "Live On Sunset",
             "Beverly Hills' sculpture unveiling and holiday lighting",
-            "The Huntington's November 8 Second Sundays program",
             "Swiss Winter Village",
             "the LA Auto Show",
         ):
@@ -223,6 +224,10 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Nature in Your Neighborhood",
             "Indie Author Day",
             "Self Help Graphics",
+            "USC Pacific Asia Museum",
+            "Renegade Craft",
+            "Second Sundays",
+            "Huntington Beach Oktoberfest",
         ):
             assert expired not in response.text
 
@@ -240,10 +245,10 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Thirty-one Southern California fall plans",
+        "Twenty-nine Southern California fall plans",
         "CicLAvia",
-        "USC Pacific Asia Museum",
-        "Renegade Craft",
+        "Samuel Oschin Air and Space Center",
+        "The Broad's free November 15 Sensory Morning",
         "Held in Trust",
         "Swiss Winter Village",
         "Little Women",
@@ -253,7 +258,6 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Holiday in the Park",
         "Winter Wine Walk",
         "Monuments of Stillness",
-        "The Huntington's November 8 Second Sundays program",
         "Art Association Fall Show",
         "Clothing Swap and Repair Café",
         "Native Art and Acorn Festival",
@@ -297,6 +301,10 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Nature in Your Neighborhood",
         "Indie Author Day",
         "Self Help Graphics",
+        "USC Pacific Asia Museum",
+        "Renegade Craft",
+        "Second Sundays",
+        "Huntington Beach Oktoberfest",
     ):
         assert expired not in general
 
@@ -318,9 +326,8 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     assert "CicLAvia" in pasadena
     assert "#ciclavia-pasadena" in pasadena
     assert "Strange Science" not in pasadena
-    assert "Second Sundays" in pasadena
-    assert "USC Pacific Asia Museum" in pasadena
-    assert "#usc-pam-free-second-sunday" in pasadena
+    assert "Second Sundays" not in pasadena
+    assert "USC Pacific Asia Museum" not in pasadena
     assert "Adaptive Sports Festival" not in pasadena
     assert "#pasadena-veterans-day" in pasadena
     assert "Bark in the Park" not in pasadena
@@ -349,7 +356,7 @@ def test_current_city_counts_match_live_facet_context() -> None:
         "208 Long Beach listings",
         "100 Glendale listings",
         "61 Los Angeles listings",
-        "43 Huntington Beach listings",
+        "city=Huntington%20Beach\">Huntington Beach</a> (43)",
         "35 Anaheim listings",
     ):
         assert expected in html
