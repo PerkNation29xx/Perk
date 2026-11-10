@@ -811,12 +811,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Twenty-nine Southern California fall plans",
-        "timing": "November 9, 2026-January 6, 2027",
+        "title": "Thirty Southern California fall plans",
+        "timing": "November 10, 2026-January 10, 2027",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to Natural History Museum's Spider Pavilion, the November 13 opening of the Samuel Oschin Air and Space Center, The Broad's free November 15 Sensory Morning, Pasadena's November 15 CicLAvia, Santa Monica's November 11 Veterans Day ceremony and November 18-January 3 Swiss Winter Village, Long Beach's November 6-22 Little Women and November 21-22 Aquarium Autumn Festival, and the November 20-29 LA Auto Show. "
-            "Also covers Burbank's November 6-19 Art Association Fall Show, free November 11 Veterans Day ceremony, November 20 Holiday in the Park, and November 21 Winter Wine Walk; Anaheim's free November 11 Veterans Day ceremony, November 14 Native Art and Acorn Festival, and November 13-January 6 Holidays at the Disneyland Resort; free Veterans Day programs in Santa Monica and Pasadena; Glendale's November 14 Clothing Swap and Repair Café; West Hollywood's November 14 Next Chapter Writers' Summit and Live On Sunset concert; Beverly Hills' November 9 Monuments of Stillness unveiling and November 19 holiday lighting; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Held in Trust and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
+            "Ranked guide to Natural History Museum's Spider Pavilion and November 12-January 10 NightTales experience, the November 13 opening of the Samuel Oschin Air and Space Center, The Broad's free November 15 Sensory Morning, Pasadena's November 15 CicLAvia, Santa Monica's November 11 Veterans Day ceremony and November 18-January 3 Swiss Winter Village, Long Beach's November 6-22 Little Women and November 21-22 Aquarium Autumn Festival, and the November 20-29 LA Auto Show. "
+            "Also covers Burbank's November 6-19 Art Association Fall Show, free November 11 Veterans Day ceremony, November 20 Holiday in the Park, and November 21 Winter Wine Walk; Anaheim's free November 11 Veterans Day ceremony, November 14 Native Art and Acorn Festival, and November 13-January 6 Holidays at the Disneyland Resort; free Veterans Day programs in Santa Monica and Pasadena; Glendale's November 14 Clothing Swap and Repair Café; West Hollywood's November 14 Next Chapter Writers' Summit and Live On Sunset concert; Beverly Hills' long-run Monuments of Stillness sculpture walk and November 19 holiday lighting; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Held in Trust and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
         ),
     },
 

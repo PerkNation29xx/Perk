@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Twenty-nine Southern California fall plans" in html
-    assert 'dateModified": "2026-11-09"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 30))
+    assert "Thirty Southern California fall plans" in html
+    assert 'dateModified": "2026-11-10"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 31))
 
     for expected in (
         "Spider Pavilion",
@@ -30,6 +30,8 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "thebroad.org/events/sensory-morning-broad-16",
         'id="burbank-art-association-fall-show"',
         "2026-burbank-art-association",
+        'id="nhm-nighttales"',
+        "nhm.org/calendar/nighttales-museum-experience",
         'id="long-beach-little-women"',
         "musical.org/events/little-women-the-musical",
         'id="santa-monica-veterans-day"',
@@ -163,7 +165,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Twenty-nine Southern California fall plans" in response.text
+        assert "Thirty Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -174,10 +176,11 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 9 · Fall guide" in response.text
-        assert "Twenty-nine Southern California fall plans, ranked." in response.text
+        assert "Updated November 10 · Fall guide" in response.text
+        assert "Thirty Southern California fall plans, ranked." in response.text
         for current in (
             "November 13 Samuel Oschin Air and Space Center opening",
+            "November 12-January 10 NightTales after-dark museum experience",
             "The Broad's free November 15 Sensory Morning",
             "Santa Monica's Veterans Day ceremony",
             "Long Beach's <em>Little Women</em> and Aquarium Autumn Festival",
@@ -187,7 +190,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Held in Trust",
             "West Hollywood's Next Chapter Writers' Summit",
             "Live On Sunset",
-            "Beverly Hills' sculpture unveiling and holiday lighting",
+            "Beverly Hills' long-run Rodeo Drive sculpture walk and holiday lighting",
             "Swiss Winter Village",
             "the LA Auto Show",
         ):
@@ -245,7 +248,8 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Twenty-nine Southern California fall plans",
+        "Thirty Southern California fall plans",
+        "NightTales",
         "CicLAvia",
         "Samuel Oschin Air and Space Center",
         "The Broad's free November 15 Sensory Morning",
