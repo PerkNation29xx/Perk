@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty Southern California fall plans" in html
-    assert 'dateModified": "2026-11-10"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 31))
+    assert "Thirty-one Southern California fall plans" in html
+    assert 'dateModified": "2026-11-11"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 32))
 
     for expected in (
         "Spider Pavilion",
@@ -50,6 +50,8 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "anaheim.net/6813/Native-Art-and-Acorn-Festival",
         'id="glendale-clothing-swap-repair-cafe"',
         "glendaleca.gov/Home/Components/Calendar/Event/56145/18",
+        'id="santa-monica-art-in-motion"',
+        "4v00wn58bn5r11s5qteysdzq59/202611141830",
         'id="anaheim-disneyland-holidays"',
         "disneyland.disney.go.com/events-tours/holidays-at-the-disneyland-resort",
         'id="west-hollywood-next-chapter-writers-summit"',
@@ -165,7 +167,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Thirty Southern California fall plans" in response.text
+        assert "Thirty-one Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -176,8 +178,8 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 10 · Fall guide" in response.text
-        assert "Thirty Southern California fall plans, ranked." in response.text
+        assert "Updated November 11 · Fall guide" in response.text
+        assert "Thirty-one Southern California fall plans, ranked." in response.text
         for current in (
             "November 13 Samuel Oschin Air and Space Center opening",
             "November 12-January 10 NightTales after-dark museum experience",
@@ -187,6 +189,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Burbank's fall art, Veterans Day ceremony, Holiday in the Park, and Winter Wine Walk",
             "Anaheim's Veterans Day ceremony, Native Art and Acorn Festival, and Holidays at the Disneyland Resort",
             "Glendale's Clothing Swap and Repair Café",
+            "Art in Motion screening",
             "Held in Trust",
             "West Hollywood's Next Chapter Writers' Summit",
             "Live On Sunset",
@@ -248,7 +251,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Thirty Southern California fall plans",
+        "Thirty-one Southern California fall plans",
         "NightTales",
         "CicLAvia",
         "Samuel Oschin Air and Space Center",
@@ -264,6 +267,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Monuments of Stillness",
         "Art Association Fall Show",
         "Clothing Swap and Repair Café",
+        "Art in Motion",
         "Native Art and Acorn Festival",
         "Holidays at the Disneyland Resort",
         "Veterans Day ceremony",
