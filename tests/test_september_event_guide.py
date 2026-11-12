@@ -15,11 +15,13 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-one Southern California fall plans" in html
-    assert 'dateModified": "2026-11-11"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 32))
+    assert "Twenty-eight Southern California fall plans" in html
+    assert 'dateModified": "2026-11-12"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 29))
 
     for expected in (
+        'id="pershing-square-holiday-ice-rink"',
+        "holidayicerinkdowntownla.com/ice-skating-downtown-la",
         "Spider Pavilion",
         'id="samuel-oschin-air-space-center"',
         "californiasciencecenter.org/visit/get-reservations-tickets",
@@ -34,16 +36,8 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "nhm.org/calendar/nighttales-museum-experience",
         'id="long-beach-little-women"',
         "musical.org/events/little-women-the-musical",
-        'id="santa-monica-veterans-day"',
-        "annual-nov-11-veterans-day-ceremony",
         'id="santa-monica-held-in-trust"',
         "4v0naphs6kscmrssg0n2ejrsce/202611041100",
-        'id="burbank-veterans-day"',
-        "/calendar/-/calendar/event/3094931/0",
-        'id="pasadena-veterans-day"',
-        "cityofpasadena.net/events/2026-11-11",
-        'id="anaheim-veterans-day"',
-        "anaheim.net/m/NewsFlash/Home/Detail/3249",
         'id="santa-monica-swiss-winter-village"',
         "santamonica.com/event/swiss-winter-village",
         'id="anaheim-native-art-acorn-festival"',
@@ -144,6 +138,11 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "USC Pacific Asia Museum Free Second Sunday",
         "Renegade Craft at Santa Monica Airport",
         "Second Sundays: “This Land Is …”",
+        "Veterans Day",
+        "annual-nov-11-veterans-day-ceremony",
+        "anaheim-veterans-day",
+        "burbank-veterans-day",
+        "pasadena-veterans-day",
     ):
         assert expired not in html
 
@@ -167,7 +166,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Thirty-one Southern California fall plans" in response.text
+        assert "Twenty-eight Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -178,20 +177,20 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 11 · Fall guide" in response.text
-        assert "Thirty-one Southern California fall plans, ranked." in response.text
+        assert "Updated November 12 · Fall guide" in response.text
+        assert "Twenty-eight Southern California fall plans, ranked." in response.text
         for current in (
+            "today's Pershing Square Holiday Ice Rink opening",
             "November 13 Samuel Oschin Air and Space Center opening",
-            "November 12-January 10 NightTales after-dark museum experience",
+            "November 12-January 10 NightTales experience",
             "The Broad's free November 15 Sensory Morning",
-            "Santa Monica's Veterans Day ceremony",
-            "Long Beach's <em>Little Women</em> and Aquarium Autumn Festival",
-            "Burbank's fall art, Veterans Day ceremony, Holiday in the Park, and Winter Wine Walk",
-            "Anaheim's Veterans Day ceremony, Native Art and Acorn Festival, and Holidays at the Disneyland Resort",
-            "Glendale's Clothing Swap and Repair Café",
-            "Art in Motion screening",
+            "Long Beach has <em>Little Women</em> and Aquarium Autumn Festival",
+            "Burbank has fall art, Holiday in the Park, and Winter Wine Walk",
+            "Anaheim has Native Art and Acorn Festival and Holidays at the Disneyland Resort",
+            "Glendale has Clothing Swap and Repair Café",
+            "Art in Motion",
             "Held in Trust",
-            "West Hollywood's Next Chapter Writers' Summit",
+                "West Hollywood has Next Chapter Writers' Summit",
             "Live On Sunset",
             "Beverly Hills' long-run Rodeo Drive sculpture walk and holiday lighting",
             "Swiss Winter Village",
@@ -234,6 +233,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Renegade Craft",
             "Second Sundays",
             "Huntington Beach Oktoberfest",
+            "Veterans Day",
         ):
             assert expired not in response.text
 
@@ -251,7 +251,8 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Thirty-one Southern California fall plans",
+        "Twenty-eight Southern California fall plans",
+        "Holiday Ice Rink at Pershing Square",
         "NightTales",
         "CicLAvia",
         "Samuel Oschin Air and Space Center",
@@ -270,7 +271,6 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Art in Motion",
         "Native Art and Acorn Festival",
         "Holidays at the Disneyland Resort",
-        "Veterans Day ceremony",
         "Next Chapter Writers' Summit",
         "November 19 holiday lighting",
     ):
@@ -313,16 +313,15 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Renegade Craft",
         "Second Sundays",
         "Huntington Beach Oktoberfest",
+        "Veterans Day",
     ):
         assert expired not in general
 
     burbank = _public_review_live_query_response("What current events are covered in Burbank?", "home_local_guide")
     assert "Art Association Fall Show" in burbank
-    assert "Veterans Day ceremony" in burbank
     assert "Holiday in the Park" in burbank
     assert "Winter Wine Walk" in burbank
     assert "#burbank-art-association-fall-show" in burbank
-    assert "#burbank-veterans-day" in burbank
     assert "#burbank-holiday-in-the-park" in burbank
     assert "#burbank-winter-wine-walk" in burbank
     assert "Halloween Carnival" not in burbank
@@ -337,7 +336,6 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     assert "Second Sundays" not in pasadena
     assert "USC Pacific Asia Museum" not in pasadena
     assert "Adaptive Sports Festival" not in pasadena
-    assert "#pasadena-veterans-day" in pasadena
     assert "Bark in the Park" not in pasadena
     assert "Pasadena Fall Festival" not in pasadena
     assert "Trunk or Treat" not in pasadena

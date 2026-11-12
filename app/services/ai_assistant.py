@@ -811,12 +811,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Thirty-one Southern California fall plans",
-        "timing": "November 11, 2026-January 10, 2027",
+        "title": "Twenty-eight Southern California fall plans",
+        "timing": "November 12, 2026-January 10, 2027",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to Natural History Museum's Spider Pavilion and November 12-January 10 NightTales experience, the November 13 opening of the Samuel Oschin Air and Space Center, The Broad's free November 15 Sensory Morning, Pasadena's November 15 CicLAvia, Santa Monica's November 11 Veterans Day ceremony, November 14 Art in Motion screening, and November 18-January 3 Swiss Winter Village, Long Beach's November 6-22 Little Women and November 21-22 Aquarium Autumn Festival, and the November 20-29 LA Auto Show. "
-            "Also covers Burbank's November 6-19 Art Association Fall Show, free November 11 Veterans Day ceremony, November 20 Holiday in the Park, and November 21 Winter Wine Walk; Anaheim's free November 11 Veterans Day ceremony, November 14 Native Art and Acorn Festival, and November 13-January 6 Holidays at the Disneyland Resort; free Veterans Day programs in Santa Monica and Pasadena; Glendale's November 14 Clothing Swap and Repair Café; West Hollywood's November 14 Next Chapter Writers' Summit and Live On Sunset concert; Beverly Hills' long-run Monuments of Stillness sculpture walk and November 19 holiday lighting; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Held in Trust and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
+            "Ranked guide to the November 12-January 3 Holiday Ice Rink at Pershing Square, Natural History Museum's Spider Pavilion and November 12-January 10 NightTales experience, the November 13 opening of the Samuel Oschin Air and Space Center, The Broad's free November 15 Sensory Morning, Pasadena's November 15 CicLAvia, Santa Monica's November 14 Art in Motion screening and November 18-January 3 Swiss Winter Village, Long Beach's November 6-22 Little Women and November 21-22 Aquarium Autumn Festival, and the November 20-29 LA Auto Show. "
+            "Also covers Burbank's November 6-19 Art Association Fall Show, November 20 Holiday in the Park, and November 21 Winter Wine Walk; Anaheim's November 14 Native Art and Acorn Festival and November 13-January 6 Holidays at the Disneyland Resort; Glendale's November 14 Clothing Swap and Repair Café; West Hollywood's November 14 Next Chapter Writers' Summit and Live On Sunset concert; Beverly Hills' long-run Monuments of Stillness sculpture walk and November 19 holiday lighting; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Held in Trust and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
         ),
     },
 
@@ -904,10 +904,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, coastal art, wellness, movies, markets, and local history",
         "city": "Santa Monica",
         "title": "Santa Monica November 2026 coastal events guide",
-        "timing": "November 11, 2026-March 20, 2027",
+        "timing": "November 14, 2026-March 20, 2027",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Six current plans covering the November 11 Veterans Day ceremony, the November 14 Art in Motion extended screening, the Held in Trust city-art exhibition, Swiss Winter Village at the Pier, the Portraits: Faces and Waves photography exhibition, and the Pico farmers market."
+            "Five current plans covering the November 14 Art in Motion extended screening, the Held in Trust city-art exhibition, Swiss Winter Village at the Pier, the Portraits: Faces and Waves photography exhibition, and the Pico farmers market."
         ),
     },
     {
@@ -1969,7 +1969,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "D23's 2026 Anaheim convention concluded on August 16, so PerkNation no longer presents its ticket or standby guidance as active.",
-                "For current Anaheim planning, the fall guide covers the free November 11 Veterans Day ceremony at the Anaheim Veterans Monument and the free November 14 Native Art and Acorn Festival at Oak Canyon Nature Center; browse /directory?city=Anaheim for 35 local listings.",
+                "For current Anaheim planning, the fall guide covers the free November 14 Native Art and Acorn Festival at Oak Canyon Nature Center and Holidays at the Disneyland Resort from November 13-January 6; browse /directory?city=Anaheim for 35 local listings.",
             )
         )
 
@@ -1977,7 +1977,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "Nisei Week's 2026 Little Tokyo festival concluded on August 23, so PerkNation no longer presents its event guide as active.",
-                "For current Los Angeles planning, browse /directory?city=Los%20Angeles for 61 listings or open /articles/southern-california-september-events-2026 for upcoming October events.",
+                "For current Los Angeles planning, browse /directory?city=Los%20Angeles for 61 listings or open /articles/southern-california-september-events-2026 for current November events.",
             )
         )
 
@@ -1985,8 +1985,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current Orange County options include Anaheim's free Veterans Day ceremony on November 11, the free Native Art and Acorn Festival on November 14, and Holidays at the Disneyland Resort from November 13-January 6.",
-                "Open /articles/southern-california-september-events-2026#anaheim-veterans-day, /articles/southern-california-september-events-2026#anaheim-native-art-acorn-festival, or /articles/southern-california-september-events-2026#anaheim-disneyland-holidays for practical comparisons and current city-directory links.",
+                "Current Orange County options include Anaheim's free Native Art and Acorn Festival on November 14 and Holidays at the Disneyland Resort from November 13-January 6.",
+                "Open /articles/southern-california-september-events-2026#anaheim-native-art-acorn-festival or /articles/southern-california-september-events-2026#anaheim-disneyland-holidays for practical comparisons and current city-directory links.",
             )
         )
 
@@ -2019,9 +2019,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks six November and flexible long-run plans:",
+                "The current PerkNation Santa Monica guide ranks five November and flexible long-run plans:",
                 "- Held in Trust brings 16 Southern California artists from the city's Art Bank Collection together through March 20, Wednesday-Saturday from 11 a.m.-5 p.m., except city holidays.",
-                "- The city's free Veterans Day ceremony runs November 11 from 11 a.m.-1 p.m. in Beach Parking Lot 4, with military and city speakers, the 300th Army Band, and a planned flyover.",
                 "- Art in Motion expands into an hourlong public-art and short-film screening on the Third Street Promenade on November 14 from 6:30-7:30 p.m.; confirm access on the city listing before traveling.",
                 "- Swiss Winter Village runs at the Pier from November 18-January 3 with more than 60 chalets, seasonal food, local creations, and an ice rink; compare ticket products before traveling.",
                 "- The free Portraits: Faces and Waves exhibition offers a flexible Beach House Gallery stop through March 27, while the Pico farmers market remains a repeatable Saturday morning option.",
@@ -2052,17 +2051,16 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "The Burbank Art Association Fall Show opens November 6 from 7-9 p.m. with music and light refreshments, then remains at the Betsy Lueke Creative Arts Center through November 19 during regular facility hours.",
-                "Burbank's free November 11 Veterans Day ceremony begins with a Burbank Community Band concert at 10:15 a.m. at the McCambridge Park War Memorial.",
                 "Holiday in the Park is free on November 20 from 4-10 p.m. along Magnolia Boulevard; the November 21 Winter Wine Walk pairs a free noon-8 p.m. street fair with separate ticketed wine tasting from 4-7 p.m.",
-                "Open /articles/southern-california-september-events-2026#burbank-art-association-fall-show, #burbank-veterans-day, #burbank-holiday-in-the-park, or #burbank-winter-wine-walk for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
+                "Open /articles/southern-california-september-events-2026#burbank-art-association-fall-show, #burbank-holiday-in-the-park, or #burbank-winter-wine-walk for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
             )
         )
 
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes the free November 11 Veterans Day Celebration at City Hall, the free November 15 CicLAvia open-streets day, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
-                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#ciclavia-pasadena for a car-free walk, bike, roll, or skate day, #pasadena-veterans-day for historical exhibits and a planned flyover, #pasadena-route-66-exhibition for a flexible history visit, or #laura-aguilar-day-of-the-dead for photography; browse /directory?city=Pasadena for 563 local listings.",
+                "The current PerkNation fall guide includes the free November 15 CicLAvia open-streets day, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
+                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#ciclavia-pasadena for a car-free walk, bike, roll, or skate day, #pasadena-route-66-exhibition for a flexible history visit, or #laura-aguilar-day-of-the-dead for photography; browse /directory?city=Pasadena for 563 local listings.",
             )
         )
 
