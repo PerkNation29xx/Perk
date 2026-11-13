@@ -811,12 +811,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Twenty-eight Southern California fall plans",
+        "title": "Thirty-two Southern California fall plans",
         "timing": "November 12, 2026-January 10, 2027",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to the November 12-January 3 Holiday Ice Rink at Pershing Square, Natural History Museum's Spider Pavilion and November 12-January 10 NightTales experience, the November 13 opening of the Samuel Oschin Air and Space Center, The Broad's free November 15 Sensory Morning, Pasadena's November 15 CicLAvia, Santa Monica's November 14 Art in Motion screening and November 18-January 3 Swiss Winter Village, Long Beach's November 6-22 Little Women and November 21-22 Aquarium Autumn Festival, and the November 20-29 LA Auto Show. "
-            "Also covers Burbank's November 6-19 Art Association Fall Show, November 20 Holiday in the Park, and November 21 Winter Wine Walk; Anaheim's November 14 Native Art and Acorn Festival and November 13-January 6 Holidays at the Disneyland Resort; Glendale's November 14 Clothing Swap and Repair Café; West Hollywood's November 14 Next Chapter Writers' Summit and Live On Sunset concert; Beverly Hills' long-run Monuments of Stillness sculpture walk and November 19 holiday lighting; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Held in Trust and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
+            "Ranked guide to the November 12-January 3 Holiday Ice Rink at Pershing Square, Natural History Museum's Spider Pavilion and November 12-January 10 NightTales experience, the November 13 opening of the Samuel Oschin Air and Space Center, Huntington Beach's November 14 Darker Waves festival, Pasadena's free November 14-15 Jackalope Art Festival and November 15 CicLAvia, Long Beach's November 14 Khmer Town Night Market, The Broad's free November 15 Sensory Morning, Santa Monica's November 14 Art in Motion screening and November 18-January 3 Swiss Winter Village, Long Beach's November 6-22 Little Women and November 21-22 Aquarium Autumn Festival, and the November 20-29 LA Auto Show. "
+            "Also covers Arcadia's November 20-December 27 Enchant Christmas; Burbank's November 6-19 Art Association Fall Show, November 20 Holiday in the Park, and November 21 Winter Wine Walk; Anaheim's November 14 Native Art and Acorn Festival and November 13-January 6 Holidays at the Disneyland Resort; Glendale's November 14 Clothing Swap and Repair Café; West Hollywood's November 14 Next Chapter Writers' Summit and Live On Sunset concert; Beverly Hills' long-run Monuments of Stillness sculpture walk and November 19 holiday lighting; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Held in Trust and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
         ),
     },
 
@@ -1985,8 +1985,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current Orange County options include Anaheim's free Native Art and Acorn Festival on November 14 and Holidays at the Disneyland Resort from November 13-January 6.",
-                "Open /articles/southern-california-september-events-2026#anaheim-native-art-acorn-festival or /articles/southern-california-september-events-2026#anaheim-disneyland-holidays for practical comparisons and current city-directory links.",
+                "Current Orange County options include Huntington Beach's Darker Waves festival on November 14, Anaheim's free Native Art and Acorn Festival on November 14, and Holidays at the Disneyland Resort from November 13-January 6.",
+                "Open /articles/southern-california-september-events-2026#darker-waves-huntington-beach, /articles/southern-california-september-events-2026#anaheim-native-art-acorn-festival, or /articles/southern-california-september-events-2026#anaheim-disneyland-holidays for practical comparisons and current city-directory links.",
             )
         )
 
@@ -1994,16 +1994,18 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's late-August Huntington Beach guide and 2026 Oktoberfest coverage have concluded and are no longer presented as current.",
-                "Browse /directory?city=Huntington%20Beach for 43 local listings and confirm the next event with the city, venue, or organizer before traveling.",
+                "Darker Waves takes over Huntington City Beach on November 14 with a one-day new wave, post-punk, goth, and alternative-rock lineup led by Morrissey and The Smashing Pumpkins.",
+                "Open /articles/southern-california-september-events-2026#darker-waves-huntington-beach for planning notes and official-source links, or browse /directory?city=Huntington%20Beach for 43 local listings.",
             )
         )
 
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Musical Theatre West's Little Women at the Carpenter Performing Arts Center from November 6-22 and the Aquarium of the Pacific's Autumn Festival on November 21-22.",
+                "The current PerkNation fall guide includes the November 14 Khmer Town Night Market, Musical Theatre West's Little Women at the Carpenter Performing Arts Center from November 6-22, and the Aquarium of the Pacific's Autumn Festival on November 21-22.",
+                "The Khmer Town Night Market runs noon-8 p.m. with live entertainment, local food, small-business vendors, and family activities.",
                 "The G-rated production runs 2 hours and 30 minutes with one intermission, offers matinee and evening performances across three weekends, and includes ASL interpretation at the November 14 matinee.",
-                "Open /articles/southern-california-september-events-2026#long-beach-little-women for official box-office, schedule, parking, and pre-show guidance, or #aquarium-autumn-festival for admission, reservation, and cultural-program details; both include links into 208 Long Beach listings.",
+                "Open /articles/southern-california-september-events-2026#khmer-town-night-market-long-beach for market planning, #long-beach-little-women for official box-office and parking guidance, or #aquarium-autumn-festival for reservation and cultural-program details; all include links into 208 Long Beach listings.",
                 "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )
@@ -2059,8 +2061,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes the free November 15 CicLAvia open-streets day, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
-                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#ciclavia-pasadena for a car-free walk, bike, roll, or skate day, #pasadena-route-66-exhibition for a flexible history visit, or #laura-aguilar-day-of-the-dead for photography; browse /directory?city=Pasadena for 563 local listings.",
+                "The current PerkNation fall guide includes the free November 14-15 Jackalope Art Festival, the free November 15 CicLAvia open-streets day, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
+                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#jackalope-art-festival-pasadena for more than 200 independent makers, #ciclavia-pasadena for a car-free walk, bike, roll, or skate day, #pasadena-route-66-exhibition for a flexible history visit, or #laura-aguilar-day-of-the-dead for photography; browse /directory?city=Pasadena for 563 local listings.",
             )
         )
 
@@ -2076,7 +2078,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "The Los Angeles County Arboretum's October 25 Día de los Muertos program has concluded and is no longer presented as active.",
-                "Browse /directory?city=Arcadia for 40 local listings and confirm the next Arboretum or city event with its organizer before traveling.",
+                "Enchant Christmas runs at Santa Anita Park from November 20-December 27 with a ticketed light maze, ice-skating trail, snow slide, live entertainment, and holiday market.",
+                "Open /articles/southern-california-september-events-2026#enchant-christmas-arcadia for planning notes and official-source links, or browse /directory?city=Arcadia for 40 local listings.",
             )
         )
 
