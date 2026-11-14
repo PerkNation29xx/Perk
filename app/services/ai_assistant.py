@@ -780,8 +780,8 @@ def _home_local_guide_context(*, db: Optional[Session]) -> str:
             "- Union, Agnes, Fishwives, Perle, Bone Kettle, Osawa, Panda Inn, and Pez Coastal Kitchen are Pasadena restaurant recommendations, not discount offers unless another promo says so.",
             "",
             "Editorial/review coverage currently surfaced for PerkNation readers:",
-            "- Fashion guide: remaining CMC holiday sample-sale Fridays on November 13 and 20 and December 4, 11, and 18, Fashion District shopping, and completed Miami Fashion Week and LA Market Week as season context.",
-            "- Events coverage: the ranked 29-plan November Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
+            "- Fashion guide: remaining CMC holiday sample-sale Fridays on November 20 and December 4, 11, and 18, Fashion District shopping, and completed Miami Fashion Week and LA Market Week as season context.",
+            "- Events coverage: the ranked 33-plan November Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
             "- Restaurant coverage: current local directory listings, Pasadena restaurant picks, and broader dining discovery.",
             "",
             "Answering rules:",
@@ -800,10 +800,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Fashion and shopping",
         "city": "Los Angeles, United States, and international",
         "title": "2026 Fashion Week calendar: LA, New York, Miami and the world",
-        "timing": "November 7-December 18, 2026",
+        "timing": "November 14-December 18, 2026",
         "route": "/articles/la-fashion-events-2026",
         "details": (
-            "The remaining public CMC holiday sample-sale Fridays are November 13 and 20 and December 4, 11, and 18. "
+            "The remaining public CMC holiday sample-sale Fridays are November 20 and December 4, 11, and 18. "
             "Completed Miami Fashion Week, Los Angeles Market Week, New York, London, Milan, and Paris dates remain in the article only as clearly labeled season context."
         ),
     },
@@ -811,11 +811,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Thirty-two Southern California fall plans",
+        "title": "Thirty-three Southern California fall plans",
         "timing": "November 12, 2026-January 10, 2027",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to the November 12-January 3 Holiday Ice Rink at Pershing Square, Natural History Museum's Spider Pavilion and November 12-January 10 NightTales experience, the November 13 opening of the Samuel Oschin Air and Space Center, Huntington Beach's November 14 Darker Waves festival, Pasadena's free November 14-15 Jackalope Art Festival and November 15 CicLAvia, Long Beach's November 14 Khmer Town Night Market, The Broad's free November 15 Sensory Morning, Santa Monica's November 14 Art in Motion screening and November 18-January 3 Swiss Winter Village, Long Beach's November 6-22 Little Women and November 21-22 Aquarium Autumn Festival, and the November 20-29 LA Auto Show. "
+            "Ranked guide to the November 12-January 3 Holiday Ice Rink at Pershing Square, Natural History Museum's Spider Pavilion and November 12-January 10 NightTales experience, the newly open Samuel Oschin Air and Space Center, Huntington Beach's November 14 Darker Waves festival, Pasadena's free November 14-15 Jackalope Art Festival and November 15 CicLAvia, Long Beach's November 14 Khmer Town Night Market, The Broad's free November 15 Sensory Morning, Santa Monica's November 14 Art in Motion screening, November 18-January 3 Swiss Winter Village, and November 19 Regent Holiday Tree Lighting, Long Beach's November 6-22 Little Women and November 21-22 Aquarium Autumn Festival, and the November 20-29 LA Auto Show. "
             "Also covers Arcadia's November 20-December 27 Enchant Christmas; Burbank's November 6-19 Art Association Fall Show, November 20 Holiday in the Park, and November 21 Winter Wine Walk; Anaheim's November 14 Native Art and Acorn Festival and November 13-January 6 Holidays at the Disneyland Resort; Glendale's November 14 Clothing Swap and Repair Café; West Hollywood's November 14 Next Chapter Writers' Summit and Live On Sunset concert; Beverly Hills' long-run Monuments of Stillness sculpture walk and November 19 holiday lighting; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Held in Trust and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
         ),
     },
@@ -907,7 +907,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "timing": "November 14, 2026-March 20, 2027",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Five current plans covering the November 14 Art in Motion extended screening, the Held in Trust city-art exhibition, Swiss Winter Village at the Pier, the Portraits: Faces and Waves photography exhibition, and the Pico farmers market."
+            "Six current plans covering the November 14 Art in Motion extended screening, the Held in Trust city-art exhibition, Swiss Winter Village at the Pier, Regent's November 19 Holiday Tree Lighting, the Portraits: Faces and Waves photography exhibition, and the Pico farmers market."
         ),
     },
     {
@@ -2021,10 +2021,11 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks five November and flexible long-run plans:",
+                "The current PerkNation Santa Monica guide ranks six November and flexible long-run plans:",
                 "- Held in Trust brings 16 Southern California artists from the city's Art Bank Collection together through March 20, Wednesday-Saturday from 11 a.m.-5 p.m., except city holidays.",
                 "- Art in Motion expands into an hourlong public-art and short-film screening on the Third Street Promenade on November 14 from 6:30-7:30 p.m.; confirm access on the city listing before traveling.",
                 "- Swiss Winter Village runs at the Pier from November 18-January 3 with more than 60 chalets, seasonal food, local creations, and an ice rink; compare ticket products before traveling.",
+                "- Regent Santa Monica Beach's November 19 tree lighting runs 4:30-7 p.m. with a 45-foot tree, live music, festive treats, holiday shopping, and a community-giving component; RSVP before leaving.",
                 "- The free Portraits: Faces and Waves exhibition offers a flexible Beach House Gallery stop through March 27, while the Pico farmers market remains a repeatable Saturday morning option.",
                 "Open /articles/santa-monica-august-2026-guide for rankings, best-for notes, transit, official sources, and directory links.",
             )
@@ -2034,7 +2035,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "Remaining public dates in the PerkNation 2026 Fashion Week guide:",
-                "- CMC holiday sample-sale Fridays: November 13 and 20, plus December 4, 11, and 18.",
+                "- CMC holiday sample-sale Fridays: November 20, plus December 4, 11, and 18.",
                 "Choose a CMC sample sale for public shopping access. "
                 "Completed Miami Fashion Week and Completed Los Angeles Market Week, plus New York, London, Milan, and Paris dates, are labeled as season context. Read the rankings, access notes, and official-source links at "
                 "/articles/la-fashion-events-2026.",

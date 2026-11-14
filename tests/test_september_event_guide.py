@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-two Southern California fall plans" in html
-    assert 'dateModified": "2026-11-13"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 33))
+    assert "Thirty-three Southern California fall plans" in html
+    assert 'dateModified": "2026-11-14"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 34))
 
     for expected in (
         'id="pershing-square-holiday-ice-rink"',
@@ -66,6 +66,9 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "visitburbank.com/events/holiday-in-the-park",
         'id="burbank-winter-wine-walk"',
         "visitburbank.com/events/burbank-winter-wine-walk",
+        'id="regent-santa-monica-holiday-tree-lighting"',
+        "santamonica.regenthotels.com/experience/winter-escape",
+        "santamonica.com/event/regent-holiday-tree-lighting-celebration",
         'id="enchant-christmas-arcadia"',
         "visitpasadena.com/blog/the-best-holiday-shows-performances-and-christmas-festivities",
         'id="la-auto-show"',
@@ -174,7 +177,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Thirty-two Southern California fall plans" in response.text
+        assert "Thirty-three Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -185,15 +188,15 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 13 · Fall guide" in response.text
-        assert "Thirty-two Southern California fall plans, ranked." in response.text
+        assert "Updated November 14 · Fall guide" in response.text
+        assert "Thirty-three Southern California fall plans, ranked." in response.text
         for current in (
-            "today's Samuel Oschin Air and Space Center opening",
-            "tomorrow's Darker Waves in Huntington Beach",
+            "today's Darker Waves in Huntington Beach",
             "free Jackalope Art Festival in Pasadena",
             "Khmer Town Night Market in Long Beach",
+            "Art in Motion in Santa Monica",
             "Live On Sunset in West Hollywood",
-            "The newly open Pershing Square rink and NightTales offer flexible dates",
+            "The newly open Air and Space Center, Pershing Square rink, and NightTales offer flexible dates",
             "Sunday adds The Broad's free Sensory Morning",
             "Long Beach also has <em>Little Women</em> and Aquarium Autumn Festival",
             "Burbank has fall art, Holiday in the Park, and Winter Wine Walk",
@@ -206,6 +209,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Arcadia adds Enchant Christmas",
             "Beverly Hills has a long-run Rodeo Drive sculpture walk and holiday lighting",
             "Swiss Winter Village",
+            "Regent's tree lighting",
             "the LA Auto Show",
         ):
             assert current in response.text
@@ -263,7 +267,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Thirty-two Southern California fall plans",
+        "Thirty-three Southern California fall plans",
         "Holiday Ice Rink at Pershing Square",
         "NightTales",
         "CicLAvia",
@@ -289,6 +293,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Holidays at the Disneyland Resort",
         "Next Chapter Writers' Summit",
         "November 19 holiday lighting",
+        "Regent Holiday Tree Lighting",
     ):
         assert current in general
     for expired in (
