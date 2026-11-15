@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-three Southern California fall plans" in html
-    assert 'dateModified": "2026-11-14"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 34))
+    assert "Twenty-seven Southern California fall plans" in html
+    assert 'dateModified": "2026-11-15"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 28))
 
     for expected in (
         'id="pershing-square-holiday-ice-rink"',
@@ -26,16 +26,14 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         'id="samuel-oschin-air-space-center"',
         "californiasciencecenter.org/visit/get-reservations-tickets",
         "302922833",
-        'id="darker-waves-huntington-beach"',
-        "surfcityusa.com/media/media-events",
         'id="jackalope-art-festival-pasadena"',
         "visitpasadena.com/events/jackalope-art-festival",
-        'id="khmer-town-night-market-long-beach"',
-        "visitlongbeach.com/events/khmer-town-night-market",
         'id="ciclavia-pasadena"',
         "cityofpasadena.net/event/ciclavia-2026-pasadena",
         'id="broad-sensory-morning"',
         "thebroad.org/events/sensory-morning-broad-16",
+        'id="old-pasadena-holiday-passport"',
+        "visitpasadena.com/events/old-pasadena-holiday-passport",
         'id="burbank-art-association-fall-show"',
         "2026-burbank-art-association",
         'id="nhm-nighttales"',
@@ -46,18 +44,8 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "4v0naphs6kscmrssg0n2ejrsce/202611041100",
         'id="santa-monica-swiss-winter-village"',
         "santamonica.com/event/swiss-winter-village",
-        'id="anaheim-native-art-acorn-festival"',
-        "anaheim.net/6813/Native-Art-and-Acorn-Festival",
-        'id="glendale-clothing-swap-repair-cafe"',
-        "glendaleca.gov/Home/Components/Calendar/Event/56145/18",
-        'id="santa-monica-art-in-motion"',
-        "4v00wn58bn5r11s5qteysdzq59/202611141830",
         'id="anaheim-disneyland-holidays"',
         "disneyland.disney.go.com/events-tours/holidays-at-the-disneyland-resort",
-        'id="west-hollywood-next-chapter-writers-summit"',
-        "lacountylibrary.org/nextchapter",
-        'id="west-hollywood-live-on-sunset"',
-        "visitwesthollywood.com/events/live-on-sunset",
         'id="beverly-hills-monuments-of-stillness"',
         "beverlyhills.org/1839/Carole-Feurerman-Monuments-of-Stillness",
         'id="beverly-hills-holiday-lighting"',
@@ -154,6 +142,13 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "anaheim-veterans-day",
         "burbank-veterans-day",
         "pasadena-veterans-day",
+        "Darker Waves",
+        "Khmer Town Night Market",
+        "Native Art and Acorn Festival",
+        "Clothing Swap and Repair Café",
+        "Art in Motion",
+        "Next Chapter Writers' Summit",
+        "Live On Sunset",
     ):
         assert expired not in html
 
@@ -177,7 +172,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Thirty-three Southern California fall plans" in response.text
+        assert "Twenty-seven Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -188,24 +183,19 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 14 · Fall guide" in response.text
-        assert "Thirty-three Southern California fall plans, ranked." in response.text
+        assert "Updated November 15 · Fall guide" in response.text
+        assert "Twenty-seven Southern California fall plans, ranked." in response.text
         for current in (
-            "today's Darker Waves in Huntington Beach",
-            "free Jackalope Art Festival in Pasadena",
-            "Khmer Town Night Market in Long Beach",
-            "Art in Motion in Santa Monica",
-            "Live On Sunset in West Hollywood",
+            "today's free CicLAvia in Pasadena",
+            "final-day Jackalope Art Festival",
+            "Old Pasadena Holiday Passport",
             "The newly open Air and Space Center, Pershing Square rink, and NightTales offer flexible dates",
-            "Sunday adds The Broad's free Sensory Morning",
+            "The Broad's free Sensory Morning",
             "Long Beach also has <em>Little Women</em> and Aquarium Autumn Festival",
             "Burbank has fall art, Holiday in the Park, and Winter Wine Walk",
-            "Anaheim has Native Art and Acorn Festival and Holidays at the Disneyland Resort",
-            "Glendale has Clothing Swap and Repair Café",
-            "Art in Motion",
+            "Anaheim has Holidays at the Disneyland Resort",
+            "Glendale has <em>Artifacts from an Unborn Empire</em>",
             "Held in Trust",
-                "West Hollywood has Next Chapter Writers' Summit",
-            "Live On Sunset",
             "Arcadia adds Enchant Christmas",
             "Beverly Hills has a long-run Rodeo Drive sculpture walk and holiday lighting",
             "Swiss Winter Village",
@@ -250,6 +240,13 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Second Sundays",
             "Huntington Beach Oktoberfest",
             "Veterans Day",
+            "Darker Waves",
+            "Khmer Town Night Market",
+            "Native Art and Acorn Festival",
+            "Clothing Swap and Repair Café",
+            "Art in Motion",
+            "Next Chapter Writers' Summit",
+            "Live On Sunset",
         ):
             assert expired not in response.text
 
@@ -267,14 +264,13 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Thirty-three Southern California fall plans",
+        "Twenty-seven Southern California fall plans",
         "Holiday Ice Rink at Pershing Square",
         "NightTales",
         "CicLAvia",
         "Samuel Oschin Air and Space Center",
-        "Darker Waves",
         "Jackalope Art Festival",
-        "Khmer Town Night Market",
+        "Old Pasadena Holiday Passport",
         "Enchant Christmas",
         "The Broad's free November 15 Sensory Morning",
         "Held in Trust",
@@ -282,16 +278,11 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Little Women",
         "Aquarium Autumn Festival",
         "LA Auto Show",
-        "Live On Sunset",
         "Holiday in the Park",
         "Winter Wine Walk",
         "Monuments of Stillness",
         "Art Association Fall Show",
-        "Clothing Swap and Repair Café",
-        "Art in Motion",
-        "Native Art and Acorn Festival",
         "Holidays at the Disneyland Resort",
-        "Next Chapter Writers' Summit",
         "November 19 holiday lighting",
         "Regent Holiday Tree Lighting",
     ):
@@ -335,6 +326,13 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Second Sundays",
         "Huntington Beach Oktoberfest",
         "Veterans Day",
+        "Darker Waves",
+        "Khmer Town Night Market",
+        "Native Art and Acorn Festival",
+        "Clothing Swap and Repair Café",
+        "Art in Motion",
+        "Next Chapter Writers' Summit",
+        "Live On Sunset",
     ):
         assert expired not in general
 
@@ -355,6 +353,8 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     assert "#jackalope-art-festival-pasadena" in pasadena
     assert "CicLAvia" in pasadena
     assert "#ciclavia-pasadena" in pasadena
+    assert "Old Pasadena Holiday Passport" in pasadena
+    assert "#old-pasadena-holiday-passport" in pasadena
     assert "Strange Science" not in pasadena
     assert "Second Sundays" not in pasadena
     assert "USC Pacific Asia Museum" not in pasadena
@@ -365,22 +365,22 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     assert "Villa Parke" not in pasadena
 
     glendale = _public_review_live_query_response("What current events are covered in Glendale?", "home_local_guide")
-    assert "Clothing Swap and Repair Café" in glendale
-    assert "#glendale-clothing-swap-repair-cafe" in glendale
+    assert "Clothing Swap and Repair Café" not in glendale
+    assert "#glendale-clothing-swap-repair-cafe" not in glendale
     assert "Artifacts from an Unborn Empire" in glendale
     assert "Forest Lawn Glendale" not in glendale
     assert "Jewel City" not in glendale
 
     long_beach = _public_review_live_query_response("What current events are covered in Long Beach?", "home_local_guide")
-    assert "Khmer Town Night Market" in long_beach
-    assert "#khmer-town-night-market-long-beach" in long_beach
+    assert "Khmer Town Night Market" not in long_beach
+    assert "#khmer-town-night-market-long-beach" not in long_beach
     assert "Little Women" in long_beach
     assert "Autumn Festival" in long_beach
     assert "#aquarium-autumn-festival" in long_beach
 
     huntington_beach = _public_review_live_query_response("What current events are covered in Huntington Beach?", "home_local_guide")
-    assert "Darker Waves" in huntington_beach
-    assert "#darker-waves-huntington-beach" in huntington_beach
+    assert "Darker Waves" not in huntington_beach
+    assert "#darker-waves-huntington-beach" not in huntington_beach
 
     arcadia = _public_review_live_query_response("What current events are covered in Arcadia?", "home_local_guide")
     assert "Enchant Christmas" in arcadia

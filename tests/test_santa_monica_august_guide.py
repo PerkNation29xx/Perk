@@ -14,16 +14,14 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "santa-mo
 def test_santa_monica_guide_is_current_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Santa Monica has six current plans" in html
-    assert 'dateModified": "2026-11-14"' in html
-    assert "6 ranked plans" in html
+    assert "Santa Monica has five current plans" in html
+    assert 'dateModified": "2026-11-15"' in html
+    assert "5 ranked plans" in html
     for expected in (
         "Held in Trust",
         "4v0naphs6kscmrssg0n2ejrsce/202611041100",
         "Swiss Winter Village",
         "santamonica.com/event/swiss-winter-village",
-        "Art in Motion",
-        "4v00wn58bn5r11s5qteysdzq59/202611141830",
         "Regent Holiday Tree Lighting",
         "santamonica.regenthotels.com/experience/winter-escape",
         "santamonica.com/event/regent-holiday-tree-lighting-celebration",
@@ -50,6 +48,7 @@ def test_santa_monica_guide_is_current_and_reader_facing() -> None:
         "Renegade Craft",
         "Veterans Day",
         "annual-nov-11-veterans-day-ceremony",
+        "Art in Motion",
     ):
         assert expired not in html
 
@@ -73,7 +72,7 @@ def test_santa_monica_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "6 ranked plans" in response.text
+        assert "5 ranked plans" in response.text
 
     image = client.get("/assets/articles/santa-monica-august-2026-guide.jpg")
     assert image.status_code == 200
@@ -84,13 +83,13 @@ def test_santa_monica_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 14 · Santa Monica" in response.text
-        assert "Six current Santa Monica plans, ranked." in response.text
+        assert "Updated November 15 · Santa Monica" in response.text
+        assert "Five current Santa Monica plans, ranked." in response.text
         assert "Renegade Craft" not in response.text
         assert "Held in Trust" in response.text
         assert "Swiss Winter Village" in response.text
         assert "Veterans Day" not in response.text
-        assert "Art in Motion" in response.text
+        assert "Art in Motion" not in response.text
         assert "Regent's November 19 tree lighting" in response.text
         assert "LA Times Food Bowl" not in response.text
         assert "Ghosts of the Miles" not in response.text
@@ -107,12 +106,12 @@ def test_santa_monica_public_answer_is_current_and_scoped() -> None:
     )
 
     assert answer
-    assert "ranks six November and flexible long-run plans" in answer
+    assert "ranks five November and flexible long-run plans" in answer
     assert "Renegade Craft" not in answer
     assert "Held in Trust" in answer
     assert "Swiss Winter Village" in answer
     assert "Veterans Day" not in answer
-    assert "Art in Motion" in answer
+    assert "Art in Motion" not in answer
     assert "Regent Santa Monica Beach" in answer
     assert "Portraits: Faces and Waves" in answer
     assert "Pico farmers market" in answer
