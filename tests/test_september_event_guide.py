@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Twenty-seven Southern California fall plans" in html
-    assert 'dateModified": "2026-11-15"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 28))
+    assert "Twenty-five Southern California fall plans" in html
+    assert 'dateModified": "2026-11-16"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 26))
 
     for expected in (
         'id="pershing-square-holiday-ice-rink"',
@@ -26,16 +26,13 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         'id="samuel-oschin-air-space-center"',
         "californiasciencecenter.org/visit/get-reservations-tickets",
         "302922833",
-        'id="jackalope-art-festival-pasadena"',
-        "visitpasadena.com/events/jackalope-art-festival",
-        'id="ciclavia-pasadena"',
-        "cityofpasadena.net/event/ciclavia-2026-pasadena",
-        'id="broad-sensory-morning"',
-        "thebroad.org/events/sensory-morning-broad-16",
         'id="old-pasadena-holiday-passport"',
         "visitpasadena.com/events/old-pasadena-holiday-passport",
         'id="burbank-art-association-fall-show"',
         "2026-burbank-art-association",
+        'id="ctn-animation-expo-burbank"',
+        "ctn-events.com/ctnx2026",
+        "visitburbank.com/events/ctn-animation-expo",
         'id="nhm-nighttales"',
         "nhm.org/calendar/nighttales-museum-experience",
         'id="long-beach-little-women"',
@@ -149,6 +146,9 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "Art in Motion",
         "Next Chapter Writers' Summit",
         "Live On Sunset",
+        "Jackalope Art Festival",
+        "CicLAvia Pasadena",
+        "Sensory Morning at The Broad",
     ):
         assert expired not in html
 
@@ -172,7 +172,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Twenty-seven Southern California fall plans" in response.text
+        assert "Twenty-five Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -183,14 +183,14 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 15 · Fall guide" in response.text
-        assert "Twenty-seven Southern California fall plans, ranked." in response.text
+        assert "Updated November 16 · Fall guide" in response.text
+        assert "Twenty-five Southern California fall plans, ranked." in response.text
         for current in (
-            "today's free CicLAvia in Pasadena",
-            "final-day Jackalope Art Festival",
             "Old Pasadena Holiday Passport",
             "The newly open Air and Space Center, Pershing Square rink, and NightTales offer flexible dates",
-            "The Broad's free Sensory Morning",
+            "CTN Animation Expo",
+            "Animation and visual storytelling · Nov 19-22",
+            "Coastal holiday market · Nov 18-Jan 3",
             "Long Beach also has <em>Little Women</em> and Aquarium Autumn Festival",
             "Burbank has fall art, Holiday in the Park, and Winter Wine Walk",
             "Anaheim has Holidays at the Disneyland Resort",
@@ -199,7 +199,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Arcadia adds Enchant Christmas",
             "Beverly Hills has a long-run Rodeo Drive sculpture walk and holiday lighting",
             "Swiss Winter Village",
-            "Regent's tree lighting",
+            "Regent tree lighting",
             "the LA Auto Show",
         ):
             assert current in response.text
@@ -247,6 +247,9 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Art in Motion",
             "Next Chapter Writers' Summit",
             "Live On Sunset",
+            "CicLAvia",
+            "Jackalope Art Festival",
+            "Sensory Morning",
         ):
             assert expired not in response.text
 
@@ -264,15 +267,13 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Twenty-seven Southern California fall plans",
+        "Twenty-five Southern California fall plans",
         "Holiday Ice Rink at Pershing Square",
         "NightTales",
-        "CicLAvia",
         "Samuel Oschin Air and Space Center",
-        "Jackalope Art Festival",
         "Old Pasadena Holiday Passport",
+        "CTN Animation Expo",
         "Enchant Christmas",
-        "The Broad's free November 15 Sensory Morning",
         "Held in Trust",
         "Swiss Winter Village",
         "Little Women",
@@ -333,14 +334,19 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Art in Motion",
         "Next Chapter Writers' Summit",
         "Live On Sunset",
+        "CicLAvia",
+        "Jackalope Art Festival",
+        "Sensory Morning",
     ):
         assert expired not in general
 
     burbank = _public_review_live_query_response("What current events are covered in Burbank?", "home_local_guide")
     assert "Art Association Fall Show" in burbank
+    assert "CTN Animation Expo" in burbank
     assert "Holiday in the Park" in burbank
     assert "Winter Wine Walk" in burbank
     assert "#burbank-art-association-fall-show" in burbank
+    assert "#ctn-animation-expo-burbank" in burbank
     assert "#burbank-holiday-in-the-park" in burbank
     assert "#burbank-winter-wine-walk" in burbank
     assert "Halloween Carnival" not in burbank
@@ -349,10 +355,6 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     assert "Halloween Skatefest" not in burbank
 
     pasadena = _public_review_live_query_response("What current events are covered in Pasadena?", "home_local_guide")
-    assert "Jackalope Art Festival" in pasadena
-    assert "#jackalope-art-festival-pasadena" in pasadena
-    assert "CicLAvia" in pasadena
-    assert "#ciclavia-pasadena" in pasadena
     assert "Old Pasadena Holiday Passport" in pasadena
     assert "#old-pasadena-holiday-passport" in pasadena
     assert "Strange Science" not in pasadena
@@ -363,6 +365,8 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     assert "Pasadena Fall Festival" not in pasadena
     assert "Trunk or Treat" not in pasadena
     assert "Villa Parke" not in pasadena
+    assert "Jackalope Art Festival" not in pasadena
+    assert "CicLAvia" not in pasadena
 
     glendale = _public_review_live_query_response("What current events are covered in Glendale?", "home_local_guide")
     assert "Clothing Swap and Repair Café" not in glendale

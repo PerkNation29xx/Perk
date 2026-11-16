@@ -781,7 +781,7 @@ def _home_local_guide_context(*, db: Optional[Session]) -> str:
             "",
             "Editorial/review coverage currently surfaced for PerkNation readers:",
             "- Fashion guide: remaining CMC holiday sample-sale Fridays on November 20 and December 4, 11, and 18, Fashion District shopping, and completed Miami Fashion Week and LA Market Week as season context.",
-            "- Events coverage: the ranked 33-plan November Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
+            "- Events coverage: the ranked 25-plan November Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
             "- Restaurant coverage: current local directory listings, Pasadena restaurant picks, and broader dining discovery.",
             "",
             "Answering rules:",
@@ -811,11 +811,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Twenty-seven Southern California fall plans",
+        "title": "Twenty-five Southern California fall plans",
         "timing": "November 12, 2026-January 10, 2027",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to the November 12-January 3 Holiday Ice Rink at Pershing Square, Natural History Museum's Spider Pavilion and November 12-January 10 NightTales experience, the newly open Samuel Oschin Air and Space Center, Pasadena's final-day November 15 Jackalope Art Festival and free CicLAvia, the November 15-29 Old Pasadena Holiday Passport, The Broad's free November 15 Sensory Morning, Santa Monica's November 18-January 3 Swiss Winter Village and November 19 Regent Holiday Tree Lighting, Long Beach's November 6-22 Little Women and November 21-22 Aquarium Autumn Festival, and the November 20-29 LA Auto Show. "
+            "Ranked guide to the November 12-January 3 Holiday Ice Rink at Pershing Square, Natural History Museum's Spider Pavilion and November 12-January 10 NightTales experience, the newly open Samuel Oschin Air and Space Center, the November 15-29 Old Pasadena Holiday Passport, Burbank's November 19-22 CTN Animation Expo, Santa Monica's November 18-January 3 Swiss Winter Village and November 19 Regent Holiday Tree Lighting, Long Beach's November 6-22 Little Women and November 21-22 Aquarium Autumn Festival, and the November 20-29 LA Auto Show. "
             "Also covers Arcadia's November 20-December 27 Enchant Christmas; Burbank's November 6-19 Art Association Fall Show, November 20 Holiday in the Park, and November 21 Winter Wine Walk; Anaheim's November 13-January 6 Holidays at the Disneyland Resort; Beverly Hills' long-run Monuments of Stillness sculpture walk and November 19 holiday lighting; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Held in Trust and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
         ),
     },
@@ -2051,16 +2051,17 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "The Burbank Art Association Fall Show opens November 6 from 7-9 p.m. with music and light refreshments, then remains at the Betsy Lueke Creative Arts Center through November 19 during regular facility hours.",
+                "CTN Animation Expo runs November 19-22 at the Burbank Airport Marriott with screenings, panels, workshops, portfolio reviews, networking, and exhibitions; compare pass access and the daily schedule before buying.",
                 "Holiday in the Park is free on November 20 from 4-10 p.m. along Magnolia Boulevard; the November 21 Winter Wine Walk pairs a free noon-8 p.m. street fair with separate ticketed wine tasting from 4-7 p.m.",
-                "Open /articles/southern-california-september-events-2026#burbank-art-association-fall-show, #burbank-holiday-in-the-park, or #burbank-winter-wine-walk for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
+                "Open /articles/southern-california-september-events-2026#burbank-art-association-fall-show, #ctn-animation-expo-burbank, #burbank-holiday-in-the-park, or #burbank-winter-wine-walk for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
             )
         )
 
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes the final day of free Jackalope Art Festival, the free November 15 CicLAvia open-streets day, the November 15-29 Old Pasadena Holiday Passport, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
-                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#jackalope-art-festival-pasadena for more than 200 independent makers, #ciclavia-pasadena for a car-free walk, bike, roll, or skate day, #old-pasadena-holiday-passport for a no-purchase-required local-shopping challenge, #pasadena-route-66-exhibition for a flexible history visit, or #laura-aguilar-day-of-the-dead for photography; browse /directory?city=Pasadena for 563 local listings.",
+                "The current PerkNation fall guide includes the November 15-29 Old Pasadena Holiday Passport, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
+                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#old-pasadena-holiday-passport for a no-purchase-required local-shopping challenge, #pasadena-route-66-exhibition for a flexible history visit, or #laura-aguilar-day-of-the-dead for photography; browse /directory?city=Pasadena for 563 local listings.",
             )
         )
 
