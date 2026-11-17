@@ -781,7 +781,7 @@ def _home_local_guide_context(*, db: Optional[Session]) -> str:
             "",
             "Editorial/review coverage currently surfaced for PerkNation readers:",
             "- Fashion guide: remaining CMC holiday sample-sale Fridays on November 20 and December 4, 11, and 18, Fashion District shopping, and completed Miami Fashion Week and LA Market Week as season context.",
-            "- Events coverage: the ranked 25-plan November Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
+            "- Events coverage: the ranked 26-plan November Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
             "- Restaurant coverage: current local directory listings, Pasadena restaurant picks, and broader dining discovery.",
             "",
             "Answering rules:",
@@ -811,11 +811,11 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Twenty-five Southern California fall plans",
+        "title": "Twenty-six Southern California fall plans",
         "timing": "November 12, 2026-January 10, 2027",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to the November 12-January 3 Holiday Ice Rink at Pershing Square, Natural History Museum's Spider Pavilion and November 12-January 10 NightTales experience, the newly open Samuel Oschin Air and Space Center, the November 15-29 Old Pasadena Holiday Passport, Burbank's November 19-22 CTN Animation Expo, Santa Monica's November 18-January 3 Swiss Winter Village and November 19 Regent Holiday Tree Lighting, Long Beach's November 6-22 Little Women and November 21-22 Aquarium Autumn Festival, and the November 20-29 LA Auto Show. "
+            "Ranked guide to the November 12-January 3 Holiday Ice Rink at Pershing Square, Natural History Museum's Spider Pavilion and November 12-January 10 NightTales experience, the newly open Samuel Oschin Air and Space Center, the November 15-29 Old Pasadena Holiday Passport, Burbank's November 19-22 CTN Animation Expo, Santa Monica's November 18-January 3 Swiss Winter Village and November 19 Regent Holiday Tree Lighting, Long Beach's November 6-22 Little Women and November 21-22 Aquarium Autumn Festival, Anaheim's free November 20 Pasko Holiday Market, and the November 20-29 LA Auto Show. "
             "Also covers Arcadia's November 20-December 27 Enchant Christmas; Burbank's November 6-19 Art Association Fall Show, November 20 Holiday in the Park, and November 21 Winter Wine Walk; Anaheim's November 13-January 6 Holidays at the Disneyland Resort; Beverly Hills' long-run Monuments of Stillness sculpture walk and November 19 holiday lighting; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Held in Trust and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
         ),
     },
@@ -1953,7 +1953,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     wants_burbank = _contains_any(text, ("burbank", "burbank film festival"))
     wants_glendale = _contains_any(text, ("glendale", "deukmejian", "brand park"))
     wants_arcadia = _contains_any(text, ("arcadia", "626 night market", "santa anita", "arboretum"))
-    wants_orange_county = _contains_any(text, ("orange county", "irvine", "santa ana", "dana point", "costa mesa", "san clemente", "oc fair", "sea country festival", "corn festival", "thefitexpo"))
+    wants_orange_county = _contains_any(text, ("orange county", "anaheim", "irvine", "santa ana", "dana point", "costa mesa", "san clemente", "oc fair", "sea country festival", "corn festival", "thefitexpo"))
     wants_santa_monica = _contains_any(text, ("santa monica", "wellness & waves", "art on ocean", "ocean way festival"))
     wants_laguna_beach = _contains_any(text, ("laguna beach", "pageant of the masters", "sawdust", "passport to the arts", "laguna art museum"))
     wants_long_beach = _contains_any(text, ("long beach", "stroll & savor", "taste of downtown", "jazz on the bay", "new blues festival"))
@@ -1969,7 +1969,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "D23's 2026 Anaheim convention concluded on August 16, so PerkNation no longer presents its ticket or standby guidance as active.",
-                "For current Anaheim planning, the fall guide covers Holidays at the Disneyland Resort from November 13-January 6; browse /directory?city=Anaheim for 35 local listings.",
+                "For current Anaheim planning, the fall guide covers the free November 20 Pasko Holiday Market and Holidays at the Disneyland Resort from November 13-January 6; browse /directory?city=Anaheim for 35 local listings.",
             )
         )
 
@@ -1985,8 +1985,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current Orange County coverage includes Holidays at the Disneyland Resort from November 13-January 6.",
-                "Open /articles/southern-california-september-events-2026#anaheim-disneyland-holidays for planning notes and official sources, or browse the live directory for Anaheim, Huntington Beach, Orange, Costa Mesa, and other Orange County cities.",
+                "Current Orange County coverage includes Anaheim's free November 20 Pasko Holiday Market and Holidays at the Disneyland Resort from November 13-January 6.",
+                "Open /articles/southern-california-september-events-2026#anaheim-pasko-holiday-market for the Filipino makers, food, music, crafts, and parking notes, or /articles/southern-california-september-events-2026#anaheim-disneyland-holidays for the premium full-day option; browse the live directory for Anaheim, Huntington Beach, Orange, Costa Mesa, and other Orange County cities.",
             )
         )
 

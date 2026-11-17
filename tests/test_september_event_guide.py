@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Twenty-five Southern California fall plans" in html
-    assert 'dateModified": "2026-11-16"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 26))
+    assert "Twenty-six Southern California fall plans" in html
+    assert 'dateModified": "2026-11-17"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 27))
 
     for expected in (
         'id="pershing-square-holiday-ice-rink"',
@@ -43,6 +43,9 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "santamonica.com/event/swiss-winter-village",
         'id="anaheim-disneyland-holidays"',
         "disneyland.disney.go.com/events-tours/holidays-at-the-disneyland-resort",
+        'id="anaheim-pasko-holiday-market"',
+        "visitanaheim.org/event/pasko-holiday-market-at-make/3560",
+        "sparkoc.com/event/a-kapwa-holiday-market-pasko",
         'id="beverly-hills-monuments-of-stillness"',
         "beverlyhills.org/1839/Carole-Feurerman-Monuments-of-Stillness",
         'id="beverly-hills-holiday-lighting"',
@@ -172,7 +175,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Twenty-five Southern California fall plans" in response.text
+        assert "Twenty-six Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -183,8 +186,8 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 16 · Fall guide" in response.text
-        assert "Twenty-five Southern California fall plans, ranked." in response.text
+        assert "Updated November 17 · Fall guide" in response.text
+        assert "Twenty-six Southern California fall plans, ranked." in response.text
         for current in (
             "Old Pasadena Holiday Passport",
             "The newly open Air and Space Center, Pershing Square rink, and NightTales offer flexible dates",
@@ -193,7 +196,9 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Coastal holiday market · Nov 18-Jan 3",
             "Long Beach also has <em>Little Women</em> and Aquarium Autumn Festival",
             "Burbank has fall art, Holiday in the Park, and Winter Wine Walk",
-            "Anaheim has Holidays at the Disneyland Resort",
+            "Holidays at the Disneyland Resort",
+            "Pasko Holiday Market",
+            "Free Filipino holiday market · Nov 20",
             "Glendale has <em>Artifacts from an Unborn Empire</em>",
             "Held in Trust",
             "Arcadia adds Enchant Christmas",
@@ -267,7 +272,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Twenty-five Southern California fall plans",
+        "Twenty-six Southern California fall plans",
         "Holiday Ice Rink at Pershing Square",
         "NightTales",
         "Samuel Oschin Air and Space Center",
@@ -286,6 +291,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Holidays at the Disneyland Resort",
         "November 19 holiday lighting",
         "Regent Holiday Tree Lighting",
+        "Pasko Holiday Market",
     ):
         assert current in general
     for expired in (
