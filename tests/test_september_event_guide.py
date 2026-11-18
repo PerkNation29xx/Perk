@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Twenty-six Southern California fall plans" in html
-    assert 'dateModified": "2026-11-17"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 27))
+    assert "Twenty-nine Southern California fall plans" in html
+    assert 'dateModified": "2026-11-18"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 30))
 
     for expected in (
         'id="pershing-square-holiday-ice-rink"',
@@ -33,6 +33,8 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         'id="ctn-animation-expo-burbank"',
         "ctn-events.com/ctnx2026",
         "visitburbank.com/events/ctn-animation-expo",
+        'id="union-station-tree-lighting"',
+        "unionstationla.com/happenings/11th-annual-tree-lighting-ceremony-2026",
         'id="nhm-nighttales"',
         "nhm.org/calendar/nighttales-museum-experience",
         'id="long-beach-little-women"',
@@ -61,8 +63,13 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "visitpasadena.com/blog/the-best-holiday-shows-performances-and-christmas-festivities",
         'id="la-auto-show"',
         "laconventioncenter.com/events/detail/la-auto-show-2026",
+        'id="la-zoo-lights"',
+        "lazoo.org/plan-your-visit/special-experiences/zoolights",
+        "lazoo.org/plan-your-visit/special-experiences/zoo-lights-faqs",
         'id="aquarium-autumn-festival"',
         "aquariumofpacific.org/events/info/autumn_festival",
+        'id="broad-has-the-myth-been-shattered"',
+        "thebroad.org/art/collection-exhibitions/has-myth-been-shattered",
         "Best for:",
         "/directory?city=Burbank",
         "/directory?city=Pasadena",
@@ -175,7 +182,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Twenty-six Southern California fall plans" in response.text
+        assert "Twenty-nine Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -186,11 +193,14 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 17 · Fall guide" in response.text
-        assert "Twenty-six Southern California fall plans, ranked." in response.text
+        assert "Updated November 18 · Fall guide" in response.text
+        assert "Twenty-nine Southern California fall plans, ranked." in response.text
         for current in (
             "Old Pasadena Holiday Passport",
-            "The newly open Air and Space Center, Pershing Square rink, and NightTales offer flexible dates",
+            "Swiss Winter Village opens at Santa Monica Pier today",
+            "Union Station's free November 19 tree lighting",
+            "The newly open Air and Space Center, Pershing Square rink, NightTales, L.A. Zoo Lights, and The Broad's free",
+            "Has the myth been shattered",
             "CTN Animation Expo",
             "Animation and visual storytelling · Nov 19-22",
             "Coastal holiday market · Nov 18-Jan 3",
@@ -204,7 +214,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Arcadia adds Enchant Christmas",
             "Beverly Hills has a long-run Rodeo Drive sculpture walk and holiday lighting",
             "Swiss Winter Village",
-            "Regent tree lighting",
+            "Regent's Santa Monica tree lighting",
             "the LA Auto Show",
         ):
             assert current in response.text
@@ -272,12 +282,15 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Twenty-six Southern California fall plans",
+        "Twenty-nine Southern California fall plans",
         "Holiday Ice Rink at Pershing Square",
         "NightTales",
         "Samuel Oschin Air and Space Center",
         "Old Pasadena Holiday Passport",
         "CTN Animation Expo",
+        "Union Station's free November 19 Tree Lighting",
+        "L.A. Zoo Lights",
+        "Has the myth been shattered",
         "Enchant Christmas",
         "Held in Trust",
         "Swiss Winter Village",
