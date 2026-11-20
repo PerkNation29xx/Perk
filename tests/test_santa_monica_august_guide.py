@@ -14,20 +14,15 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "santa-mo
 def test_santa_monica_guide_is_current_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Santa Monica has seven current plans" in html
-    assert 'dateModified": "2026-11-19"' in html
-    assert "7 ranked plans" in html
+    assert "Santa Monica has five current plans" in html
+    assert 'dateModified": "2026-11-20"' in html
+    assert "5 ranked plans" in html
     for expected in (
         "Held in Trust",
         "4v0naphs6kscmrssg0n2ejrsce/202611041100",
         "Swiss Winter Village",
         "santamonica.com/event/swiss-winter-village",
-        "Regent Holiday Tree Lighting",
-        "santamonica.regenthotels.com/experience/winter-escape",
-        "santamonica.com/event/regent-holiday-tree-lighting-celebration",
         "Portraits: Faces and Waves",
-        "Santa Monica Pier Locals' Night",
-        "santamonica.com/event/santa-monica-pier-locals-night",
         "Great Los Angeles Walk",
         "the-21st-annual-great-los-angeles-walk-celebrates-the-route-66-centennial-in-santa-monica",
         "Pico Farmers Market",
@@ -53,6 +48,8 @@ def test_santa_monica_guide_is_current_and_reader_facing() -> None:
         "Veterans Day",
         "annual-nov-11-veterans-day-ceremony",
         "Art in Motion",
+        "Regent Holiday Tree Lighting",
+        "Santa Monica Pier Locals' Night",
     ):
         assert expired not in html
 
@@ -76,7 +73,7 @@ def test_santa_monica_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "7 ranked plans" in response.text
+        assert "5 ranked plans" in response.text
 
     image = client.get("/assets/articles/santa-monica-august-2026-guide.jpg")
     assert image.status_code == 200
@@ -87,15 +84,15 @@ def test_santa_monica_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 19 · Santa Monica" in response.text
-        assert "Seven current Santa Monica plans, ranked." in response.text
+        assert "Updated November 20 · Santa Monica" in response.text
+        assert "Five current Santa Monica plans, ranked." in response.text
         assert "Renegade Craft" not in response.text
         assert "Held in Trust" in response.text
         assert "Swiss Winter Village" in response.text
         assert "Veterans Day" not in response.text
         assert "Art in Motion" not in response.text
-        assert "Regent tree lighting" in response.text
-        assert "Pier Locals' Night" in response.text
+        assert "Regent tree lighting" not in response.text
+        assert "Pier Locals' Night" not in response.text
         assert "Great Los Angeles Walk" in response.text
         assert "LA Times Food Bowl" not in response.text
         assert "Ghosts of the Miles" not in response.text
@@ -112,14 +109,14 @@ def test_santa_monica_public_answer_is_current_and_scoped() -> None:
     )
 
     assert answer
-    assert "ranks seven November and flexible long-run plans" in answer
+    assert "ranks five November and flexible long-run plans" in answer
     assert "Renegade Craft" not in answer
     assert "Held in Trust" in answer
     assert "Swiss Winter Village" in answer
     assert "Veterans Day" not in answer
     assert "Art in Motion" not in answer
-    assert "Regent Santa Monica Beach" in answer
-    assert "Pier Locals' Night" in answer
+    assert "Regent Santa Monica Beach" not in answer
+    assert "Pier Locals' Night" not in answer
     assert "Great Los Angeles Walk" in answer
     assert "Portraits: Faces and Waves" in answer
     assert "Pico farmers market" in answer
