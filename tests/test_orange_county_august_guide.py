@@ -99,9 +99,9 @@ def test_orange_county_roundup_link_and_public_answer_are_scoped() -> None:
     assert "/articles/orange-county-august-2026-guide" not in answer
     assert "Orange County Burger Week" not in answer
     assert "Holidays at the Disneyland Resort" in answer
-    assert "Pasko Holiday Market" in answer
+    assert "Pasko Holiday Market" not in answer
     assert "OC Japan Fair" not in answer
     assert "/articles/southern-california-september-events-2026#oc-japan-fair" not in answer
     assert "/articles/southern-california-september-events-2026#anaheim-disneyland-holidays" in answer
-    assert "/articles/southern-california-september-events-2026#anaheim-pasko-holiday-market" in answer
+    assert "/articles/southern-california-september-events-2026#anaheim-pasko-holiday-market" not in answer
     assert "Pasadena" not in answer

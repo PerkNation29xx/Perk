@@ -15,7 +15,7 @@ def test_global_fashion_guide_has_verified_calendar_rankings_and_access_notes() 
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "2026 Fashion Week calendar: LA, New York, Miami and the world" in html
-    assert 'dateModified": "2026-11-14"' in html
+    assert 'dateModified": "2026-11-21"' in html
     assert html.count('class="fashionRankCard') == 8
     assert html.count("<tr><td>") == 6
     for city, dates in (
@@ -32,7 +32,8 @@ def test_global_fashion_guide_has_verified_calendar_rankings_and_access_notes() 
     assert "Concluded October 6" in html
     assert "Concluded October 15; credentialed trade access only" in html
     assert "Concluded October 17" in html
-    assert "November 20, plus December" in html
+    assert "are December 4, 11, and 18" in html
+    assert "November 20, plus December" not in html
     assert "November 13 and 20" not in html
     assert "December 4, 11, and 18" in html
     assert "credentialed trade access" in html
@@ -57,10 +58,10 @@ def test_fashion_guide_and_homepage_card_are_live_in_both_themes() -> None:
         response = client.get(route)
         assert response.status_code == 200
         assert "2026 Fashion Weeks: LA, New York, Miami and the world." in response.text
-        assert "Updated November 14 · Fashion calendar" in response.text
+        assert "Updated November 21 · Fashion calendar" in response.text
         assert "completed Miami Fashion Week" in response.text
         assert "completed LA Market Week" in response.text
-        assert "remaining public CMC holiday sample sales on November 20 and December" in response.text
+        assert "remaining public CMC holiday sample sales on December 4, 11, and 18" in response.text
         assert "Follow New York starting September 10" not in response.text
         assert "Copenhagen, Tokyo" not in response.text
         assert _PUBLIC_BUILD_ID in response.text

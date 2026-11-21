@@ -780,7 +780,7 @@ def _home_local_guide_context(*, db: Optional[Session]) -> str:
             "- Union, Agnes, Fishwives, Perle, Bone Kettle, Osawa, Panda Inn, and Pez Coastal Kitchen are Pasadena restaurant recommendations, not discount offers unless another promo says so.",
             "",
             "Editorial/review coverage currently surfaced for PerkNation readers:",
-            "- Fashion guide: remaining CMC holiday sample-sale Fridays on November 20 and December 4, 11, and 18, Fashion District shopping, and completed Miami Fashion Week and LA Market Week as season context.",
+            "- Fashion guide: remaining CMC holiday sample-sale Fridays on December 4, 11, and 18, Fashion District shopping, and completed Miami Fashion Week and LA Market Week as season context.",
             "- Events coverage: the ranked 31-plan November Southern California guide and all 32 NFL team schedules organized by AFC and NFC, with Chargers, Rams, and 49ers featured.",
             "- Restaurant coverage: current local directory listings, Pasadena restaurant picks, and broader dining discovery.",
             "",
@@ -803,7 +803,7 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "timing": "November 14-December 18, 2026",
         "route": "/articles/la-fashion-events-2026",
         "details": (
-            "The remaining public CMC holiday sample-sale Fridays are November 20 and December 4, 11, and 18. "
+            "The remaining public CMC holiday sample-sale Fridays are December 4, 11, and 18. "
             "Completed Miami Fashion Week, Los Angeles Market Week, New York, London, Milan, and Paris dates remain in the article only as clearly labeled season context."
         ),
     },
@@ -811,12 +811,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Thirty-one Southern California fall plans",
+        "title": "Thirty Southern California fall plans",
         "timing": "November 12, 2026-April 4, 2027",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to the November 12-January 3 Holiday Ice Rink at Pershing Square, Natural History Museum's Spider Pavilion and November 12-January 10 NightTales experience, the newly open Samuel Oschin Air and Space Center, the November 15-29 Old Pasadena Holiday Passport, Burbank's November 19-22 CTN Animation Expo, Long Beach's free November 20 Westside Night Market and November 20-21 Dreamstate festival, Santa Monica's November 21 Route 66 Great Los Angeles Walk and November 18-January 3 Swiss Winter Village, The Huntington's free November 21 Holiday Market, Long Beach's November 6-22 Little Women and November 21-22 Aquarium Autumn Festival, Anaheim's free November 20 Pasko Holiday Market, the November 20-January 10 L.A. Zoo Lights, The Broad's free November 21-April 4 Has the myth been shattered exhibition, and the November 20-29 LA Auto Show. "
-            "Also covers Arcadia's November 20-December 27 Enchant Christmas; Descanso Gardens' November 22-January 9 Enchanted Forest of Light; Burbank's November 20 Holiday in the Park and November 21 Winter Wine Walk; Anaheim's November 13-January 6 Holidays at the Disneyland Resort; Beverly Hills' long-run Monuments of Stillness sculpture walk, nightly holiday lights, and November 22 craft fair; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Held in Trust and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
+            "Ranked guide to the November 12-January 3 Holiday Ice Rink at Pershing Square, Natural History Museum's Spider Pavilion and November 12-January 10 NightTales experience, the newly open Samuel Oschin Air and Space Center, the November 15-29 Old Pasadena Holiday Passport, Burbank's November 19-22 CTN Animation Expo, Long Beach's November 20-21 Dreamstate festival, Santa Monica's November 21 Route 66 Great Los Angeles Walk and November 22 free tree lighting, Pasadena's free November 22 Doo Dah Love-In, The Huntington's free November 21 Holiday Market, Long Beach's November 6-22 Little Women and November 21-22 Aquarium Autumn Festival, the November 20-January 10 L.A. Zoo Lights, The Broad's free November 21-April 4 Has the myth been shattered exhibition, and the November 20-29 LA Auto Show. "
+            "Also covers Arcadia's November 20-December 27 Enchant Christmas; Descanso Gardens' November 22-January 9 Enchanted Forest of Light; Burbank's November 21 Winter Wine Walk; Anaheim's November 13-January 6 Holidays at the Disneyland Resort; Beverly Hills' long-run Monuments of Stillness sculpture walk, nightly holiday lights, and November 22 craft fair; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Swiss Winter Village, Held in Trust, and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
         ),
     },
 
@@ -904,10 +904,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, coastal art, wellness, movies, markets, and local history",
         "city": "Santa Monica",
         "title": "Santa Monica November 2026 coastal events guide",
-        "timing": "November 20, 2026-March 20, 2027",
+        "timing": "November 21, 2026-March 20, 2027",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Five current plans covering the November 21 Route 66 Great Los Angeles Walk, the Held in Trust city-art exhibition, Swiss Winter Village at the Pier, the Portraits: Faces and Waves photography exhibition, and the Pico farmers market."
+            "Six current plans covering the November 21 Route 66 Great Los Angeles Walk, the free November 22 Downtown tree lighting, the Held in Trust city-art exhibition, Swiss Winter Village at the Pier, the Portraits: Faces and Waves photography exhibition, and the Pico farmers market."
         ),
     },
     {
@@ -1969,7 +1969,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "D23's 2026 Anaheim convention concluded on August 16, so PerkNation no longer presents its ticket or standby guidance as active.",
-                "For current Anaheim planning, the fall guide covers the free November 20 Pasko Holiday Market and Holidays at the Disneyland Resort from November 13-January 6; browse /directory?city=Anaheim for 35 local listings.",
+                "For current Anaheim planning, the fall guide covers Holidays at the Disneyland Resort from November 13-January 6; browse /directory?city=Anaheim for 35 local listings.",
             )
         )
 
@@ -1985,8 +1985,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current Orange County coverage includes Anaheim's free November 20 Pasko Holiday Market and Holidays at the Disneyland Resort from November 13-January 6.",
-                "Open /articles/southern-california-september-events-2026#anaheim-pasko-holiday-market for the Filipino makers, food, music, crafts, and parking notes, or /articles/southern-california-september-events-2026#anaheim-disneyland-holidays for the premium full-day option; browse the live directory for Anaheim, Huntington Beach, Orange, Costa Mesa, and other Orange County cities.",
+                "Current Orange County coverage includes Anaheim's Holidays at the Disneyland Resort from November 13-January 6.",
+                "Open /articles/southern-california-september-events-2026#anaheim-disneyland-holidays for the premium full-day option; browse the live directory for Anaheim, Huntington Beach, Orange, Costa Mesa, and other Orange County cities.",
             )
         )
 
@@ -2001,10 +2001,10 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes the free Westside Night Market on November 20, Dreamstate at the Queen Mary Waterfront on November 20-21, Musical Theatre West's Little Women at the Carpenter Performing Arts Center through November 22, and the Aquarium of the Pacific's Autumn Festival on November 21-22.",
-                "Westside Night Market runs 5-8 p.m. at Admiral Kidd Park; Dreamstate runs 4 p.m.-1 a.m. with official afterparties, age and ID rules, and single-day or two-day passes.",
+                "The current PerkNation fall guide includes Dreamstate at the Queen Mary Waterfront through November 21, Musical Theatre West's Little Women at the Carpenter Performing Arts Center through November 22, and the Aquarium of the Pacific's Autumn Festival on November 21-22.",
+                "Dreamstate runs 4 p.m.-1 a.m. with official afterparties, age and ID rules, and single-day pass guidance for its final date.",
                 "The G-rated production runs 2 hours and 30 minutes with one intermission and offers matinee and evening performances across three weekends.",
-                "Open /articles/southern-california-september-events-2026#long-beach-westside-night-market, #dreamstate-socal-long-beach, #long-beach-little-women, or #aquarium-autumn-festival for official-source and practical guidance; each includes links into 208 Long Beach listings.",
+                "Open /articles/southern-california-september-events-2026#dreamstate-socal-long-beach, #long-beach-little-women, or #aquarium-autumn-festival for official-source and practical guidance; each includes links into 208 Long Beach listings.",
                 "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )
@@ -2020,8 +2020,9 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks five November and flexible long-run plans:",
+                "The current PerkNation Santa Monica guide ranks six November and flexible long-run plans:",
                 "- The free November 21 Great Los Angeles Walk follows Santa Monica Boulevard for the Route 66 centennial, starting in Echo Park at 9 a.m. and ending at the Pier; register and prepare for a full endurance day.",
+                "- The free November 22 Downtown tree lighting runs 6-8 p.m. with live entertainment, Santa, family activities, face painting, raffles, and a 50-foot tree.",
                 "- Held in Trust brings 16 Southern California artists from the city's Art Bank Collection together through March 20, Wednesday-Saturday from 11 a.m.-5 p.m., except city holidays.",
                 "- Swiss Winter Village runs at the Pier from November 18-January 3 with more than 60 chalets, seasonal food, local creations, and an ice rink; compare ticket products before traveling.",
                 "- The free Portraits: Faces and Waves exhibition offers a flexible Beach House Gallery stop through March 27, while the Pico farmers market remains a repeatable Saturday morning option.",
@@ -2033,7 +2034,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "Remaining public dates in the PerkNation 2026 Fashion Week guide:",
-                "- CMC holiday sample-sale Fridays: November 20, plus December 4, 11, and 18.",
+                "- CMC holiday sample-sale Fridays: December 4, 11, and 18.",
                 "Choose a CMC sample sale for public shopping access. "
                 "Completed Miami Fashion Week and Completed Los Angeles Market Week, plus New York, London, Milan, and Paris dates, are labeled as season context. Read the rankings, access notes, and official-source links at "
                 "/articles/la-fashion-events-2026.",
@@ -2052,16 +2053,16 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "CTN Animation Expo runs November 19-22 at the Burbank Airport Marriott with screenings, panels, workshops, portfolio reviews, networking, and exhibitions; compare pass access and the daily schedule before buying.",
-                "Holiday in the Park is free on November 20 from 4-10 p.m. along Magnolia Boulevard; the November 21 Winter Wine Walk pairs a free noon-8 p.m. street fair with separate ticketed wine tasting from 4-7 p.m.",
-                "Open /articles/southern-california-september-events-2026#ctn-animation-expo-burbank, #burbank-holiday-in-the-park, or #burbank-winter-wine-walk for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
+                "The November 21 Winter Wine Walk pairs a free noon-8 p.m. street fair with separate ticketed wine tasting from 4-7 p.m.",
+                "Open /articles/southern-california-september-events-2026#ctn-animation-expo-burbank or #burbank-winter-wine-walk for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
             )
         )
 
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes the November 15-29 Old Pasadena Holiday Passport, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
-                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#old-pasadena-holiday-passport for a no-purchase-required local-shopping challenge, #pasadena-route-66-exhibition for a flexible history visit, or #laura-aguilar-day-of-the-dead for photography; browse /directory?city=Pasadena for 563 local listings.",
+                "The current PerkNation fall guide includes the free November 22 Doo Dah Love-In, the November 15-29 Old Pasadena Holiday Passport, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
+                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#pasadena-doo-dah-love-in for live music, costumes, artists, food trucks, and park-planning notes; #old-pasadena-holiday-passport for a no-purchase-required local-shopping challenge; #pasadena-route-66-exhibition for a flexible history visit; or #laura-aguilar-day-of-the-dead for photography. Browse /directory?city=Pasadena for 563 local listings.",
             )
         )
 

@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-one Southern California fall plans" in html
-    assert 'dateModified": "2026-11-20"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 32))
+    assert "Thirty Southern California fall plans" in html
+    assert 'dateModified": "2026-11-21"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 31))
 
     for expected in (
         'id="pershing-square-holiday-ice-rink"',
@@ -28,8 +28,9 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "302922833",
         'id="old-pasadena-holiday-passport"',
         "visitpasadena.com/events/old-pasadena-holiday-passport",
-        'id="long-beach-westside-night-market"',
-        "longbeach.gov/lbcd/hn/wsp/westside-night-market",
+        'id="pasadena-doo-dah-love-in"',
+        "pasadenadoodahparade.info/parade-info",
+        "visitpasadena.com/events/pasadena-doo-dah-love-in",
         'id="dreamstate-socal-long-beach"',
         "socal.dreamstateusa.com/hours-and-info",
         "socal.dreamstateusa.com/lineup/set-times",
@@ -48,15 +49,12 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "santamonica.com/event/swiss-winter-village",
         'id="anaheim-disneyland-holidays"',
         "disneyland.disney.go.com/events-tours/holidays-at-the-disneyland-resort",
-        'id="anaheim-pasko-holiday-market"',
-        "visitanaheim.org/event/pasko-holiday-market-at-make/3560",
-        "sparkoc.com/event/a-kapwa-holiday-market-pasko",
+        'id="santa-monica-tree-lighting"',
+        "santamonica.com/event/downtown-santa-monica-tree-lighting-ceremony",
         'id="beverly-hills-monuments-of-stillness"',
         "beverlyhills.org/1839/Carole-Feurerman-Monuments-of-Stillness",
         'id="beverly-hills-holiday-lights-craft-fair"',
         "beverlyhills.org/1682/Citywide-Holiday-Festivities",
-        'id="burbank-holiday-in-the-park"',
-        "visitburbank.com/events/holiday-in-the-park",
         'id="burbank-winter-wine-walk"',
         "visitburbank.com/events/burbank-winter-wine-walk",
         'id="descanso-enchanted-forest-of-light"',
@@ -168,6 +166,9 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "Union Station Tree Lighting",
         "Rodeo Drive Holiday Lighting Celebration",
         "Regent Santa Monica Holiday Tree Lighting",
+        "Westside Night Market",
+        "Pasko Holiday Market",
+        "Holiday in the Park",
     ):
         assert expired not in html
 
@@ -191,7 +192,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Thirty-one Southern California fall plans" in response.text
+        assert "Thirty Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -202,25 +203,25 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 20 · Fall guide" in response.text
-        assert "Thirty-one Southern California fall plans, ranked." in response.text
+        assert "Updated November 21 · Fall guide" in response.text
+        assert "Thirty Southern California fall plans, ranked." in response.text
         for current in (
             "Old Pasadena Holiday Passport",
-            "Westside Night Market",
-            "Dreamstate festival",
+            "Dreamstate",
             "Great Los Angeles Walk",
             "The Huntington Holiday Market",
             "Air and Space Center, Pershing Square rink, NightTales",
             "Has the myth been shattered",
             "CTN Animation Expo",
             "Animation and visual storytelling · Nov 19-22",
-            "Free Long Beach neighborhood market · Nov 20",
             "Burbank Winter Wine Walk",
-            "Pasko Holiday Market",
-            "Free Filipino holiday market · Nov 20",
+            "Doo Dah Love-In",
+            "Free Pasadena arts and music gathering · Nov 22",
+            "Santa Monica's free tree lighting",
+            "Free Downtown Santa Monica holiday kickoff · Nov 22",
             "Held in Trust",
             "Enchanted Forest of Light",
-            "Beverly Hills' nightly light displays and Sunday craft fair",
+            "Beverly Hills' free Holiday Craft Fair",
             "Swiss Winter Village",
             "LA Auto Show",
         ):
@@ -276,6 +277,9 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Regent tree lighting",
             "Union Station's free tree lighting",
             "fall show's final day",
+            "Westside Night Market",
+            "Pasko Holiday Market",
+            "Holiday in the Park",
         ):
             assert expired not in response.text
 
@@ -293,15 +297,16 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Thirty-one Southern California fall plans",
+        "Thirty Southern California fall plans",
         "Holiday Ice Rink at Pershing Square",
         "NightTales",
         "Samuel Oschin Air and Space Center",
         "Old Pasadena Holiday Passport",
         "CTN Animation Expo",
-        "free November 20 Westside Night Market",
         "November 20-21 Dreamstate festival",
         "November 21 Route 66 Great Los Angeles Walk",
+        "November 22 free tree lighting",
+        "free November 22 Doo Dah Love-In",
         "free November 21 Holiday Market",
         "L.A. Zoo Lights",
         "Has the myth been shattered",
@@ -312,13 +317,11 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Aquarium Autumn Festival",
         "Enchanted Forest of Light",
         "LA Auto Show",
-        "Holiday in the Park",
         "Winter Wine Walk",
         "Monuments of Stillness",
         "Holidays at the Disneyland Resort",
         "nightly holiday lights",
         "November 22 craft fair",
-        "Pasko Holiday Market",
     ):
         assert current in general
     for expired in (
@@ -375,18 +378,21 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Art Association Fall Show",
         "November 19 holiday lighting",
         "Regent Holiday Tree Lighting",
+        "Westside Night Market",
+        "Pasko Holiday Market",
+        "Holiday in the Park",
     ):
         assert expired not in general
 
     burbank = _public_review_live_query_response("What current events are covered in Burbank?", "home_local_guide")
     assert "Art Association Fall Show" not in burbank
     assert "CTN Animation Expo" in burbank
-    assert "Holiday in the Park" in burbank
     assert "Winter Wine Walk" in burbank
     assert "#burbank-art-association-fall-show" not in burbank
     assert "#ctn-animation-expo-burbank" in burbank
-    assert "#burbank-holiday-in-the-park" in burbank
     assert "#burbank-winter-wine-walk" in burbank
+    assert "Holiday in the Park" not in burbank
+    assert "#burbank-holiday-in-the-park" not in burbank
     assert "Halloween Carnival" not in burbank
     assert "Haunted Adventure" not in burbank
     assert "Little Pumpkins" not in burbank
@@ -395,6 +401,8 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     pasadena = _public_review_live_query_response("What current events are covered in Pasadena?", "home_local_guide")
     assert "Old Pasadena Holiday Passport" in pasadena
     assert "#old-pasadena-holiday-passport" in pasadena
+    assert "Doo Dah Love-In" in pasadena
+    assert "#pasadena-doo-dah-love-in" in pasadena
     assert "Strange Science" not in pasadena
     assert "Second Sundays" not in pasadena
     assert "USC Pacific Asia Museum" not in pasadena
@@ -418,11 +426,11 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     assert "#khmer-town-night-market-long-beach" not in long_beach
     assert "Little Women" in long_beach
     assert "Autumn Festival" in long_beach
-    assert "Westside Night Market" in long_beach
     assert "Dreamstate" in long_beach
-    assert "#long-beach-westside-night-market" in long_beach
     assert "#dreamstate-socal-long-beach" in long_beach
     assert "#aquarium-autumn-festival" in long_beach
+    assert "Westside Night Market" not in long_beach
+    assert "#long-beach-westside-night-market" not in long_beach
 
     huntington_beach = _public_review_live_query_response("What current events are covered in Huntington Beach?", "home_local_guide")
     assert "Darker Waves" not in huntington_beach
