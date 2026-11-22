@@ -45,8 +45,8 @@ def test_burbank_film_guide_stays_retired_while_current_burbank_guide_is_answere
     )
 
     assert answer
-    assert "Winter Wine Walk" in answer
-    assert "#burbank-winter-wine-walk" in answer
+    assert "Mayor's Tree Lighting" in answer
+    assert "#burbank-mayor-tree-lighting" in answer
     assert "Holiday in the Park" not in answer
     assert "#burbank-holiday-in-the-park" not in answer
     assert "Halloween Carnival" not in answer

@@ -83,8 +83,8 @@ def test_burbank_guide_is_archived_from_sitemap_and_public_answers() -> None:
         "home_local_guide",
     )
     assert answer
-    assert "Winter Wine Walk" in answer
-    assert "#burbank-winter-wine-walk" in answer
+    assert "Mayor's Tree Lighting" in answer
+    assert "#burbank-mayor-tree-lighting" in answer
     assert "Holiday in the Park" not in answer
     assert "#burbank-holiday-in-the-park" not in answer
     assert "Halloween Carnival" not in answer
