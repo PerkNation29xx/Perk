@@ -811,12 +811,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Thirty-one Southern California fall plans",
+        "title": "Thirty Southern California fall plans",
         "timing": "November 12, 2026-April 4, 2027",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to the November 12-January 3 Holiday Ice Rink at Pershing Square, Natural History Museum's Spider Pavilion and November 12-January 10 NightTales experience, the newly open Samuel Oschin Air and Space Center, the November 15-29 Old Pasadena Holiday Passport, Burbank's November 19-22 CTN Animation Expo, Santa Monica's November 22 free tree lighting, Pasadena's free November 22 Doo Dah Love-In, Long Beach's November 6-22 Little Women and November 21-22 Aquarium Autumn Festival, the November 20-January 10 L.A. Zoo Lights, The Broad's free November 21-April 4 Has the myth been shattered exhibition, and the November 20-29 LA Auto Show. "
-            "Also covers Costa Mesa's November 27-January 3 Winter Fest OC; Anaheim's free November 28 Anime Circuit and November 13-January 6 Holidays at the Disneyland Resort; Long Beach's November 28 Belmont Shore Small Business Saturday; Pasadena's free December 4 mayoral tree lighting; Burbank's free December 5 mayoral tree lighting; Arcadia's November 20-December 27 Enchant Christmas; Descanso Gardens' November 22-January 9 Enchanted Forest of Light; Beverly Hills' long-run Monuments of Stillness sculpture walk, nightly holiday lights, and November 22 craft fair; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Swiss Winter Village, Held in Trust, and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
+            "Ranked guide to the November 12-January 3 Holiday Ice Rink at Pershing Square, Natural History Museum's Spider Pavilion and November 12-January 10 NightTales experience, the newly open Samuel Oschin Air and Space Center, the November 15-29 Old Pasadena Holiday Passport, the November 26 Rose Bowl Turkey Trot, Turkey Trot Los Angeles, and Long Beach Turkey Trot, Santa Monica's November 5-January 18 Frost on Fifth rink, the November 20-January 10 L.A. Zoo Lights, The Broad's free November 21-April 4 Has the myth been shattered exhibition, and the November 20-29 LA Auto Show. "
+            "Also covers Costa Mesa's November 27-January 3 Winter Fest OC; Anaheim's free November 28 Anime Circuit and November 13-January 6 Holidays at the Disneyland Resort; Long Beach's November 28 Belmont Shore Small Business Saturday; Pasadena's free December 4 mayoral tree lighting; Burbank's free December 5 mayoral tree lighting; Arcadia's November 20-December 27 Enchant Christmas; Descanso Gardens' November 22-January 9 Enchanted Forest of Light; Beverly Hills' long-run Monuments of Stillness sculpture walk and nightly holiday lights; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Swiss Winter Village, Held in Trust, and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
         ),
     },
 
@@ -904,10 +904,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, coastal art, wellness, movies, markets, and local history",
         "city": "Santa Monica",
         "title": "Santa Monica November 2026 coastal events guide",
-        "timing": "November 22, 2026-March 20, 2027",
+        "timing": "November 23, 2026-March 20, 2027",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Five current plans covering the free November 22 Downtown tree lighting, the Held in Trust city-art exhibition, Swiss Winter Village at the Pier, the Portraits: Faces and Waves photography exhibition, and the Pico farmers market."
+            "Five current plans covering Frost on Fifth, the Held in Trust city-art exhibition, Swiss Winter Village at the Pier, the Portraits: Faces and Waves photography exhibition, and the Pico farmers market."
         ),
     },
     {
@@ -2001,10 +2001,10 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Musical Theatre West's Little Women at the Carpenter Performing Arts Center through November 22, the Aquarium of the Pacific's Autumn Festival on November 21-22, and Belmont Shore Small Business Saturday on November 28.",
+                "The current PerkNation fall guide includes the Long Beach Turkey Trot on November 26 and Belmont Shore Small Business Saturday on November 28.",
+                "The Turkey Trot offers 5K and 10K beach-path routes, two start waves, and a children's half-mile Wingding; packet pickup and the community food drive begin the evening before.",
                 "Small Business Saturday offers a self-paced route across 28 blocks of independent businesses with free 2nd Street parking for the day; individual store hours and offers vary.",
-                "The G-rated production runs 2 hours and 30 minutes with one intermission and offers matinee and evening performances across three weekends.",
-                "Open /articles/southern-california-september-events-2026#long-beach-little-women, #aquarium-autumn-festival, or #belmont-shore-small-business-saturday for official-source and practical guidance; each includes links into 208 Long Beach listings.",
+                "Open /articles/southern-california-september-events-2026#long-beach-turkey-trot or #belmont-shore-small-business-saturday for official-source and practical guidance; both include links into 208 Long Beach listings.",
                 "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )
@@ -2021,7 +2021,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "The current PerkNation Santa Monica guide ranks five November and flexible long-run plans:",
-                "- The free November 22 Downtown tree lighting runs 6-8 p.m. with live entertainment, Santa, family activities, face painting, raffles, and a 50-foot tree.",
+                "- Frost on Fifth runs November 5-January 18 at Fifth Street and Arizona Avenue, with weekday afternoon-evening hours and noon openings on weekends and holidays; reserve a dated skating ticket.",
                 "- Held in Trust brings 16 Southern California artists from the city's Art Bank Collection together through March 20, Wednesday-Saturday from 11 a.m.-5 p.m., except city holidays.",
                 "- Swiss Winter Village runs at the Pier from November 18-January 3 with more than 60 chalets, seasonal food, local creations, and an ice rink; compare ticket products before traveling.",
                 "- The free Portraits: Faces and Waves exhibition offers a flexible Beach House Gallery stop through March 27, while the Pico farmers market remains a repeatable Saturday morning option.",
@@ -2051,17 +2051,16 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_burbank and not wants_restaurants:
         return "\n".join(
             (
-                "CTN Animation Expo runs November 19-22 at the Burbank Airport Marriott with screenings, panels, workshops, portfolio reviews, networking, and exhibitions; compare pass access and the daily schedule before buying.",
                 "The free December 5 Mayor's Tree Lighting runs 6-6:30 p.m. on the City Hall steps with live performances, Santa, and the tree-lighting moment.",
-                "Open /articles/southern-california-september-events-2026#ctn-animation-expo-burbank or #burbank-mayor-tree-lighting for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
+                "Open /articles/southern-california-september-events-2026#burbank-mayor-tree-lighting for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
             )
         )
 
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes the free November 22 Doo Dah Love-In, the November 15-29 Old Pasadena Holiday Passport, the free December 4 Mayor's Holiday Tree Lighting, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
-                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#pasadena-doo-dah-love-in for today's live music, costumes, artists, food trucks, and park-planning notes; #old-pasadena-holiday-passport for a no-purchase-required local-shopping challenge; #pasadena-mayor-tree-lighting for the city celebration; #pasadena-route-66-exhibition for a flexible history visit; or #laura-aguilar-day-of-the-dead for photography. Browse /directory?city=Pasadena for 563 local listings.",
+                "The current PerkNation fall guide includes the November 26 Rose Bowl Turkey Trot, the November 15-29 Old Pasadena Holiday Passport, the free December 4 Mayor's Holiday Tree Lighting, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
+                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#rose-bowl-turkey-trot for the all-ages 5K loop, dog and child guidance, and arrival notes; #old-pasadena-holiday-passport for a no-purchase-required local-shopping challenge; #pasadena-mayor-tree-lighting for the city celebration; #pasadena-route-66-exhibition for a flexible history visit; or #laura-aguilar-day-of-the-dead for photography. Browse /directory?city=Pasadena for 563 local listings.",
             )
         )
 

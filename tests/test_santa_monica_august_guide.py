@@ -15,7 +15,7 @@ def test_santa_monica_guide_is_current_and_reader_facing() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
     assert "Santa Monica has five current plans" in html
-    assert 'dateModified": "2026-11-22"' in html
+    assert 'dateModified": "2026-11-23"' in html
     assert "5 ranked plans" in html
     for expected in (
         "Held in Trust",
@@ -24,8 +24,8 @@ def test_santa_monica_guide_is_current_and_reader_facing() -> None:
         "santamonica.com/event/swiss-winter-village",
         "Portraits: Faces and Waves",
         "Pico Farmers Market",
-        "Downtown Santa Monica Tree Lighting",
-        "downtown-santa-monica-tree-lighting-ceremony",
+        "Frost on Fifth",
+        "downtownsm.com/holiday-happenings",
         "Best for:",
         "/directory?city=Santa%20Monica",
         "/articles/southern-california-september-events-2026",
@@ -52,6 +52,8 @@ def test_santa_monica_guide_is_current_and_reader_facing() -> None:
         "Santa Monica Pier Locals' Night",
         "Great Los Angeles Walk",
         "the-21st-annual-great-los-angeles-walk-celebrates-the-route-66-centennial-in-santa-monica",
+        "Downtown Santa Monica Tree Lighting",
+        "downtown-santa-monica-tree-lighting-ceremony",
     ):
         assert expired not in html
 
@@ -86,7 +88,7 @@ def test_santa_monica_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 22 · Santa Monica" in response.text
+        assert "Updated November 23 · Santa Monica" in response.text
         assert "Five current Santa Monica plans, ranked." in response.text
         assert "Renegade Craft" not in response.text
         assert "Held in Trust" in response.text
@@ -96,7 +98,8 @@ def test_santa_monica_routes_homepages_image_and_sitemap() -> None:
         assert "Regent tree lighting" not in response.text
         assert "Pier Locals' Night" not in response.text
         assert "Great Los Angeles Walk" not in response.text
-        assert "free Downtown tree lighting" in response.text
+        assert "Frost on Fifth" in response.text
+        assert "free Downtown tree lighting" not in response.text
         assert "LA Times Food Bowl" not in response.text
         assert "Ghosts of the Miles" not in response.text
         assert "Practical Magic" not in response.text
@@ -121,7 +124,8 @@ def test_santa_monica_public_answer_is_current_and_scoped() -> None:
     assert "Regent Santa Monica Beach" not in answer
     assert "Pier Locals' Night" not in answer
     assert "Great Los Angeles Walk" not in answer
-    assert "free November 22 Downtown tree lighting" in answer
+    assert "Frost on Fifth" in answer
+    assert "free November 22 Downtown tree lighting" not in answer
     assert "Portraits: Faces and Waves" in answer
     assert "Pico farmers market" in answer
     assert "LA Times Food Bowl" not in answer

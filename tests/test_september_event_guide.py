@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-one Southern California fall plans" in html
-    assert 'dateModified": "2026-11-22"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 32))
+    assert "Thirty Southern California fall plans" in html
+    assert 'dateModified": "2026-11-23"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 31))
 
     for expected in (
         'id="pershing-square-holiday-ice-rink"',
@@ -28,24 +28,22 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "302922833",
         'id="old-pasadena-holiday-passport"',
         "visitpasadena.com/events/old-pasadena-holiday-passport",
-        'id="pasadena-doo-dah-love-in"',
-        "pasadenadoodahparade.info/parade-info",
-        "visitpasadena.com/events/pasadena-doo-dah-love-in",
-        'id="ctn-animation-expo-burbank"',
-        "ctn-events.com/ctnx2026",
-        "visitburbank.com/events/ctn-animation-expo",
+        'id="rose-bowl-turkey-trot"',
+        "rosebowlstadium.com/news/253",
+        'id="turkey-trot-los-angeles"',
+        "turkeytrot.la/turkey-trot-los-angeles/race-day",
         'id="nhm-nighttales"',
         "nhm.org/calendar/nighttales-museum-experience",
-        'id="long-beach-little-women"',
-        "musical.org/events/little-women-the-musical",
+        'id="long-beach-turkey-trot"',
+        "justinrudd.com/trot.html",
         'id="santa-monica-held-in-trust"',
         "4v0naphs6kscmrssg0n2ejrsce/202611041100",
         'id="santa-monica-swiss-winter-village"',
         "santamonica.com/event/swiss-winter-village",
         'id="anaheim-disneyland-holidays"',
         "disneyland.disney.go.com/events-tours/holidays-at-the-disneyland-resort",
-        'id="santa-monica-tree-lighting"',
-        "santamonica.com/event/downtown-santa-monica-tree-lighting-ceremony",
+        'id="santa-monica-frost-on-fifth"',
+        "downtownsm.com/holiday-happenings",
         'id="beverly-hills-monuments-of-stillness"',
         "beverlyhills.org/1839/Carole-Feurerman-Monuments-of-Stillness",
         'id="beverly-hills-holiday-lights-craft-fair"',
@@ -59,8 +57,6 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         'id="la-zoo-lights"',
         "lazoo.org/plan-your-visit/special-experiences/zoolights",
         "lazoo.org/plan-your-visit/special-experiences/zoo-lights-faqs",
-        'id="aquarium-autumn-festival"',
-        "aquariumofpacific.org/events/info/autumn_festival",
         'id="broad-has-the-myth-been-shattered"',
         "thebroad.org/art/collection-exhibitions/has-myth-been-shattered",
         'id="winter-fest-oc-costa-mesa"',
@@ -174,6 +170,12 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "Great Los Angeles Walk",
         "The Huntington Holiday Market",
         "Burbank Winter Wine Walk",
+        "Pasadena Doo Dah Love-In",
+        "CTN Animation Expo in Burbank",
+        "Little Women</em> at Musical Theatre West",
+        "Downtown Santa Monica Tree Lighting",
+        "Aquarium of the Pacific Autumn Festival",
+        "Holiday Craft Fair",
     ):
         assert expired not in html
 
@@ -197,7 +199,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Thirty-one Southern California fall plans" in response.text
+        assert "Thirty Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -208,25 +210,25 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 22 · Fall guide" in response.text
-        assert "Thirty-one Southern California fall plans, ranked." in response.text
+        assert "Updated November 23 · Fall guide" in response.text
+        assert "Thirty Southern California fall plans, ranked." in response.text
         for current in (
             "Old Pasadena Holiday Passport",
             "Air and Space Center, Pershing Square rink, NightTales",
             "Has the myth been shattered",
-            "CTN Animation Expo",
-            "Animation and visual storytelling · Nov 19-22",
+            "Rose Bowl Turkey Trot",
+            "All-ages Pasadena Thanksgiving 5K · Nov 26",
+            "Turkey Trot Los Angeles",
+            "Downtown Los Angeles Thanksgiving races · Nov 26",
+            "Long Beach Turkey Trot",
+            "Long Beach Thanksgiving beach run · Nov 26",
+            "Frost on Fifth",
             "Winter Fest OC",
             "Anime Circuit",
             "Belmont Shore Small Business Saturday",
             "mayoral tree lightings in Pasadena and Burbank",
-            "Doo Dah Love-In",
-            "Free Pasadena arts and music gathering · Nov 22",
-            "Santa Monica's free tree lighting",
-            "Free Downtown Santa Monica holiday kickoff · Nov 22",
             "Held in Trust",
             "Enchanted Forest of Light",
-            "Beverly Hills' free Holiday Craft Fair",
             "Swiss Winter Village",
             "LA Auto Show",
         ):
@@ -289,6 +291,12 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Great Los Angeles Walk",
             "The Huntington Holiday Market",
             "Burbank Winter Wine Walk",
+            "CTN Animation Expo",
+            "Doo Dah Love-In",
+            "free Downtown tree lighting",
+            "Aquarium Autumn Festival",
+            "Little Women",
+            "Holiday Craft Fair",
         ):
             assert expired not in response.text
 
@@ -306,21 +314,20 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Thirty-one Southern California fall plans",
+        "Thirty Southern California fall plans",
         "Holiday Ice Rink at Pershing Square",
         "NightTales",
         "Samuel Oschin Air and Space Center",
         "Old Pasadena Holiday Passport",
-        "CTN Animation Expo",
-        "November 22 free tree lighting",
-        "free November 22 Doo Dah Love-In",
+        "Rose Bowl Turkey Trot",
+        "Turkey Trot Los Angeles",
+        "Long Beach Turkey Trot",
+        "Frost on Fifth",
         "L.A. Zoo Lights",
         "Has the myth been shattered",
         "Enchant Christmas",
         "Held in Trust",
         "Swiss Winter Village",
-        "Little Women",
-        "Aquarium Autumn Festival",
         "Enchanted Forest of Light",
         "LA Auto Show",
         "Winter Fest OC",
@@ -331,7 +338,6 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Monuments of Stillness",
         "Holidays at the Disneyland Resort",
         "nightly holiday lights",
-        "November 22 craft fair",
     ):
         assert current in general
     for expired in (
@@ -395,15 +401,21 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Great Los Angeles Walk",
         "Holiday Market",
         "Winter Wine Walk",
+        "CTN Animation Expo",
+        "November 22 free tree lighting",
+        "free November 22 Doo Dah Love-In",
+        "Little Women",
+        "Aquarium Autumn Festival",
+        "November 22 craft fair",
     ):
         assert expired not in general
 
     burbank = _public_review_live_query_response("What current events are covered in Burbank?", "home_local_guide")
     assert "Art Association Fall Show" not in burbank
-    assert "CTN Animation Expo" in burbank
+    assert "CTN Animation Expo" not in burbank
     assert "Mayor's Tree Lighting" in burbank
     assert "#burbank-art-association-fall-show" not in burbank
-    assert "#ctn-animation-expo-burbank" in burbank
+    assert "#ctn-animation-expo-burbank" not in burbank
     assert "#burbank-mayor-tree-lighting" in burbank
     assert "Winter Wine Walk" not in burbank
     assert "Holiday in the Park" not in burbank
@@ -416,8 +428,8 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     pasadena = _public_review_live_query_response("What current events are covered in Pasadena?", "home_local_guide")
     assert "Old Pasadena Holiday Passport" in pasadena
     assert "#old-pasadena-holiday-passport" in pasadena
-    assert "Doo Dah Love-In" in pasadena
-    assert "#pasadena-doo-dah-love-in" in pasadena
+    assert "Rose Bowl Turkey Trot" in pasadena
+    assert "#rose-bowl-turkey-trot" in pasadena
     assert "Mayor's Holiday Tree Lighting" in pasadena
     assert "#pasadena-mayor-tree-lighting" in pasadena
     assert "Strange Science" not in pasadena
@@ -441,12 +453,12 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     long_beach = _public_review_live_query_response("What current events are covered in Long Beach?", "home_local_guide")
     assert "Khmer Town Night Market" not in long_beach
     assert "#khmer-town-night-market-long-beach" not in long_beach
-    assert "Little Women" in long_beach
-    assert "Autumn Festival" in long_beach
+    assert "Long Beach Turkey Trot" in long_beach
+    assert "#long-beach-turkey-trot" in long_beach
     assert "Small Business Saturday" in long_beach
     assert "#belmont-shore-small-business-saturday" in long_beach
     assert "Dreamstate" not in long_beach
-    assert "#aquarium-autumn-festival" in long_beach
+    assert "#aquarium-autumn-festival" not in long_beach
     assert "Westside Night Market" not in long_beach
     assert "#long-beach-westside-night-market" not in long_beach
 
