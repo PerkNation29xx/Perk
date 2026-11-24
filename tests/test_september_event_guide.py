@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty Southern California fall plans" in html
-    assert 'dateModified": "2026-11-23"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 31))
+    assert "Thirty-three Southern California fall plans" in html
+    assert 'dateModified": "2026-11-24"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 34))
 
     for expected in (
         'id="pershing-square-holiday-ice-rink"',
@@ -69,6 +69,12 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "cityofpasadena.net/event/mayors-annual-holiday-tree-lighting-ceremony",
         'id="burbank-mayor-tree-lighting"',
         "burbankca.gov/calendar/-/calendar/event/3887566/0",
+        'id="santa-monica-candy-cane-drive"',
+        "santa-claus-is-coming-to-town-december-5-2026",
+        'id="anaheim-nutcracker-holiday-village"',
+        "anaheim.net/2767/Nutcracker-Holiday-Village-Tree-Lighting",
+        'id="west-hollywood-winter-wonderland"',
+        "weho.org/Home/Components/Calendar/Event/32185",
         "Best for:",
         "/directory?city=Burbank",
         "/directory?city=Pasadena",
@@ -199,7 +205,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Thirty Southern California fall plans" in response.text
+        assert "Thirty-three Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -210,8 +216,8 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 23 · Fall guide" in response.text
-        assert "Thirty Southern California fall plans, ranked." in response.text
+        assert "Updated November 24 · Fall guide" in response.text
+        assert "Thirty-three Southern California fall plans, ranked." in response.text
         for current in (
             "Old Pasadena Holiday Passport",
             "Air and Space Center, Pershing Square rink, NightTales",
@@ -227,6 +233,9 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Anime Circuit",
             "Belmont Shore Small Business Saturday",
             "mayoral tree lightings in Pasadena and Burbank",
+            "Santa Monica's Candy Cane Drive",
+            "Anaheim's Nutcracker Holiday Village",
+            "West Hollywood's Winter Wonderland",
             "Held in Trust",
             "Enchanted Forest of Light",
             "Swiss Winter Village",
@@ -314,7 +323,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Thirty Southern California fall plans",
+        "Thirty-three Southern California fall plans",
         "Holiday Ice Rink at Pershing Square",
         "NightTales",
         "Samuel Oschin Air and Space Center",
@@ -338,6 +347,9 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Monuments of Stillness",
         "Holidays at the Disneyland Resort",
         "nightly holiday lights",
+        "December 5 Candy Cane Drive",
+        "December 6 Nutcracker Holiday Village",
+        "December 12 Winter Wonderland",
     ):
         assert current in general
     for expired in (

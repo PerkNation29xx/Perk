@@ -811,12 +811,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Thirty Southern California fall plans",
+        "title": "Thirty-three Southern California fall plans",
         "timing": "November 12, 2026-April 4, 2027",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to the November 12-January 3 Holiday Ice Rink at Pershing Square, Natural History Museum's Spider Pavilion and November 12-January 10 NightTales experience, the newly open Samuel Oschin Air and Space Center, the November 15-29 Old Pasadena Holiday Passport, the November 26 Rose Bowl Turkey Trot, Turkey Trot Los Angeles, and Long Beach Turkey Trot, Santa Monica's November 5-January 18 Frost on Fifth rink, the November 20-January 10 L.A. Zoo Lights, The Broad's free November 21-April 4 Has the myth been shattered exhibition, and the November 20-29 LA Auto Show. "
-            "Also covers Costa Mesa's November 27-January 3 Winter Fest OC; Anaheim's free November 28 Anime Circuit and November 13-January 6 Holidays at the Disneyland Resort; Long Beach's November 28 Belmont Shore Small Business Saturday; Pasadena's free December 4 mayoral tree lighting; Burbank's free December 5 mayoral tree lighting; Arcadia's November 20-December 27 Enchant Christmas; Descanso Gardens' November 22-January 9 Enchanted Forest of Light; Beverly Hills' long-run Monuments of Stillness sculpture walk and nightly holiday lights; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Swiss Winter Village, Held in Trust, and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
+            "Also covers Costa Mesa's November 27-January 3 Winter Fest OC; Anaheim's free November 28 Anime Circuit, December 6 Nutcracker Holiday Village, and November 13-January 6 Holidays at the Disneyland Resort; Long Beach's November 28 Belmont Shore Small Business Saturday; Pasadena's free December 4 mayoral tree lighting; Burbank's free December 5 mayoral tree lighting; Santa Monica's free December 5 Candy Cane Drive; West Hollywood's free December 12 Winter Wonderland; Arcadia's November 20-December 27 Enchant Christmas; Descanso Gardens' November 22-January 9 Enchanted Forest of Light; Beverly Hills' long-run Monuments of Stillness sculpture walk and nightly holiday lights; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Swiss Winter Village, Held in Trust, and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
         ),
     },
 
@@ -904,10 +904,10 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
         "category": "Concerts, coastal art, wellness, movies, markets, and local history",
         "city": "Santa Monica",
         "title": "Santa Monica November 2026 coastal events guide",
-        "timing": "November 23, 2026-March 20, 2027",
+        "timing": "November 24, 2026-March 20, 2027",
         "route": "/articles/santa-monica-august-2026-guide",
         "details": (
-            "Five current plans covering Frost on Fifth, the Held in Trust city-art exhibition, Swiss Winter Village at the Pier, the Portraits: Faces and Waves photography exhibition, and the Pico farmers market."
+            "Six current plans covering Frost on Fifth, the free December 5 Candy Cane Drive, the Held in Trust city-art exhibition, Swiss Winter Village at the Pier, the Portraits: Faces and Waves photography exhibition, and the Pico farmers market."
         ),
     },
     {
@@ -1969,7 +1969,7 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "D23's 2026 Anaheim convention concluded on August 16, so PerkNation no longer presents its ticket or standby guidance as active.",
-                "For current Anaheim planning, the fall guide covers Holidays at the Disneyland Resort from November 13-January 6; browse /directory?city=Anaheim for 35 local listings.",
+                "For current Anaheim planning, the fall guide covers free Anime Circuit on November 28, the free December 6 Nutcracker Holiday Village, and Holidays at the Disneyland Resort from November 13-January 6; browse /directory?city=Anaheim for 35 local listings.",
             )
         )
 
@@ -1985,8 +1985,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "PerkNation's Labor Day Orange County event coverage concluded on September 6 and is no longer presented as current.",
-                "Current Orange County coverage includes Costa Mesa's Winter Fest OC from November 27-January 3, Anaheim's free Anime Circuit on November 28, and Holidays at the Disneyland Resort from November 13-January 6.",
-                "Open /articles/southern-california-september-events-2026#winter-fest-oc-costa-mesa, /articles/southern-california-september-events-2026#anime-circuit-anaheim, or /articles/southern-california-september-events-2026#anaheim-disneyland-holidays for practical guidance; browse the live directory for Anaheim, Huntington Beach, Orange, Costa Mesa, and other Orange County cities.",
+                "Current Orange County coverage includes Costa Mesa's Winter Fest OC from November 27-January 3, Anaheim's free Anime Circuit on November 28, the free December 6 Nutcracker Holiday Village, and Holidays at the Disneyland Resort from November 13-January 6.",
+                "Open /articles/southern-california-september-events-2026#winter-fest-oc-costa-mesa, /articles/southern-california-september-events-2026#anime-circuit-anaheim, /articles/southern-california-september-events-2026#anaheim-nutcracker-holiday-village, or /articles/southern-california-september-events-2026#anaheim-disneyland-holidays for practical guidance; browse the live directory for Anaheim, Huntington Beach, Orange, Costa Mesa, and other Orange County cities.",
             )
         )
 
@@ -2020,8 +2020,9 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_santa_monica and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation Santa Monica guide ranks five November and flexible long-run plans:",
+                "The current PerkNation Santa Monica guide ranks six November, December, and flexible long-run plans:",
                 "- Frost on Fifth runs November 5-January 18 at Fifth Street and Arizona Avenue, with weekday afternoon-evening hours and noon openings on weekends and holidays; reserve a dated skating ticket.",
+                "- The free December 5 Candy Cane Drive brings Santa, police officers, and firefighters to Douglas, Christine Reed, Virginia Avenue, and Clover parks in four short time windows.",
                 "- Held in Trust brings 16 Southern California artists from the city's Art Bank Collection together through March 20, Wednesday-Saturday from 11 a.m.-5 p.m., except city holidays.",
                 "- Swiss Winter Village runs at the Pier from November 18-January 3 with more than 60 chalets, seasonal food, local creations, and an ice rink; compare ticket products before traveling.",
                 "- The free Portraits: Faces and Waves exhibition offers a flexible Beach House Gallery stop through March 27, while the Pico farmers market remains a repeatable Saturday morning option.",
