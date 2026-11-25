@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-three Southern California fall plans" in html
-    assert 'dateModified": "2026-11-24"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 34))
+    assert "Thirty-nine Southern California fall plans" in html
+    assert 'dateModified": "2026-11-25"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 40))
 
     for expected in (
         'id="pershing-square-holiday-ice-rink"',
@@ -75,6 +75,18 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "anaheim.net/2767/Nutcracker-Holiday-Village-Tree-Lighting",
         'id="west-hollywood-winter-wonderland"',
         "weho.org/Home/Components/Calendar/Event/32185",
+        'id="glendale-holiday-tree-lighting"',
+        "Calendar/Event/55141/18",
+        "Calendar/Event/55143/11798",
+        'id="arcadia-tree-lighting"',
+        'id="arcadia-snow-festival"',
+        "arcadiaca.gov/government/recreation/events.php",
+        'id="montrose-glendale-christmas-parade"',
+        "montrosechristmasparade.com",
+        'id="belmont-shore-christmas-parade"',
+        "visitlongbeach.com/events/annual-events/belmont-shore-christmas-parade",
+        'id="long-beach-christmas-tree-lighting"',
+        "visitlongbeach.com/events/annual-events/tree-lighting",
         "Best for:",
         "/directory?city=Burbank",
         "/directory?city=Pasadena",
@@ -205,7 +217,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Thirty-three Southern California fall plans" in response.text
+        assert "Thirty-nine Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -216,8 +228,8 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 24 · Fall guide" in response.text
-        assert "Thirty-three Southern California fall plans, ranked." in response.text
+        assert "Updated November 25 · Fall guide" in response.text
+        assert "Thirty-nine Southern California fall plans, ranked." in response.text
         for current in (
             "Old Pasadena Holiday Passport",
             "Air and Space Center, Pershing Square rink, NightTales",
@@ -232,10 +244,12 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Winter Fest OC",
             "Anime Circuit",
             "Belmont Shore Small Business Saturday",
-            "mayoral tree lightings in Pasadena and Burbank",
             "Santa Monica's Candy Cane Drive",
             "Anaheim's Nutcracker Holiday Village",
             "West Hollywood's Winter Wonderland",
+            "tree lightings in Glendale, Arcadia, Pasadena, Burbank, and Long Beach",
+            "Arcadia's Snow Festival",
+            "Montrose-Glendale and Belmont Shore Christmas parades",
             "Held in Trust",
             "Enchanted Forest of Light",
             "Swiss Winter Village",
@@ -323,7 +337,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Thirty-three Southern California fall plans",
+        "Thirty-nine Southern California fall plans",
         "Holiday Ice Rink at Pershing Square",
         "NightTales",
         "Samuel Oschin Air and Space Center",
@@ -350,6 +364,12 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "December 5 Candy Cane Drive",
         "December 6 Nutcracker Holiday Village",
         "December 12 Winter Wonderland",
+        "December 2 City Hall tree lighting",
+        "December 5 Montrose-Glendale Christmas Parade",
+        "December 3 Tree Lighting",
+        "December 5 Snow Festival",
+        "December 5 Belmont Shore Christmas Parade",
+        "December 7 downtown tree lighting",
     ):
         assert current in general
     for expired in (
@@ -459,6 +479,10 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     assert "Clothing Swap and Repair Café" not in glendale
     assert "#glendale-clothing-swap-repair-cafe" not in glendale
     assert "Artifacts from an Unborn Empire" in glendale
+    assert "City Hall tree lighting" in glendale
+    assert "#glendale-holiday-tree-lighting" in glendale
+    assert "Montrose-Glendale Christmas Parade" in glendale
+    assert "#montrose-glendale-christmas-parade" in glendale
     assert "Forest Lawn Glendale" not in glendale
     assert "Jewel City" not in glendale
 
@@ -469,6 +493,10 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     assert "#long-beach-turkey-trot" in long_beach
     assert "Small Business Saturday" in long_beach
     assert "#belmont-shore-small-business-saturday" in long_beach
+    assert "Belmont Shore Christmas Parade" in long_beach
+    assert "#belmont-shore-christmas-parade" in long_beach
+    assert "Christmas Tree Lighting" in long_beach
+    assert "#long-beach-christmas-tree-lighting" in long_beach
     assert "Dreamstate" not in long_beach
     assert "#aquarium-autumn-festival" not in long_beach
     assert "Westside Night Market" not in long_beach
@@ -481,6 +509,10 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     arcadia = _public_review_live_query_response("What current events are covered in Arcadia?", "home_local_guide")
     assert "Enchant Christmas" in arcadia
     assert "#enchant-christmas-arcadia" in arcadia
+    assert "December 3 Tree Lighting" in arcadia
+    assert "#arcadia-tree-lighting" in arcadia
+    assert "December 5 Snow Festival" in arcadia
+    assert "#arcadia-snow-festival" in arcadia
 
 
 def test_current_city_counts_match_live_facet_context() -> None:

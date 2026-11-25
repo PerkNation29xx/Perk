@@ -811,12 +811,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Thirty-three Southern California fall plans",
+        "title": "Thirty-nine Southern California fall plans",
         "timing": "November 12, 2026-April 4, 2027",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
             "Ranked guide to the November 12-January 3 Holiday Ice Rink at Pershing Square, Natural History Museum's Spider Pavilion and November 12-January 10 NightTales experience, the newly open Samuel Oschin Air and Space Center, the November 15-29 Old Pasadena Holiday Passport, the November 26 Rose Bowl Turkey Trot, Turkey Trot Los Angeles, and Long Beach Turkey Trot, Santa Monica's November 5-January 18 Frost on Fifth rink, the November 20-January 10 L.A. Zoo Lights, The Broad's free November 21-April 4 Has the myth been shattered exhibition, and the November 20-29 LA Auto Show. "
-            "Also covers Costa Mesa's November 27-January 3 Winter Fest OC; Anaheim's free November 28 Anime Circuit, December 6 Nutcracker Holiday Village, and November 13-January 6 Holidays at the Disneyland Resort; Long Beach's November 28 Belmont Shore Small Business Saturday; Pasadena's free December 4 mayoral tree lighting; Burbank's free December 5 mayoral tree lighting; Santa Monica's free December 5 Candy Cane Drive; West Hollywood's free December 12 Winter Wonderland; Arcadia's November 20-December 27 Enchant Christmas; Descanso Gardens' November 22-January 9 Enchanted Forest of Light; Beverly Hills' long-run Monuments of Stillness sculpture walk and nightly holiday lights; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Swiss Winter Village, Held in Trust, and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
+            "Also covers Costa Mesa's November 27-January 3 Winter Fest OC; Anaheim's free November 28 Anime Circuit, December 6 Nutcracker Holiday Village, and November 13-January 6 Holidays at the Disneyland Resort; Long Beach's November 28 Belmont Shore Small Business Saturday, December 5 Belmont Shore Christmas Parade, and free ticketed December 7 downtown tree lighting; Pasadena's free December 4 mayoral tree lighting; Burbank's free December 5 mayoral tree lighting; Glendale's free December 2 City Hall tree lighting and toy drive plus the December 5 Montrose-Glendale Christmas Parade; Arcadia's free December 3 Tree Lighting and December 5 Snow Festival; Santa Monica's free December 5 Candy Cane Drive; West Hollywood's free December 12 Winter Wonderland; Arcadia's November 20-December 27 Enchant Christmas; Descanso Gardens' November 22-January 9 Enchanted Forest of Light; Beverly Hills' long-run Monuments of Stillness sculpture walk and nightly holiday lights; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Swiss Winter Village, Held in Trust, and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
         ),
     },
 
@@ -2001,10 +2001,11 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_long_beach:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes the Long Beach Turkey Trot on November 26 and Belmont Shore Small Business Saturday on November 28.",
+                "The current PerkNation fall guide includes the Long Beach Turkey Trot on November 26, Belmont Shore Small Business Saturday on November 28, the Belmont Shore Christmas Parade on December 5, and the free ticketed downtown Christmas Tree Lighting on December 7.",
                 "The Turkey Trot offers 5K and 10K beach-path routes, two start waves, and a children's half-mile Wingding; packet pickup and the community food drive begin the evening before.",
                 "Small Business Saturday offers a self-paced route across 28 blocks of independent businesses with free 2nd Street parking for the day; individual store hours and offers vary.",
-                "Open /articles/southern-california-september-events-2026#long-beach-turkey-trot or #belmont-shore-small-business-saturday for official-source and practical guidance; both include links into 208 Long Beach listings.",
+                "The December 5 parade is free but requires a crowd and transportation plan; the December 7 tree lighting is free but requires a ticket, with the final ticket batch scheduled for November 30 at 10 a.m.",
+                "Open /articles/southern-california-september-events-2026#long-beach-turkey-trot, #belmont-shore-small-business-saturday, #belmont-shore-christmas-parade, or #long-beach-christmas-tree-lighting for official-source and practical guidance; each includes links into 208 Long Beach listings.",
                 "For retrospective festival coverage, /articles/vans-warped-tour-long-beach-2026 includes official videos, emerging-artist portraits, and local waterfront context.",
             )
         )
@@ -2068,8 +2069,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_glendale and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes Brand Library's free Artifacts from an Unborn Empire exhibition through December 31.",
-                "Open /articles/southern-california-september-events-2026#artifacts-unborn-empire-glendale for practical notes, or browse /directory?city=Glendale for 100 local listings.",
+                "The current PerkNation fall guide includes the free December 2 City Hall tree lighting and optional Cram-A-Classic Toy Drive, the December 5 Montrose-Glendale Christmas Parade, and Brand Library's free Artifacts from an Unborn Empire exhibition through December 31.",
+                "Open /articles/southern-california-september-events-2026#glendale-holiday-tree-lighting, #montrose-glendale-christmas-parade, or #artifacts-unborn-empire-glendale for practical notes, or browse /directory?city=Glendale for 100 local listings.",
             )
         )
 
@@ -2077,8 +2078,8 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
         return "\n".join(
             (
                 "The Los Angeles County Arboretum's October 25 Día de los Muertos program has concluded and is no longer presented as active.",
-                "Enchant Christmas runs at Santa Anita Park from November 20-December 27 with a ticketed light maze, ice-skating trail, snow slide, live entertainment, and holiday market.",
-                "Open /articles/southern-california-september-events-2026#enchant-christmas-arcadia for planning notes and official-source links, or browse /directory?city=Arcadia for 40 local listings.",
+                "Current Arcadia choices include the free December 3 Tree Lighting, the free December 5 Snow Festival, and Enchant Christmas at Santa Anita Park from November 20-December 27 with a ticketed light maze, ice-skating trail, snow slide, live entertainment, and holiday market.",
+                "Open /articles/southern-california-september-events-2026#arcadia-tree-lighting, #arcadia-snow-festival, or #enchant-christmas-arcadia for planning notes and official-source links, or browse /directory?city=Arcadia for 40 local listings.",
             )
         )
 
