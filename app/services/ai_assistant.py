@@ -811,12 +811,12 @@ _PUBLIC_REVIEW_COVERAGE_ITEMS = (
     {
         "category": "Events, concerts, festivals, arts, sports, and local culture",
         "city": "Southern California",
-        "title": "Thirty-nine Southern California fall plans",
+        "title": "Forty-three Southern California fall plans",
         "timing": "November 12, 2026-April 4, 2027",
         "route": "/articles/southern-california-september-events-2026",
         "details": (
-            "Ranked guide to the November 12-January 3 Holiday Ice Rink at Pershing Square, Natural History Museum's Spider Pavilion and November 12-January 10 NightTales experience, the newly open Samuel Oschin Air and Space Center, the November 15-29 Old Pasadena Holiday Passport, the November 26 Rose Bowl Turkey Trot, Turkey Trot Los Angeles, and Long Beach Turkey Trot, Santa Monica's November 5-January 18 Frost on Fifth rink, the November 20-January 10 L.A. Zoo Lights, The Broad's free November 21-April 4 Has the myth been shattered exhibition, and the November 20-29 LA Auto Show. "
-            "Also covers Costa Mesa's November 27-January 3 Winter Fest OC; Anaheim's free November 28 Anime Circuit, December 6 Nutcracker Holiday Village, and November 13-January 6 Holidays at the Disneyland Resort; Long Beach's November 28 Belmont Shore Small Business Saturday, December 5 Belmont Shore Christmas Parade, and free ticketed December 7 downtown tree lighting; Pasadena's free December 4 mayoral tree lighting; Burbank's free December 5 mayoral tree lighting; Glendale's free December 2 City Hall tree lighting and toy drive plus the December 5 Montrose-Glendale Christmas Parade; Arcadia's free December 3 Tree Lighting and December 5 Snow Festival; Santa Monica's free December 5 Candy Cane Drive; West Hollywood's free December 12 Winter Wonderland; Arcadia's November 20-December 27 Enchant Christmas; Descanso Gardens' November 22-January 9 Enchanted Forest of Light; Beverly Hills' long-run Monuments of Stillness sculpture walk and nightly holiday lights; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Swiss Winter Village, Held in Trust, and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
+            "Ranked guide to the November 12-January 3 Holiday Ice Rink at Pershing Square, Natural History Museum's Spider Pavilion and November 12-January 10 NightTales experience, the newly open Samuel Oschin Air and Space Center, the November 15-29 Old Pasadena Holiday Passport, the November 26 Rose Bowl Turkey Trot, Turkey Trot Los Angeles, and Long Beach Turkey Trot, the November 27-January 3 LA Kings Holiday Ice Festival at L.A. LIVE, Glendale's RSVP-required November 28 Post-Turkey Harvest Hike, Burbank's November 29 Wild Creatures Walk, Santa Monica's November 5-January 18 Frost on Fifth rink, the November 20-January 10 L.A. Zoo Lights, The Broad's free November 21-April 4 Has the myth been shattered exhibition, and the November 20-29 LA Auto Show. "
+            "Also covers Costa Mesa's November 27-January 3 Winter Fest OC; Anaheim's free November 28 Anime Circuit, December 6 Nutcracker Holiday Village, and November 13-January 6 Holidays at the Disneyland Resort; Long Beach's November 28 Belmont Shore Small Business Saturday, December 5 Belmont Shore Christmas Parade, and free ticketed December 7 downtown tree lighting; Pasadena's free December 4 mayoral tree lighting and December 5 South Lake Holidayfest; Burbank's free December 5 mayoral tree lighting; Glendale's free December 2 City Hall tree lighting and toy drive plus the December 5 Montrose-Glendale Christmas Parade; Arcadia's free December 3 Tree Lighting and December 5 Snow Festival; Santa Monica's free December 5 Candy Cane Drive; West Hollywood's free December 12 Winter Wonderland; Arcadia's November 20-December 27 Enchant Christmas; Descanso Gardens' November 22-January 9 Enchanted Forest of Light; Beverly Hills' long-run Monuments of Stillness sculpture walk and nightly holiday lights; the Lucas Museum; Pasadena's Route 66 exhibition; Santa Monica's Swiss Winter Village, Held in Trust, and Portraits: Faces and Waves exhibitions; The Huntington's Laura Aguilar exhibition; the Academy Museum's The Horror Show; and Glendale's Artifacts from an Unborn Empire."
         ),
     },
 
@@ -2053,24 +2053,25 @@ def _public_review_live_query_response(text: str, role_context: str) -> Optional
     if wants_burbank and not wants_restaurants:
         return "\n".join(
             (
+                "The November 29 Wild Creatures Walk is a one-hour guided program at Stough Canyon Nature Center focused on Verdugo Mountains wildlife, habitats, and animal signs; register through the city page and check trail conditions before leaving.",
                 "The free December 5 Mayor's Tree Lighting runs 6-6:30 p.m. on the City Hall steps with live performances, Santa, and the tree-lighting moment.",
-                "Open /articles/southern-california-september-events-2026#burbank-mayor-tree-lighting for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
+                "Open /articles/southern-california-september-events-2026#burbank-wild-creatures-walk or #burbank-mayor-tree-lighting for practical guidance, or browse /directory?city=Burbank for 968 local listings.",
             )
         )
 
     if wants_pasadena and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes the November 26 Rose Bowl Turkey Trot, the November 15-29 Old Pasadena Holiday Passport, the free December 4 Mayor's Holiday Tree Lighting, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
-                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#rose-bowl-turkey-trot for the all-ages 5K loop, dog and child guidance, and arrival notes; #old-pasadena-holiday-passport for a no-purchase-required local-shopping challenge; #pasadena-mayor-tree-lighting for the city celebration; #pasadena-route-66-exhibition for a flexible history visit; or #laura-aguilar-day-of-the-dead for photography. Browse /directory?city=Pasadena for 563 local listings.",
+                "The current PerkNation fall guide includes the November 26 Rose Bowl Turkey Trot, the November 15-29 Old Pasadena Holiday Passport, the free December 4 Mayor's Holiday Tree Lighting, free December 5 South Lake Holidayfest, Pasadena Museum of History's Where History Meets the Road Route 66 exhibition, and The Huntington's Laura Aguilar: Day of the Dead exhibition.",
+                "Use the full guide for ranked best-for and practical notes: open /articles/southern-california-september-events-2026#rose-bowl-turkey-trot for the all-ages 5K loop, dog and child guidance, and arrival notes; #old-pasadena-holiday-passport for a no-purchase-required local-shopping challenge; #pasadena-mayor-tree-lighting for the city celebration; #pasadena-south-lake-holidayfest for live music, family activities, and shop-local guidance; #pasadena-route-66-exhibition for a flexible history visit; or #laura-aguilar-day-of-the-dead for photography. Browse /directory?city=Pasadena for 563 local listings.",
             )
         )
 
     if wants_glendale and not wants_restaurants:
         return "\n".join(
             (
-                "The current PerkNation fall guide includes the free December 2 City Hall tree lighting and optional Cram-A-Classic Toy Drive, the December 5 Montrose-Glendale Christmas Parade, and Brand Library's free Artifacts from an Unborn Empire exhibition through December 31.",
-                "Open /articles/southern-california-september-events-2026#glendale-holiday-tree-lighting, #montrose-glendale-christmas-parade, or #artifacts-unborn-empire-glendale for practical notes, or browse /directory?city=Glendale for 100 local listings.",
+                "The current PerkNation fall guide includes the RSVP-required November 28 Post-Turkey Harvest Hike at Brand Park, the free December 2 City Hall tree lighting and optional Cram-A-Classic Toy Drive, the December 5 Montrose-Glendale Christmas Parade, and Brand Library's free Artifacts from an Unborn Empire exhibition through December 31.",
+                "Open /articles/southern-california-september-events-2026#glendale-post-turkey-harvest-hike, #glendale-holiday-tree-lighting, #montrose-glendale-christmas-parade, or #artifacts-unborn-empire-glendale for practical notes, or browse /directory?city=Glendale for 100 local listings.",
             )
         )
 

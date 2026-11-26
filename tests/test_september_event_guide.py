@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Thirty-nine Southern California fall plans" in html
-    assert 'dateModified": "2026-11-25"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 40))
+    assert "Forty-three Southern California fall plans" in html
+    assert 'dateModified": "2026-11-26"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 44))
 
     for expected in (
         'id="pershing-square-holiday-ice-rink"',
@@ -28,14 +28,20 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "302922833",
         'id="old-pasadena-holiday-passport"',
         "visitpasadena.com/events/old-pasadena-holiday-passport",
+        'id="la-kings-holiday-ice-festival"',
+        "lalive.com/events/detail/holiday-ice-26-27",
         'id="rose-bowl-turkey-trot"',
         "rosebowlstadium.com/news/253",
         'id="turkey-trot-los-angeles"',
         "turkeytrot.la/turkey-trot-los-angeles/race-day",
+        'id="glendale-post-turkey-harvest-hike"',
+        "Calendar/Event/56130/17",
         'id="nhm-nighttales"',
         "nhm.org/calendar/nighttales-museum-experience",
         'id="long-beach-turkey-trot"',
         "justinrudd.com/trot.html",
+        'id="burbank-wild-creatures-walk"',
+        "calendar/event/4420482/0",
         'id="santa-monica-held-in-trust"',
         "4v0naphs6kscmrssg0n2ejrsce/202611041100",
         'id="santa-monica-swiss-winter-village"',
@@ -61,6 +67,8 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "thebroad.org/art/collection-exhibitions/has-myth-been-shattered",
         'id="winter-fest-oc-costa-mesa"',
         "ocfair.com/event/winter-fest-oc-2026",
+        'id="pasadena-south-lake-holidayfest"',
+        "southlakeavenue.org/holiday-shop-dine-win-on-south-lake-avenue",
         'id="anime-circuit-anaheim"',
         "anaheimgardenwalk.com/event/44117-anime-circuit",
         'id="belmont-shore-small-business-saturday"',
@@ -109,7 +117,6 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "Ghosts of the Miles",
         "Party on the Pier",
         "Marina Spooktacular",
-        "Wild Creatures Walk",
         "Jewel City Concert Series",
         "DTLB Unfiltered photo walk",
         "Formula DRIFT Shoreline Showdown",
@@ -117,7 +124,6 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "Long Beach Open Studio Tour",
         "Bark in the Park",
         "Marina Spooktacular",
-        "Wild Creatures Walk",
         "LA Plaza Día de los Muertos Family Day",
         "Party on the Pier",
         "Día de los Muertos at the Arboretum",
@@ -217,7 +223,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Thirty-nine Southern California fall plans" in response.text
+        assert "Forty-three Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -228,8 +234,8 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 25 · Fall guide" in response.text
-        assert "Thirty-nine Southern California fall plans, ranked." in response.text
+        assert "Updated November 26 · Fall guide" in response.text
+        assert "Forty-three Southern California fall plans, ranked." in response.text
         for current in (
             "Old Pasadena Holiday Passport",
             "Air and Space Center, Pershing Square rink, NightTales",
@@ -240,6 +246,10 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Downtown Los Angeles Thanksgiving races · Nov 26",
             "Long Beach Turkey Trot",
             "Long Beach Thanksgiving beach run · Nov 26",
+            "LA Kings Holiday Ice Festival",
+            "Post-Turkey Harvest Hike",
+            "Wild Creatures Walk",
+            "South Lake Holidayfest",
             "Frost on Fifth",
             "Winter Fest OC",
             "Anime Circuit",
@@ -337,7 +347,7 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Thirty-nine Southern California fall plans",
+        "Forty-three Southern California fall plans",
         "Holiday Ice Rink at Pershing Square",
         "NightTales",
         "Samuel Oschin Air and Space Center",
@@ -345,6 +355,10 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Rose Bowl Turkey Trot",
         "Turkey Trot Los Angeles",
         "Long Beach Turkey Trot",
+        "LA Kings Holiday Ice Festival",
+        "Post-Turkey Harvest Hike",
+        "Wild Creatures Walk",
+        "South Lake Holidayfest",
         "Frost on Fifth",
         "L.A. Zoo Lights",
         "Has the myth been shattered",
@@ -380,7 +394,6 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Formula DRIFT",
         "Ghosts of the Miles",
         "Marina Spooktacular",
-        "Wild Creatures Walk",
         "Party on the Pier",
         "Trunk or Treat",
         "Fright Dive",
@@ -446,6 +459,8 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     assert "Art Association Fall Show" not in burbank
     assert "CTN Animation Expo" not in burbank
     assert "Mayor's Tree Lighting" in burbank
+    assert "Wild Creatures Walk" in burbank
+    assert "#burbank-wild-creatures-walk" in burbank
     assert "#burbank-art-association-fall-show" not in burbank
     assert "#ctn-animation-expo-burbank" not in burbank
     assert "#burbank-mayor-tree-lighting" in burbank
@@ -464,6 +479,8 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     assert "#rose-bowl-turkey-trot" in pasadena
     assert "Mayor's Holiday Tree Lighting" in pasadena
     assert "#pasadena-mayor-tree-lighting" in pasadena
+    assert "South Lake Holidayfest" in pasadena
+    assert "#pasadena-south-lake-holidayfest" in pasadena
     assert "Strange Science" not in pasadena
     assert "Second Sundays" not in pasadena
     assert "USC Pacific Asia Museum" not in pasadena
@@ -479,6 +496,8 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     assert "Clothing Swap and Repair Café" not in glendale
     assert "#glendale-clothing-swap-repair-cafe" not in glendale
     assert "Artifacts from an Unborn Empire" in glendale
+    assert "Post-Turkey Harvest Hike" in glendale
+    assert "#glendale-post-turkey-harvest-hike" in glendale
     assert "City Hall tree lighting" in glendale
     assert "#glendale-holiday-tree-lighting" in glendale
     assert "Montrose-Glendale Christmas Parade" in glendale
