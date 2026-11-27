@@ -15,9 +15,9 @@ IMAGE = ROOT / "app" / "web" / "home_portal" / "assets" / "articles" / "southern
 def test_fall_guide_is_current_substantial_and_source_backed() -> None:
     html = ARTICLE.read_text(encoding="utf-8")
 
-    assert "Forty-three Southern California fall plans" in html
-    assert 'dateModified": "2026-11-26"' in html
-    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 44))
+    assert "Forty-four Southern California fall plans" in html
+    assert 'dateModified": "2026-11-27"' in html
+    assert [int(value) for value in re.findall(r'<h2 id="[^"]+">(\d+)\.', html)] == list(range(1, 45))
 
     for expected in (
         'id="pershing-square-holiday-ice-rink"',
@@ -30,16 +30,18 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "visitpasadena.com/events/old-pasadena-holiday-passport",
         'id="la-kings-holiday-ice-festival"',
         "lalive.com/events/detail/holiday-ice-26-27",
-        'id="rose-bowl-turkey-trot"',
-        "rosebowlstadium.com/news/253",
-        'id="turkey-trot-los-angeles"',
-        "turkeytrot.la/turkey-trot-los-angeles/race-day",
+        'id="home-alone-in-concert"',
+        "laphil.com/tickets-and-events/festivals-and-highlights/deck-the-hall-holiday-concerts",
         'id="glendale-post-turkey-harvest-hike"',
         "Calendar/Event/56130/17",
+        'id="hollywood-christmas-parade"',
+        "thehollywoodchristmasparade.org/road-closures-2026",
+        'id="bob-baker-nutcracker"',
+        "bobbakermarionettetheater.com/around-town/nutcracker-sierra-madre-playhouse-2026",
+        'id="a-christmas-carol-pasadena"',
+        "anoisewithin.org/play/a-christmas-carol-5",
         'id="nhm-nighttales"',
         "nhm.org/calendar/nighttales-museum-experience",
-        'id="long-beach-turkey-trot"',
-        "justinrudd.com/trot.html",
         'id="burbank-wild-creatures-walk"',
         "calendar/event/4420482/0",
         'id="santa-monica-held-in-trust"',
@@ -200,6 +202,9 @@ def test_fall_guide_is_current_substantial_and_source_backed() -> None:
         "Downtown Santa Monica Tree Lighting",
         "Aquarium of the Pacific Autumn Festival",
         "Holiday Craft Fair",
+        "Rose Bowl Turkey Trot",
+        "Turkey Trot Los Angeles",
+        "Long Beach Turkey Trot",
     ):
         assert expired not in html
 
@@ -223,7 +228,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     ):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Forty-three Southern California fall plans" in response.text
+        assert "Forty-four Southern California fall plans" in response.text
 
     image = client.get("/assets/articles/southern-california-september-events-2026.png")
     assert image.status_code == 200
@@ -234,19 +239,19 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
     for route in ("/", "/white/"):
         response = client.get(route)
         assert response.status_code == 200
-        assert "Updated November 26 · Fall guide" in response.text
-        assert "Forty-three Southern California fall plans, ranked." in response.text
+        assert "Updated November 27 · Fall guide" in response.text
+        assert "Forty-four Southern California fall plans, ranked." in response.text
         for current in (
             "Old Pasadena Holiday Passport",
             "Air and Space Center, Pershing Square rink, NightTales",
             "Has the myth been shattered",
-            "Rose Bowl Turkey Trot",
-            "All-ages Pasadena Thanksgiving 5K · Nov 26",
-            "Turkey Trot Los Angeles",
-            "Downtown Los Angeles Thanksgiving races · Nov 26",
-            "Long Beach Turkey Trot",
-            "Long Beach Thanksgiving beach run · Nov 26",
             "LA Kings Holiday Ice Festival",
+            "Home Alone",
+            "Walt Disney Concert Hall live score · Nov 27-28",
+            "Hollywood Christmas Parade",
+            "Free Hollywood parade route · Nov 29",
+            "Bob Baker",
+            "A Christmas Carol",
             "Post-Turkey Harvest Hike",
             "Wild Creatures Walk",
             "South Lake Holidayfest",
@@ -330,6 +335,7 @@ def test_fall_guide_routes_homepages_image_and_sitemap() -> None:
             "Aquarium Autumn Festival",
             "Little Women",
             "Holiday Craft Fair",
+            "Turkey Trot",
         ):
             assert expired not in response.text
 
@@ -347,15 +353,16 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     )
     assert general
     for current in (
-        "Forty-three Southern California fall plans",
+        "Forty-four Southern California fall plans",
         "Holiday Ice Rink at Pershing Square",
         "NightTales",
         "Samuel Oschin Air and Space Center",
         "Old Pasadena Holiday Passport",
-        "Rose Bowl Turkey Trot",
-        "Turkey Trot Los Angeles",
-        "Long Beach Turkey Trot",
         "LA Kings Holiday Ice Festival",
+        "Home Alone in Concert",
+        "Hollywood Christmas Parade",
+        "Bob Baker's November 28-January 3 Nutcracker",
+        "A Noise Within's November 28-December 24 A Christmas Carol",
         "Post-Turkey Harvest Hike",
         "Wild Creatures Walk",
         "South Lake Holidayfest",
@@ -452,6 +459,9 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
         "Little Women",
         "Aquarium Autumn Festival",
         "November 22 craft fair",
+        "Rose Bowl Turkey Trot",
+        "Turkey Trot Los Angeles",
+        "Long Beach Turkey Trot",
     ):
         assert expired not in general
 
@@ -475,8 +485,10 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     pasadena = _public_review_live_query_response("What current events are covered in Pasadena?", "home_local_guide")
     assert "Old Pasadena Holiday Passport" in pasadena
     assert "#old-pasadena-holiday-passport" in pasadena
-    assert "Rose Bowl Turkey Trot" in pasadena
-    assert "#rose-bowl-turkey-trot" in pasadena
+    assert "A Christmas Carol" in pasadena
+    assert "#a-christmas-carol-pasadena" in pasadena
+    assert "Bob Baker" in pasadena
+    assert "#bob-baker-nutcracker" in pasadena
     assert "Mayor's Holiday Tree Lighting" in pasadena
     assert "#pasadena-mayor-tree-lighting" in pasadena
     assert "South Lake Holidayfest" in pasadena
@@ -508,8 +520,8 @@ def test_public_answers_use_only_current_fall_recommendations() -> None:
     long_beach = _public_review_live_query_response("What current events are covered in Long Beach?", "home_local_guide")
     assert "Khmer Town Night Market" not in long_beach
     assert "#khmer-town-night-market-long-beach" not in long_beach
-    assert "Long Beach Turkey Trot" in long_beach
-    assert "#long-beach-turkey-trot" in long_beach
+    assert "Long Beach Turkey Trot" not in long_beach
+    assert "#long-beach-turkey-trot" not in long_beach
     assert "Small Business Saturday" in long_beach
     assert "#belmont-shore-small-business-saturday" in long_beach
     assert "Belmont Shore Christmas Parade" in long_beach

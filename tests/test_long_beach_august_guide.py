@@ -91,7 +91,7 @@ def test_long_beach_guide_is_cross_linked_and_available_to_public_answers() -> N
     )
 
     assert answer
-    assert "Long Beach Turkey Trot" in answer
+    assert "Long Beach Turkey Trot" not in answer
     assert "Dark Harbor" not in answer
     assert "Long Beach Greek Festival" not in answer
     assert "Nas and The Roots tonight" not in answer
